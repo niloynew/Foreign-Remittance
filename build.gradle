@@ -1,0 +1,193 @@
+plugins {
+	id "java-library"
+	id "checkstyle"
+	id "maven-publish"
+	id "org.springframework.boot" version "2.0.4.RELEASE" apply false
+	id "io.spring.dependency-management" version "1.0.6.RELEASE" apply false
+	id "org.jetbrains.gradle.plugin.idea-ext" version "0.4.2"
+	id "com.diffplug.gradle.spotless" version "3.14.0"
+	id "org.sonarqube" version "2.6.2" apply false
+	id "com.gorylenko.gradle-git-properties" version "1.5.2"
+}
+
+configure(allprojects) { project ->
+
+	apply plugin: "java-library"
+	apply plugin: "checkstyle"
+	apply plugin: "org.jetbrains.gradle.plugin.idea-ext"
+	apply plugin: "io.spring.dependency-management"
+	apply plugin: "com.diffplug.gradle.spotless"
+	apply plugin: "com.gorylenko.gradle-git-properties"
+
+	group = PROJECT_GROUP
+	version = PROJECT_VERSION
+
+	compileJava {
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
+		options.encoding = "UTF-8"
+	}
+
+	compileTestJava {
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
+		options.encoding = "UTF-8"
+		options.compilerArgs += "-parameters"
+	}
+
+	ext {
+		mislVersion = '0.0.31'
+		ojdbcVersion = '12.2.0.1'
+		googleJavaFormatVersion = '1.6'
+	}
+
+	repositories {
+		maven { url REPOSITORY }
+	}
+
+	dependencyManagement {
+		imports {
+			mavenBom "com.mislbd.ababil:java-dependencies:${mislVersion}"
+		}
+	}
+
+	spotless {
+		java {
+			googleJavaFormat(googleJavaFormatVersion)
+		}
+	}
+
+	gitProperties {
+		dateFormat = "yyyy-MM-dd HH:mm:ssZ"
+		dateFormatTimeZone = 'GMT'
+	}
+
+	tasks.withType(JavaCompile) { it.dependsOn 'spotlessApply' }
+}
+
+configure(subprojects.findAll { it.name.endsWith('-rs') }) {
+
+	apply plugin: "org.springframework.boot"
+}
+
+configure(subprojects.findAll { it.name.endsWith('-api') || it.name.endsWith('-impl') }) {
+
+	apply plugin: "maven-publish"
+
+	publishing {
+		publications {
+			maven(MavenPublication) {
+
+				groupId = PROJECT_GROUP
+				artifactId = PROJECT_ARTIFACT
+				version = PROJECT_VERSION
+
+				from components.java
+
+				pom {
+					name = PROJECT_NAME
+					description = PROJECT_DESCRIPTION
+					url = 'http://www.mislbd.com'
+				}
+			}
+		}
+	}
+
+	jar {
+		enabled = true
+
+		into("META-INF/maven/$project.group/$project.name") {
+			from "$projectDir/build/publications/maven"
+			rename ".*", "pom.xml"
+		}
+	}
+
+	tasks.withType(JavaCompile) { it.dependsOn 'generatePomFileForMavenPublication' }
+	tasks.findByName('compileJava').mustRunAfter 'generatePomFileForMavenPublication'
+}
+
+configure(subprojects) { project ->
+
+	dependencies {
+		api(
+				"javax.xml.bind:jaxb-api",
+		)
+
+		implementation(
+				"org.springframework.boot:spring-boot-starter-web",
+				"org.springframework.boot:spring-boot-starter-data-jpa",
+				"org.springframework.boot:spring-boot-starter-data-rest",
+				"org.springframework.boot:spring-boot-starter-activemq",
+				"org.springframework.cloud:spring-cloud-starter-openfeign",
+				"org.springframework.cloud:spring-cloud-starter-config",
+				"org.hibernate:hibernate-envers"
+		)
+
+		implementation(
+				"com.mislbd.asset:commons",
+				"com.mislbd.asset:command-api",
+				"com.mislbd.asset:command-impl",
+				"com.mislbd.ababil:ababil-asset",
+				"com.mislbd.ababil:ababil-contacts-api",
+				"com.mislbd.ababil:ababil-contacts-impl",
+				"com.mislbd.ababil:ababil-approvalflow-api",
+				"com.mislbd.ababil:ababil-approvalflow-impl",
+				"com.mislbd.ababil:ababil-currency-api",
+				"com.mislbd.ababil:ababil-currency-impl",
+				"com.mislbd.ababil:ababil-transaction-api",
+				"com.mislbd.ababil:ababil-transaction-impl",
+		)
+
+		compile('com.mislbd.document:document-ng') {
+			exclude group: 'org.springframework.boot'
+			exclude group: 'com.oracle'
+			exclude group: 'org.mortbay.jetty'
+			exclude group: 'org.hibernate'
+		}
+
+		implementation(
+				"mysql:mysql-connector-java",
+				"local.com.oracle.jdbc:ojdbc8:${ojdbcVersion}"
+		)
+
+		compile(
+				"io.springfox:springfox-swagger2",
+				"io.springfox:springfox-swagger-ui",
+				"io.springfox:springfox-data-rest",
+				"org.springframework.data:spring-data-rest-hal-browser",
+				"org.springframework.boot:spring-boot-devtools",
+				"org.projectlombok:lombok",
+		)
+
+		implementation(
+				"org.modelmapper:modelmapper:1.1.1"
+		)
+
+		annotationProcessor("org.projectlombok:lombok")
+
+		testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+		testAnnotationProcessor("org.projectlombok:lombok")
+
+	}
+}
+
+configure(rootProject) {
+
+	configurations.archives.artifacts.clear()
+}
+
+wrapper {
+
+	gradleVersion = GRADLE_VERSION
+	distributionUrl = WRAPPER_ROOT + "/${gradleVersion}/gradle-wrapper-${gradleVersion}-bin.zip"
+}
+
+idea {
+
+	project.settings {
+		delegateActions {
+			delegateBuildRunToGradle = true
+		}
+	}
+}

@@ -1,0 +1,15 @@
+dependencies {
+    implementation project(":foreign-remittance-impl")
+    implementation ("org.springframework.boot:spring-boot-starter-actuator")
+}
+
+springBoot {
+    buildInfo {
+        properties {
+            name = PROJECT_NAME
+            additional = [
+                    'x': 'xomidar'
+            ]
+        }
+    }
+}
