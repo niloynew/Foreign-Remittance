@@ -1,19 +1,18 @@
-package com.mislbd.ababil.foreignremittance.schema;o
+package com.mislbd.ababil.foreignremittance.schema;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.sql.Time;
+
 import java.time.LocalDate;
-import java.util.Objects;
+
 
 @Entity
 @Table(name = "NOSTRO_ACCOUNT")
-public class NostroAccountEntity {
+public class NostroAccountEntity extends BaseEntity {
     private Long nostroAccId;
     @Column(name = "nostroAccNo")
     private String number;
