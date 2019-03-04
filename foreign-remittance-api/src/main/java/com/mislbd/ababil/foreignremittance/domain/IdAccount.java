@@ -79,7 +79,7 @@ public class IdAccount {
 
     private String nostroAcc;
 
-    private String idAccNm;
+    //private String idAccNm;
 
     private long brId;
 
@@ -422,7 +422,7 @@ public class IdAccount {
         return this;
     }
 
-    public String getIdAccNm() {
+    /*public String getIdAccNm() {
         return idAccNm;
     }
 
@@ -430,7 +430,7 @@ public class IdAccount {
         this.idAccNm = idAccNm;
         return this;
     }
-
+*/
     public long getBrId() {
         return brId;
     }
