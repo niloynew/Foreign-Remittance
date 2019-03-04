@@ -1,7 +1,7 @@
 package com.mislbd.ababil.foreignremittance.controller.idaccount;
 
 import com.mislbd.ababil.foreignremittance.command.CreateIdAccountCommand;
-import com.mislbd.ababil.foreignremittance.domain.IdAccount;
+import com.mislbd.ababil.foreignremittance.domain.Account;
 import com.mislbd.ababil.foreignremittance.service.IdAccountService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
@@ -33,7 +33,7 @@ public class IDAccountController {
 
             ) {
 
-        PagedResult<IdAccount> pagedAccounts = idAccountService.getAccounts(pageable);
+        PagedResult<Account> pagedAccounts = idAccountService.getAccounts(pageable);
 
 
         return ResponseEntity.ok(pagedAccounts);
@@ -41,7 +41,7 @@ public class IDAccountController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommandResponse<Long>> createIdAccount(
-            @RequestBody IdAccount account) {
+            @RequestBody Account account) {
         return status(CREATED)
                 .body(commandProcessor.executeResult(new CreateIdAccountCommand(account)));
     }

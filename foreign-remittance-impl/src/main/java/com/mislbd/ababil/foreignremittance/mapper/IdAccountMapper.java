@@ -1,6 +1,6 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
-import com.mislbd.ababil.foreignremittance.domain.IdAccount;
+import com.mislbd.ababil.foreignremittance.domain.Account;
 import com.mislbd.ababil.foreignremittance.repository.jpa.IdAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.IdAccountEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
@@ -14,8 +14,8 @@ public class IdAccountMapper {
         this.idAccountRepository = idAccountRepository;
     }
 
-    public ResultMapper<IdAccountEntity, IdAccount> entityToDomain(){
-        return entity -> new IdAccount()
+    public ResultMapper<IdAccountEntity, Account> entityToDomain(){
+        return entity -> new Account()
                 .setId(entity.getId())
                 .setProductId(entity.getProductId())
                 .setNumber(entity.getNumber())
@@ -59,7 +59,7 @@ public class IdAccountMapper {
                 .setNostroAccId(entity.getNostroAccId());
     }
 
-    public ResultMapper<IdAccount, IdAccountEntity> domainToEntity(){
+    public ResultMapper<Account, IdAccountEntity> domainToEntity(){
         return domain ->
                 idAccountRepository
                         .findById(domain.getId())

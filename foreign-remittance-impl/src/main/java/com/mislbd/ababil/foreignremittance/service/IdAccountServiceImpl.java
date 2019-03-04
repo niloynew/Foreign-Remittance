@@ -1,6 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
-import com.mislbd.ababil.foreignremittance.domain.IdAccount;
+import com.mislbd.ababil.foreignremittance.domain.Account;
 import com.mislbd.ababil.foreignremittance.mapper.IdAccountMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.IdAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.IdAccountEntity;
@@ -26,7 +26,7 @@ public class IdAccountServiceImpl implements IdAccountService {
     }
 
     @Override
-    public PagedResult<IdAccount> getAccounts(Pageable pageable) {
+    public PagedResult<Account> getAccounts(Pageable pageable) {
         Page<IdAccountEntity> pagedIdAccountEntities =
                 repository.findAll(pageable);
         return PagedResultBuilder.build(
@@ -35,7 +35,7 @@ public class IdAccountServiceImpl implements IdAccountService {
     }
 
     @Override
-    public Optional<IdAccount> getIdAccount(Long id) {
+    public Optional<Account> getIdAccount(Long id) {
         return Optional.empty();
     }
 
@@ -45,7 +45,7 @@ public class IdAccountServiceImpl implements IdAccountService {
     }
 
     @Override
-    public IdAccount findByNumber(String accNumber) {
+    public Account findByNumber(String accNumber) {
         return(idAccountMapper.entityToDomain().map(repository.findByNumber(accNumber))) ;
     }
 

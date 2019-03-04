@@ -1,6 +1,5 @@
 package com.mislbd.ababil.foreignremittance.service;
 
-import com.mislbd.ababil.foreignremittance.domain.IdAccount;
 import com.mislbd.ababil.foreignremittance.domain.NostroAccount;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import org.springframework.data.domain.Pageable;
