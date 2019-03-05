@@ -16,7 +16,7 @@ public class IDProductEntity extends BaseEntity implements Serializable {
             name = "ID_PRODUCT_ID_GEN",
             allocationSize = 1,
             sequenceName = SchemaConstant.ID_PRODUCT_SEQUENCE_NAME)
-    private long id;
+    private Long id;
 
     @Column(name = "NAME", nullable = false, unique = true)
     private String name;
@@ -32,6 +32,14 @@ public class IDProductEntity extends BaseEntity implements Serializable {
     private List<String> currencies;
 
     private long generalLedgerId;
+
+    // ### This part is for mapping with other entities ###//
+
+    @OneToMany(mappedBy = "product")
+    private List<NostroAccountEntity> nostroAccounts;
+
+    @OneToMany(mappedBy = "product")
+    private List<ShadowAccountEntity> shadowAccounts;
 
     // region <Getter and Setter>
 
@@ -79,5 +87,20 @@ public class IDProductEntity extends BaseEntity implements Serializable {
         this.generalLedgerId = generalLedgerId;
         return this;
     }
-    // endregion
+
+    public List<NostroAccountEntity> getNostroAccounts() {
+        return nostroAccounts;
+    }
+
+    public void setNostroAccounts(List<NostroAccountEntity> nostroAccounts) {
+        this.nostroAccounts = nostroAccounts;
+    }
+
+    public List<ShadowAccountEntity> getShadowAccounts() {
+        return shadowAccounts;
+    }
+
+    public void setShadowAccounts(List<ShadowAccountEntity> shadowAccounts) {
+        this.shadowAccounts = shadowAccounts;
+    }
 }

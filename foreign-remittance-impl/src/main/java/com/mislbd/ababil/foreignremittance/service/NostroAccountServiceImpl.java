@@ -3,7 +3,6 @@ package com.mislbd.ababil.foreignremittance.service;
 import com.mislbd.ababil.foreignremittance.domain.NostroAccount;
 import com.mislbd.ababil.foreignremittance.mapper.NostroAccountMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroAccountRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.IdAccountEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroAccountEntity;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;

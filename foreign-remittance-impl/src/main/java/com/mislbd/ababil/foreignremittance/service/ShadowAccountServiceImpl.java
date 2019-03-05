@@ -1,9 +1,9 @@
 package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.Account;
-import com.mislbd.ababil.foreignremittance.mapper.IdAccountMapper;
-import com.mislbd.ababil.foreignremittance.repository.jpa.IdAccountRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.IdAccountEntity;
+import com.mislbd.ababil.foreignremittance.mapper.ShadowAccountMapper;
+import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
+import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
 import org.springframework.data.domain.Page;
@@ -15,19 +15,19 @@ import java.util.Optional;
 
 
 @Service
-public class IdAccountServiceImpl implements IdAccountService {
+public class ShadowAccountServiceImpl implements IdAccountService {
 
-    private final IdAccountRepository repository;
-    private final IdAccountMapper idAccountMapper;
+    private final ShadowAccountRepository repository;
+    private final ShadowAccountMapper idAccountMapper;
 
-    public IdAccountServiceImpl(IdAccountRepository repository, IdAccountMapper idAccountMapper) {
+    public ShadowAccountServiceImpl(ShadowAccountRepository repository, ShadowAccountMapper idAccountMapper) {
         this.repository = repository;
         this.idAccountMapper = idAccountMapper;
     }
 
     @Override
     public PagedResult<Account> getAccounts(Pageable pageable) {
-        Page<IdAccountEntity> pagedIdAccountEntities =
+        Page<ShadowAccountEntity> pagedIdAccountEntities =
                 repository.findAll(pageable);
         return PagedResultBuilder.build(
                 pagedIdAccountEntities, idAccountMapper.entityToDomain());

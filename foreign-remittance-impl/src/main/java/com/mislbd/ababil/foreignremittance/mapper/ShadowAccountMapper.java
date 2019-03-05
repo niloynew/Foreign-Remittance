@@ -1,24 +1,26 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
 import com.mislbd.ababil.foreignremittance.domain.Account;
-import com.mislbd.ababil.foreignremittance.repository.jpa.IdAccountRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.IdAccountEntity;
+import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
+import com.mislbd.ababil.foreignremittance.repository.schema.IDAccountEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IdAccountMapper {
-    private final IdAccountRepository idAccountRepository;
+public class ShadowAccountMapper {
 
-    public IdAccountMapper(IdAccountRepository idAccountRepository) {
+    private final ShadowAccountRepository idAccountRepository;
+
+    public ShadowAccountMapper(ShadowAccountRepository idAccountRepository) {
         this.idAccountRepository = idAccountRepository;
     }
 
-    public ResultMapper<IdAccountEntity, Account> entityToDomain(){
+    public ResultMapper<ShadowAccountEntity, Account> entityToDomain(){
         return entity -> new Account()
                 .setId(entity.getId())
-                .setProductId(entity.getProductId())
-                .setNumber(entity.getNumber())
+                .setProductId(String.valueOf(entity.getProduct().getId()))
+                .setNumber(entity.getNumber().toString())
                 .setCurrencyCode(entity.getCurrencyCode())
                 .setCorrespondenceBranchId(entity.getCorrespondenceBranchId())
                 .setAddressLine1(entity.getAddressLine1())
@@ -59,11 +61,11 @@ public class IdAccountMapper {
                 .setNostroAccId(entity.getNostroAccId());
     }
 
-    public ResultMapper<Account, IdAccountEntity> domainToEntity(){
+    public ResultMapper<Account, IDAccountEntity> domainToEntity(){
         return domain ->
                 idAccountRepository
                         .findById(domain.getId())
-                        .orElseGet(IdAccountEntity::new)
+                        .orElseGet(ShadowAccountEntity::new)
                         .setId(domain.getId())
                         .setProductId(domain.getProductId())
                         .setNumber(domain.getNumber())
