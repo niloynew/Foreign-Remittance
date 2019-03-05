@@ -5,13 +5,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = SchemaConstant.NOSTRO_ACCOUNT_TABLE_NAME)
 public class NostroAccountEntity extends BaseEntity {
 
-  private Long nostroAccId;
+  @Id private Long nostroAccId;
 
   @Column(name = "nostroAccNo")
   private String number;
