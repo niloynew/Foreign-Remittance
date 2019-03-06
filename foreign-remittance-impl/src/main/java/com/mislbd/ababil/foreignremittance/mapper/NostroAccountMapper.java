@@ -1,92 +1,53 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
-import com.mislbd.ababil.foreignremittance.domain.NostroAccount;
+import com.mislbd.ababil.foreignremittance.domain.Account;
+import com.mislbd.ababil.foreignremittance.repository.jpa.IDProductRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroAccountEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class NostroAccountMapper {
-  private final NostroAccountRepository nostroAccountRepository;
 
-  public NostroAccountMapper(NostroAccountRepository nostroAccountRepository) {
-    this.nostroAccountRepository = nostroAccountRepository;
-  }
+    private final NostroAccountRepository nostroAccountRepository;
+    private final IDProductRepository idProductRepository;
 
-  public ResultMapper<NostroAccountEntity, NostroAccount> entityToDomain() {
-    return entity ->
-        new NostroAccount()
-            .setNostroAccId(entity.getNostroAccId())
-            .setNumber(entity.getNumber())
-            .setName(entity.getName())
-            .setCurrencyCode(entity.getCurrencyCode())
-            .setCorrespondenceBrId(entity.getCorrespondenceBrId())
-            .setAddressLine1(entity.getAddressLine1())
-            .setAddressLine2(entity.getAddressLine2())
-            .setAddressLine3(entity.getAddressLine3())
-            .setNostroPostBox(entity.getNostroPostBox())
-            .setCountryId(entity.getCountryId())
-            .setCity(entity.getCity())
-            .setClearHouse(entity.getClearHouse())
-            .setSwiftCode(entity.getSwiftCode())
-            .setAccOpenDate(entity.getAccOpenDate())
-            .setEmail(entity.getEmail())
-            .setUrl(entity.getUrl())
-            .setRoutingUidNo(entity.getRoutingUidNo())
-            .setTelephoneNo(entity.getTelephoneNo())
-            .setMobileNo(entity.getMobileNo())
-            .setFaxNo(entity.getFaxNo())
-            .setContactPerson(entity.getContactPerson())
-            .setMaintenanceFee(entity.getMaintenanceFee())
-            .setOperatingHours(entity.getOperatingHours())
-            .setNostroBalanceLimits(entity.getNostroBalanceLimits())
-            .setAdvanceWarning(entity.getAdvanceWarning())
-            .setRecStatus(entity.getRecStatus())
-            .setBalanceCcy(entity.getBalanceCcy())
-            .setLastOpDate(entity.getLastOpDate())
-            .setBlockAmount(entity.getBlockAmount())
-            .setStatus(entity.getStatus())
-            .setClearingAmount(entity.getClearingAmount())
-            .setBrId(entity.getBrId());
-  }
+    public NostroAccountMapper(NostroAccountRepository nostroAccountRepository, IDProductRepository idProductRepository) {
+        this.nostroAccountRepository = nostroAccountRepository;
+        this.idProductRepository = idProductRepository;
+    }
 
-  public ResultMapper<NostroAccount, NostroAccountEntity> domainToEntity() {
-    return domain ->
-        nostroAccountRepository
-            .findById(domain.getNostroAccId())
-            .orElseGet(NostroAccountEntity::new)
-            .setNostroAccId(domain.getNostroAccId())
-            .setNumber(domain.getNumber())
-            .setName(domain.getName())
-            .setCurrencyCode(domain.getCurrencyCode())
-            .setCorrespondenceBrId(domain.getCorrespondenceBrId())
-            .setAddressLine1(domain.getAddressLine1())
-            .setAddressLine2(domain.getAddressLine2())
-            .setAddressLine3(domain.getAddressLine3())
-            .setNostroPostBox(domain.getNostroPostBox())
-            .setCountryId(domain.getCountryId())
-            .setCity(domain.getCity())
-            .setClearHouse(domain.getClearHouse())
-            .setSwiftCode(domain.getSwiftCode())
-            .setAccOpenDate(domain.getAccOpenDate())
-            .setEmail(domain.getEmail())
-            .setUrl(domain.getUrl())
-            .setRoutingUidNo(domain.getRoutingUidNo())
-            .setTelephoneNo(domain.getTelephoneNo())
-            .setMobileNo(domain.getMobileNo())
-            .setFaxNo(domain.getFaxNo())
-            .setContactPerson(domain.getContactPerson())
-            .setMaintenanceFee(domain.getMaintenanceFee())
-            .setOperatingHours(domain.getOperatingHours())
-            .setNostroBalanceLimits(domain.getNostroBalanceLimits())
-            .setAdvanceWarning(domain.getAdvanceWarning())
-            .setRecStatus(domain.getRecStatus())
-            .setBalanceCcy(domain.getBalanceCcy())
-            .setLastOpDate(domain.getLastOpDate())
-            .setBlockAmount(domain.getBlockAmount())
-            .setStatus(domain.getStatus())
-            .setClearingAmount(domain.getClearingAmount())
-            .setBrId(domain.getBrId());
-  }
+
+    public ResultMapper<NostroAccountEntity, Account> entityToDomain() {
+        return entity ->
+                new Account()
+                        .setId(Long.valueOf(entity.getId()))
+                        .setNostroAccountNumber(entity.getNumber())
+                        .setAccountTitle(entity.getName())
+                        .setCurrencyCode(entity.getCurrencyCode())
+                        .setProductId(String.valueOf(entity.getProduct().getId()))
+                        .setBankId(entity.getBankId() != null ? String.valueOf(entity.getBankId()) : null)
+                        .setBranchId(entity.getBranchId() != null ? String.valueOf(entity.getBranchId()) : null)
+                        .setAccountOpenDate(entity.getAccOpenDate())
+                        .setBalanceCcy(entity.getBalanceCcy())
+                        .setBalanceLcy(entity.getBalanceLcy());
+    }
+
+    public ResultMapper<Account, NostroAccountEntity> domainToEntity() {
+        return domain ->
+                nostroAccountRepository.findByNumber(domain.getNostroAccountNumber())
+                        .orElseGet(NostroAccountEntity::new)
+                        .setProduct(domain.getProductId() != null ? idProductRepository.getOne(Long.valueOf(domain.getProductId())) : null)
+                        .setNumber(domain.getNostroAccountNumber())
+                        .setName(domain.getAccountTitle())
+                        .setCurrencyCode(domain.getCurrencyCode())
+                        .setAccOpenDate(domain.getAccountOpenDate())
+                        .setBankId(domain.getBankId() != null ? Long.valueOf(domain.getBankId()) : null)
+                        .setBranchId(domain.getBranchId() != null ? Long.valueOf(domain.getBranchId()) : null)
+                        .setBalanceCcy(domain.getBalanceCcy());
+    }
+
+
 }

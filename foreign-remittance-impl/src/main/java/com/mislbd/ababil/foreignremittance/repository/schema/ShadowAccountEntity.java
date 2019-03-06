@@ -12,16 +12,19 @@ public class ShadowAccountEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
-    private Long id;
+    private long id;
 
     @Column(name = "Number")
-    private Long number;
+    private String number;
 
     @Column(name = "Bank")
-    private Long bank;
+    private Long bankId;
 
     @Column(name = "Branch")
-    private Long branch;
+    private Long branchId;
+
+    @Column(name = "Currency")
+    private String currencyCode;
 
     @Column(name = "BalanceCcy")
     private BigDecimal balanceCcy;
@@ -33,36 +36,36 @@ public class ShadowAccountEntity extends BaseEntity {
     @JoinColumn(name = "product")
     private IDProductEntity product;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public Long getNumber() {
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(Long number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 
-    public Long getBank() {
-        return bank;
+    public Long getBankId() {
+        return bankId;
     }
 
-    public void setBank(Long bank) {
-        this.bank = bank;
+    public void setBankId(Long bankId) {
+        this.bankId = bankId;
     }
 
-    public Long getBranch() {
-        return branch;
+    public Long getBranchId() {
+        return branchId;
     }
 
-    public void setBranch(Long branch) {
-        this.branch = branch;
+    public void setBranchId(Long branchId) {
+        this.branchId = branchId;
     }
 
     public BigDecimal getBalanceCcy() {
@@ -87,5 +90,13 @@ public class ShadowAccountEntity extends BaseEntity {
 
     public void setProduct(IDProductEntity product) {
         this.product = product;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 }

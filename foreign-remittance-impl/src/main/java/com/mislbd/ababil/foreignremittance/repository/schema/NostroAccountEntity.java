@@ -11,94 +11,126 @@ import javax.persistence.*;
 @Table(name = SchemaConstant.NOSTRO_ACCOUNT_TABLE_NAME)
 public class NostroAccountEntity extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "ID")
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID")
+    private long id;
 
-  @Column(name = "AccountNumber")
-  private String number;
+    @Column(name = "AccountNumber")
+    private String number;
 
-  @Column(name = "AccountName")
-  private String name;
+    @Column(name = "AccountName")
+    private String name;
 
-  @Column(name = "Currency")
-  private String currencyCode;
+    @Column(name = "Currency")
+    private String currencyCode;
 
-  @Column(name = "AccountOpenDate")
-  private LocalDate accOpenDate;
+    @Column(name = "AccountOpenDate")
+    private LocalDate accOpenDate;
 
-  @Column(name = "BalanceCcy")
-  private BigDecimal balanceCcy;
+    @Column(name = "BalanceCcy")
+    private BigDecimal balanceCcy;
 
-  @Column(name = "BalanceLcy")
-  private BigDecimal balanceLcy;
+    @Column(name = "BalanceLcy")
+    private BigDecimal balanceLcy;
 
-  @ManyToOne
-  @JoinColumn(name = "ID")
-  private IDProductEntity product;
+    @Column(name = "Bank")
+    private Long bankId;
 
-  public Long getId() {
-    return id;
-  }
+    @Column(name = "Branch")
+    private Long branchId;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    @ManyToOne
+    @JoinColumn(name = "ID")
+    private IDProductEntity product;
 
-  public String getNumber() {
-    return number;
-  }
+    public long getId() {
+        return id;
+    }
 
-  public void setNumber(String number) {
-    this.number = number;
-  }
+    public NostroAccountEntity setId(long id) {
+        this.id = id;
+        return this;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getNumber() {
+        return number;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public NostroAccountEntity setNumber(String number) {
+        this.number = number;
+        return this;
+    }
 
-  public String getCurrencyCode() {
-    return currencyCode;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setCurrencyCode(String currencyCode) {
-    this.currencyCode = currencyCode;
-  }
+    public NostroAccountEntity setName(String name) {
+        this.name = name;
+        return this;
+    }
 
-  public LocalDate getAccOpenDate() {
-    return accOpenDate;
-  }
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
 
-  public void setAccOpenDate(LocalDate accOpenDate) {
-    this.accOpenDate = accOpenDate;
-  }
+    public NostroAccountEntity setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+        return this;
+    }
 
-  public BigDecimal getBalanceCcy() {
-    return balanceCcy;
-  }
+    public LocalDate getAccOpenDate() {
+        return accOpenDate;
+    }
 
-  public void setBalanceCcy(BigDecimal balanceCcy) {
-    this.balanceCcy = balanceCcy;
-  }
+    public NostroAccountEntity setAccOpenDate(LocalDate accOpenDate) {
+        this.accOpenDate = accOpenDate;
+        return this;
+    }
 
-  public BigDecimal getBalanceLcy() {
-    return balanceLcy;
-  }
+    public BigDecimal getBalanceCcy() {
+        return balanceCcy;
+    }
 
-  public void setBalanceLcy(BigDecimal balanceLcy) {
-    this.balanceLcy = balanceLcy;
-  }
+    public NostroAccountEntity setBalanceCcy(BigDecimal balanceCcy) {
+        this.balanceCcy = balanceCcy;
+        return this;
+    }
 
-  public IDProductEntity getProduct() {
-    return product;
-  }
+    public BigDecimal getBalanceLcy() {
+        return balanceLcy;
+    }
 
-  public void setProduct(IDProductEntity product) {
-    this.product = product;
-  }
+    public NostroAccountEntity setBalanceLcy(BigDecimal balanceLcy) {
+        this.balanceLcy = balanceLcy;
+        return this;
+    }
+
+    public Long getBankId() {
+        return bankId;
+    }
+
+    public NostroAccountEntity setBankId(Long bankId) {
+        this.bankId = bankId;
+        return this;
+    }
+
+    public Long getBranchId() {
+        return branchId;
+    }
+
+    public NostroAccountEntity setBranchId(Long branchId) {
+        this.branchId = branchId;
+        return this;
+    }
+
+    public IDProductEntity getProduct() {
+        return product;
+    }
+
+    public NostroAccountEntity setProduct(IDProductEntity product) {
+        this.product = product;
+        return this;
+    }
 }
