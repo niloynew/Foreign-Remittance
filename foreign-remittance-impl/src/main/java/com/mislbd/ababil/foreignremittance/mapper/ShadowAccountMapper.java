@@ -2,7 +2,6 @@ package com.mislbd.ababil.foreignremittance.mapper;
 
 import com.mislbd.ababil.foreignremittance.domain.Account;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.IDAccountEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,7 @@ public class ShadowAccountMapper {
                 .setId(entity.getId())
                 .setProductId(String.valueOf(entity.getProduct().getId()))
                 .setShadowAccountNumber(entity.getNumber())
-                .setCurrencyCode(entity.getCurrencyCode())
+                .setCurrencyCode(entity.getCurrencyCode());
 //                .setBankid(entity.getBank())
 //                .setAddressLine1(entity.getAddressLine1())
 //                .setAddressLine2(entity.getAddressLine2())
@@ -65,8 +64,8 @@ public class ShadowAccountMapper {
         return domain ->
                 idAccountRepository
                         .findById(domain.getId())
-                        .orElseGet(ShadowAccountEntity::new)
-                        .setId(domain.getId())
+                        .orElseGet(ShadowAccountEntity::new);
+//                        .setId(domain.getId())
 //                        .setProductId(domain.getProductId())
 //                        .setNumber(domain.getNumber())
 //                        .setCurrencyCode(domain.getCurrencyCode())
