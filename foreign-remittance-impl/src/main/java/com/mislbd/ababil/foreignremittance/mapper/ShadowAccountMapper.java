@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
 import com.mislbd.ababil.foreignremittance.domain.Account;
+import com.mislbd.ababil.foreignremittance.repository.jpa.IDProductRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
@@ -9,10 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ShadowAccountMapper {
 
-    private final ShadowAccountRepository idAccountRepository;
+    private final ShadowAccountRepository shadowAccountRepository;
+    private final IDProductRepository idProductRepository;
 
-    public ShadowAccountMapper(ShadowAccountRepository idAccountRepository) {
-        this.idAccountRepository = idAccountRepository;
+    public ShadowAccountMapper(ShadowAccountRepository shadowAccountRepository, IDProductRepository idProductRepository) {
+        this.shadowAccountRepository = shadowAccountRepository;
+        this.idProductRepository = idProductRepository;
     }
 
     public ResultMapper<ShadowAccountEntity, Account> entityToDomain(){
@@ -20,91 +23,28 @@ public class ShadowAccountMapper {
                 .setId(entity.getId())
                 .setProductId(String.valueOf(entity.getProduct().getId()))
                 .setShadowAccountNumber(entity.getNumber())
-                .setCurrencyCode(entity.getCurrencyCode());
-//                .setBankid(entity.getBank())
-//                .setAddressLine1(entity.getAddressLine1())
-//                .setAddressLine2(entity.getAddressLine2())
-//                .setAddressLine3(entity.getAddressLine3())
-//                .setPostBox(entity.getPostBox())
-//                .setCountryId(entity.getCountryId())
-//                .setCity(entity.getCity())
-//                .setClearingHouse(entity.getClearingHouse())
-//                .setSwiftCode(entity.getSwiftCode())
-//                .setOpenDate(entity.getOpenDate())
-//                .setEmail(entity.getEmail())
-//                .setUrl(entity.getUrl())
-//                .setRoutingNo(entity.getRoutingNo())
-//                .setTelephoneNo(entity.getTelephoneNo())
-//                .setMobileNo(entity.getMobileNo())
-//                .setFaxNo(entity.getFaxNo())
-//                .setContactPerson(entity.getContactPerson())
-//                .setMaintenanceFee(entity.getMaintenanceFee())
-//                .setPaymentFee(entity.getPaymentFee())
-//                .setStatementFee(entity.getStatementFee())
-//                .setMinimumBalance(entity.getMinimumBalance())
-//                .setBusinessDays(entity.getBusinessDays())
-//                .setOperatingHours(entity.getOperatingHours())
-//                .setBalanceLimits(entity.getBalanceLimits())
-//                .setAdvanceWarning(entity.getAdvanceWarning())
-//                .setRecStatus(entity.getRecStatus())
-//                .setBalanceCcy(entity.getBalanceCcy())
-//                .setBalanceLcy(entity.getBalanceLcy())
-//                .setLastOpDate(entity.getLastOpDate())
-//                .setBlockAmount(entity.getBlockAmount())
-//                .setStatus(entity.getStatus())
-//                .setClearingAmount(entity.getClearingAmount())
-//                .setNostroAcc(entity.getNostroAcc())
-//                .setIdAccNm(entity.getIdAccNm())
-//                .setBrId(entity.getBrId())
-//                .setAccBrId(entity.getAccBrId())
-//                .setNostroAccId(entity.getNostroAccId());
+                .setCurrencyCode(entity.getCurrencyCode())
+                .setBankId(entity.getBankId() != null ? String.valueOf(entity.getBankId()) : null)
+                .setBranchId(entity.getBranchId()!= null ? String.valueOf(entity.getBranchId()) : null)
+                .setAccountOpenDate(entity.getAccountOpenDate())
+                .setBalanceCcy(entity.getBalanceCcy())
+                .setBalanceLcy(entity.getBalanceLcy());
+
+
     }
 
     public ResultMapper<Account, ShadowAccountEntity> domainToEntity(){
         return domain ->
-                idAccountRepository
+                shadowAccountRepository
                         .findById(domain.getId())
-                        .orElseGet(ShadowAccountEntity::new);
-//                        .setId(domain.getId())
-//                        .setProductId(domain.getProductId())
-//                        .setNumber(domain.getNumber())
-//                        .setCurrencyCode(domain.getCurrencyCode())
-//                        .setCorrespondenceBranchId(domain.getCorrespondenceBranchId())
-//                        .setAddressLine1(domain.getAddressLine1())
-//                        .setAddressLine2(domain.getAddressLine2())
-//                        .setAddressLine3(domain.getAddressLine3())
-//                        .setPostBox(domain.getPostBox())
-//                        .setCountryId(domain.getCountryId())
-//                        .setCity(domain.getCity())
-//                        .setClearingHouse(domain.getClearingHouse())
-//                        .setSwiftCode(domain.getSwiftCode())
-//                        .setOpenDate(domain.getOpenDate())
-//                        .setEmail(domain.getEmail())
-//                        .setUrl(domain.getUrl())
-//                        .setRoutingNo(domain.getRoutingNo())
-//                        .setTelephoneNo(domain.getTelephoneNo())
-//                        .setMobileNo(domain.getMobileNo())
-//                        .setFaxNo(domain.getFaxNo())
-//                        .setContactPerson(domain.getContactPerson())
-//                        .setMaintenanceFee(domain.getMaintenanceFee())
-//                        .setPaymentFee(domain.getPaymentFee())
-//                        .setStatementFee(domain.getStatementFee())
-//                        .setMinimumBalance(domain.getMinimumBalance())
-//                        .setBusinessDays(domain.getBusinessDays())
-//                        .setOperatingHours(domain.getOperatingHours())
-//                        .setBalanceLimits(domain.getBalanceLimits())
-//                        .setAdvanceWarning(domain.getAdvanceWarning())
-//                        .setRecStatus(domain.getRecStatus())
-//                        .setBalanceCcy(domain.getBalanceCcy())
-//                        .setBalanceLcy(domain.getBalanceLcy())
-//                        .setLastOpDate(domain.getLastOpDate())
-//                        .setBlockAmount(domain.getBlockAmount())
-//                        .setStatus(domain.getStatus())
-//                        .setClearingAmount(domain.getClearingAmount())
-//                        .setNostroAcc(domain.getNostroAcc())
-//                        .setIdAccNm(domain.getIdAccNm())
-//                        .setBrId(domain.getBrId())
-//                        .setAccBrId(domain.getAccBrId())
-//                        .setNostroAccId(domain.getNostroAccId());
+                        .orElseGet(ShadowAccountEntity::new)
+                        .setProduct(domain.getProductId() != null ? idProductRepository.getOne(Long.valueOf(domain.getProductId())) : null)
+                        .setNumber(domain.getShadowAccountNumber())
+                        .setName(domain.getAccountTitle())
+                        .setCurrencyCode(domain.getCurrencyCode())
+                        .setAccountOpenDate(domain.getAccountOpenDate())
+                        .setBankId(domain.getBankId() != null ? Long.valueOf(domain.getBankId()) : null)
+                        .setBranchId(domain.getBranchId() != null ? Long.valueOf(domain.getBranchId()) : null)
+                        .setBalanceCcy(domain.getBalanceCcy());
     }
 }
