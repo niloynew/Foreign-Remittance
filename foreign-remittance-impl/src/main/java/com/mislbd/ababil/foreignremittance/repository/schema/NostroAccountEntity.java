@@ -41,7 +41,7 @@ public class NostroAccountEntity extends BaseEntity {
     private Long branchId;
 
     @ManyToOne
-    @JoinColumn(name = "ID")
+    @JoinColumn(name = "product")
     private IDProductEntity product;
 
     public long getId() {
