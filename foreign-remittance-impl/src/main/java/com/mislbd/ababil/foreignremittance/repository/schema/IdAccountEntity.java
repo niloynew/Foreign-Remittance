@@ -509,5 +509,5 @@ public class IdAccountEntity extends BaseEntity {
     return this;
   }
 
-  //endregion
+  // endregion
 }

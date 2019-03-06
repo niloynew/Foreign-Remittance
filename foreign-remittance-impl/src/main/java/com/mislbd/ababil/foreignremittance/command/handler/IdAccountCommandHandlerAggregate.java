@@ -11,19 +11,22 @@ import com.mislbd.asset.command.api.annotation.CommandHandler;
 @Aggregate
 public class IdAccountCommandHandlerAggregate {
 
-    private final IdAccountRepository repository;
-    private final IdAccountMapper mapper;
-    private final NostroAccountRepository nostroAccountRepository;
-    public IdAccountCommandHandlerAggregate(IdAccountRepository repository, IdAccountMapper mapper, NostroAccountRepository nostroAccountRepository) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.nostroAccountRepository = nostroAccountRepository;
-    }
+  private final IdAccountRepository repository;
+  private final IdAccountMapper mapper;
+  private final NostroAccountRepository nostroAccountRepository;
 
-    @CommandHandler
-    public CommandResponse<String> createIdAccount(CreateIdAccountCommand command){
+  public IdAccountCommandHandlerAggregate(
+      IdAccountRepository repository,
+      IdAccountMapper mapper,
+      NostroAccountRepository nostroAccountRepository) {
+    this.repository = repository;
+    this.mapper = mapper;
+    this.nostroAccountRepository = nostroAccountRepository;
+  }
+
+  @CommandHandler
+  public CommandResponse<String> createIdAccount(CreateIdAccountCommand command) {
 
     return CommandResponse.of("");
-    }
-
+  }
 }

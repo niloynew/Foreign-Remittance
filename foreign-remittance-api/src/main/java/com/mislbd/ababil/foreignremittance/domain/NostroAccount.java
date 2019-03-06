@@ -87,7 +87,6 @@ public class NostroAccount {
   public NostroAccount setNumber(String number) {
     this.number = number;
     return this;
-
   }
 
   public String getName() {
