@@ -3,121 +3,54 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = SchemaConstant.NOSTRO_ACCOUNT_TABLE_NAME)
 public class NostroAccountEntity extends BaseEntity {
 
-  private Long nostroAccId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "ID")
+  private long id;
 
-  @Column(name = "nostroAccNo")
+  @Column(name = "AccountNumber")
   private String number;
 
-  @Column(name = "nostroAccNm")
+  @Column(name = "AccountName")
   private String name;
 
-  @Column(name = "nostroCurrId")
+  @Column(name = "Currency")
   private String currencyCode;
 
-  @Column(name = "nostroCorrespondenceBrId")
-  private String correspondenceBrId;
-
-  @Column(name = "nostroBankAddress1")
-  private String addressLine1;
-
-  @Column(name = "nostroBankAddress2")
-  private String addressLine2;
-
-  @Column(name = "nostroBankAddress3")
-  private String addressLine3;
-
-  @Column(name = "nostroPostBox")
-  private String nostroPostBox;
-
-  @Column(name = "nostroCountry")
-  private long countryId;
-
-  @Column(name = "nostroCity")
-  private String city;
-
-  @Column(name = "nostroNmClearHouse")
-  private String clearHouse;
-
-  @Column(name = "nostroSwiftCode")
-  private String swiftCode;
-
-  @Column(name = "nostroAccOpenDate")
+  @Column(name = "AccountOpenDate")
   private LocalDate accOpenDate;
 
-  @Column(name = "nostroEMail")
-  private String email;
-
-  @Column(name = "nostroUrl")
-  private String url;
-
-  @Column(name = "nostroRoutingUidNo")
-  private String routingUidNo;
-
-  @Column(name = "nostroTelephoneNo")
-  private String telephoneNo;
-
-  @Column(name = "nostroMobileNo")
-  private String mobileNo;
-
-  @Column(name = "nostroFaxNo;")
-  private String faxNo;
-
-  @Column(name = "nostroContactPerson")
-  private String contactPerson;
-
-  @Column(name = "nostroMaintenanceFee")
-  private BigDecimal maintenanceFee;
-
-  @Column(name = "nostroOperatingHours")
-  private Long operatingHours;
-
-  @Column(name = "nostroBalanceLimits")
-  private BigDecimal nostroBalanceLimits;
-
-  @Column(name = "nostroAdvanceWarning")
-  private String advanceWarning;
-
-  private String recStatus;
-
-  /*private String setupUserid;
-  private Time setupDatetime;
-  private String verifyUserid;
-  private Time verigyDatetime;
-  private String updateUserid;
-  private Time updateDatetime;*/
-
-  @Column(name = "nostroBalanceCcy")
+  @Column(name = "BalanceCcy")
   private BigDecimal balanceCcy;
 
-  @Column(name = "nostroLastOpDate")
-  private LocalDate lastOpDate;
+  @Column(name = "BalanceLcy")
+  private BigDecimal balanceLcy;
 
-  @Column(name = "nostroBlockAmount")
-  private BigDecimal blockAmount;
+  @Column(name = "Bank")
+  private Long bankId;
 
-  @Column(name = "nostroStatus ")
-  private String status;
+  @Column(name = "Branch")
+  private Long branchId;
 
-  @Column(name = "nostroAccClearingAmount")
-  private BigDecimal clearingAmount;
+  @Column(name = "IsActive")
+  private boolean isActive;
 
-  @Column(name = "nostroBrId")
-  private long brId;
+  @ManyToOne
+  @JoinColumn(name = "product")
+  private IDProductEntity product;
 
-  public Long getNostroAccId() {
-    return nostroAccId;
+  public long getId() {
+    return id;
   }
 
-  public NostroAccountEntity setNostroAccId(Long nostroAccId) {
-    this.nostroAccId = nostroAccId;
+  public NostroAccountEntity setId(long id) {
+    this.id = id;
     return this;
   }
 
@@ -148,201 +81,12 @@ public class NostroAccountEntity extends BaseEntity {
     return this;
   }
 
-  public String getCorrespondenceBrId() {
-    return correspondenceBrId;
-  }
-
-  public NostroAccountEntity setCorrespondenceBrId(String correspondenceBrId) {
-    this.correspondenceBrId = correspondenceBrId;
-    return this;
-  }
-
-  public String getAddressLine1() {
-    return addressLine1;
-  }
-
-  public NostroAccountEntity setAddressLine1(String addressLine1) {
-    this.addressLine1 = addressLine1;
-    return this;
-  }
-
-  public String getAddressLine2() {
-    return addressLine2;
-  }
-
-  public NostroAccountEntity setAddressLine2(String addressLine2) {
-    this.addressLine2 = addressLine2;
-    return this;
-  }
-
-  public String getAddressLine3() {
-    return addressLine3;
-  }
-
-  public NostroAccountEntity setAddressLine3(String addressLine3) {
-    this.addressLine3 = addressLine3;
-    return this;
-  }
-
-  public String getNostroPostBox() {
-    return nostroPostBox;
-  }
-
-  public NostroAccountEntity setNostroPostBox(String nostroPostBox) {
-    this.nostroPostBox = nostroPostBox;
-    return this;
-  }
-
-  public long getCountryId() {
-    return countryId;
-  }
-
-  public NostroAccountEntity setCountryId(long countryId) {
-    this.countryId = countryId;
-    return this;
-  }
-
-  public String getCity() {
-    return city;
-  }
-
-  public NostroAccountEntity setCity(String city) {
-    this.city = city;
-    return this;
-  }
-
-  public String getClearHouse() {
-    return clearHouse;
-  }
-
-  public NostroAccountEntity setClearHouse(String clearHouse) {
-    this.clearHouse = clearHouse;
-    return this;
-  }
-
-  public String getSwiftCode() {
-    return swiftCode;
-  }
-
-  public NostroAccountEntity setSwiftCode(String swiftCode) {
-    this.swiftCode = swiftCode;
-    return this;
-  }
-
   public LocalDate getAccOpenDate() {
     return accOpenDate;
   }
 
   public NostroAccountEntity setAccOpenDate(LocalDate accOpenDate) {
     this.accOpenDate = accOpenDate;
-    return this;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public NostroAccountEntity setEmail(String email) {
-    this.email = email;
-    return this;
-  }
-
-  public String getUrl() {
-    return url;
-  }
-
-  public NostroAccountEntity setUrl(String url) {
-    this.url = url;
-    return this;
-  }
-
-  public String getRoutingUidNo() {
-    return routingUidNo;
-  }
-
-  public NostroAccountEntity setRoutingUidNo(String routingUidNo) {
-    this.routingUidNo = routingUidNo;
-    return this;
-  }
-
-  public String getTelephoneNo() {
-    return telephoneNo;
-  }
-
-  public NostroAccountEntity setTelephoneNo(String telephoneNo) {
-    this.telephoneNo = telephoneNo;
-    return this;
-  }
-
-  public String getMobileNo() {
-    return mobileNo;
-  }
-
-  public NostroAccountEntity setMobileNo(String mobileNo) {
-    this.mobileNo = mobileNo;
-    return this;
-  }
-
-  public String getFaxNo() {
-    return faxNo;
-  }
-
-  public NostroAccountEntity setFaxNo(String faxNo) {
-    this.faxNo = faxNo;
-    return this;
-  }
-
-  public String getContactPerson() {
-    return contactPerson;
-  }
-
-  public NostroAccountEntity setContactPerson(String contactPerson) {
-    this.contactPerson = contactPerson;
-    return this;
-  }
-
-  public BigDecimal getMaintenanceFee() {
-    return maintenanceFee;
-  }
-
-  public NostroAccountEntity setMaintenanceFee(BigDecimal maintenanceFee) {
-    this.maintenanceFee = maintenanceFee;
-    return this;
-  }
-
-  public Long getOperatingHours() {
-    return operatingHours;
-  }
-
-  public NostroAccountEntity setOperatingHours(Long operatingHours) {
-    this.operatingHours = operatingHours;
-    return this;
-  }
-
-  public BigDecimal getNostroBalanceLimits() {
-    return nostroBalanceLimits;
-  }
-
-  public NostroAccountEntity setNostroBalanceLimits(BigDecimal nostroBalanceLimits) {
-    this.nostroBalanceLimits = nostroBalanceLimits;
-    return this;
-  }
-
-  public String getAdvanceWarning() {
-    return advanceWarning;
-  }
-
-  public NostroAccountEntity setAdvanceWarning(String advanceWarning) {
-    this.advanceWarning = advanceWarning;
-    return this;
-  }
-
-  public String getRecStatus() {
-    return recStatus;
-  }
-
-  public NostroAccountEntity setRecStatus(String recStatus) {
-    this.recStatus = recStatus;
     return this;
   }
 
@@ -355,48 +99,48 @@ public class NostroAccountEntity extends BaseEntity {
     return this;
   }
 
-  public LocalDate getLastOpDate() {
-    return lastOpDate;
+  public BigDecimal getBalanceLcy() {
+    return balanceLcy;
   }
 
-  public NostroAccountEntity setLastOpDate(LocalDate lastOpDate) {
-    this.lastOpDate = lastOpDate;
+  public NostroAccountEntity setBalanceLcy(BigDecimal balanceLcy) {
+    this.balanceLcy = balanceLcy;
     return this;
   }
 
-  public BigDecimal getBlockAmount() {
-    return blockAmount;
+  public Long getBankId() {
+    return bankId;
   }
 
-  public NostroAccountEntity setBlockAmount(BigDecimal blockAmount) {
-    this.blockAmount = blockAmount;
+  public NostroAccountEntity setBankId(Long bankId) {
+    this.bankId = bankId;
     return this;
   }
 
-  public String getStatus() {
-    return status;
+  public Long getBranchId() {
+    return branchId;
   }
 
-  public NostroAccountEntity setStatus(String status) {
-    this.status = status;
+  public NostroAccountEntity setBranchId(Long branchId) {
+    this.branchId = branchId;
     return this;
   }
 
-  public BigDecimal getClearingAmount() {
-    return clearingAmount;
+  public boolean isActive() {
+    return isActive;
   }
 
-  public NostroAccountEntity setClearingAmount(BigDecimal clearingAmount) {
-    this.clearingAmount = clearingAmount;
+  public NostroAccountEntity setActive(boolean active) {
+    isActive = active;
     return this;
   }
 
-  public long getBrId() {
-    return brId;
+  public IDProductEntity getProduct() {
+    return product;
   }
 
-  public NostroAccountEntity setBrId(long brId) {
-    this.brId = brId;
+  public NostroAccountEntity setProduct(IDProductEntity product) {
+    this.product = product;
     return this;
   }
 }
