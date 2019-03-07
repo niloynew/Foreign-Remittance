@@ -13,27 +13,27 @@ public class ShadowAccountMapper {
     private final ShadowAccountRepository shadowAccountRepository;
     private final IDProductRepository idProductRepository;
 
-    public ShadowAccountMapper(ShadowAccountRepository shadowAccountRepository, IDProductRepository idProductRepository) {
+    public ShadowAccountMapper(
+            ShadowAccountRepository shadowAccountRepository, IDProductRepository idProductRepository) {
         this.shadowAccountRepository = shadowAccountRepository;
         this.idProductRepository = idProductRepository;
     }
 
-    public ResultMapper<ShadowAccountEntity, Account> entityToDomain(){
-        return entity -> new Account()
-                .setId(entity.getId())
-                .setProductId(String.valueOf(entity.getProduct().getId()))
-                .setShadowAccountNumber(entity.getNumber())
-                .setCurrencyCode(entity.getCurrencyCode())
-                .setBankId(entity.getBankId() != null ? String.valueOf(entity.getBankId()) : null)
-                .setBranchId(entity.getBranchId()!= null ? String.valueOf(entity.getBranchId()) : null)
-                .setAccountOpenDate(entity.getAccountOpenDate())
-                .setBalanceCcy(entity.getBalanceCcy())
-                .setBalanceLcy(entity.getBalanceLcy());
-
-
+    public ResultMapper<ShadowAccountEntity, Account> entityToDomain() {
+        return entity ->
+                new Account()
+                        .setId(entity.getId())
+                        .setProductId(String.valueOf(entity.getProduct().getId()))
+                        .setShadowAccountNumber(entity.getNumber())
+                        .setCurrencyCode(entity.getCurrencyCode())
+                        .setBankId(entity.getBankId() != null ? String.valueOf(entity.getBankId()) : null)
+                        .setBranchId(entity.getBranchId() != null ? String.valueOf(entity.getBranchId()) : null)
+                        .setAccountOpenDate(entity.getAccountOpenDate())
+                        .setBalanceCcy(entity.getBalanceCcy())
+                        .setBalanceLcy(entity.getBalanceLcy());
     }
 
-    public ResultMapper<Account, ShadowAccountEntity> domainToEntity(){
+    public ResultMapper<Account, ShadowAccountEntity> domainToEntity() {
         return domain ->
                 shadowAccountRepository
                         .findById(domain.getId())

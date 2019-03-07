@@ -2,10 +2,7 @@ package com.mislbd.ababil.foreignremittance.repository.jpa;
 
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.util.List;
-
-public interface ShadowAccountRepository extends JpaRepository<ShadowAccountEntity, Long> {
-    ShadowAccountEntity findByNumber(String idAccNumber);
-    List<ShadowAccountEntity> findByBrId(long brId);
-}
+public interface ShadowAccountRepository
+    extends JpaRepository<ShadowAccountEntity, Long>, JpaSpecificationExecutor {}
