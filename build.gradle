@@ -158,8 +158,8 @@ configure(subprojects) { project ->
 				"org.springframework.boot:spring-boot-devtools",
 				"org.projectlombok:lombok",
 				"org.springframework.cloud:spring-cloud-stream",
-
-
+				"org.springframework.cloud:spring-cloud-starter-stream-kafka"	
+			
 
 		)
 

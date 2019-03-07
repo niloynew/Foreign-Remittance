@@ -12,6 +12,6 @@ public class MessageListener {
   public void handleGreetings(@Payload AbstractMTMessageObject msg) {
     // log.info("Received greetings: {}", msg);
 
-    System.out.print(msg);
+    System.out.print(msg.getMessageType());
   }
 }

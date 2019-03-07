@@ -9,9 +9,8 @@ import javax.persistence.*;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonSubTypes;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
+// @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
 @JsonSubTypes({
   @JsonSubTypes.Type(
       value = GeneralFinancialInstitutionTransfer.class,
@@ -54,7 +53,7 @@ import org.codehaus.jackson.annotate.JsonTypeInfo;
           @JsonSubTypes.Type(value = AdviceOfDischarge.class, name = "AdviceOfDischarge")
   */
 })
-@JsonIgnoreProperties(ignoreUnknown = false)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class AbstractMTMessageObject implements Model {
