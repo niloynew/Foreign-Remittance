@@ -4,7 +4,7 @@ import com.mislbd.ababil.foreignremittance.domain.Account;
 import com.mislbd.asset.command.api.Command;
 
 public class CreateIdAccountCommand extends Command<Account> {
-    public CreateIdAccountCommand(Account payload){
-        super(payload);
-    }
+  public CreateIdAccountCommand(Account payload) {
+    super(payload);
+  }
 }

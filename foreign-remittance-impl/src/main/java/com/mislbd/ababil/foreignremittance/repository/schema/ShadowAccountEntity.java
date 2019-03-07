@@ -1,135 +1,146 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
-
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import javax.persistence.*;
 
 @Entity
 @Table(name = SchemaConstant.SHADOW_ACCOUNT_TABLE_NAME)
 public class ShadowAccountEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "ID")
+  private long id;
 
-    @Column(name = "Number")
-    private String number;
+  @Column(name = "Number")
+  private String number;
 
-    @Column(name = "AccountName")
-    private String name;
+  @Column(name = "AccountName")
+  private String name;
 
-    @Column(name = "Bank")
-    private Long bankId;
+  @Column(name = "Bank")
+  private Long bankId;
 
-    @Column(name = "Branch")
-    private Long branchId;
+  @Column(name = "Branch")
+  private Long branchId;
 
-    @Column(name= "accountOpenDate")
-    private LocalDate accountOpenDate;
+  @Column(name = "accountOpenDate")
+  private LocalDate accountOpenDate;
 
-    @Column(name = "Currency")
-    private String currencyCode;
+  @Column(name = "Currency")
+  private String currencyCode;
 
-    @Column(name = "BalanceCcy")
-    private BigDecimal balanceCcy;
+  @Column(name = "BalanceCcy")
+  private BigDecimal balanceCcy;
 
-    @Column(name = "BalanceLcy")
-    private BigDecimal balanceLcy;
+  @Column(name = "BalanceLcy")
+  private BigDecimal balanceLcy;
 
-    @ManyToOne
-    @JoinColumn(name = "product")
-    private IDProductEntity product;
+  @Column(name = "IsActive")
+  private boolean isActive;
 
-    public long getId() {
-        return id;
-    }
+  @ManyToOne
+  @JoinColumn(name = "product")
+  private IDProductEntity product;
 
-    public ShadowAccountEntity setId(long id) {
-        this.id = id;
-        return this;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public String getNumber() {
-        return number;
-    }
+  public ShadowAccountEntity setId(long id) {
+    this.id = id;
+    return this;
+  }
 
-    public ShadowAccountEntity setNumber(String number) {
-        this.number = number;
-        return this;
-    }
+  public String getNumber() {
+    return number;
+  }
 
-    public Long getBankId() {
-        return bankId;
-    }
+  public ShadowAccountEntity setNumber(String number) {
+    this.number = number;
+    return this;
+  }
 
-    public ShadowAccountEntity setBankId(Long bankId) {
-        this.bankId = bankId;
-        return this;
-    }
+  public Long getBankId() {
+    return bankId;
+  }
 
-    public Long getBranchId() {
-        return branchId;
-    }
+  public ShadowAccountEntity setBankId(Long bankId) {
+    this.bankId = bankId;
+    return this;
+  }
 
-    public ShadowAccountEntity setBranchId(Long branchId) {
-        this.branchId = branchId;
-        return this;
-    }
+  public Long getBranchId() {
+    return branchId;
+  }
 
-    public LocalDate getAccountOpenDate() {
-        return accountOpenDate;
-    }
+  public ShadowAccountEntity setBranchId(Long branchId) {
+    this.branchId = branchId;
+    return this;
+  }
 
-    public ShadowAccountEntity setAccountOpenDate(LocalDate accountOpenDate) {
-        this.accountOpenDate = accountOpenDate;
-        return this;
-    }
+  public LocalDate getAccountOpenDate() {
+    return accountOpenDate;
+  }
 
-    public String getCurrencyCode() {
-        return currencyCode;
-    }
+  public ShadowAccountEntity setAccountOpenDate(LocalDate accountOpenDate) {
+    this.accountOpenDate = accountOpenDate;
+    return this;
+  }
 
-    public ShadowAccountEntity setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
-        return this;
-    }
+  public String getCurrencyCode() {
+    return currencyCode;
+  }
 
-    public BigDecimal getBalanceCcy() {
-        return balanceCcy;
-    }
+  public ShadowAccountEntity setCurrencyCode(String currencyCode) {
+    this.currencyCode = currencyCode;
+    return this;
+  }
 
-    public ShadowAccountEntity setBalanceCcy(BigDecimal balanceCcy) {
-        this.balanceCcy = balanceCcy;
-        return this;
-    }
+  public BigDecimal getBalanceCcy() {
+    return balanceCcy;
+  }
 
-    public BigDecimal getBalanceLcy() {
-        return balanceLcy;
-    }
+  public ShadowAccountEntity setBalanceCcy(BigDecimal balanceCcy) {
+    this.balanceCcy = balanceCcy;
+    return this;
+  }
 
-    public ShadowAccountEntity setBalanceLcy(BigDecimal balanceLcy) {
-        this.balanceLcy = balanceLcy;
-        return this;
-    }
+  public BigDecimal getBalanceLcy() {
+    return balanceLcy;
+  }
 
-    public IDProductEntity getProduct() {
-        return product;
-    }
+  public ShadowAccountEntity setBalanceLcy(BigDecimal balanceLcy) {
+    this.balanceLcy = balanceLcy;
+    return this;
+  }
 
-    public ShadowAccountEntity setProduct(IDProductEntity product) {
-        this.product = product;
-        return this;
-    }
+  public IDProductEntity getProduct() {
+    return product;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public ShadowAccountEntity setProduct(IDProductEntity product) {
+    this.product = product;
+    return this;
+  }
 
-    public ShadowAccountEntity setName(String name) {
-        this.name = name;
-        return this;
-    }
+  public String getName() {
+    return name;
+  }
+
+  public ShadowAccountEntity setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public boolean isActive() {
+    return isActive;
+  }
+
+  public ShadowAccountEntity setActive(boolean active) {
+    isActive = active;
+    return this;
+  }
 }

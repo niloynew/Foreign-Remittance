@@ -1,8 +1,6 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
-import com.mislbd.ababil.foreignremittance.domain.IDProduct;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.persistence.*;
@@ -11,126 +9,138 @@ import javax.persistence.*;
 @Table(name = SchemaConstant.NOSTRO_ACCOUNT_TABLE_NAME)
 public class NostroAccountEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "ID")
+  private long id;
 
-    @Column(name = "AccountNumber")
-    private String number;
+  @Column(name = "AccountNumber")
+  private String number;
 
-    @Column(name = "AccountName")
-    private String name;
+  @Column(name = "AccountName")
+  private String name;
 
-    @Column(name = "Currency")
-    private String currencyCode;
+  @Column(name = "Currency")
+  private String currencyCode;
 
-    @Column(name = "AccountOpenDate")
-    private LocalDate accOpenDate;
+  @Column(name = "AccountOpenDate")
+  private LocalDate accOpenDate;
 
-    @Column(name = "BalanceCcy")
-    private BigDecimal balanceCcy;
+  @Column(name = "BalanceCcy")
+  private BigDecimal balanceCcy;
 
-    @Column(name = "BalanceLcy")
-    private BigDecimal balanceLcy;
+  @Column(name = "BalanceLcy")
+  private BigDecimal balanceLcy;
 
-    @Column(name = "Bank")
-    private Long bankId;
+  @Column(name = "Bank")
+  private Long bankId;
 
-    @Column(name = "Branch")
-    private Long branchId;
+  @Column(name = "Branch")
+  private Long branchId;
 
-    @ManyToOne
-    @JoinColumn(name = "product")
-    private IDProductEntity product;
+  @Column(name = "IsActive")
+  private boolean isActive;
 
-    public long getId() {
-        return id;
-    }
+  @ManyToOne
+  @JoinColumn(name = "product")
+  private IDProductEntity product;
 
-    public NostroAccountEntity setId(long id) {
-        this.id = id;
-        return this;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public String getNumber() {
-        return number;
-    }
+  public NostroAccountEntity setId(long id) {
+    this.id = id;
+    return this;
+  }
 
-    public NostroAccountEntity setNumber(String number) {
-        this.number = number;
-        return this;
-    }
+  public String getNumber() {
+    return number;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public NostroAccountEntity setNumber(String number) {
+    this.number = number;
+    return this;
+  }
 
-    public NostroAccountEntity setName(String name) {
-        this.name = name;
-        return this;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getCurrencyCode() {
-        return currencyCode;
-    }
+  public NostroAccountEntity setName(String name) {
+    this.name = name;
+    return this;
+  }
 
-    public NostroAccountEntity setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
-        return this;
-    }
+  public String getCurrencyCode() {
+    return currencyCode;
+  }
 
-    public LocalDate getAccOpenDate() {
-        return accOpenDate;
-    }
+  public NostroAccountEntity setCurrencyCode(String currencyCode) {
+    this.currencyCode = currencyCode;
+    return this;
+  }
 
-    public NostroAccountEntity setAccOpenDate(LocalDate accOpenDate) {
-        this.accOpenDate = accOpenDate;
-        return this;
-    }
+  public LocalDate getAccOpenDate() {
+    return accOpenDate;
+  }
 
-    public BigDecimal getBalanceCcy() {
-        return balanceCcy;
-    }
+  public NostroAccountEntity setAccOpenDate(LocalDate accOpenDate) {
+    this.accOpenDate = accOpenDate;
+    return this;
+  }
 
-    public NostroAccountEntity setBalanceCcy(BigDecimal balanceCcy) {
-        this.balanceCcy = balanceCcy;
-        return this;
-    }
+  public BigDecimal getBalanceCcy() {
+    return balanceCcy;
+  }
 
-    public BigDecimal getBalanceLcy() {
-        return balanceLcy;
-    }
+  public NostroAccountEntity setBalanceCcy(BigDecimal balanceCcy) {
+    this.balanceCcy = balanceCcy;
+    return this;
+  }
 
-    public NostroAccountEntity setBalanceLcy(BigDecimal balanceLcy) {
-        this.balanceLcy = balanceLcy;
-        return this;
-    }
+  public BigDecimal getBalanceLcy() {
+    return balanceLcy;
+  }
 
-    public Long getBankId() {
-        return bankId;
-    }
+  public NostroAccountEntity setBalanceLcy(BigDecimal balanceLcy) {
+    this.balanceLcy = balanceLcy;
+    return this;
+  }
 
-    public NostroAccountEntity setBankId(Long bankId) {
-        this.bankId = bankId;
-        return this;
-    }
+  public Long getBankId() {
+    return bankId;
+  }
 
-    public Long getBranchId() {
-        return branchId;
-    }
+  public NostroAccountEntity setBankId(Long bankId) {
+    this.bankId = bankId;
+    return this;
+  }
 
-    public NostroAccountEntity setBranchId(Long branchId) {
-        this.branchId = branchId;
-        return this;
-    }
+  public Long getBranchId() {
+    return branchId;
+  }
 
-    public IDProductEntity getProduct() {
-        return product;
-    }
+  public NostroAccountEntity setBranchId(Long branchId) {
+    this.branchId = branchId;
+    return this;
+  }
 
-    public NostroAccountEntity setProduct(IDProductEntity product) {
-        this.product = product;
-        return this;
-    }
+  public boolean isActive() {
+    return isActive;
+  }
+
+  public NostroAccountEntity setActive(boolean active) {
+    isActive = active;
+    return this;
+  }
+
+  public IDProductEntity getProduct() {
+    return product;
+  }
+
+  public NostroAccountEntity setProduct(IDProductEntity product) {
+    this.product = product;
+    return this;
+  }
 }
