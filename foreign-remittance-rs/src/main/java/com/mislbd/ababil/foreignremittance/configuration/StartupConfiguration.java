@@ -1,14 +1,9 @@
-package com.mislbd.ababil.foreignremittance.configuration;
-
-import com.mislbd.ababil.asset.annotation.EnableAbabilFeignClients;
-import org.springframework.context.annotation.Configuration;
-
-/**
- * Responsibility:
- *
- * @author Rezaul Hasan
- * @since 07-Aug-2018
- */
-@Configuration("AbabilForeignRemittanceStartupConfiguration")
-@EnableAbabilFeignClients
-public class StartupConfiguration {}
+// package com.mislbd.ababil.foreignremittance.configuration;
+//
+// import com.mislbd.ababil.asset.annotation.EnableAbabilFeignClients;
+// import org.springframework.context.annotation.Configuration;
+//
+//
+// @Configuration("AbabilForeignRemittanceStartupConfiguration")
+// @EnableAbabilFeignClients
+// public class StartupConfiguration {}

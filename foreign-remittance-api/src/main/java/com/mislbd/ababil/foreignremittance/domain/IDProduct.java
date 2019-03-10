@@ -6,7 +6,6 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
 
 public class IDProduct implements Serializable {
 
@@ -20,11 +19,11 @@ public class IDProduct implements Serializable {
   @NotNull(message = "Code is required")
   private String code;
 
-  @Positive
-  @NotNull(message = "General ledger is required")
+  //  @Positive
+  //  @NotNull(message = "General ledger is required")
   private long generalLedgerId;
 
-  @NotNull(message = "Currency is required")
+  //  @NotNull(message = "Currency is required")
   private List<String> currencies;
 
   // region <Getter and Setter>
