@@ -1,7 +1,9 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
+import com.mislbd.ababil.foreignremittance.command.SaveShadowAccountCommand;
 import com.mislbd.ababil.foreignremittance.domain.Account;
 import com.mislbd.ababil.foreignremittance.service.AccountService;
+import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
   private final AccountService accountService;
+  private final CommandProcessor commandProcessor;
 
-  public AccountController(AccountService accountService) {
+  public AccountController(AccountService accountService, CommandProcessor commandProcessor) {
     this.accountService = accountService;
+    this.commandProcessor = commandProcessor;
   }
 
   @GetMapping
@@ -29,5 +33,11 @@ public class AccountController {
       List<Account> accounts = accountService.getAccounts();
       return ResponseEntity.ok(accounts);
     }
+  }
+
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> saveShadowAccount(@RequestBody Account account) {
+    commandProcessor.executeUpdate(new SaveShadowAccountCommand(account));
+    return ResponseEntity.accepted().build();
   }
 }
