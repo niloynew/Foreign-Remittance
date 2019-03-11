@@ -21,7 +21,25 @@ public enum Error {
       message = localeMessages.get(this.getModule() + this.getCode()).orElse("IDProduct not found");
       return message;
     }
-  };
+  },
+  GENERATED_SHADOW_ACCOUNT_NUMBER_NOT_FOUND("231", "002") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages
+              .get(this.getModule() + this.getCode())
+              .orElse("Generated shadow account number not found.");
+      return message;
+    }
+  },
+  ;
 
   // region <R>
   Error(final String module, final String code) {
