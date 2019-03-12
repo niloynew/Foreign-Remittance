@@ -43,7 +43,7 @@ public abstract class GeneralFinancialInsCommon extends AbstractMTMessageObject 
   @JoinColumn(name = "SenderCorsD_id")
   private PartyInfoForOptionD senderCorrespondentOptionD;
 
-  @Column(name = "selectedReceiversCorresOption")
+  @Column(name = "selectedRecvrCoresOpt")
   private SenderReceiverCorrespondentOption selectedReceiversCorrespondentOption;
 
   @OneToOne(cascade = CascadeType.ALL)
@@ -83,7 +83,7 @@ public abstract class GeneralFinancialInsCommon extends AbstractMTMessageObject 
   @JoinColumn(name = "accountWithInsOptD_id")
   private PartyInfoForOptionD accountWithInstitutionOptionD;
 
-  @Column(name = "selectedBeneficiaryInsOption")
+  @Column(name = "selectedBenInsOpt")
   private BeneficiaryInstitutionOption selectedBeneficiaryInstitutionOption;
 
   @OneToOne(cascade = CascadeType.ALL)

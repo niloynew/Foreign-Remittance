@@ -7,7 +7,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity
-@Table(name = "CodeCountryIdentifierDetails")
+@Table(name = "code_cntry_identifier_detail")
 public class CodeCountrycodeIdentifierWithDetails implements Model {
 
   private static final long serialVersionUID = 1L;

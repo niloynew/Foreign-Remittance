@@ -7,6 +7,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity
+@Table(name ="AccAndDetailWithNumber")
 public class AccountAndDetailsWithNumber implements Model {
 
   private static final long serialVersionUID = 1L;

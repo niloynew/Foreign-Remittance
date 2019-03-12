@@ -106,7 +106,7 @@ public class SingleCustomerCreditTransferGeneral extends AbstractMTMessageObject
   @JoinColumn(name = "receiversCorrOptionD")
   private PartyInfoForOptionD receiversCorrespondentOptionD;
 
-  @Column(name = "selectedThirdReimInstOption")
+  @Column(name = "selected_third_rim_ins_option")
   private SenderReceiverCorrespondentOption selectedThirdReimbursementInstitutionOption;
 
   @OneToOne(cascade = CascadeType.ALL)

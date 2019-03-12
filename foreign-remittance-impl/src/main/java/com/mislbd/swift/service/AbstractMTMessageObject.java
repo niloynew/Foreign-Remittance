@@ -1,16 +1,14 @@
 package com.mislbd.swift.service;
 
+import com.fasterxml.jackson.annotation.*;
 import com.mislbd.asset.commons.data.domain.Model;
 import com.mislbd.swift.service.mt103.SingleCustomerCreditTransferGeneral;
 import com.mislbd.swift.service.mt202.GeneralFinancialInstitutionTransfer;
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonSubTypes;
 
-// @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "clazz")
 @JsonSubTypes({
   @JsonSubTypes.Type(
       value = GeneralFinancialInstitutionTransfer.class,
@@ -56,6 +54,11 @@ import org.codehaus.jackson.annotate.JsonSubTypes;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+/*
+@JsonDeserialize(as = GeneralFinancialInstitutionTransfer.class
+                  )
+*/
+
 public abstract class AbstractMTMessageObject implements Model {
   @Id @GeneratedValue private long id;
 
@@ -87,6 +90,8 @@ public abstract class AbstractMTMessageObject implements Model {
   @Transient private AddtionalDomainInfo addtionalDomainInfo;
   private String mur;
   @Transient private Long ackNakId;
+
+  @JsonProperty private String clazz = this.getClass().getSimpleName();
 
   public String getDeliveryStatus() {
     return deliveryStatus;
@@ -334,6 +339,14 @@ public abstract class AbstractMTMessageObject implements Model {
 
   public void setAckNakId(Long ackNakId) {
     this.ackNakId = ackNakId;
+  }
+
+  public String getClazz() {
+    return clazz;
+  }
+
+  public void setClazz(String clazz) {
+    this.clazz = clazz;
   }
 
   @PrePersist
