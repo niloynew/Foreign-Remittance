@@ -1,17 +1,17 @@
-//package com.mislbd.ababil.foreignremittance.service;
-//import com.mislbd.ababil.asset.exception.ConfigurationNotFoundException;
-//import com.mislbd.ababil.asset.service.ConfigurationService;
-//import com.mislbd.ababil.foreignremittance.repository.jpa.AccountNumberSequenceRepository;
-//import com.mislbd.ababil.foreignremittance.repository.jpa.GeneratedAccountRepository;
-//import com.mislbd.ababil.foreignremittance.repository.jpa.IDProductRepository;
-//import com.mislbd.ababil.foreignremittance.repository.schema.AccountNumberSequenceEntity;
-//import com.mislbd.ababil.foreignremittance.repository.schema.IDProductEntity;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
+// package com.mislbd.ababil.foreignremittance.service;
+// import com.mislbd.ababil.asset.exception.ConfigurationNotFoundException;
+// import com.mislbd.ababil.asset.service.ConfigurationService;
+// import com.mislbd.ababil.foreignremittance.repository.jpa.AccountNumberSequenceRepository;
+// import com.mislbd.ababil.foreignremittance.repository.jpa.GeneratedAccountRepository;
+// import com.mislbd.ababil.foreignremittance.repository.jpa.IDProductRepository;
+// import com.mislbd.ababil.foreignremittance.repository.schema.AccountNumberSequenceEntity;
+// import com.mislbd.ababil.foreignremittance.repository.schema.IDProductEntity;
+// import org.springframework.stereotype.Service;
+// import org.springframework.transaction.annotation.Transactional;
 //
-//@Service
-//@Transactional(readOnly = true)
-//public class DefaultServiceImpl implements DefaultService {
+// @Service
+// @Transactional(readOnly = true)
+// public class DefaultServiceImpl implements DefaultService {
 //
 //
 //    private static final String ACCOUNT_FORMAT = "%%0%dd%%%ds%%0%dd";
@@ -29,7 +29,9 @@
 //    protected final AccountNumberSequenceRepository accountNumberSequenceRepository;
 //
 //
-//    public DefaultServiceImpl(ConfigurationService configurationService, IDProductRepository idProductRepository, GeneratedAccountRepository generatedAccountRepository, AccountNumberSequenceRepository accountNumberSequenceRepository) {
+//    public DefaultServiceImpl(ConfigurationService configurationService, IDProductRepository
+// idProductRepository, GeneratedAccountRepository generatedAccountRepository,
+// AccountNumberSequenceRepository accountNumberSequenceRepository) {
 //        this.configurationService = configurationService;
 //        this.idProductRepository = idProductRepository;
 //        this.generatedAccountRepository = generatedAccountRepository;
@@ -68,7 +70,8 @@
 //                        .orElseThrow(
 //                                () ->
 //                                        new ConfigurationNotFoundException(
-//                                                "Configuration not found: " + ACCOUNT_LENGTH_KEY));
+//                                                "Configuration not found: " +
+// ACCOUNT_LENGTH_KEY));
 //
 //        Integer checkDigitLength =
 //                configurationService
@@ -77,7 +80,8 @@
 //                        .orElseThrow(
 //                                () ->
 //                                        new ConfigurationNotFoundException(
-//                                                "Configuration not found: " + ACCOUNT_CHECK_DIGIT_LENGTH_KEY));
+//                                                "Configuration not found: " +
+// ACCOUNT_CHECK_DIGIT_LENGTH_KEY));
 //
 //        Integer maxReservationTime =
 //                configurationService
@@ -86,7 +90,8 @@
 //                        .orElseThrow(
 //                                () ->
 //                                     new ConfigurationNotFoundException(
-//                                         "Configuration not found: " + MAX_ACCOUNT_RESERVATION_TIME_KEY));
+//                                         "Configuration not found: " +
+// MAX_ACCOUNT_RESERVATION_TIME_KEY));
 //
 //
 //        return generateReserveAndGetAccountNumber(
@@ -113,7 +118,8 @@
 //            String username) {
 //
 //        IDProductEntity product =
-//                idProductRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+//
+// idProductRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
 //
 //        AccountNumberSequenceEntity sequence =
 //                accountNumberSequenceRepository
@@ -126,7 +132,8 @@
 //        String accountNumber =
 //                String.format(
 //                        String.format(
-//                                ACCOUNT_FORMAT, branchCodeLength, productCodeLength, accountSequenceLength),
+//                                ACCOUNT_FORMAT, branchCodeLength, productCodeLength,
+// accountSequenceLength),
 //                        branchId,
 //                        product.getCode(),
 //                        sequence.getSequence())
@@ -161,7 +168,8 @@
 //        newSequence.setProductId(productId);
 //        newSequence.setSequence(1L);
 //        accountNumberSequenceRepository.save(newSequence);
-//        return accountNumberSequenceRepository.findOneByBranchIdAndProductId(branchId, productId).get();
+//        return accountNumberSequenceRepository.findOneByBranchIdAndProductId(branchId,
+// productId).get();
 //    }
 //
 //
@@ -186,4 +194,4 @@
 //
 //
 //
-//}
+// }
