@@ -5,11 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/** Created by Mahbub islam on 11/16/17. */
 @Entity
-@Table(name = "PROD_GENERATED_ACCOUNT")
-public class GeneratedAccountEntity {
-
+@Table(name = SchemaConstant.SHADOW_ACCOUNT_NUMBER)
+public class GeneratedShadowAccountEntity {
   @Id private long id;
   private long branchId;
   private long productId;

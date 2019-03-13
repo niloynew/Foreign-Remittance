@@ -5,9 +5,9 @@ import javax.persistence.*;
 /** Created by hasan on 11/16/17. */
 @Entity
 @Table(
-    name = "PROD_ACCOUNT_NUMBER_SEQUENCE",
+    name = SchemaConstant.SHADOW_ACCOUNT_NUMBER_SEQUENCE_NAME,
     uniqueConstraints = @UniqueConstraint(columnNames = {"branchId", "productId"}))
-public class AccountNumberSequenceEntity {
+public class ShadowAccountNumberSequenceEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
