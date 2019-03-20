@@ -22,13 +22,15 @@ public class NostroAccountMapper {
   public ResultMapper<NostroAccountEntity, Account> entityToDomain() {
     return entity ->
         new Account()
-            .setId(Long.valueOf(entity.getId()))
-            .setNostroAccountNumber(entity.getNumber())
+            .setId(entity.getId())
+            .setNostroAccountNumber(entity.getNostroAccountNumber())
+            .setShadowAccountNumber(entity.getShadowAccountNumber())
             .setAccountTitle(entity.getName())
             .setCurrencyCode(entity.getCurrencyCode())
-            .setProductId(String.valueOf(entity.getProduct().getId()))
-            .setBankId(entity.getBankId() != null ? String.valueOf(entity.getBankId()) : null)
-            .setBranchId(entity.getBranchId() != null ? String.valueOf(entity.getBranchId()) : null)
+            .setProductId(entity.getProduct().getId())
+            .setProductName(entity.getProduct().getName())
+            .setBankId(entity.getBankId())
+            .setBranchId(entity.getBranchId())
             .setAccountOpenDate(entity.getAccOpenDate())
             .setBalanceCcy(entity.getBalanceCcy())
             .setBalanceLcy(entity.getBalanceLcy());
@@ -37,18 +39,19 @@ public class NostroAccountMapper {
   public ResultMapper<Account, NostroAccountEntity> domainToEntity() {
     return domain ->
         nostroAccountRepository
-            .findByNumber(domain.getNostroAccountNumber())
+            .findByNostroAccountNumber(domain.getNostroAccountNumber())
             .orElseGet(NostroAccountEntity::new)
             .setProduct(
                 domain.getProductId() != null
-                    ? idProductRepository.getOne(Long.valueOf(domain.getProductId()))
+                    ? idProductRepository.getOne(domain.getProductId())
                     : null)
-            .setNumber(domain.getNostroAccountNumber())
+            .setNostroAccountNumber(domain.getNostroAccountNumber())
             .setName(domain.getAccountTitle())
             .setCurrencyCode(domain.getCurrencyCode())
             .setAccOpenDate(domain.getAccountOpenDate())
-            .setBankId(domain.getBankId() != null ? Long.valueOf(domain.getBankId()) : null)
-            .setBranchId(domain.getBranchId() != null ? Long.valueOf(domain.getBranchId()) : null)
-            .setBalanceCcy(domain.getBalanceCcy());
+            .setBankId(domain.getBankId())
+            .setBranchId(domain.getBranchId())
+            .setBalanceCcy(domain.getBalanceCcy())
+            .setActive(true);
   }
 }

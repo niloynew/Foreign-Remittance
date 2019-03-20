@@ -7,7 +7,9 @@ public class Account {
 
   private long id;
 
-  private String productId;
+  private Long productId;
+
+  private String productName;
 
   private String accountTitle;
 
@@ -17,17 +19,15 @@ public class Account {
 
   private String currencyCode;
 
-  private String bankId;
+  private Long bankId;
 
-  private String branchId;
+  private Long branchId;
 
   private LocalDate accountOpenDate;
 
   private BigDecimal balanceCcy;
 
   private BigDecimal balanceLcy;
-
-  // region <Getter and Setter>
 
   public long getId() {
     return id;
@@ -38,11 +38,11 @@ public class Account {
     return this;
   }
 
-  public String getProductId() {
+  public Long getProductId() {
     return productId;
   }
 
-  public Account setProductId(String productId) {
+  public Account setProductId(Long productId) {
     this.productId = productId;
     return this;
   }
@@ -83,20 +83,20 @@ public class Account {
     return this;
   }
 
-  public String getBankId() {
+  public Long getBankId() {
     return bankId;
   }
 
-  public Account setBankId(String bankId) {
+  public Account setBankId(Long bankId) {
     this.bankId = bankId;
     return this;
   }
 
-  public String getBranchId() {
+  public Long getBranchId() {
     return branchId;
   }
 
-  public Account setBranchId(String branchId) {
+  public Account setBranchId(Long branchId) {
     this.branchId = branchId;
     return this;
   }
@@ -125,6 +125,15 @@ public class Account {
 
   public Account setBalanceLcy(BigDecimal balanceLcy) {
     this.balanceLcy = balanceLcy;
+    return this;
+  }
+
+  public String getProductName() {
+    return productName;
+  }
+
+  public Account setProductName(String productName) {
+    this.productName = productName;
     return this;
   }
 }
