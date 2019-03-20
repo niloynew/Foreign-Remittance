@@ -1,12 +1,12 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
-import com.mislbd.ababil.foreignremittance.domain.Account;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceMsgDto;
 import com.mislbd.ababil.foreignremittance.repository.jpa.SwiftMsgRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceMsgEntity;
-import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RemittanceMsgDtoMapper {
   private final SwiftMsgRepository swiftMsgRepository;
 
@@ -79,7 +79,7 @@ public class RemittanceMsgDtoMapper {
             .setReceiversCorrespondentAcc(domain.getReceiversCorrespondentAcc())
             .setReceiversCorrespondentBic(domain.getReceiversCorrespondentBic())
             .setReceiversCorrespondentNameAndAddress(
-             domain.getReceiversCorrespondentNameAndAddress())
+                domain.getReceiversCorrespondentNameAndAddress())
             .setRelatedReference(domain.getRelatedReference())
             .setRemittanceInfo(domain.getRemittanceInfo());
   }

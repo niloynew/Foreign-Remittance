@@ -4,7 +4,6 @@ import com.mislbd.ababil.foreignremittance.broker.MessageStreams;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceMsgDto;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceMsgDtoMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.SwiftMsgRepository;
-//import com.mislbd.swift.service.AbstractMTMessageObject;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
@@ -26,6 +25,6 @@ public class MessageListener {
 
     System.out.print("received message");
 
-   swiftMsgRepository.save(mapper.domainToEntity().map(msg));
+    swiftMsgRepository.save(mapper.domainToEntity().map(msg));
   }
 }
