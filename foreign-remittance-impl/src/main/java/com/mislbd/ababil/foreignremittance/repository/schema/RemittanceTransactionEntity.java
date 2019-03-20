@@ -1,14 +1,14 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
+import com.mislbd.ababil.foreignremittance.domain.AccountType;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
-import com.mislbd.ababil.foreignremittance.domain.Status;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Remittance_Transaction")
+@Table(name = "ID_Remittance_Transaction")
 public class RemittanceTransactionEntity extends BaseEntity {
 
   @Id
@@ -20,14 +20,12 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "ID")
   private long id;
 
-  @Column(name = "TRANSACTION_TYPE")
-  private Long transactionTypeId;
-
   @Column(name = "REMITTANCE_TYPE")
   private RemittanceType remittanceType;
 
-  @Column(name = "OPERATION_ID")
-  private Long operationId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "OPERATION_ID")
+  private TransactionOperationEntity transactionOperation;
 
   @Column(name = "PAYMENT_PURPOSE_ID")
   private Long paymentPurposeId;
@@ -70,13 +68,13 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   // ##### Financial Information #####//
   @Column(name = "DEBIT_ACC_TYPE")
-  private Long debitAccountTypeId;
+  private AccountType debitAccountType;
 
   @Column(name = "DEBIT_ACC_NUMBER")
   private String debitAccountNumber;
 
   @Column(name = "CREDIT_ACC_TYPE")
-  private Long creditAccountTypeId;
+  private AccountType creditAccountType;
 
   @Column(name = "CREDIT_ACC_NUMBER")
   private String creditAccountNumber;
@@ -99,24 +97,12 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "EXCHANGE_GAIN")
   private BigDecimal exchangeGain;
 
-  @Column(name = "STATUS")
-  private Status status;
-
   public long getId() {
     return id;
   }
 
   public RemittanceTransactionEntity setId(long id) {
     this.id = id;
-    return this;
-  }
-
-  public Long getTransactionTypeId() {
-    return transactionTypeId;
-  }
-
-  public RemittanceTransactionEntity setTransactionTypeId(Long transactionTypeId) {
-    this.transactionTypeId = transactionTypeId;
     return this;
   }
 
@@ -129,12 +115,13 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
-  public Long getOperationId() {
-    return operationId;
+  public TransactionOperationEntity getTransactionOperation() {
+    return transactionOperation;
   }
 
-  public RemittanceTransactionEntity setOperationId(Long operationId) {
-    this.operationId = operationId;
+  public RemittanceTransactionEntity setTransactionOperation(
+      TransactionOperationEntity transactionOperation) {
+    this.transactionOperation = transactionOperation;
     return this;
   }
 
@@ -229,6 +216,15 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
+  public String getB2bInformation() {
+    return b2bInformation;
+  }
+
+  public RemittanceTransactionEntity setB2bInformation(String b2bInformation) {
+    this.b2bInformation = b2bInformation;
+    return this;
+  }
+
   public List<BankInformationEntity> getBankInformationEntity() {
     return bankInformationEntity;
   }
@@ -239,12 +235,12 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
-  public Long getDebitAccountTypeId() {
-    return debitAccountTypeId;
+  public AccountType getDebitAccountType() {
+    return debitAccountType;
   }
 
-  public RemittanceTransactionEntity setDebitAccountTypeId(Long debitAccountTypeId) {
-    this.debitAccountTypeId = debitAccountTypeId;
+  public RemittanceTransactionEntity setDebitAccountType(AccountType debitAccountType) {
+    this.debitAccountType = debitAccountType;
     return this;
   }
 
@@ -257,12 +253,12 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
-  public Long getCreditAccountTypeId() {
-    return creditAccountTypeId;
+  public AccountType getCreditAccountType() {
+    return creditAccountType;
   }
 
-  public RemittanceTransactionEntity setCreditAccountTypeId(Long creditAccountTypeId) {
-    this.creditAccountTypeId = creditAccountTypeId;
+  public RemittanceTransactionEntity setCreditAccountType(AccountType creditAccountType) {
+    this.creditAccountType = creditAccountType;
     return this;
   }
 
@@ -326,24 +322,6 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   public RemittanceTransactionEntity setExchangeGain(BigDecimal exchangeGain) {
     this.exchangeGain = exchangeGain;
-    return this;
-  }
-
-  public Status getStatus() {
-    return status;
-  }
-
-  public RemittanceTransactionEntity setStatus(Status status) {
-    this.status = status;
-    return this;
-  }
-
-  public String getB2bInformation() {
-    return b2bInformation;
-  }
-
-  public RemittanceTransactionEntity setB2bInformation(String b2bInformation) {
-    this.b2bInformation = b2bInformation;
     return this;
   }
 }

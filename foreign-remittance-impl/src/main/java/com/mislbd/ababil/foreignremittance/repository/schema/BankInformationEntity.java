@@ -3,7 +3,7 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Remittance_Bank_Info")
+@Table(name = "ID_Remittance_Bank_Info")
 public class BankInformationEntity {
 
   @Id

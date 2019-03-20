@@ -24,32 +24,32 @@ public class RemittanceTransactionMapper {
     return entity ->
         new RemittanceTransaction()
             .setId(entity.getId())
-            .setTransactionTypeId(entity.getTransactionTypeId())
-            .setRemittanceType(entity.getRemittanceType())
-            .setOperationId(entity.getOperationId())
-            .setPaymentPurposeId(entity.getPaymentPurposeId())
-            .setCommodityDescription(entity.getCommodityDescription())
-            .setTransactionReferenceNumber(entity.getTransactionReferenceNumber())
-            .setInstructionNumber(entity.getInstructionNumber())
-            .setCbFundSourceId(entity.getCbFundSourceId())
-            .setDeliveryTerm(entity.getDeliveryTerm())
-            .setApplicantId(entity.getApplicantId())
-            .setApplicantAccountNumber(entity.getApplicantAccountNumber())
-            .setBeneficiaryId(entity.getBeneficiaryId())
-            .setBeneficiaryAccountNumber(entity.getBeneficiaryAccountNumber())
-            .setB2bInformation(entity.getB2bInformation())
-            .setBankInformation(getConvertedBankInformation(entity.getBankInformationEntity()))
-            .setDebitAccountTypeId(entity.getDebitAccountTypeId())
-            .setDebitAccountNumber(entity.getDebitAccountNumber())
-            .setCreditAccountTypeId(entity.getCreditAccountTypeId())
-            .setCreditAccountNumber(entity.getCreditAccountNumber())
-            .setCurrencyCode(entity.getCurrencyCode())
-            .setClientRateTypeId(entity.getClientRateTypeId())
-            .setHoRateTypeId(entity.getHoRateTypeId())
-            .setAmountFcy(entity.getAmountFcy())
-            .setAmountLcy(entity.getAmountLcy())
-            .setExchangeGain(entity.getExchangeGain())
-            .setStatus(entity.getStatus());
+            //            .setTransactionTypeId(entity.getTransactionTypeId())
+            //            .setRemittanceType(entity.getRemittanceType())
+            //            .setOperationId(entity.getOperationId())
+            //            .setPaymentPurposeId(entity.getPaymentPurposeId())
+            //            .setCommodityDescription(entity.getCommodityDescription())
+            //            .setTransactionReferenceNumber(entity.getTransactionReferenceNumber())
+            //            .setInstructionNumber(entity.getInstructionNumber())
+            //            .setCbFundSourceId(entity.getCbFundSourceId())
+            //            .setDeliveryTerm(entity.getDeliveryTerm())
+            //            .setApplicantId(entity.getApplicantId())
+            //            .setApplicantAccountNumber(entity.getApplicantAccountNumber())
+            //            .setBeneficiaryId(entity.getBeneficiaryId())
+            //            .setBeneficiaryAccountNumber(entity.getBeneficiaryAccountNumber())
+            //            .setB2bInformation(entity.getB2bInformation())
+            //
+            // .setBankInformation(getConvertedBankInformation(entity.getBankInformationEntity()))
+            //            .setDebitAccountTypeId(entity.getDebitAccountType())
+            //            .setDebitAccountNumber(entity.getDebitAccountNumber())
+            //            .setCreditAccountTypeId(entity.getCreditAccountType())
+            //            .setCreditAccountNumber(entity.getCreditAccountNumber())
+            //            .setCurrencyCode(entity.getCurrencyCode())
+            //            .setClientRateTypeId(entity.getClientRateTypeId())
+            //            .setHoRateTypeId(entity.getHoRateTypeId())
+            //            .setAmountFcy(entity.getAmountFcy())
+            //            .setAmountLcy(entity.getAmountLcy())
+            .setExchangeGain(entity.getExchangeGain());
   }
 
   private List<BankInformation> getConvertedBankInformation(
@@ -71,40 +71,39 @@ public class RemittanceTransactionMapper {
         remittanceTransactionRepository
             .findById(Long.valueOf(domain.getId()))
             .orElseGet(RemittanceTransactionEntity::new)
-            .setTransactionTypeId(domain.getTransactionTypeId())
-            .setRemittanceType(domain.getRemittanceType())
-            .setOperationId(domain.getOperationId())
-            .setPaymentPurposeId(domain.getPaymentPurposeId())
-            .setCommodityDescription(domain.getCommodityDescription())
-            .setTransactionReferenceNumber(domain.getTransactionReferenceNumber())
-            .setInstructionNumber(domain.getInstructionNumber())
-            .setCbFundSourceId(domain.getCbFundSourceId())
-            .setDeliveryTerm(domain.getDeliveryTerm())
-            .setApplicantId(domain.getApplicantId())
-            .setApplicantAccountNumber(domain.getApplicantAccountNumber())
-            .setBeneficiaryId(domain.getBeneficiaryId())
-            .setBeneficiaryAccountNumber(domain.getBeneficiaryAccountNumber())
-            .setB2bInformation(domain.getB2bInformation())
-            .setBankInformationEntity(
-                getConvertedBankInformationEntity(domain.getBankInformation()))
-            .setDebitAccountTypeId(domain.getDebitAccountTypeId())
-            .setDebitAccountNumber(domain.getDebitAccountNumber())
-            .setCreditAccountTypeId(domain.getCreditAccountTypeId())
-            .setCreditAccountNumber(domain.getCreditAccountNumber())
-            .setCurrencyCode(domain.getCurrencyCode())
-            .setClientRateTypeId(domain.getClientRateTypeId())
-            .setHoRateTypeId(domain.getHoRateTypeId())
-            .setAmountFcy(domain.getAmountFcy())
-            .setAmountLcy(domain.getAmountLcy())
-            .setExchangeGain(domain.getExchangeGain())
-            .setStatus(domain.getStatus());
+            //            .setTransactionTypeId(domain.getTransactionTypeId())
+            //            .setRemittanceType(domain.getRemittanceType())
+            //            .setOperationId(domain.getOperationId())
+            //            .setPaymentPurposeId(domain.getPaymentPurposeId())
+            //            .setCommodityDescription(domain.getCommodityDescription())
+            //            .setTransactionReferenceNumber(domain.getTransactionReferenceNumber())
+            //            .setInstructionNumber(domain.getInstructionNumber())
+            //            .setCbFundSourceId(domain.getCbFundSourceId())
+            //            .setDeliveryTerm(domain.getDeliveryTerm())
+            //            .setApplicantId(domain.getApplicantId())
+            //            .setApplicantAccountNumber(domain.getApplicantAccountNumber())
+            //            .setBeneficiaryId(domain.getBeneficiaryId())
+            //            .setBeneficiaryAccountNumber(domain.getBeneficiaryAccountNumber())
+            //            .setB2bInformation(domain.getB2bInformation())
+            //            .setBankInformationEntity(
+            //                getConvertedBankInformationEntity(domain.getBankInformation()))
+            //            .setDebitAccountTypeId(domain.getDebitAccountType())
+            //            .setDebitAccountNumber(domain.getDebitAccountNumber())
+            //            .setCreditAccountTypeId(domain.getCreditAccountTypeId())
+            //            .setCreditAccountNumber(domain.getCreditAccountNumber())
+            //            .setCurrencyCode(domain.getCurrencyCode())
+            //            .setClientRateTypeId(domain.getClientRateTypeId())
+            //            .setHoRateTypeId(domain.getHoRateTypeId())
+            //            .setAmountFcy(domain.getAmountFcy())
+            //            .setAmountLcy(domain.getAmountLcy())
+            .setExchangeGain(domain.getExchangeGain());
   }
 
   private List<BankInformationEntity> getConvertedBankInformationEntity(
-      List<BankInformation> bankInformations) {
+      List<BankInformation> bankInformationList) {
     List<BankInformationEntity> bankInformationEntities = new ArrayList<>();
-    if (bankInformations != null && !bankInformations.isEmpty()) {
-      for (BankInformation bankInformation : bankInformations) {
+    if (bankInformationList != null && !bankInformationList.isEmpty()) {
+      for (BankInformation bankInformation : bankInformationList) {
         BankInformationEntity entity = new BankInformationEntity();
         entity.setBankTypeId(bankInformation.getBankTypeId());
         entity.setSwiftCode(bankInformation.getSwiftCode());

@@ -2,16 +2,17 @@ package com.mislbd.ababil.foreignremittance.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
+import javax.validation.constraints.NotNull;
 
 public class RemittanceTransaction {
 
   private long id;
 
-  private Long transactionTypeId;
+  @NotNull private Long transactionTypeId;
 
-  private RemittanceType remittanceType;
+  @NotNull private RemittanceType remittanceType;
 
-  private Long operationId;
+  @NotNull private Long operationId;
 
   private Long paymentPurposeId;
 
@@ -25,39 +26,37 @@ public class RemittanceTransaction {
 
   private String deliveryTerm;
 
-  private Long applicantId;
+  @NotNull private Long applicantId;
 
-  private String applicantAccountNumber;
+  @NotNull private String applicantAccountNumber;
 
-  private Long beneficiaryId;
+  @NotNull private Long beneficiaryId;
 
-  private String beneficiaryAccountNumber;
+  @NotNull private String beneficiaryAccountNumber;
 
   private String b2bInformation;
 
   private List<BankInformation> bankInformation;
 
-  private Long debitAccountTypeId;
+  @NotNull private Long debitAccountTypeId;
 
-  private String debitAccountNumber;
+  @NotNull private String debitAccountNumber;
 
-  private Long creditAccountTypeId;
+  @NotNull private Long creditAccountTypeId;
 
-  private String creditAccountNumber;
+  @NotNull private String creditAccountNumber;
 
-  private String currencyCode;
+  @NotNull private String currencyCode;
 
   private Long clientRateTypeId;
 
   private Long hoRateTypeId;
 
-  private BigDecimal amountFcy;
+  @NotNull private BigDecimal amountFcy;
 
-  private BigDecimal amountLcy;
+  @NotNull private BigDecimal amountLcy;
 
   private BigDecimal exchangeGain;
-
-  private Status status;
 
   public long getId() {
     return id;
@@ -281,15 +280,6 @@ public class RemittanceTransaction {
 
   public RemittanceTransaction setExchangeGain(BigDecimal exchangeGain) {
     this.exchangeGain = exchangeGain;
-    return this;
-  }
-
-  public Status getStatus() {
-    return status;
-  }
-
-  public RemittanceTransaction setStatus(Status status) {
-    this.status = status;
     return this;
   }
 
