@@ -46,6 +46,7 @@ public class NostroAccountMapper {
                     ? idProductRepository.getOne(domain.getProductId())
                     : null)
             .setNostroAccountNumber(domain.getNostroAccountNumber())
+            .setShadowAccountNumber(domain.getShadowAccountNumber())
             .setName(domain.getAccountTitle())
             .setCurrencyCode(domain.getCurrencyCode())
             .setAccOpenDate(domain.getAccountOpenDate())
