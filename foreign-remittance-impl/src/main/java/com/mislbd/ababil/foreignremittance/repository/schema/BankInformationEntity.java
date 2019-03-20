@@ -3,11 +3,15 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "ID_Remittance_Bank_Info")
+@Table(name = SchemaConstant.ID_REMITTANCE_BANK_INFO_TABLE_NAME)
 public class BankInformationEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "ID_REMITTANCE_BANK_ID_GEN")
+  @SequenceGenerator(
+      name = "ID_REMITTANCE_BANK_ID_GEN",
+      allocationSize = 1,
+      sequenceName = SchemaConstant.ID_REMITTANCE_BANK_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
 

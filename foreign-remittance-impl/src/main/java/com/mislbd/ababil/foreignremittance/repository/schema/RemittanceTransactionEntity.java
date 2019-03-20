@@ -8,7 +8,7 @@ import java.util.List;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "ID_Remittance_Transaction")
+@Table(name = SchemaConstant.REMITTANCE_TRANSACTION_TABLE_NAME)
 public class RemittanceTransactionEntity extends BaseEntity {
 
   @Id
@@ -16,10 +16,11 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @SequenceGenerator(
       name = "REMITTANCE_TRANSACTION_SEQUENCE_GEN",
       allocationSize = 1,
-      sequenceName = SchemaConstant.REMITTANCE_TRANSACTION_SEQUENCE)
+      sequenceName = SchemaConstant.REMITTANCE_TRANSACTION_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "REMITTANCE_TYPE")
   private RemittanceType remittanceType;
 
@@ -67,6 +68,7 @@ public class RemittanceTransactionEntity extends BaseEntity {
   private List<BankInformationEntity> bankInformationEntity;
 
   // ##### Financial Information #####//
+  @Enumerated(EnumType.STRING)
   @Column(name = "DEBIT_ACC_TYPE")
   private AccountType debitAccountType;
 

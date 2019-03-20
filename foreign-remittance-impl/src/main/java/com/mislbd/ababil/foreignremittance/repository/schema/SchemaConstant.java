@@ -3,7 +3,9 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 public class SchemaConstant {
 
   public static final String NOSTRO_ACCOUNT_TABLE_NAME = "ID_NOSTRO_ACCOUNT";
+  public static final String NOSTRO_ACCOUNT_SEQUENCE_NAME = "S_ID_NOSTRO_ACCOUNT";
   public static final String SHADOW_ACCOUNT_TABLE_NAME = "ID_SHADOW_ACCOUNT";
+  public static final String SHADOW_ACCOUNT_SEQUENCE_NAME = "S_ID_SHADOW_ACCOUNT";
 
   public static final String ID_PRODUCT_TABLE_NAME = "ID_PRODUCT";
   public static final String ID_PRODUCT_SEQUENCE_NAME = "S_ID_PRODUCT";
@@ -11,5 +13,16 @@ public class SchemaConstant {
 
   public static final String SHADOW_ACCOUNT_NUMBER = "SHADOW_ACCOUNT_NUMBER";
   public static final String SHADOW_ACCOUNT_NUMBER_SEQUENCE_NAME = "S_SHADOW_ACCOUNT_NUMBER";
-  public static final String REMITTANCE_TRANSACTION_SEQUENCE = "S_REMITTANCE_TRANSACTION";
+  public static final String REMITTANCE_CHARGE_TABLE_NAME = "ID_CHARGE_CONFIGURATION";
+  public static final String REMITTANCE_CHARGE_SLAB_INFO_TABLE_NAME = "ID_CHARGE_SLAB";
+  public static final String REMITTANCE_CHARGE_SLAB_INFO_SEQUENCE_NAME = "S_ID_CHARGE_SLAB";
+  public static final String REMITTANCE_CHARGE_SEQUENCE_NAME = "S_ID_CHARGE_CONFIGURATION";
+  public static final String REMITTANCE_TRANSACTION_TABLE_NAME = "ID_REMITTANCE_TRANSACTION";
+  public static final String REMITTANCE_TRANSACTION_SEQUENCE_NAME = "S_REMITTANCE_TRANSACTION";
+  public static final String ID_REMITTANCE_BANK_INFO_TABLE_NAME = "ID_REMITTANCE_BANK_INFO";
+  public static final String ID_REMITTANCE_BANK_SEQUENCE_NAME = "S_ID_REMITTANCE_BANK_INFO";
+  public static final String ID_TRANSACTION_OPERATION_TABLE_NAME = "ID_TRANSACTION_OPERATION";
+  public static final String ID_TRANSACTION_OPERATION_SEQUENCE_NAME = "S_ID_TRANSACTION_OPERATION";
+  public static final String ID_TRANSACTION_TYPE_TABLE_NAME = "ID_TRANSACTION_TYPE";
+  public static final String ID_TRANSACTION_TYPE_SEQUENCE_NAME = "S_ID_TRANSACTION_TYPE";
 }

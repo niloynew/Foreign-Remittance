@@ -5,11 +5,15 @@ import java.util.List;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "ID_Transaction_Operation")
+@Table(name = SchemaConstant.ID_TRANSACTION_OPERATION_TABLE_NAME)
 public class TransactionOperationEntity extends BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "TRANSACTION_OPERATION_ID_GEN")
+  @SequenceGenerator(
+      name = "TRANSACTION_OPERATION_ID_GEN",
+      allocationSize = 1,
+      sequenceName = SchemaConstant.ID_TRANSACTION_OPERATION_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
 
