@@ -31,7 +31,7 @@ public class AccountCommandHandlerAggregate {
 
   private void saveShadowAccount(Account account) {
     ShadowAccountEntity shadowAccountEntity = shadowAccountMapper.domainToEntity().map(account);
-    if (shadowAccountEntity != null) System.out.print("Almost done");
-    //            shadowAccountRepository.save(shadowAccountEntity);
+    //    if (shadowAccountEntity != null) System.out.print("Almost done");
+    shadowAccountRepository.save(shadowAccountEntity);
   }
 }

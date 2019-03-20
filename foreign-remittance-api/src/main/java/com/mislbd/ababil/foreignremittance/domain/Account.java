@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 public class Account {
 
-  private Long id;
+  private long id;
 
   private String productId;
 
@@ -29,11 +29,11 @@ public class Account {
 
   // region <Getter and Setter>
 
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public Account setId(Long id) {
+  public Account setId(long id) {
     this.id = id;
     return this;
   }

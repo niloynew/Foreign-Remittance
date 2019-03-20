@@ -20,6 +20,9 @@ public class ShadowAccountEntity extends BaseEntity {
   @Column(name = "AccountName")
   private String name;
 
+  @Column(name = "NostroAccountNumber")
+  private String nostroAccountNumber;
+
   @Column(name = "Bank")
   private Long bankId;
 
@@ -60,6 +63,15 @@ public class ShadowAccountEntity extends BaseEntity {
 
   public ShadowAccountEntity setNumber(String number) {
     this.number = number;
+    return this;
+  }
+
+  public String getNostroAccountNumber() {
+    return nostroAccountNumber;
+  }
+
+  public ShadowAccountEntity setNostroAccountNumber(String nostroAccountNumber) {
+    this.nostroAccountNumber = nostroAccountNumber;
     return this;
   }
 
