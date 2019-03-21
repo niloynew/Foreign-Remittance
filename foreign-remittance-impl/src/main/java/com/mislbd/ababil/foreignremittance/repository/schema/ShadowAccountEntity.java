@@ -10,7 +10,11 @@ import javax.persistence.*;
 public class ShadowAccountEntity extends BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "SHADOW_ACCOUNT_ID_GEN")
+  @SequenceGenerator(
+      name = "SHADOW_ACCOUNT_ID_GEN",
+      allocationSize = 1,
+      sequenceName = SchemaConstant.SHADOW_ACCOUNT_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
 

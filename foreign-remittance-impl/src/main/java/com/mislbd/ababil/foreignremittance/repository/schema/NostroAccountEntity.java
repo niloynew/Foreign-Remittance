@@ -10,7 +10,11 @@ import javax.persistence.*;
 public class NostroAccountEntity extends BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "NOSTRO_ACCOUNT_ID_GEN")
+  @SequenceGenerator(
+      name = "NOSTRO_ACCOUNT_ID_GEN",
+      allocationSize = 1,
+      sequenceName = SchemaConstant.NOSTRO_ACCOUNT_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
 
