@@ -14,7 +14,7 @@ public interface ShadowAccountService {
       String nostroAccountNumber,
       String bank,
       String branch,
-      String accountopenDate,
+      String accountOpenDate,
       String currency,
       String product);
 
@@ -24,7 +24,7 @@ public interface ShadowAccountService {
       String nostroAccountNumber,
       String bank,
       String branch,
-      String accountopenDate,
+      String accountOpenDate,
       String currency,
       String product);
 }

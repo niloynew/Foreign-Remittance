@@ -26,7 +26,7 @@ public class AccountServiceImpl implements AccountService {
       String nostroAccountNumber,
       String bank,
       String branch,
-      String accountopenDate,
+      String accountOpenDate,
       String currency,
       String product) {
     return shadowAccountService.findActiveAccounts(
@@ -36,7 +36,7 @@ public class AccountServiceImpl implements AccountService {
         nostroAccountNumber,
         bank,
         branch,
-        accountopenDate,
+        accountOpenDate,
         currency,
         product);
   }
@@ -48,10 +48,10 @@ public class AccountServiceImpl implements AccountService {
       String nostroAccountNumber,
       String bank,
       String branch,
-      String accountopenDate,
+      String accountOpenDate,
       String currency,
       String product) {
     return shadowAccountService.findActiveAccounts(
-        number, name, nostroAccountNumber, bank, branch, accountopenDate, currency, product);
+        number, name, nostroAccountNumber, bank, branch, accountOpenDate, currency, product);
   }
 }
