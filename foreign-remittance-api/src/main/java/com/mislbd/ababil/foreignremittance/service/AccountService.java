@@ -7,7 +7,24 @@ import org.springframework.data.domain.Pageable;
 
 public interface AccountService {
 
-  PagedResult<Account> getAccounts(Pageable pageable);
+  PagedResult<Account> getAccounts(
+      Pageable pageable,
+      String number,
+      String name,
+      String nostroAccountNumber,
+      String bank,
+      String branch,
+      String accountopenDate,
+      String currency,
+      String product);
 
-  List<Account> getAccounts();
+  List<Account> getAccounts(
+      String number,
+      String name,
+      String nostroAccountNumber,
+      String bank,
+      String branch,
+      String accountopenDate,
+      String currency,
+      String product);
 }

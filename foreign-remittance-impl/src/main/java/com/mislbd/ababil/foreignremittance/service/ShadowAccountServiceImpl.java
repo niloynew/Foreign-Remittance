@@ -24,16 +24,52 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
   }
 
   @Override
-  public PagedResult<Account> findActiveAccounts(Pageable pageable) {
+  public PagedResult<Account> findActiveAccounts(
+      Pageable pageable,
+      String shadowAccountNumber,
+      String name,
+      String nostroAccountNumber,
+      String bank,
+      String branch,
+      String accountopenDate,
+      String currency,
+      String product) {
     return PagedResultBuilder.build(
-        shadowAccountRepository.findAll(ShadowAccountSpecification.searchSpecification(), pageable),
+        shadowAccountRepository.findAll(
+            ShadowAccountSpecification.searchSpecification(
+                shadowAccountNumber,
+                name,
+                nostroAccountNumber,
+                bank,
+                branch,
+                accountopenDate,
+                currency,
+                product),
+            pageable),
         shadowAccountMapper.entityToDomain());
   }
 
   @Override
-  public List<Account> findActiveAccounts() {
+  public List<Account> findActiveAccounts(
+      String shadowAccountNumber,
+      String name,
+      String nostroAccountNumber,
+      String bank,
+      String branch,
+      String accountopenDate,
+      String currency,
+      String product) {
     return ListResultBuilder.build(
-        shadowAccountRepository.findAll(ShadowAccountSpecification.searchSpecification()),
+        shadowAccountRepository.findAll(
+            ShadowAccountSpecification.searchSpecification(
+                shadowAccountNumber,
+                name,
+                nostroAccountNumber,
+                bank,
+                branch,
+                accountopenDate,
+                currency,
+                product)),
         shadowAccountMapper.entityToDomain());
   }
 }
