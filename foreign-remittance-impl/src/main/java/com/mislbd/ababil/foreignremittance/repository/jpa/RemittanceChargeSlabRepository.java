@@ -4,4 +4,7 @@ import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeSla
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RemittanceChargeSlabRepository
-    extends JpaRepository<RemittanceChargeSlabEntity, Long> {}
+    extends JpaRepository<RemittanceChargeSlabEntity, Long> {
+
+  void deleteAllByRemittanceChargeId(Long chargeId);
+}

@@ -1,7 +1,7 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
+import com.mislbd.ababil.foreignremittance.command.SaveNostroAccountCommand;
 import com.mislbd.ababil.foreignremittance.command.SaveShadowAccountCommand;
-import com.mislbd.ababil.foreignremittance.command.handler.SaveNostroAccountCommand;
 import com.mislbd.ababil.foreignremittance.domain.Account;
 import com.mislbd.ababil.foreignremittance.service.AccountService;
 import com.mislbd.asset.command.api.CommandProcessor;
