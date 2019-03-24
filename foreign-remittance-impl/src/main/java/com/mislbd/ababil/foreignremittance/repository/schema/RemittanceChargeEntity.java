@@ -68,7 +68,7 @@ public class RemittanceChargeEntity extends BaseEntity {
   private boolean active;
 
   @OneToMany(mappedBy = "remittanceCharge", fetch = FetchType.LAZY)
-  private List<RemittanceChargeSlabEntity> depositChargeSlabs;
+  private List<RemittanceChargeSlabEntity> remittanceChargeSlabs;
 
   @Transient private Boolean canModifyCharge;
 
@@ -225,13 +225,13 @@ public class RemittanceChargeEntity extends BaseEntity {
     return this;
   }
 
-  public List<RemittanceChargeSlabEntity> getDepositChargeSlabs() {
-    return depositChargeSlabs;
+  public List<RemittanceChargeSlabEntity> getRemittanceChargeSlabs() {
+    return remittanceChargeSlabs;
   }
 
-  public RemittanceChargeEntity setDepositChargeSlabs(
-      List<RemittanceChargeSlabEntity> depositChargeSlabs) {
-    this.depositChargeSlabs = depositChargeSlabs;
+  public RemittanceChargeEntity setRemittanceChargeSlabs(
+      List<RemittanceChargeSlabEntity> remittanceChargeSlabs) {
+    this.remittanceChargeSlabs = remittanceChargeSlabs;
     return this;
   }
 
