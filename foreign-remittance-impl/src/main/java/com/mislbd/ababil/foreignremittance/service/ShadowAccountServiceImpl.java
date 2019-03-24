@@ -31,7 +31,7 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
       String nostroAccountNumber,
       String bank,
       String branch,
-      String accountopenDate,
+      String accountOpenDate,
       String currency,
       String product) {
     return PagedResultBuilder.build(
@@ -42,7 +42,7 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
                 nostroAccountNumber,
                 bank,
                 branch,
-                accountopenDate,
+                accountOpenDate,
                 currency,
                 product),
             pageable),
@@ -56,7 +56,7 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
       String nostroAccountNumber,
       String bank,
       String branch,
-      String accountopenDate,
+      String accountOpenDate,
       String currency,
       String product) {
     return ListResultBuilder.build(
@@ -67,7 +67,7 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
                 nostroAccountNumber,
                 bank,
                 branch,
-                accountopenDate,
+                accountOpenDate,
                 currency,
                 product)),
         shadowAccountMapper.entityToDomain());

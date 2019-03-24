@@ -1,7 +1,9 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
-import com.mislbd.ababil.foreignremittance.command.SaveShadowAccountCommand;
-import com.mislbd.ababil.foreignremittance.command.handler.SaveNostroAccountCommand;
+import static org.springframework.http.HttpStatus.ACCEPTED;
+import static org.springframework.http.ResponseEntity.status;
+
+import com.mislbd.ababil.foreignremittance.command.*;
 import com.mislbd.ababil.foreignremittance.domain.Account;
 import com.mislbd.ababil.foreignremittance.service.AccountService;
 import com.mislbd.asset.command.api.CommandProcessor;
@@ -34,7 +36,7 @@ public class AccountController {
           final String nostroAccountNumber,
       @RequestParam(value = "bankId", required = false) final String bank,
       @RequestParam(value = "branchId", required = false) final String branch,
-      @RequestParam(value = "accountopenDate", required = false) final String accountopenDate,
+      @RequestParam(value = "accountOpenDate", required = false) final String accountOpenDate,
       @RequestParam(value = "currencyCode", required = false) final String currency,
       @RequestParam(value = "product", required = false) final String product) {
     if (asPage) {
@@ -46,22 +48,45 @@ public class AccountController {
               nostroAccountNumber,
               bank,
               branch,
-              accountopenDate,
+              accountOpenDate,
               currency,
               product);
       return ResponseEntity.ok(pagedResults);
     } else {
       List<Account> accounts =
           accountService.getAccounts(
-              number, name, nostroAccountNumber, bank, branch, accountopenDate, currency, product);
+              number, name, nostroAccountNumber, bank, branch, accountOpenDate, currency, product);
       return ResponseEntity.ok(accounts);
     }
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> saveShadowAccount(@RequestBody Account account) {
+  @ResponseStatus(ACCEPTED)
+  public ResponseEntity<?> saveAccount(@RequestBody Account account) {
     commandProcessor.executeResult(new SaveShadowAccountCommand(account));
     commandProcessor.executeResult(new SaveNostroAccountCommand(account));
     return ResponseEntity.accepted().build();
+  }
+
+  @PutMapping(
+      path = "/{accountId}",
+      consumes = {MediaType.APPLICATION_JSON_VALUE})
+  @ResponseStatus(ACCEPTED)
+  public ResponseEntity<Void> updateAccount(
+      @PathVariable("accountId") final long accountId, @RequestBody final Account account) {
+    commandProcessor.executeUpdate(new UpdateShadowAccountCommand(accountId, account));
+    commandProcessor.executeUpdate(new UpdateNostroAccountCommand(accountId, account));
+    return status(ACCEPTED).build();
+  }
+
+  @PutMapping(
+      path = "/{accountId}/inactive",
+      consumes = {MediaType.APPLICATION_JSON_VALUE})
+  @ResponseStatus(ACCEPTED)
+  public ResponseEntity<Void> inactiveShadowAccount(
+      @PathVariable("accountId") final long accountId, @RequestBody final Account account) {
+    commandProcessor.executeUpdate(new InactiveShadowAccountCommand(accountId, account));
+    commandProcessor.executeUpdate(new InactiveNostroAccountCommand(accountId, account));
+    return status(ACCEPTED).build();
   }
 }

@@ -1,12 +1,19 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeSlab;
+import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeSlabRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeSlabEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RemittanceChargeSlabMapper {
+
+  private final RemittanceChargeSlabRepository remittanceChargeSlabRepository;
+
+  public RemittanceChargeSlabMapper(RemittanceChargeSlabRepository remittanceChargeSlabRepository) {
+    this.remittanceChargeSlabRepository = remittanceChargeSlabRepository;
+  }
 
   // ToDo
   /*
@@ -23,5 +30,18 @@ public class RemittanceChargeSlabMapper {
             .setPercentage(entity.getPercentage())
             .setMinimumChargeAmount(entity.getMinimumChargeAmount())
             .setMaximumChargeAmount(entity.getMaximumChargeAmount());
+  }
+
+  public ResultMapper<RemittanceChargeSlab, RemittanceChargeSlabEntity> domainToEntity() {
+
+    // ToDo
+    /*
+     *   Finalize the charge slab
+     * */
+    return domain ->
+        remittanceChargeSlabRepository
+            .findById(domain.getId())
+            .orElseGet(RemittanceChargeSlabEntity::new)
+            .setChargeAmount(domain.getChargeAmount());
   }
 }
