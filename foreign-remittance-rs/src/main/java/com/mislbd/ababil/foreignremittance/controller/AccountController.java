@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
 import com.mislbd.ababil.foreignremittance.command.SaveShadowAccountCommand;
+import com.mislbd.ababil.foreignremittance.command.handler.SaveNostroAccountCommand;
 import com.mislbd.ababil.foreignremittance.domain.Account;
 import com.mislbd.ababil.foreignremittance.service.AccountService;
 import com.mislbd.asset.command.api.CommandProcessor;
@@ -25,19 +26,42 @@ public class AccountController {
 
   @GetMapping
   public ResponseEntity<?> getIDAccounts(
-      Pageable pageable, @RequestParam(value = "asPage", required = false) final boolean asPage) {
+      Pageable pageable,
+      @RequestParam(value = "asPage", required = false) final boolean asPage,
+      @RequestParam(value = "number", required = false) final String number,
+      @RequestParam(value = "name", required = false) final String name,
+      @RequestParam(value = "nostroAccountNumber", required = false)
+          final String nostroAccountNumber,
+      @RequestParam(value = "bankId", required = false) final String bank,
+      @RequestParam(value = "branchId", required = false) final String branch,
+      @RequestParam(value = "accountopenDate", required = false) final String accountopenDate,
+      @RequestParam(value = "currencyCode", required = false) final String currency,
+      @RequestParam(value = "product", required = false) final String product) {
     if (asPage) {
-      PagedResult<Account> pagedResults = accountService.getAccounts(pageable);
+      PagedResult<Account> pagedResults =
+          accountService.getAccounts(
+              pageable,
+              number,
+              name,
+              nostroAccountNumber,
+              bank,
+              branch,
+              accountopenDate,
+              currency,
+              product);
       return ResponseEntity.ok(pagedResults);
     } else {
-      List<Account> accounts = accountService.getAccounts();
+      List<Account> accounts =
+          accountService.getAccounts(
+              number, name, nostroAccountNumber, bank, branch, accountopenDate, currency, product);
       return ResponseEntity.ok(accounts);
     }
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> saveShadowAccount(@RequestBody Account account) {
-    commandProcessor.executeUpdate(new SaveShadowAccountCommand(account));
+    commandProcessor.executeResult(new SaveShadowAccountCommand(account));
+    commandProcessor.executeResult(new SaveNostroAccountCommand(account));
     return ResponseEntity.accepted().build();
   }
 }

@@ -7,7 +7,24 @@ import org.springframework.data.domain.Pageable;
 
 public interface ShadowAccountService {
 
-  PagedResult<Account> findActiveAccounts(Pageable pageable);
+  PagedResult<Account> findActiveAccounts(
+      Pageable pageable,
+      String shadowAccountNumber,
+      String name,
+      String nostroAccountNumber,
+      String bank,
+      String branch,
+      String accountopenDate,
+      String currency,
+      String product);
 
-  List<Account> findActiveAccounts();
+  List<Account> findActiveAccounts(
+      String shadowAccountNumber,
+      String name,
+      String nostroAccountNumber,
+      String bank,
+      String branch,
+      String accountopenDate,
+      String currency,
+      String product);
 }

@@ -19,12 +19,39 @@ public class AccountServiceImpl implements AccountService {
    * Fetch all the active accounts from NOSTRO_ACCOUNT table
    * */
   @Override
-  public PagedResult<Account> getAccounts(Pageable pageable) {
-    return shadowAccountService.findActiveAccounts(pageable);
+  public PagedResult<Account> getAccounts(
+      Pageable pageable,
+      String number,
+      String name,
+      String nostroAccountNumber,
+      String bank,
+      String branch,
+      String accountopenDate,
+      String currency,
+      String product) {
+    return shadowAccountService.findActiveAccounts(
+        pageable,
+        number,
+        name,
+        nostroAccountNumber,
+        bank,
+        branch,
+        accountopenDate,
+        currency,
+        product);
   }
 
   @Override
-  public List<Account> getAccounts() {
-    return shadowAccountService.findActiveAccounts();
+  public List<Account> getAccounts(
+      String number,
+      String name,
+      String nostroAccountNumber,
+      String bank,
+      String branch,
+      String accountopenDate,
+      String currency,
+      String product) {
+    return shadowAccountService.findActiveAccounts(
+        number, name, nostroAccountNumber, bank, branch, accountopenDate, currency, product);
   }
 }

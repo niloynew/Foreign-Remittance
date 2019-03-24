@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NostroAccountRepository extends JpaRepository<NostroAccountEntity, Long> {
 
-  Optional<NostroAccountEntity> findByNumber(String accountNumber);
+  Optional<NostroAccountEntity> findByNostroAccountNumber(String accountNumber);
 }
