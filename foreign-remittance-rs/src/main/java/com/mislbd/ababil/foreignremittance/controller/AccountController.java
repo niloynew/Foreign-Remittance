@@ -61,6 +61,7 @@ public class AccountController {
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ResponseStatus(ACCEPTED)
   public ResponseEntity<?> saveAccount(@RequestBody Account account) {
     commandProcessor.executeResult(new SaveShadowAccountCommand(account));
     commandProcessor.executeResult(new SaveNostroAccountCommand(account));
@@ -68,31 +69,24 @@ public class AccountController {
   }
 
   @PutMapping(
-      path = "/{accountNumber}",
+      path = "/{accountId}",
       consumes = {MediaType.APPLICATION_JSON_VALUE})
+  @ResponseStatus(ACCEPTED)
   public ResponseEntity<Void> updateAccount(
-      @PathVariable("accountNumber") final String accountNumber,
-      @RequestBody final Account account) {
-    commandProcessor.executeUpdate(new UpdateShadowAccountCommand(account));
-    commandProcessor.executeUpdate(new UpdateNostroAccountCommand(account));
+      @PathVariable("accountId") final long accountId, @RequestBody final Account account) {
+    commandProcessor.executeUpdate(new UpdateShadowAccountCommand(accountId, account));
+    commandProcessor.executeUpdate(new UpdateNostroAccountCommand(accountId, account));
     return status(ACCEPTED).build();
   }
 
   @PutMapping(
-      path = "/{shadowAccountNumber}/shadow-inactive",
+      path = "/{accountId}/inactive",
       consumes = {MediaType.APPLICATION_JSON_VALUE})
+  @ResponseStatus(ACCEPTED)
   public ResponseEntity<Void> inactiveShadowAccount(
-      @PathVariable("shadowAccountNumber") final String shadowAccountNumber) {
-    commandProcessor.executeUpdate(new InactiveShadowAccountCommand(shadowAccountNumber));
-    return status(ACCEPTED).build();
-  }
-
-  @PutMapping(
-      path = "/{nostroAccountNumber}/nostro-inactive",
-      consumes = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<Void> inactiveAccount(
-      @PathVariable("nostroAccountNumber") final String nostroAccountNumber) {
-    commandProcessor.executeUpdate(new InactiveNostroAccountCommand(nostroAccountNumber));
+      @PathVariable("accountId") final long accountId, @RequestBody final Account account) {
+    commandProcessor.executeUpdate(new InactiveShadowAccountCommand(accountId, account));
+    commandProcessor.executeUpdate(new InactiveNostroAccountCommand(accountId, account));
     return status(ACCEPTED).build();
   }
 }

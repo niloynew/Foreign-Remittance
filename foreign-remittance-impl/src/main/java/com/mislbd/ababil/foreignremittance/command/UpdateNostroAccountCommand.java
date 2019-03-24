@@ -7,7 +7,7 @@ public class UpdateNostroAccountCommand extends Command<Account> {
 
   public UpdateNostroAccountCommand() {}
 
-  public UpdateNostroAccountCommand(Account payload) {
+  public UpdateNostroAccountCommand(long accountId, Account payload) {
     super(payload);
   }
 }

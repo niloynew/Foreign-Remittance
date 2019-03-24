@@ -13,147 +13,146 @@ import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeSla
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
-
 import java.math.BigDecimal;
 import javax.transaction.Transactional;
 
 @Aggregate
 public class RemittanceChargeHandlerAggregate {
 
-    private final RemittanceChargeMapper remittanceChargeMapper;
-    private final RemittanceChargeRepository remittanceChargeRepository;
-    private final RemittanceChargeSlabRepository remittanceChargeSlabRepository;
-    private final RemittanceChargeSlabMapper remittanceChargeSlabMapper;
+  private final RemittanceChargeMapper remittanceChargeMapper;
+  private final RemittanceChargeRepository remittanceChargeRepository;
+  private final RemittanceChargeSlabRepository remittanceChargeSlabRepository;
+  private final RemittanceChargeSlabMapper remittanceChargeSlabMapper;
 
-    public RemittanceChargeHandlerAggregate(
-            RemittanceChargeMapper remittanceChargeMapper,
-            RemittanceChargeRepository remittanceChargeRepository,
-            RemittanceChargeSlabRepository remittanceChargeSlabRepository,
-            RemittanceChargeSlabMapper remittanceChargeSlabMapper) {
-        this.remittanceChargeMapper = remittanceChargeMapper;
-        this.remittanceChargeRepository = remittanceChargeRepository;
-        this.remittanceChargeSlabRepository = remittanceChargeSlabRepository;
-        this.remittanceChargeSlabMapper = remittanceChargeSlabMapper;
+  public RemittanceChargeHandlerAggregate(
+      RemittanceChargeMapper remittanceChargeMapper,
+      RemittanceChargeRepository remittanceChargeRepository,
+      RemittanceChargeSlabRepository remittanceChargeSlabRepository,
+      RemittanceChargeSlabMapper remittanceChargeSlabMapper) {
+    this.remittanceChargeMapper = remittanceChargeMapper;
+    this.remittanceChargeRepository = remittanceChargeRepository;
+    this.remittanceChargeSlabRepository = remittanceChargeSlabRepository;
+    this.remittanceChargeSlabMapper = remittanceChargeSlabMapper;
+  }
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Long> createRemittanceCharge(CreateRemittanceChargeCommand command) {
+    RemittanceChargeEntity remittanceCharge =
+        remittanceChargeMapper.domainToEntity().map(command.getPayload());
+    chargeValidations(remittanceCharge);
+    minMaxAmountValidationForCharge(command.getPayload());
+    minMaxAmountValidationForSlabs(command.getPayload());
+    saveSlabs(remittanceCharge, command.getPayload());
+    remittanceChargeRepository.save(remittanceCharge);
+    return CommandResponse.of(remittanceCharge.getId());
+  }
+
+  private RemittanceChargeEntity chargeValidations(RemittanceChargeEntity remittanceCharge) {
+
+    if (remittanceCharge.isFixedCharge() && remittanceCharge.isSlabBased()) {
+      throw new RemittanceChargeConfigurationConflictException();
+    }
+    if (remittanceCharge.isSlabBased()) {
+      if (remittanceCharge.getRemittanceChargeSlabs().size() < 1
+          || remittanceCharge.getRemittanceChargeSlabs() == null) {
+        throw new RemittanceChargeSlabNotFoundException();
+      }
+    } else if (remittanceCharge.isFixedCharge()) {
+      if (remittanceCharge.getChargeAmount() == null) {
+        throw new RemittanceChargeAmountNotFoundException();
+      }
+    } else if (!remittanceCharge.isFixedCharge() && !remittanceCharge.isSlabBased()) {
+      if (remittanceCharge.getChargePercentage() == null) {
+        throw new RemittanceChargePercentageNotFoundException();
+      }
+      if (remittanceCharge.getChargePercentage().compareTo(BigDecimal.valueOf(100)) == 1) {
+        throw new RemittanceChargePercentageNotFoundException(
+            "Charge percentage cannot be more than 100%.");
+      }
     }
 
-    @Transactional
-    @CommandHandler
-    public CommandResponse<Long> createRemittanceCharge(CreateRemittanceChargeCommand command) {
-        RemittanceChargeEntity remittanceCharge =
-                remittanceChargeMapper.domainToEntity().map(command.getPayload());
-        chargeValidations(remittanceCharge);
-        minMaxAmountValidationForCharge(command.getPayload());
-        minMaxAmountValidationForSlabs(command.getPayload());
-        saveSlabs(remittanceCharge, command.getPayload());
-        remittanceChargeRepository.save(remittanceCharge);
-        return CommandResponse.of(remittanceCharge.getId());
+    if (remittanceCharge.isFixedVat()) {
+      if (remittanceCharge.getVatAmount() == null) {
+        throw new RemittanceVatAmountNotFoundException();
+      }
     }
 
-    private RemittanceChargeEntity chargeValidations(RemittanceChargeEntity remittanceCharge) {
-
-        if (remittanceCharge.isFixedCharge() && remittanceCharge.isSlabBased()) {
-            throw new RemittanceChargeConfigurationConflictException();
-        }
-        if (remittanceCharge.isSlabBased()) {
-            if (remittanceCharge.getRemittanceChargeSlabs().size() < 1
-                    || remittanceCharge.getRemittanceChargeSlabs() == null) {
-                throw new RemittanceChargeSlabNotFoundException();
-            }
-        } else if (remittanceCharge.isFixedCharge()) {
-            if (remittanceCharge.getChargeAmount() == null) {
-                throw new RemittanceChargeAmountNotFoundException();
-            }
-        } else if (!remittanceCharge.isFixedCharge() && !remittanceCharge.isSlabBased()) {
-            if (remittanceCharge.getChargePercentage() == null) {
-                throw new RemittanceChargePercentageNotFoundException();
-            }
-            if (remittanceCharge.getChargePercentage().compareTo(BigDecimal.valueOf(100)) == 1) {
-                throw new RemittanceChargePercentageNotFoundException(
-                        "Charge percentage cannot be more than 100%.");
-            }
-        }
-
-        if (remittanceCharge.isFixedVat()) {
-            if (remittanceCharge.getVatAmount() == null) {
-                throw new RemittanceVatAmountNotFoundException();
-            }
-        }
-
-        if (!remittanceCharge.isFixedVat()) {
-            if (remittanceCharge.getVatPercentage() == null) {
-                throw new RemittanceVatPercentageNotFoundException();
-            }
-            if (remittanceCharge.getVatPercentage().compareTo(BigDecimal.valueOf(100)) == 1) {
-                throw new RemittanceVatPercentageNotFoundException(
-                        "VAT percentage cannot be more than 100%.");
-            }
-        }
-
-        return remittanceCharge;
+    if (!remittanceCharge.isFixedVat()) {
+      if (remittanceCharge.getVatPercentage() == null) {
+        throw new RemittanceVatPercentageNotFoundException();
+      }
+      if (remittanceCharge.getVatPercentage().compareTo(BigDecimal.valueOf(100)) == 1) {
+        throw new RemittanceVatPercentageNotFoundException(
+            "VAT percentage cannot be more than 100%.");
+      }
     }
 
-    private void minMaxAmountValidationForCharge(RemittanceCharge charge) {
-        if (charge.isSlabBased()
-                || (charge.getMaximumChargeAmount() == null || charge.getMinimumChargeAmount() == null))
-            return;
+    return remittanceCharge;
+  }
 
-        if (charge.getMaximumChargeAmount().compareTo(charge.getMinimumChargeAmount()) == -1) {
-            throw new RemittanceChargeMinMaxAmountException(
-                    "Minimum charge amount cannot be greater than maximum charge amount");
-        }
+  private void minMaxAmountValidationForCharge(RemittanceCharge charge) {
+    if (charge.isSlabBased()
+        || (charge.getMaximumChargeAmount() == null || charge.getMinimumChargeAmount() == null))
+      return;
+
+    if (charge.getMaximumChargeAmount().compareTo(charge.getMinimumChargeAmount()) == -1) {
+      throw new RemittanceChargeMinMaxAmountException(
+          "Minimum charge amount cannot be greater than maximum charge amount");
     }
+  }
 
-    private void minMaxAmountValidationForSlabs(RemittanceCharge charge) {
-        if (charge.getRemittanceChargeSlabs() != null && !charge.getRemittanceChargeSlabs().isEmpty()) {
-            for (RemittanceChargeSlab financingChargeSlab : charge.getRemittanceChargeSlabs()) {
-                if (financingChargeSlab.isFixedCharge()
-                        || (financingChargeSlab.getMaximumChargeAmount() == null
-                        || financingChargeSlab.getMinimumChargeAmount() == null)) return;
+  private void minMaxAmountValidationForSlabs(RemittanceCharge charge) {
+    if (charge.getRemittanceChargeSlabs() != null && !charge.getRemittanceChargeSlabs().isEmpty()) {
+      for (RemittanceChargeSlab financingChargeSlab : charge.getRemittanceChargeSlabs()) {
+        if (financingChargeSlab.isFixedCharge()
+            || (financingChargeSlab.getMaximumChargeAmount() == null
+                || financingChargeSlab.getMinimumChargeAmount() == null)) return;
 
-                if (financingChargeSlab
-                        .getMaximumChargeAmount()
-                        .compareTo(financingChargeSlab.getMinimumChargeAmount())
-                        == -1) {
-                    throw new RemittanceChargeMinMaxAmountException(
-                            "Minimum charge amount cannot be greater than maximum charge amount");
-                }
-            }
+        if (financingChargeSlab
+                .getMaximumChargeAmount()
+                .compareTo(financingChargeSlab.getMinimumChargeAmount())
+            == -1) {
+          throw new RemittanceChargeMinMaxAmountException(
+              "Minimum charge amount cannot be greater than maximum charge amount");
         }
+      }
     }
+  }
 
-    private void slabAmountValidationForSlabs(RemittanceCharge depositCharge) {
+  private void slabAmountValidationForSlabs(RemittanceCharge depositCharge) {
 
-        for (RemittanceChargeSlab chargeSlab : depositCharge.getRemittanceChargeSlabs()) {
-            if (chargeSlab.getFromAmount() == null) {
-                throw new RemittanceChargeSlabNotFoundException("From amount cannot be null");
-            }
+    for (RemittanceChargeSlab chargeSlab : depositCharge.getRemittanceChargeSlabs()) {
+      if (chargeSlab.getFromAmount() == null) {
+        throw new RemittanceChargeSlabNotFoundException("From amount cannot be null");
+      }
 
-            if (chargeSlab.getFromAmount().compareTo(chargeSlab.getToAmount()) == 0) {
-                throw new RemittanceChargeSlabNotFoundException("From amount and To amount cannot be same");
-            }
+      if (chargeSlab.getFromAmount().compareTo(chargeSlab.getToAmount()) == 0) {
+        throw new RemittanceChargeSlabNotFoundException("From amount and To amount cannot be same");
+      }
 
-            if (chargeSlab.getToAmount().compareTo(chargeSlab.getFromAmount()) == -1) {
-                throw new RemittanceChargeSlabNotFoundException(
-                        "From amount should not be greater than To amount");
-            }
-        }
+      if (chargeSlab.getToAmount().compareTo(chargeSlab.getFromAmount()) == -1) {
+        throw new RemittanceChargeSlabNotFoundException(
+            "From amount should not be greater than To amount");
+      }
     }
+  }
 
-    private void saveSlabs(RemittanceChargeEntity chargeEntity, RemittanceCharge command) {
-        remittanceChargeSlabRepository.deleteAllByRemittanceChargeId(chargeEntity.getId());
+  private void saveSlabs(RemittanceChargeEntity chargeEntity, RemittanceCharge command) {
+    remittanceChargeSlabRepository.deleteAllByRemittanceChargeId(chargeEntity.getId());
 
-        if (command.isSlabBased()
-                && (command.getRemittanceChargeSlabs() != null
-                || command.getRemittanceChargeSlabs().size() > 0)) {
+    if (command.isSlabBased()
+        && (command.getRemittanceChargeSlabs() != null
+            || command.getRemittanceChargeSlabs().size() > 0)) {
 
-            minMaxAmountValidationForSlabs(command);
-            slabAmountValidationForSlabs(command);
-            for (RemittanceChargeSlab slab : command.getRemittanceChargeSlabs()) {
-                RemittanceChargeSlabEntity slabEntity =
-                        remittanceChargeSlabMapper.domainToEntity().map(slab);
-                slabEntity.setRemittanceCharge(chargeEntity);
-                remittanceChargeSlabRepository.save(slabEntity);
-            }
-        }
+      minMaxAmountValidationForSlabs(command);
+      slabAmountValidationForSlabs(command);
+      for (RemittanceChargeSlab slab : command.getRemittanceChargeSlabs()) {
+        RemittanceChargeSlabEntity slabEntity =
+            remittanceChargeSlabMapper.domainToEntity().map(slab);
+        slabEntity.setRemittanceCharge(chargeEntity);
+        remittanceChargeSlabRepository.save(slabEntity);
+      }
     }
+  }
 }

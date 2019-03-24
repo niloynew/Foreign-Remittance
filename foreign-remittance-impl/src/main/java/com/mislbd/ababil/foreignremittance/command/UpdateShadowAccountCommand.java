@@ -5,7 +5,7 @@ import com.mislbd.asset.command.api.Command;
 
 public class UpdateShadowAccountCommand extends Command<Account> {
 
-  public UpdateShadowAccountCommand(Account payLoad) {
+  public UpdateShadowAccountCommand(long accountId, Account payLoad) {
     super(payLoad);
   }
 
