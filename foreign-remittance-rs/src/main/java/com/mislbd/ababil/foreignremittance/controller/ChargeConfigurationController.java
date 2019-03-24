@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/remittance-charge", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/remittance-charges", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ChargeConfigurationController {
 
   private final RemittanceChargeService remittanceChargeService;
