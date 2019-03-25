@@ -1,10 +1,12 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
+import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceChargeCommand;
+import com.mislbd.ababil.foreignremittance.command.UpdateRemittanceChargeCommand;
 import com.mislbd.ababil.foreignremittance.domain.ChargeAccountType;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceCharge;
 import com.mislbd.ababil.foreignremittance.service.RemittanceChargeService;
@@ -66,5 +68,13 @@ public class ChargeConfigurationController {
         .findRemittanceChargeById(id)
         .map(ResponseEntity::ok)
         .orElseGet(status(NOT_FOUND)::build);
+  }
+
+  @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ResponseStatus(ACCEPTED)
+  public ResponseEntity<Void> updateCharge(
+      @PathVariable("id") long id, @Valid @RequestBody RemittanceCharge charge) {
+    commandProcessor.executeUpdate(new UpdateRemittanceChargeCommand(charge));
+    return status(ACCEPTED).build();
   }
 }
