@@ -41,6 +41,7 @@ public class ShadowAccountMapper {
         shadowAccountRepository
             .findByNumber(domain.getShadowAccountNumber())
             .orElseGet(ShadowAccountEntity::new)
+            .setId(domain.getId())
             .setProduct(
                 domain.getProductId() != null
                     ? idProductRepository.getOne(domain.getProductId())

@@ -45,6 +45,8 @@ public class AccountCommandHandlerAggregate {
     return CommandResponse.asVoid();
   }
 
+  @Transactional
+  @CommandHandler
   public CommandResponse<Void> updateShardowAccount(UpdateShadowAccountCommand command) {
     shadowAccountRepository.save(shadowAccountMapper.domainToEntity().map(command.getPayload()));
     return CommandResponse.asVoid();
@@ -61,7 +63,7 @@ public class AccountCommandHandlerAggregate {
   @CommandHandler
   public CommandResponse<Void> inactiveShadowAccount(InactiveShadowAccountCommand command) {
     ShadowAccountEntity shadowAccountEntity =
-        shadowAccountRepository.findByNumber(command.getShadowAccountNumber()).get();
+        shadowAccountRepository.findByNumber(command.getPayload().getShadowAccountNumber()).get();
     shadowAccountEntity.setActive(false);
     shadowAccountRepository.save(shadowAccountEntity);
     return CommandResponse.asVoid();
@@ -71,7 +73,9 @@ public class AccountCommandHandlerAggregate {
   @CommandHandler
   public CommandResponse<Void> inactiveNostroAccount(InactiveNostroAccountCommand command) {
     NostroAccountEntity nostroAccountEntity =
-        nostroAccountRepository.findByNostroAccountNumber(command.getNostroAccountNumber()).get();
+        nostroAccountRepository
+            .findByNostroAccountNumber(command.getPayload().getNostroAccountNumber())
+            .get();
     nostroAccountEntity.setActive(false);
     nostroAccountRepository.save(nostroAccountEntity);
     return CommandResponse.asVoid();
