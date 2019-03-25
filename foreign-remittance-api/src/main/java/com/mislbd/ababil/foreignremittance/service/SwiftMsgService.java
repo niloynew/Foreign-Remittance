@@ -15,6 +15,6 @@ public interface SwiftMsgService {
   Optional<RemittanceMsgDto> findByID(Long id);
 
   RemittanceMsgDto findByLCNo(String lcNo);
-  int process(List<Long> msgIds);
 
+  int process(List<Long> msgIds);
 }

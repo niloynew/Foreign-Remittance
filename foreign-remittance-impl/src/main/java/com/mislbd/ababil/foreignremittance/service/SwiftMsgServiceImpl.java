@@ -48,7 +48,6 @@ public class SwiftMsgServiceImpl implements SwiftMsgService {
   @Override
   public int process(List<Long> msgIds) {
 
-
     return 0;
   }
 }
