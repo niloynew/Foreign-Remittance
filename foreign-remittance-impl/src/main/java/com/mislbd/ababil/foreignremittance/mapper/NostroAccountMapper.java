@@ -41,6 +41,7 @@ public class NostroAccountMapper {
         nostroAccountRepository
             .findByNostroAccountNumber(domain.getNostroAccountNumber())
             .orElseGet(NostroAccountEntity::new)
+            .setId(domain.getId())
             .setProduct(
                 domain.getProductId() != null
                     ? idProductRepository.getOne(domain.getProductId())

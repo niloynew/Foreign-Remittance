@@ -12,7 +12,7 @@ public class ShadowAccountSpecification {
       String nostroAccountNumber,
       String bank,
       String branch,
-      String accountopenDate,
+      String accountOpenDate,
       String currency,
       String product) {
     return (root, query, cb) -> {
@@ -40,8 +40,8 @@ public class ShadowAccountSpecification {
         predicate = cb.and(predicate, cb.equal(root.get("branchId"), branch));
       }
 
-      if (accountopenDate != null) {
-        predicate = cb.and(predicate, cb.equal(root.get("accountOpenDate"), accountopenDate));
+      if (accountOpenDate != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("accountOpenDate"), accountOpenDate));
       }
 
       if (currency != null) {
