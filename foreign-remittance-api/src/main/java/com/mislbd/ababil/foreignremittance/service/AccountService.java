@@ -2,6 +2,7 @@ package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.Account;
 import com.mislbd.asset.commons.data.domain.PagedResult;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 
@@ -14,7 +15,7 @@ public interface AccountService {
       String nostroAccountNumber,
       String bank,
       String branch,
-      String accountOpenDate,
+      LocalDate accountOpenDate,
       String currency,
       String product);
 
@@ -24,7 +25,7 @@ public interface AccountService {
       String nostroAccountNumber,
       String bank,
       String branch,
-      String accountOpenDate,
+      LocalDate accountOpenDate,
       String currency,
       String product);
 }

@@ -8,8 +8,10 @@ import com.mislbd.ababil.foreignremittance.domain.Account;
 import com.mislbd.ababil.foreignremittance.service.AccountService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.commons.data.domain.PagedResult;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,15 +32,17 @@ public class AccountController {
   public ResponseEntity<?> getIDAccounts(
       Pageable pageable,
       @RequestParam(value = "asPage", required = false) final boolean asPage,
-      @RequestParam(value = "number", required = false) final String number,
-      @RequestParam(value = "name", required = false) final String name,
+      @RequestParam(value = "shadowAccountNumber", required = false) final String number,
+      @RequestParam(value = "accountTitle", required = false) final String name,
       @RequestParam(value = "nostroAccountNumber", required = false)
           final String nostroAccountNumber,
       @RequestParam(value = "bankId", required = false) final String bank,
       @RequestParam(value = "branchId", required = false) final String branch,
-      @RequestParam(value = "accountOpenDate", required = false) final String accountOpenDate,
+      @RequestParam(value = "accountOpenDate", required = false)
+          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          final LocalDate accountOpenDate,
       @RequestParam(value = "currencyCode", required = false) final String currency,
-      @RequestParam(value = "product", required = false) final String product) {
+      @RequestParam(value = "productId", required = false) final String product) {
     if (asPage) {
       PagedResult<Account> pagedResults =
           accountService.getAccounts(

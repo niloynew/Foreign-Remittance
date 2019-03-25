@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.repository.specification;
 
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
+import java.time.LocalDate;
 import javax.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -12,7 +13,7 @@ public class ShadowAccountSpecification {
       String nostroAccountNumber,
       String bank,
       String branch,
-      String accountOpenDate,
+      LocalDate accountOpenDate,
       String currency,
       String product) {
     return (root, query, cb) -> {

@@ -7,6 +7,7 @@ import com.mislbd.ababil.foreignremittance.repository.specification.ShadowAccoun
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
       String nostroAccountNumber,
       String bank,
       String branch,
-      String accountOpenDate,
+      LocalDate accountOpenDate,
       String currency,
       String product) {
     return PagedResultBuilder.build(
@@ -56,7 +57,7 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
       String nostroAccountNumber,
       String bank,
       String branch,
-      String accountOpenDate,
+      LocalDate accountOpenDate,
       String currency,
       String product) {
     return ListResultBuilder.build(
