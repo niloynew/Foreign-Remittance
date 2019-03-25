@@ -7,6 +7,7 @@ import com.mislbd.ababil.foreignremittance.repository.jpa.NostroAccountRepositor
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroAccountEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
+import com.mislbd.ababil.foreignremittance.service.ShadowAccountNumberProviderService;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
@@ -19,22 +20,28 @@ public class AccountCommandHandlerAggregate {
   private final NostroAccountMapper nostroAccountMapper;
   private final ShadowAccountRepository shadowAccountRepository;
   private final NostroAccountRepository nostroAccountRepository;
+  private final ShadowAccountNumberProviderService shadowAccountNumberProviderService;
 
   public AccountCommandHandlerAggregate(
       ShadowAccountMapper shadowAccountMapper,
       NostroAccountMapper nostroAccountMapper,
       ShadowAccountRepository shadowAccountRepository,
-      NostroAccountRepository nostroAccountRepository) {
+      NostroAccountRepository nostroAccountRepository,
+      ShadowAccountNumberProviderService shadowAccountNumberProviderService) {
     this.shadowAccountMapper = shadowAccountMapper;
     this.nostroAccountMapper = nostroAccountMapper;
     this.shadowAccountRepository = shadowAccountRepository;
     this.nostroAccountRepository = nostroAccountRepository;
+    this.shadowAccountNumberProviderService = shadowAccountNumberProviderService;
   }
 
   @Transactional
   @CommandHandler
   public CommandResponse<Void> saveShadowAccount(SaveShadowAccountCommand command) {
-    shadowAccountRepository.save(shadowAccountMapper.domainToEntity().map(command.getPayload()));
+    ShadowAccountEntity shadowAccountEntity =
+        shadowAccountMapper.domainToEntity().map(command.getPayload());
+    shadowAccountNumberProviderService.makeAccountUsed(shadowAccountEntity.getNumber());
+    shadowAccountRepository.save(shadowAccountEntity);
     return CommandResponse.asVoid();
   }
 
