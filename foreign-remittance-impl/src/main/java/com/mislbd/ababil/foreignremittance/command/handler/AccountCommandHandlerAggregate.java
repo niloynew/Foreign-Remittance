@@ -52,6 +52,8 @@ public class AccountCommandHandlerAggregate {
     return CommandResponse.asVoid();
   }
 
+  @Transactional
+  @CommandHandler
   public CommandResponse<Void> updateShardowAccount(UpdateShadowAccountCommand command) {
     shadowAccountRepository.save(shadowAccountMapper.domainToEntity().map(command.getPayload()));
     return CommandResponse.asVoid();
