@@ -9,6 +9,7 @@ import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +52,12 @@ public class RemittanceChargeServiceImpl implements RemittanceChargeService {
             RemittanceChargeSpecification.findAllCharges(
                 chargeName, chargeAccountType, vatAccountType, status)),
         remittanceChargeMapper.entityToDomain());
+  }
+
+  @Override
+  public Optional<RemittanceCharge> findRemittanceChargeById(long id) {
+    return remittanceChargeRepository
+        .findById(id)
+        .map(remittanceChargeMapper.entityToDomain()::map);
   }
 }

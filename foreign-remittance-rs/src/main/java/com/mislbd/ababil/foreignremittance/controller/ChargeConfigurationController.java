@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceChargeCommand;
@@ -57,5 +58,13 @@ public class ChargeConfigurationController {
       @Valid @RequestBody RemittanceCharge charge) {
     return status(CREATED)
         .body(commandProcessor.executeResult(new CreateRemittanceChargeCommand(charge)));
+  }
+
+  @GetMapping(path = "/{id}")
+  public ResponseEntity<RemittanceCharge> getChargeById(@PathVariable("id") long id) {
+    return remittanceChargeService
+        .findRemittanceChargeById(id)
+        .map(ResponseEntity::ok)
+        .orElseGet(status(NOT_FOUND)::build);
   }
 }
