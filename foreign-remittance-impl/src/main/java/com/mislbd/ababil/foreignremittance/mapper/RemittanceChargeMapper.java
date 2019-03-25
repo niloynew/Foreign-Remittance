@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceCharge;
+import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeEntity;
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
@@ -10,9 +11,13 @@ import org.springframework.stereotype.Component;
 public class RemittanceChargeMapper {
 
   private final RemittanceChargeSlabMapper remittanceChargeSlabMapper;
+  private final RemittanceChargeRepository remittanceChargeRepository;
 
-  public RemittanceChargeMapper(RemittanceChargeSlabMapper remittanceChargeSlabMapper) {
+  public RemittanceChargeMapper(
+      RemittanceChargeSlabMapper remittanceChargeSlabMapper,
+      RemittanceChargeRepository remittanceChargeRepository) {
     this.remittanceChargeSlabMapper = remittanceChargeSlabMapper;
+    this.remittanceChargeRepository = remittanceChargeRepository;
   }
 
   public ResultMapper<RemittanceChargeEntity, RemittanceCharge> entityToDomain() {
@@ -39,10 +44,37 @@ public class RemittanceChargeMapper {
                     ? null
                     : ListResultBuilder.build(
                         entity.getRemittanceChargeSlabs(),
-                        remittanceChargeSlabMapper.entityToDomain()));
+                        remittanceChargeSlabMapper.entityToDomain()))
+            .setActive(entity.isActive());
   }
 
   public ResultMapper<RemittanceCharge, RemittanceChargeEntity> domainToEntity() {
-    return null;
+    return domain ->
+        remittanceChargeRepository
+            .findById(domain.getId())
+            .orElseGet(RemittanceChargeEntity::new)
+            .setId(domain.getId())
+            .setChargeName(domain.getChargeName())
+            .setCurrencyCode(domain.getCurrencyCode())
+            .setChargeAccountType(domain.getChargeAccountType())
+            .setChargeAccountCode(domain.getChargeAccountCode())
+            .setVatAccountType(domain.getVatAccountType())
+            .setVatAccountCode(domain.getVatAccountCode())
+            .setSlabBased(domain.isSlabBased())
+            .setFixedCharge(domain.isFixedCharge())
+            .setChargeAmount(domain.getChargeAmount())
+            .setChargePercentage(domain.getChargePercentage())
+            .setFixedVat(domain.isFixedVat())
+            .setVatAmount(domain.getVatAmount())
+            .setVatPercentage(domain.getVatPercentage())
+            .setMaximumChargeAmount(domain.getMaximumChargeAmount())
+            .setMinimumChargeAmount(domain.getMinimumChargeAmount())
+            .setRemittanceChargeSlabs(
+                domain.getRemittanceChargeSlabs() == null
+                    ? null
+                    : ListResultBuilder.build(
+                        domain.getRemittanceChargeSlabs(),
+                        remittanceChargeSlabMapper.domainToEntity()))
+            .setActive(true);
   }
 }
