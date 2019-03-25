@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceChargeCommand;
+import com.mislbd.ababil.foreignremittance.command.UpdateRemittanceChargeCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceCharge;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeSlab;
 import com.mislbd.ababil.foreignremittance.exception.*;
@@ -154,5 +155,17 @@ public class RemittanceChargeHandlerAggregate {
         remittanceChargeSlabRepository.save(slabEntity);
       }
     }
+  }
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Void> updateRemittanceCharge(UpdateRemittanceChargeCommand command) {
+    RemittanceChargeEntity chargeEntity =
+        remittanceChargeMapper.domainToEntity().map(command.getPayload());
+    chargeValidations(chargeEntity);
+    minMaxAmountValidationForCharge(command.getPayload());
+    saveSlabs(chargeEntity, command.getPayload());
+    remittanceChargeRepository.save(chargeEntity);
+    return CommandResponse.asVoid();
   }
 }

@@ -34,14 +34,16 @@ public class RemittanceChargeSlabMapper {
 
   public ResultMapper<RemittanceChargeSlab, RemittanceChargeSlabEntity> domainToEntity() {
 
-    // ToDo
-    /*
-     *   Finalize the charge slab
-     * */
     return domain ->
         remittanceChargeSlabRepository
             .findById(domain.getId())
             .orElseGet(RemittanceChargeSlabEntity::new)
-            .setChargeAmount(domain.getChargeAmount());
+            .setFromAmount(domain.getFromAmount())
+            .setToAmount(domain.getToAmount())
+            .setFixedCharge(domain.isFixedCharge())
+            .setChargeAmount(domain.getChargeAmount())
+            .setPercentage(domain.getPercentage())
+            .setMinimumChargeAmount(domain.getMinimumChargeAmount())
+            .setMaximumChargeAmount(domain.getMaximumChargeAmount());
   }
 }
