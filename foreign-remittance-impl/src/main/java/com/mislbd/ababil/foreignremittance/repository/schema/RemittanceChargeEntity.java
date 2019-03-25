@@ -70,6 +70,9 @@ public class RemittanceChargeEntity extends BaseEntity {
   @OneToMany(mappedBy = "remittanceCharge", fetch = FetchType.LAZY)
   private List<RemittanceChargeSlabEntity> remittanceChargeSlabs;
 
+  @OneToMany(mappedBy = "remittanceCharge", fetch = FetchType.LAZY)
+  private List<RemittanceChargeMappingEntity> remittanceChargeMappingEntities;
+
   @Transient private Boolean canModifyCharge;
 
   public long getId() {
@@ -241,6 +244,16 @@ public class RemittanceChargeEntity extends BaseEntity {
 
   public RemittanceChargeEntity setCanModifyCharge(Boolean canModifyCharge) {
     this.canModifyCharge = canModifyCharge;
+    return this;
+  }
+
+  public List<RemittanceChargeMappingEntity> getRemittanceChargeMappingEntities() {
+    return remittanceChargeMappingEntities;
+  }
+
+  public RemittanceChargeEntity setRemittanceChargeMappingEntities(
+      List<RemittanceChargeMappingEntity> remittanceChargeMappingEntities) {
+    this.remittanceChargeMappingEntities = remittanceChargeMappingEntities;
     return this;
   }
 }
