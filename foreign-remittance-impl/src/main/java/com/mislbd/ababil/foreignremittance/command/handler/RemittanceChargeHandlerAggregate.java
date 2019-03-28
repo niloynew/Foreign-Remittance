@@ -1,15 +1,19 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceChargeCommand;
+import com.mislbd.ababil.foreignremittance.command.CreateRemittanceChargeMappingCommand;
 import com.mislbd.ababil.foreignremittance.command.UpdateRemittanceChargeCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceCharge;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeSlab;
 import com.mislbd.ababil.foreignremittance.exception.*;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceChargeMapper;
+import com.mislbd.ababil.foreignremittance.mapper.RemittanceChargeMappingMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceChargeSlabMapper;
+import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeMappingRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeSlabRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeSlabEntity;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
@@ -24,16 +28,22 @@ public class RemittanceChargeHandlerAggregate {
   private final RemittanceChargeRepository remittanceChargeRepository;
   private final RemittanceChargeSlabRepository remittanceChargeSlabRepository;
   private final RemittanceChargeSlabMapper remittanceChargeSlabMapper;
+  private final RemittanceChargeMappingMapper remittanceChargeMappingMapper;
+  private final RemittanceChargeMappingRepository remittanceChargeMappingRepository;
 
   public RemittanceChargeHandlerAggregate(
       RemittanceChargeMapper remittanceChargeMapper,
       RemittanceChargeRepository remittanceChargeRepository,
       RemittanceChargeSlabRepository remittanceChargeSlabRepository,
-      RemittanceChargeSlabMapper remittanceChargeSlabMapper) {
+      RemittanceChargeSlabMapper remittanceChargeSlabMapper,
+      RemittanceChargeMappingMapper remittanceChargeMappingMapper,
+      RemittanceChargeMappingRepository remittanceChargeMappingRepository) {
     this.remittanceChargeMapper = remittanceChargeMapper;
     this.remittanceChargeRepository = remittanceChargeRepository;
     this.remittanceChargeSlabRepository = remittanceChargeSlabRepository;
     this.remittanceChargeSlabMapper = remittanceChargeSlabMapper;
+    this.remittanceChargeMappingMapper = remittanceChargeMappingMapper;
+    this.remittanceChargeMappingRepository = remittanceChargeMappingRepository;
   }
 
   @Transactional
@@ -167,5 +177,15 @@ public class RemittanceChargeHandlerAggregate {
     saveSlabs(chargeEntity, command.getPayload());
     remittanceChargeRepository.save(chargeEntity);
     return CommandResponse.asVoid();
+  }
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Long> saveRemittanceChargeMapping(
+      CreateRemittanceChargeMappingCommand command) {
+    RemittanceChargeMappingEntity chargeMappingEntity =
+        remittanceChargeMappingMapper.domainToEntity().map(command.getPayload());
+    remittanceChargeMappingRepository.save(chargeMappingEntity);
+    return CommandResponse.of(chargeMappingEntity.getId());
   }
 }
