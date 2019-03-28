@@ -32,7 +32,8 @@ public class RemittanceChargeMappingMapper {
             .setChargeName(entity.getRemittanceCharge().getChargeName())
             .setOperationId(entity.getTransactionOperation().getId())
             .setOperationName(entity.getTransactionOperation().getName())
-            .setChargeModifiable(entity.isChargeModifiable());
+            .setChargeModifiable(entity.isChargeModifiable())
+            .setTypeName(entity.getTransactionOperation().getTransactionTypeEntity().getName());
   }
 
   public ResultMapper<RemittanceChargeMapping, RemittanceChargeMappingEntity> domainToEntity() {
