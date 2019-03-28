@@ -25,6 +25,10 @@ public class SchemaConstant {
   public static final String ID_TRANSACTION_OPERATION_SEQUENCE_NAME = "S_ID_TRANSACTION_OPERATION";
   public static final String ID_TRANSACTION_TYPE_TABLE_NAME = "ID_TRANSACTION_TYPE";
   public static final String ID_TRANSACTION_TYPE_SEQUENCE_NAME = "S_ID_TRANSACTION_TYPE";
+  public static final String PAYMENT_PURPOSE_TABLE_NAME = "ID_PAYMENT_PURPOSE";
+  public static final String PAYMENT_PURPOSE_SEQUENCE_NAME = "S_ID_PAYMENT_PURPOSE";
+  public static final String ID_CB_FUND_SOURCE_TABLE_NAME = "ID_CB_FUND_SOURCE";
+  public static final String ID_CB_FUND_SOURCE_SEQUENCE_NAME = "S_ID_CB_FUND_SOURCE";
   public static final String REMITTANCE_CHARGE_MAPPING_TABLE = "ID_CHARGE_MAPPING";
   public static final String REMITTANCE_CHARGE_MAPPING_SEQUENCE_NAME = "S_ID_CHARGE_MAPPING";
 }
