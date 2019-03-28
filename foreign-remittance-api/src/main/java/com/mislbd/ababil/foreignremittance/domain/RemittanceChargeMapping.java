@@ -16,6 +16,8 @@ public class RemittanceChargeMapping {
 
   private Boolean chargeModifiable;
 
+  private String typeName;
+
   public long getId() {
     return id;
   }
@@ -67,6 +69,15 @@ public class RemittanceChargeMapping {
 
   public RemittanceChargeMapping setChargeModifiable(Boolean chargeModifiable) {
     this.chargeModifiable = chargeModifiable;
+    return this;
+  }
+
+  public String getTypeName() {
+    return typeName;
+  }
+
+  public RemittanceChargeMapping setTypeName(String typeName) {
+    this.typeName = typeName;
     return this;
   }
 }

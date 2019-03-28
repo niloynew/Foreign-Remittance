@@ -24,6 +24,18 @@ public class RemittanceChargeMappingMapper {
     this.transactionOperationRepository = transactionOperationRepository;
   }
 
+  public ResultMapper<RemittanceChargeMappingEntity, RemittanceChargeMapping> entityToDomain() {
+    return entity ->
+        new RemittanceChargeMapping()
+            .setId(entity.getId())
+            .setChargeId(entity.getRemittanceCharge().getId())
+            .setChargeName(entity.getRemittanceCharge().getChargeName())
+            .setOperationId(entity.getTransactionOperation().getId())
+            .setOperationName(entity.getTransactionOperation().getName())
+            .setChargeModifiable(entity.isChargeModifiable())
+            .setTypeName(entity.getTransactionOperation().getTransactionTypeEntity().getName());
+  }
+
   public ResultMapper<RemittanceChargeMapping, RemittanceChargeMappingEntity> domainToEntity() {
     return domain ->
         remittanceChargeMappingRepository
