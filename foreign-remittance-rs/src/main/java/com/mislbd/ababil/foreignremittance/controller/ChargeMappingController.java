@@ -31,9 +31,9 @@ public class ChargeMappingController {
   public ResponseEntity<?> getChargeMappings(
       Pageable pageable, @RequestParam(value = "asPage", required = false) final boolean asPage) {
     if (asPage) {
-      return ResponseEntity.ok(null);
+      return ResponseEntity.ok(chargeMappingService.findAll(pageable));
     } else {
-      return ResponseEntity.ok(null);
+      return ResponseEntity.ok(chargeMappingService.findAll());
     }
   }
 
