@@ -1,0 +1,37 @@
+package com.mislbd.ababil.foreignremittance.service;
+
+import com.mislbd.ababil.foreignremittance.domain.PaymentPurpose;
+import com.mislbd.ababil.foreignremittance.mapper.PaymentPurposeMapper;
+import com.mislbd.ababil.foreignremittance.repository.jpa.PaymentPurposeRepository;
+import com.mislbd.asset.commons.data.domain.ListResultBuilder;
+import com.mislbd.asset.commons.data.domain.PagedResult;
+import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
+import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PaymentPurposeServiceImpl implements PaymentPurposeService {
+
+  private final PaymentPurposeRepository paymentPurposeRepository;
+  private final PaymentPurposeMapper paymentPurposeMapper;
+
+  public PaymentPurposeServiceImpl(
+      PaymentPurposeRepository paymentPurposeRepository,
+      PaymentPurposeMapper paymentPurposeMapper) {
+    this.paymentPurposeRepository = paymentPurposeRepository;
+    this.paymentPurposeMapper = paymentPurposeMapper;
+  }
+
+  @Override
+  public PagedResult<PaymentPurpose> getPaymentPurposes(Pageable pageable) {
+    return PagedResultBuilder.build(
+        paymentPurposeRepository.findAll(pageable), paymentPurposeMapper.entityToDomain());
+  }
+
+  @Override
+  public List<PaymentPurpose> getPaymentPurposes() {
+    return ListResultBuilder.build(
+        paymentPurposeRepository.findAll(), paymentPurposeMapper.entityToDomain());
+  }
+}
