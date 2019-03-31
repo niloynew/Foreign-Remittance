@@ -33,4 +33,8 @@ public class SchemaConstant {
   public static final String REMITTANCE_CHARGE_MAPPING_SEQUENCE_NAME = "S_ID_CHARGE_MAPPING";
   public static final String EXPORT_LC_TABLE_NAME = "ID_EXPORT_LC";
   public static final String EXPORT_LC_SEQUENCE_NAME = "S_ID_EXPORT_LC";
+  public static final String CLIENT_RATE_TYPE_TABLE_NAME = "ID_CLIENT_RATE_TYPE";
+  public static final String CLIENT_RATE_TYPE_SEQUENCE_NAME = "S_ID_CLIENT_RATE_TYPE";
+  public static final String HO_RATE_TYPE_TABLE_NAME = "ID_HO_RATE_TYPE";
+  public static final String HO_RATE_TYPE_SEQUENCE_NAME = "S_ID_HO_RATE_TYPE";
 }

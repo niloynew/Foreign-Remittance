@@ -15,37 +15,37 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "export-lcs", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ExportLCController {
 
-  private final CommandProcessor commandProcessor;
-  private final ExportLCService exportLCService;
+    private final CommandProcessor commandProcessor;
+    private final ExportLCService exportLCService;
 
-  public ExportLCController(CommandProcessor commandProcessor, ExportLCService exportLCService) {
-    this.commandProcessor = commandProcessor;
-    this.exportLCService = exportLCService;
-  }
-
-  @GetMapping
-  public ResponseEntity<?> getLcs(
-      Pageable pageable,
-      @RequestParam(value = "asPage", required = false) final boolean asPage,
-      @RequestParam(value = "name", required = false) String name,
-      @RequestParam(value = "ownerName", required = false) String ownerName,
-      @RequestParam(value = "address", required = false) String address,
-      @RequestParam(value = "country", required = false) String country,
-      @RequestParam(value = "cpName", required = false) String cpName,
-      @RequestParam(value = "cpEmail", required = false) String cpEmail) {
-    if (asPage) {
-      return ResponseEntity.ok(
-          exportLCService.getLcs(pageable, name, ownerName, address, country, cpName, cpEmail));
-    } else {
-      return ResponseEntity.ok(
-          exportLCService.getLcList(name, ownerName, address, country, cpName, cpEmail));
+    public ExportLCController(CommandProcessor commandProcessor, ExportLCService exportLCService) {
+        this.commandProcessor = commandProcessor;
+        this.exportLCService = exportLCService;
     }
-  }
 
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseStatus(ACCEPTED)
-  public ResponseEntity<?> saveExportLC(@RequestBody ExportLC exportLC) {
-    commandProcessor.executeResult(new SaveExportLCCommand(exportLC));
-    return ResponseEntity.accepted().build();
-  }
+    @GetMapping
+    public ResponseEntity<?> getLcs(
+            Pageable pageable,
+            @RequestParam(value = "asPage", required = false) final boolean asPage,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "ownerName", required = false) String ownerName,
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "country", required = false) String country,
+            @RequestParam(value = "cpName", required = false) String cpName,
+            @RequestParam(value = "cpEmail", required = false) String cpEmail) {
+        if (asPage) {
+            return ResponseEntity.ok(
+                    exportLCService.getLcs(pageable, name, ownerName, address, country, cpName, cpEmail));
+        } else {
+            return ResponseEntity.ok(
+                    exportLCService.getLcList(name, ownerName, address, country, cpName, cpEmail));
+        }
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(ACCEPTED)
+    public ResponseEntity<?> saveExportLC(@RequestBody ExportLC exportLC) {
+        commandProcessor.executeResult(new SaveExportLCCommand(exportLC));
+        return ResponseEntity.accepted().build();
+    }
 }
