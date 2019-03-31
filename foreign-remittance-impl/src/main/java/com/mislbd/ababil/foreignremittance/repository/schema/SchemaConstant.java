@@ -31,4 +31,6 @@ public class SchemaConstant {
   public static final String ID_CB_FUND_SOURCE_SEQUENCE_NAME = "S_ID_CB_FUND_SOURCE";
   public static final String REMITTANCE_CHARGE_MAPPING_TABLE = "ID_CHARGE_MAPPING";
   public static final String REMITTANCE_CHARGE_MAPPING_SEQUENCE_NAME = "S_ID_CHARGE_MAPPING";
+  public static final String EXPORT_LC_TABLE_NAME = "ID_EXPORT_LC";
+  public static final String EXPORT_LC_SEQUENCE_NAME = "S_ID_EXPORT_LC";
 }
