@@ -8,11 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class RateTypeMapper {
 
-  public ResultMapper<RateTypeEntity, RateType> entityToDomain() {
-    return entity ->
-        new RateType()
-            .setId(entity.getId())
-            .setName(entity.getName())
-            .setDescription(entity.getDescription());
-  }
+    public ResultMapper<RateTypeEntity, RateType> entityToDomain() {
+        return entity ->
+                new RateType()
+                        .setId(entity.getId())
+                        .setCode(entity.getCode())
+                        .setName(entity.getName())
+                        .setDescription(entity.getDescription());
+    }
 }

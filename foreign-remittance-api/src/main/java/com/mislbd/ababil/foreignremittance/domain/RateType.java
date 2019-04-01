@@ -2,36 +2,47 @@ package com.mislbd.ababil.foreignremittance.domain;
 
 public class RateType {
 
-  private long id;
+    private long id;
 
-  private String name;
+    private String code;
 
-  private String description;
+    private String name;
 
-  public long getId() {
-    return id;
-  }
+    private String description;
 
-  public RateType setId(long id) {
-    this.id = id;
-    return this;
-  }
+    public long getId() {
+        return id;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public RateType setId(long id) {
+        this.id = id;
+        return this;
+    }
 
-  public RateType setName(String name) {
-    this.name = name;
-    return this;
-  }
+    public String getCode() {
+        return code;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public RateType setCode(String code) {
+        this.code = code;
+        return this;
+    }
 
-  public RateType setDescription(String description) {
-    this.description = description;
-    return this;
-  }
+    public String getName() {
+        return name;
+    }
+
+    public RateType setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public RateType setDescription(String description) {
+        this.description = description;
+        return this;
+    }
 }
