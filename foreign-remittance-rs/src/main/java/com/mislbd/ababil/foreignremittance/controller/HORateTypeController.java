@@ -13,19 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "ho-rate-types", produces = MediaType.APPLICATION_JSON_VALUE)
 public class HORateTypeController {
 
-    private final HORateTypeService hoRateTypeService;
+  private final HORateTypeService hoRateTypeService;
 
-    public HORateTypeController(HORateTypeService hoRateTypeService) {
-        this.hoRateTypeService = hoRateTypeService;
-    }
+  public HORateTypeController(HORateTypeService hoRateTypeService) {
+    this.hoRateTypeService = hoRateTypeService;
+  }
 
-    @GetMapping
-    public ResponseEntity<?> getClientRates(
-            Pageable pageable, @RequestParam(value = "asPage", required = false) final boolean asPage) {
-        if (asPage) {
-            return ResponseEntity.ok(hoRateTypeService.getClientRateTypes(pageable));
-        } else {
-            return ResponseEntity.ok(hoRateTypeService.getClientRateTypes());
-        }
+  @GetMapping
+  public ResponseEntity<?> getClientRates(
+      Pageable pageable, @RequestParam(value = "asPage", required = false) final boolean asPage) {
+    if (asPage) {
+      return ResponseEntity.ok(hoRateTypeService.getClientRateTypes(pageable));
+    } else {
+      return ResponseEntity.ok(hoRateTypeService.getClientRateTypes());
     }
+  }
 }

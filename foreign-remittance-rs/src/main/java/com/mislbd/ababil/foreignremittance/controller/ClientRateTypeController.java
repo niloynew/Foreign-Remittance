@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "client-rate-types")
 public class ClientRateTypeController {
 
-    private final ClientRateTypeService clientRateTypeService;
+  private final ClientRateTypeService clientRateTypeService;
 
-    public ClientRateTypeController(ClientRateTypeService clientRateTypeService) {
-        this.clientRateTypeService = clientRateTypeService;
-    }
+  public ClientRateTypeController(ClientRateTypeService clientRateTypeService) {
+    this.clientRateTypeService = clientRateTypeService;
+  }
 
-    @GetMapping
-    public ResponseEntity<?> getClientRates(
-            Pageable pageable, @RequestParam(value = "asPage", required = false) final boolean asPage) {
-        if (asPage) {
-            return ResponseEntity.ok(clientRateTypeService.getClientRateTypes(pageable));
-        } else {
-            return ResponseEntity.ok(clientRateTypeService.getClientRateTypes());
-        }
+  @GetMapping
+  public ResponseEntity<?> getClientRates(
+      Pageable pageable, @RequestParam(value = "asPage", required = false) final boolean asPage) {
+    if (asPage) {
+      return ResponseEntity.ok(clientRateTypeService.getClientRateTypes(pageable));
+    } else {
+      return ResponseEntity.ok(clientRateTypeService.getClientRateTypes());
     }
+  }
 }
