@@ -4,17 +4,20 @@ import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = SchemaConstant.HO_RATE_TYPE_TABLE_NAME)
-public class HORateTypeEntity extends BaseEntity {
+@Table(name = SchemaConstant.CLIENT_RATE_TYPE_TABLE_NAME)
+public class RateTypeEntity extends BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "HO_RATE_TYPE_ID_GEN")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "CLIENT_RATE_TYPE_ID_GEN")
   @SequenceGenerator(
-      name = "HO_RATE_TYPE_ID_GEN",
+      name = "CLIENT_RATE_TYPE_ID_GEN",
       allocationSize = 1,
-      sequenceName = SchemaConstant.HO_RATE_TYPE_SEQUENCE_NAME)
+      sequenceName = SchemaConstant.CLIENT_RATE_TYPE_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
+
+  @Column(name = "CODE")
+  private String code;
 
   @Column(name = "NAME")
   private String name;
@@ -26,8 +29,17 @@ public class HORateTypeEntity extends BaseEntity {
     return id;
   }
 
-  public HORateTypeEntity setId(long id) {
+  public RateTypeEntity setId(long id) {
     this.id = id;
+    return this;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public RateTypeEntity setCode(String code) {
+    this.code = code;
     return this;
   }
 
@@ -35,7 +47,7 @@ public class HORateTypeEntity extends BaseEntity {
     return name;
   }
 
-  public HORateTypeEntity setName(String name) {
+  public RateTypeEntity setName(String name) {
     this.name = name;
     return this;
   }
@@ -44,7 +56,7 @@ public class HORateTypeEntity extends BaseEntity {
     return description;
   }
 
-  public HORateTypeEntity setDescription(String description) {
+  public RateTypeEntity setDescription(String description) {
     this.description = description;
     return this;
   }

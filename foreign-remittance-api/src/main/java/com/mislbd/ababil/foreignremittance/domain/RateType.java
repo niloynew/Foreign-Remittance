@@ -1,6 +1,6 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
-public class HORateType {
+public class RateType {
 
   private long id;
 
@@ -12,7 +12,7 @@ public class HORateType {
     return id;
   }
 
-  public HORateType setId(long id) {
+  public RateType setId(long id) {
     this.id = id;
     return this;
   }
@@ -21,7 +21,7 @@ public class HORateType {
     return name;
   }
 
-  public HORateType setName(String name) {
+  public RateType setName(String name) {
     this.name = name;
     return this;
   }
@@ -30,7 +30,7 @@ public class HORateType {
     return description;
   }
 
-  public HORateType setDescription(String description) {
+  public RateType setDescription(String description) {
     this.description = description;
     return this;
   }

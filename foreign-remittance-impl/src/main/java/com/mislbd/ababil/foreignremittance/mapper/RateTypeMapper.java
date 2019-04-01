@@ -1,16 +1,16 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
-import com.mislbd.ababil.foreignremittance.domain.ClientRateType;
-import com.mislbd.ababil.foreignremittance.repository.schema.ClientRateTypeEntity;
+import com.mislbd.ababil.foreignremittance.domain.RateType;
+import com.mislbd.ababil.foreignremittance.repository.schema.RateTypeEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClientRateTypeMapper {
+public class RateTypeMapper {
 
-  public ResultMapper<ClientRateTypeEntity, ClientRateType> entityToDomain() {
+  public ResultMapper<RateTypeEntity, RateType> entityToDomain() {
     return entity ->
-        new ClientRateType()
+        new RateType()
             .setId(entity.getId())
             .setName(entity.getName())
             .setDescription(entity.getDescription());

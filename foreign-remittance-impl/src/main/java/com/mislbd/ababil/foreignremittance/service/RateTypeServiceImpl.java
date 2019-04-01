@@ -1,7 +1,7 @@
 package com.mislbd.ababil.foreignremittance.service;
 
-import com.mislbd.ababil.foreignremittance.domain.ClientRateType;
-import com.mislbd.ababil.foreignremittance.mapper.ClientRateTypeMapper;
+import com.mislbd.ababil.foreignremittance.domain.RateType;
+import com.mislbd.ababil.foreignremittance.mapper.RateTypeMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ClientRateTypeRepository;
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
@@ -11,26 +11,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ClientRateTypeServiceImpl implements ClientRateTypeService {
+public class RateTypeServiceImpl implements RateTypeService {
 
   private final ClientRateTypeRepository clientRateTypeRepository;
-  private final ClientRateTypeMapper clientRateTypeMapper;
+  private final RateTypeMapper clientRateTypeMapper;
 
-  public ClientRateTypeServiceImpl(
-      ClientRateTypeRepository clientRateTypeRepository,
-      ClientRateTypeMapper clientRateTypeMapper) {
+  public RateTypeServiceImpl(
+      ClientRateTypeRepository clientRateTypeRepository, RateTypeMapper clientRateTypeMapper) {
     this.clientRateTypeRepository = clientRateTypeRepository;
     this.clientRateTypeMapper = clientRateTypeMapper;
   }
 
   @Override
-  public PagedResult<ClientRateType> getClientRateTypes(Pageable pageable) {
+  public PagedResult<RateType> getClientRateTypes(Pageable pageable) {
     return PagedResultBuilder.build(
         clientRateTypeRepository.findAll(pageable), clientRateTypeMapper.entityToDomain());
   }
 
   @Override
-  public List<ClientRateType> getClientRateTypes() {
+  public List<RateType> getClientRateTypes() {
     return ListResultBuilder.build(
         clientRateTypeRepository.findAll(), clientRateTypeMapper.entityToDomain());
   }
