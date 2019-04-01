@@ -4,6 +4,8 @@ public class BankType {
 
     private Long id;
 
+    private String code;
+
     private String name;
 
     private String description;
@@ -14,6 +16,15 @@ public class BankType {
 
     public BankType setId(Long id) {
         this.id = id;
+        return this;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public BankType setCode(String code) {
+        this.code = code;
         return this;
     }
 

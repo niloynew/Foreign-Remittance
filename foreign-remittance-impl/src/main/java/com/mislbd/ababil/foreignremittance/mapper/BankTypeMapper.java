@@ -12,6 +12,7 @@ public class BankTypeMapper {
         return entity ->
                 new BankType()
                         .setId(entity.getId())
+                        .setCode(entity.getCode())
                         .setName(entity.getName())
                         .setDescription(entity.getDescription());
     }

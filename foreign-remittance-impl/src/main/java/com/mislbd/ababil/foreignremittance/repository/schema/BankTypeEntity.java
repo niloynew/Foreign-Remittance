@@ -17,6 +17,9 @@ public class BankTypeEntity extends BaseEntity {
     @Column(name = "ID")
     private long id;
 
+    @Column(name = "CODE")
+    private String code;
+
     @Column(name = "NAME")
     private String name;
 
@@ -29,6 +32,15 @@ public class BankTypeEntity extends BaseEntity {
 
     public BankTypeEntity setId(long id) {
         this.id = id;
+        return this;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public BankTypeEntity setCode(String code) {
+        this.code = code;
         return this;
     }
 
