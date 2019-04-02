@@ -1,6 +1,8 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
 import static org.springframework.http.HttpStatus.ACCEPTED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.SaveExportLCCommand;
 import com.mislbd.ababil.foreignremittance.domain.ExportLC;
@@ -40,6 +42,11 @@ public class ExportLCController {
       return ResponseEntity.ok(
           exportLCService.getLcList(name, ownerName, address, country, cpName, cpEmail));
     }
+  }
+
+  @GetMapping(path = "/{id}")
+  public ResponseEntity<ExportLC> getLc(@PathVariable("id") Long id) {
+    return exportLCService.getLc(id).map(ResponseEntity::ok).orElseGet(status(NOT_FOUND)::build);
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
