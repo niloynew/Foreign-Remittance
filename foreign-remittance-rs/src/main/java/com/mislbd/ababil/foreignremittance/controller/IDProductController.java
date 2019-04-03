@@ -68,6 +68,7 @@ public class IDProductController {
     return status(ACCEPTED).build();
   }
 
+  @DeleteMapping(path = "/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Void> deleteIDProduct(@PathVariable("productId") Long productId) {
     commandProcessor.executeUpdate(new DeleteIDProductCommand(productId));
     return status(ACCEPTED).build();

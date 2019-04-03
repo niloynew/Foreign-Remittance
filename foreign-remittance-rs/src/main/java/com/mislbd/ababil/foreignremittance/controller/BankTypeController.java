@@ -1,5 +1,8 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.ResponseEntity.status;
+
 import com.mislbd.ababil.foreignremittance.domain.BankType;
 import com.mislbd.ababil.foreignremittance.service.BankTypeService;
 import com.mislbd.asset.commons.data.domain.PagedResult;
@@ -7,10 +10,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "bank-types", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -32,5 +32,13 @@ public class BankTypeController {
       List<BankType> fundSources = bankTypeService.getBankTypes();
       return ResponseEntity.ok(fundSources);
     }
+  }
+
+  @GetMapping(path = "/{bankTypeId}")
+  public ResponseEntity<BankType> getBankTypes(@PathVariable("bankTypeId") long bankTypeId) {
+    return bankTypeService
+        .getBankType(bankTypeId)
+        .map(ResponseEntity::ok)
+        .orElseGet(status(NOT_FOUND)::build);
   }
 }
