@@ -8,6 +8,7 @@ import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -52,5 +53,10 @@ public class ExportLCServiceImpl implements ExportLCService {
             ExportLCSpecification.findSpecificLcs(
                 name, ownerName, address, country, cpName, cpEmail)),
         exportLCMapper.entityToDomain());
+  }
+
+  @Override
+  public Optional<ExportLC> getLc(Long id) {
+    return exportLCRepository.findById(id).map(exportLCMapper.entityToDomain()::map);
   }
 }
