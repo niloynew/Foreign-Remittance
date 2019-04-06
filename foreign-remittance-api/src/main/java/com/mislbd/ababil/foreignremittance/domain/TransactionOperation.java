@@ -1,5 +1,7 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
 public class TransactionOperation {
@@ -11,6 +13,10 @@ public class TransactionOperation {
   private String description;
 
   @NotNull private long typeId;
+
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private RemittanceType remittanceType;
 
   public long getId() {
     return id;
@@ -45,6 +51,15 @@ public class TransactionOperation {
 
   public TransactionOperation setTypeId(long typeId) {
     this.typeId = typeId;
+    return this;
+  }
+
+  public RemittanceType getRemittanceType() {
+    return remittanceType;
+  }
+
+  public TransactionOperation setRemittanceType(RemittanceType remittanceType) {
+    this.remittanceType = remittanceType;
     return this;
   }
 }

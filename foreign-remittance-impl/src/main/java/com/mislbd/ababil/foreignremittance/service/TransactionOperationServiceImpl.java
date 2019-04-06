@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.domain.TransactionOperation;
 import com.mislbd.ababil.foreignremittance.mapper.TransactionOperationMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionOperationRepository;
@@ -25,18 +26,19 @@ public class TransactionOperationServiceImpl implements TransactionOperationServ
   }
 
   @Override
-  public PagedResult<TransactionOperation> getOperations(Pageable pageable, long typeId) {
+  public PagedResult<TransactionOperation> getOperations(
+      Pageable pageable, long typeId, RemittanceType remittanceType) {
     return PagedResultBuilder.build(
         transactionOperationRepository.findAll(
-            TransactionOperationSpecification.findOperations(typeId), pageable),
+            TransactionOperationSpecification.findOperations(typeId, remittanceType), pageable),
         transactionOperationMapper.entityToDomain());
   }
 
   @Override
-  public List<TransactionOperation> getOperations(long typeId) {
+  public List<TransactionOperation> getOperations(long typeId, RemittanceType remittanceType) {
     return ListResultBuilder.build(
         transactionOperationRepository.findAll(
-            TransactionOperationSpecification.findOperations(typeId)),
+            TransactionOperationSpecification.findOperations(typeId, remittanceType)),
         transactionOperationMapper.entityToDomain());
   }
 }

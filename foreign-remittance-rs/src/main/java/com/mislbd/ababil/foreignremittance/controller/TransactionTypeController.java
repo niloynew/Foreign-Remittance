@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.domain.TransactionType;
 import com.mislbd.ababil.foreignremittance.service.TransactionTypeService;
 import com.mislbd.asset.commons.data.domain.PagedResult;
@@ -24,12 +25,15 @@ public class TransactionTypeController {
 
   @GetMapping
   public ResponseEntity<?> getTransactionTypes(
-      Pageable pageable, @RequestParam(name = "asPage") final boolean asPage) {
+      Pageable pageable,
+      @RequestParam(name = "asPage") final boolean asPage,
+      @RequestParam(name = "remittance-type") final RemittanceType remittanceType) {
     if (asPage) {
-      PagedResult<TransactionType> pagedResults = transactionTypeService.getTypes(pageable);
+      PagedResult<TransactionType> pagedResults =
+          transactionTypeService.getTypes(pageable, remittanceType);
       return ResponseEntity.ok(pagedResults);
     } else {
-      List<TransactionType> types = transactionTypeService.getTypes();
+      List<TransactionType> types = transactionTypeService.getTypes(remittanceType);
       return ResponseEntity.ok(types);
     }
   }

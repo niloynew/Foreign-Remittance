@@ -14,6 +14,7 @@ public class TransactionOperationMapper {
             .setId(entity.getId())
             .setName(entity.getName())
             .setDescription(entity.getDescription())
-            .setTypeId(entity.getTransactionTypeEntity().getId());
+            .setTypeId(entity.getTransactionTypeEntity().getId())
+            .setRemittanceType(entity.getTransactionTypeEntity().getRemittanceType());
   }
 }

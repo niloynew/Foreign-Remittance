@@ -38,11 +38,11 @@ public class RemittanceTransaction {
 
   private List<BankInformation> bankInformation;
 
-  @NotNull private Long debitAccountTypeId;
+  @NotNull private AccountType debitAccountType;
 
   @NotNull private String debitAccountNumber;
 
-  @NotNull private Long creditAccountTypeId;
+  @NotNull private AccountType creditAccountType;
 
   @NotNull private String creditAccountNumber;
 
@@ -184,6 +184,15 @@ public class RemittanceTransaction {
     return this;
   }
 
+  public String getB2bInformation() {
+    return b2bInformation;
+  }
+
+  public RemittanceTransaction setB2bInformation(String b2bInformation) {
+    this.b2bInformation = b2bInformation;
+    return this;
+  }
+
   public List<BankInformation> getBankInformation() {
     return bankInformation;
   }
@@ -193,12 +202,12 @@ public class RemittanceTransaction {
     return this;
   }
 
-  public Long getDebitAccountTypeId() {
-    return debitAccountTypeId;
+  public AccountType getDebitAccountType() {
+    return debitAccountType;
   }
 
-  public RemittanceTransaction setDebitAccountTypeId(Long debitAccountTypeId) {
-    this.debitAccountTypeId = debitAccountTypeId;
+  public RemittanceTransaction setDebitAccountType(AccountType debitAccountType) {
+    this.debitAccountType = debitAccountType;
     return this;
   }
 
@@ -211,12 +220,12 @@ public class RemittanceTransaction {
     return this;
   }
 
-  public Long getCreditAccountTypeId() {
-    return creditAccountTypeId;
+  public AccountType getCreditAccountType() {
+    return creditAccountType;
   }
 
-  public RemittanceTransaction setCreditAccountTypeId(Long creditAccountTypeId) {
-    this.creditAccountTypeId = creditAccountTypeId;
+  public RemittanceTransaction setCreditAccountType(AccountType creditAccountType) {
+    this.creditAccountType = creditAccountType;
     return this;
   }
 
@@ -280,15 +289,6 @@ public class RemittanceTransaction {
 
   public RemittanceTransaction setExchangeGain(BigDecimal exchangeGain) {
     this.exchangeGain = exchangeGain;
-    return this;
-  }
-
-  public String getB2bInformation() {
-    return b2bInformation;
-  }
-
-  public RemittanceTransaction setB2bInformation(String b2bInformation) {
-    this.b2bInformation = b2bInformation;
     return this;
   }
 }

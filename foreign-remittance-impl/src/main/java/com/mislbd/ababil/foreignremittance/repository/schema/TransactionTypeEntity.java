@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import java.util.List;
 import javax.persistence.*;
 
@@ -22,6 +23,10 @@ public class TransactionTypeEntity extends BaseEntity {
 
   @Column(name = "Description")
   private String description;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "REMITTANCE_TYPE")
+  private RemittanceType remittanceType;
 
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "transactionTypeEntity", cascade = CascadeType.ALL)
   private List<TransactionOperationEntity> transactionOperationEntities;
@@ -60,6 +65,15 @@ public class TransactionTypeEntity extends BaseEntity {
   public TransactionTypeEntity setTransactionOperationEntities(
       List<TransactionOperationEntity> transactionOperationEntities) {
     this.transactionOperationEntities = transactionOperationEntities;
+    return this;
+  }
+
+  public RemittanceType getRemittanceType() {
+    return remittanceType;
+  }
+
+  public TransactionTypeEntity setRemittanceType(RemittanceType remittanceType) {
+    this.remittanceType = remittanceType;
     return this;
   }
 }

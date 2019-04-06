@@ -1,8 +1,10 @@
 package com.mislbd.ababil.foreignremittance.service;
 
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.domain.TransactionType;
 import com.mislbd.ababil.foreignremittance.mapper.TransactionTypeMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionTypeRepository;
+import com.mislbd.ababil.foreignremittance.repository.specification.TransactionTypeSpecification;
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
@@ -24,14 +26,18 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
   }
 
   @Override
-  public PagedResult<TransactionType> getTypes(Pageable pageable) {
+  public PagedResult<TransactionType> getTypes(Pageable pageable, RemittanceType remittanceType) {
     return PagedResultBuilder.build(
-        transactionTypeRepository.findAll(pageable), transactionTypeMapper.entityToDomain());
+        transactionTypeRepository.findAll(
+            TransactionTypeSpecification.findTransactionTypes(remittanceType), pageable),
+        transactionTypeMapper.entityToDomain());
   }
 
   @Override
-  public List<TransactionType> getTypes() {
+  public List<TransactionType> getTypes(RemittanceType remittanceType) {
     return ListResultBuilder.build(
-        transactionTypeRepository.findAll(), transactionTypeMapper.entityToDomain());
+        transactionTypeRepository.findAll(
+            TransactionTypeSpecification.findTransactionTypes(remittanceType)),
+        transactionTypeMapper.entityToDomain());
   }
 }

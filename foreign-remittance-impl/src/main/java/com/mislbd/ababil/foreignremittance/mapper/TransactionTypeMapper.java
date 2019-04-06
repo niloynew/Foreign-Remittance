@@ -13,6 +13,7 @@ public class TransactionTypeMapper {
         new TransactionType()
             .setId(entity.getId())
             .setName(entity.getName())
+            .setRemittanceType(entity.getRemittanceType())
             .setDescription(entity.getDescription());
   }
 }
