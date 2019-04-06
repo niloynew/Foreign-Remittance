@@ -1,6 +1,8 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
+import com.mislbd.ababil.contacts.repository.schema.AddressEntity;
+import com.mislbd.ababil.contacts.repository.schema.ContactInformationEntity;
 import javax.persistence.*;
 
 @Entity
@@ -28,41 +30,12 @@ public class ExportLCEntity extends BaseEntity {
   @Column(name = "DESIGNATION")
   private String designation;
 
-  @Column(name = "ADDRESS", length = 500)
-  private String address;
+  @Embedded private AddressEntity addressEntity;
 
-  @Column(name = "CITY")
-  private String city;
-
-  @Column(name = "POSTAL_CODE")
-  private String postalCode;
-
-  @Column(name = "PHONE")
-  private String phone;
-
-  @Column(name = "MOBILE")
-  private String mobile;
-
-  @Column(name = "WEB")
-  private String web;
-
-  @Column(name = "FAX")
-  private String fax;
-
-  @Column(name = "TELEX")
-  private String telex;
+  @Embedded private ContactInformationEntity contactInformationEntity;
 
   @Column(name = "BLACK_LISTED")
   private Boolean blackListed;
-
-  @Column(name = "COUNTRY")
-  private Long country;
-
-  @Column(name = "DIVISION")
-  private Long division;
-
-  @Column(name = "DISTRICT")
-  private Long district;
 
   @Column(name = "CP_NAME")
   private String cpName;
@@ -121,75 +94,22 @@ public class ExportLCEntity extends BaseEntity {
     return this;
   }
 
-  public String getAddress() {
-    return address;
+  public AddressEntity getAddressEntity() {
+    return addressEntity;
   }
 
-  public ExportLCEntity setAddress(String address) {
-    this.address = address;
+  public ExportLCEntity setAddressEntity(AddressEntity addressEntity) {
+    this.addressEntity = addressEntity;
     return this;
   }
 
-  public String getCity() {
-    return city;
+  public ContactInformationEntity getContactInformationEntity() {
+    return contactInformationEntity;
   }
 
-  public ExportLCEntity setCity(String city) {
-    this.city = city;
-    return this;
-  }
-
-  public String getPostalCode() {
-    return postalCode;
-  }
-
-  public ExportLCEntity setPostalCode(String postalCode) {
-    this.postalCode = postalCode;
-    return this;
-  }
-
-  public String getPhone() {
-    return phone;
-  }
-
-  public ExportLCEntity setPhone(String phone) {
-    this.phone = phone;
-    return this;
-  }
-
-  public String getMobile() {
-    return mobile;
-  }
-
-  public ExportLCEntity setMobile(String mobile) {
-    this.mobile = mobile;
-    return this;
-  }
-
-  public String getWeb() {
-    return web;
-  }
-
-  public ExportLCEntity setWeb(String web) {
-    this.web = web;
-    return this;
-  }
-
-  public String getFax() {
-    return fax;
-  }
-
-  public ExportLCEntity setFax(String fax) {
-    this.fax = fax;
-    return this;
-  }
-
-  public String getTelex() {
-    return telex;
-  }
-
-  public ExportLCEntity setTelex(String telex) {
-    this.telex = telex;
+  public ExportLCEntity setContactInformationEntity(
+      ContactInformationEntity contactInformationEntity) {
+    this.contactInformationEntity = contactInformationEntity;
     return this;
   }
 
@@ -199,33 +119,6 @@ public class ExportLCEntity extends BaseEntity {
 
   public ExportLCEntity setBlackListed(Boolean blackListed) {
     this.blackListed = blackListed;
-    return this;
-  }
-
-  public Long getCountry() {
-    return country;
-  }
-
-  public ExportLCEntity setCountry(Long country) {
-    this.country = country;
-    return this;
-  }
-
-  public Long getDivision() {
-    return division;
-  }
-
-  public ExportLCEntity setDivision(Long division) {
-    this.division = division;
-    return this;
-  }
-
-  public Long getDistrict() {
-    return district;
-  }
-
-  public ExportLCEntity setDistrict(Long district) {
-    this.district = district;
     return this;
   }
 
