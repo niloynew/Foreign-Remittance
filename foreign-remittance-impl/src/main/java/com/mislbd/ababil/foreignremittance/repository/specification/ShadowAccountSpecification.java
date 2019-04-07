@@ -1,7 +1,9 @@
 package com.mislbd.ababil.foreignremittance.repository.specification;
 
+import com.mislbd.ababil.foreignremittance.repository.schema.IDProductEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
 import java.time.LocalDate;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -18,6 +20,7 @@ public class ShadowAccountSpecification {
       String product) {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
+      Path<IDProductEntity> productRoot = root.get("product");
 
       if (number != null) {
         predicate = cb.and(predicate, cb.equal(root.get("number"), number));
@@ -50,7 +53,7 @@ public class ShadowAccountSpecification {
       }
 
       if (product != null) {
-        predicate = cb.and(predicate, cb.equal(root.get("product"), product));
+        predicate = cb.and(predicate, cb.equal(productRoot.get("id"), product));
       }
 
       return cb.and(predicate, cb.equal(root.get("isActive"), true));
