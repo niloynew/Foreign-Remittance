@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -15,7 +16,12 @@ public class NostroReconcileDto {
   private String benefInstitute;
   private String beneNameAndAddress;
   private String suppDetails;
+
+  // @JsonSerialize(using = LocalDateTimeSerializer.class)
+  // @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate valueDate;
+
   private String remark;
   private boolean selected;
   private String dcMark;
