@@ -62,7 +62,9 @@ public class ExportLCMapper {
         new ExportLC()
             .setId(entity.getId())
             .setName(entity.getName())
+            .setShortName(entity.getShortName())
             .setOwnerName(entity.getOwnerName())
+            .setDesignation(entity.getDesignation())
             .setAddress(addressEntityToDomain().map(entity.getAddressEntity()))
             .setContactInformation(
                 contactInformationEntityToDomain().map(entity.getContactInformationEntity()))
