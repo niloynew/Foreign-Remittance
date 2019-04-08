@@ -17,8 +17,8 @@ public class RemittanceChargeMappingEntity extends BaseEntity {
   private long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "OPERATION_ID")
-  private TransactionOperationEntity transactionOperation;
+  @JoinColumn(name = "TXN_TYPE_ID")
+  private TransactionTypeEntity transactionType;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "CHARGE_ID")
@@ -36,13 +36,12 @@ public class RemittanceChargeMappingEntity extends BaseEntity {
     return this;
   }
 
-  public TransactionOperationEntity getTransactionOperation() {
-    return transactionOperation;
+  public TransactionTypeEntity getTransactionType() {
+    return transactionType;
   }
 
-  public RemittanceChargeMappingEntity setTransactionOperation(
-      TransactionOperationEntity transactionOperation) {
-    this.transactionOperation = transactionOperation;
+  public RemittanceChargeMappingEntity setTransactionType(TransactionTypeEntity transactionType) {
+    this.transactionType = transactionType;
     return this;
   }
 
