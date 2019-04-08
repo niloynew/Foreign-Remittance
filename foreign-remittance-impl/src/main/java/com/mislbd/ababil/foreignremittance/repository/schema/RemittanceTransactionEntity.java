@@ -24,10 +24,6 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "REMITTANCE_TYPE")
   private RemittanceType remittanceType;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "OPERATION_ID")
-  private TransactionOperationEntity transactionOperation;
-
   @Column(name = "PAYMENT_PURPOSE_ID")
   private Long paymentPurposeId;
 
@@ -114,16 +110,6 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   public RemittanceTransactionEntity setRemittanceType(RemittanceType remittanceType) {
     this.remittanceType = remittanceType;
-    return this;
-  }
-
-  public TransactionOperationEntity getTransactionOperation() {
-    return transactionOperation;
-  }
-
-  public RemittanceTransactionEntity setTransactionOperation(
-      TransactionOperationEntity transactionOperation) {
-    this.transactionOperation = transactionOperation;
     return this;
   }
 

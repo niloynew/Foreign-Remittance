@@ -28,8 +28,8 @@ public class TransactionTypeEntity extends BaseEntity {
   @Column(name = "REMITTANCE_TYPE")
   private RemittanceType remittanceType;
 
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "transactionTypeEntity", cascade = CascadeType.ALL)
-  private List<TransactionOperationEntity> transactionOperationEntities;
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "transactionType", cascade = CascadeType.ALL)
+  private List<RemittanceChargeMappingEntity> remittanceChargeMappingEntities;
 
   public long getId() {
     return id;
@@ -58,22 +58,22 @@ public class TransactionTypeEntity extends BaseEntity {
     return this;
   }
 
-  public List<TransactionOperationEntity> getTransactionOperationEntities() {
-    return transactionOperationEntities;
-  }
-
-  public TransactionTypeEntity setTransactionOperationEntities(
-      List<TransactionOperationEntity> transactionOperationEntities) {
-    this.transactionOperationEntities = transactionOperationEntities;
-    return this;
-  }
-
   public RemittanceType getRemittanceType() {
     return remittanceType;
   }
 
   public TransactionTypeEntity setRemittanceType(RemittanceType remittanceType) {
     this.remittanceType = remittanceType;
+    return this;
+  }
+
+  public List<RemittanceChargeMappingEntity> getRemittanceChargeMappingEntities() {
+    return remittanceChargeMappingEntities;
+  }
+
+  public TransactionTypeEntity setRemittanceChargeMappingEntities(
+      List<RemittanceChargeMappingEntity> remittanceChargeMappingEntities) {
+    this.remittanceChargeMappingEntities = remittanceChargeMappingEntities;
     return this;
   }
 }

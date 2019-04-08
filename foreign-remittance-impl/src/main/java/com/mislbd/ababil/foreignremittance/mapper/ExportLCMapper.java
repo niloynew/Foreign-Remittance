@@ -53,7 +53,8 @@ public class ExportLCMapper {
             .setCpName(domain.getCpName())
             .setCpPhone(domain.getCpPhone())
             .setCpDesignation(domain.getCpDesignation())
-            .setCpEmail(domain.getCpEmail());
+            .setCpEmail(domain.getCpEmail())
+            .setBlackListed(false);
   }
 
   public ResultMapper<ExportLCEntity, ExportLC> entityToDomain() {

@@ -3,7 +3,7 @@ package com.mislbd.ababil.foreignremittance.mapper;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeMapping;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeMappingRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeRepository;
-import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionOperationRepository;
+import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionTypeRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeMappingEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
@@ -13,15 +13,15 @@ public class RemittanceChargeMappingMapper {
 
   private final RemittanceChargeMappingRepository remittanceChargeMappingRepository;
   private final RemittanceChargeRepository remittanceChargeRepository;
-  private final TransactionOperationRepository transactionOperationRepository;
+  private final TransactionTypeRepository transactionTypeRepository;
 
   public RemittanceChargeMappingMapper(
       RemittanceChargeMappingRepository remittanceChargeMappingRepository,
       RemittanceChargeRepository remittanceChargeRepository,
-      TransactionOperationRepository transactionOperationRepository) {
+      TransactionTypeRepository transactionTypeRepository) {
     this.remittanceChargeMappingRepository = remittanceChargeMappingRepository;
     this.remittanceChargeRepository = remittanceChargeRepository;
-    this.transactionOperationRepository = transactionOperationRepository;
+    this.transactionTypeRepository = transactionTypeRepository;
   }
 
   public ResultMapper<RemittanceChargeMappingEntity, RemittanceChargeMapping> entityToDomain() {
@@ -30,10 +30,11 @@ public class RemittanceChargeMappingMapper {
             .setId(entity.getId())
             .setChargeId(entity.getRemittanceCharge().getId())
             .setChargeName(entity.getRemittanceCharge().getChargeName())
-            .setOperationId(entity.getTransactionOperation().getId())
-            .setOperationName(entity.getTransactionOperation().getName())
             .setChargeModifiable(entity.isChargeModifiable())
-            .setTypeName(entity.getTransactionOperation().getTransactionTypeEntity().getName());
+            .setTypeName(
+                entity.getTransactionType() != null ? entity.getTransactionType().getName() : null)
+            .setTypeId(
+                entity.getTransactionType() != null ? entity.getTransactionType().getId() : null);
   }
 
   public ResultMapper<RemittanceChargeMapping, RemittanceChargeMappingEntity> domainToEntity() {
@@ -44,7 +45,6 @@ public class RemittanceChargeMappingMapper {
             .setId(domain.getId())
             .setChargeModifiable(domain.getChargeModifiable())
             .setRemittanceCharge(remittanceChargeRepository.findById(domain.getChargeId()).get())
-            .setTransactionOperation(
-                transactionOperationRepository.findById(domain.getOperationId()).get());
+            .setTransactionType(transactionTypeRepository.getOne(domain.getTypeId()));
   }
 }

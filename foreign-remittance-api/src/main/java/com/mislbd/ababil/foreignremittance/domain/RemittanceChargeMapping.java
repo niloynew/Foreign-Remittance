@@ -10,13 +10,11 @@ public class RemittanceChargeMapping {
 
   private String chargeName;
 
-  private String operationName;
+  private String typeName;
 
-  @NotNull private Long operationId;
+  @NotNull private Long typeId;
 
   private Boolean chargeModifiable;
-
-  private String typeName;
 
   public long getId() {
     return id;
@@ -45,21 +43,21 @@ public class RemittanceChargeMapping {
     return this;
   }
 
-  public String getOperationName() {
-    return operationName;
+  public String getTypeName() {
+    return typeName;
   }
 
-  public RemittanceChargeMapping setOperationName(String operationName) {
-    this.operationName = operationName;
+  public RemittanceChargeMapping setTypeName(String typeName) {
+    this.typeName = typeName;
     return this;
   }
 
-  public Long getOperationId() {
-    return operationId;
+  public Long getTypeId() {
+    return typeId;
   }
 
-  public RemittanceChargeMapping setOperationId(Long operationId) {
-    this.operationId = operationId;
+  public RemittanceChargeMapping setTypeId(Long typeId) {
+    this.typeId = typeId;
     return this;
   }
 
@@ -69,15 +67,6 @@ public class RemittanceChargeMapping {
 
   public RemittanceChargeMapping setChargeModifiable(Boolean chargeModifiable) {
     this.chargeModifiable = chargeModifiable;
-    return this;
-  }
-
-  public String getTypeName() {
-    return typeName;
-  }
-
-  public RemittanceChargeMapping setTypeName(String typeName) {
-    this.typeName = typeName;
     return this;
   }
 }
