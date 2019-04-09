@@ -2,7 +2,6 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import com.mislbd.ababil.foreignremittance.domain.AccountType;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.*;
@@ -20,9 +19,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "ID")
   private long id;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "REMITTANCE_TYPE")
-  private RemittanceType remittanceType;
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "TXN_TYPE_ID")
+  private TransactionTypeEntity transactionType;
 
   @Column(name = "PAYMENT_PURPOSE_ID")
   private Long paymentPurposeId;
@@ -31,10 +30,10 @@ public class RemittanceTransactionEntity extends BaseEntity {
   private String commodityDescription;
 
   @Column(name = "TRANSACTION_REFERENCE_NUMBER")
-  private Long transactionReferenceNumber;
+  private String transactionReferenceNumber;
 
   @Column(name = "INSTRUCTION_NUMBER")
-  private Long instructionNumber;
+  private String instructionNumber;
 
   @Column(name = "CB_FUND_SOURCE")
   private Long cbFundSourceId;
@@ -49,8 +48,11 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "APPLICANT_ACC_NUMBER")
   private String applicantAccountNumber;
 
-  @Column(name = "BENEFICIARY_NUMBER")
-  private Long beneficiaryId;
+  @Column(name = "BENEFICIARY_NAME")
+  private String beneficiaryName;
+
+  @Column(name = "BENEFICIARY_ADDRESS")
+  private String beneficiaryAddress;
 
   @Column(name = "BENEFICIARY_ACC_NUMBER")
   private String beneficiaryAccountNumber;
@@ -59,8 +61,7 @@ public class RemittanceTransactionEntity extends BaseEntity {
   private String b2bInformation;
 
   // ##### Banks Information #####//
-
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "remittanceTransaction")
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "remittanceTransaction")
   private List<BankInformationEntity> bankInformationEntity;
 
   // ##### Financial Information #####//
@@ -77,14 +78,26 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "CREDIT_ACC_NUMBER")
   private String creditAccountNumber;
 
+  @Column(name = "CHARGE_ACC_TYPE")
+  private AccountType chargeAccountType;
+
+  @Column(name = "CHARGE_ACC_NUMBER")
+  private String chargeAccountNumber;
+
   @Column(name = "CURRENCY_CODE")
   private String currencyCode;
 
   @Column(name = "CLIENT_RATE_TYPE")
   private Long clientRateTypeId;
 
+  @Column(name = "CLIENT_RATE")
+  private BigDecimal clientRate;
+
   @Column(name = "HO_RATE_TYPE")
   private Long hoRateTypeId;
+
+  @Column(name = "HO_RATE")
+  private BigDecimal hoRate;
 
   @Column(name = "AMOUNT_FCY")
   private BigDecimal amountFcy;
@@ -92,8 +105,8 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "AMOUNT_LCY")
   private BigDecimal amountLcy;
 
-  @Column(name = "EXCHANGE_GAIN")
-  private BigDecimal exchangeGain;
+  @Column(name = "EXCHANGE_GAIN_LOSS")
+  private BigDecimal exchangeGainLoss;
 
   public long getId() {
     return id;
@@ -104,12 +117,12 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
-  public RemittanceType getRemittanceType() {
-    return remittanceType;
+  public TransactionTypeEntity getTransactionType() {
+    return transactionType;
   }
 
-  public RemittanceTransactionEntity setRemittanceType(RemittanceType remittanceType) {
-    this.remittanceType = remittanceType;
+  public RemittanceTransactionEntity setTransactionType(TransactionTypeEntity transactionType) {
+    this.transactionType = transactionType;
     return this;
   }
 
@@ -131,21 +144,21 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
-  public Long getTransactionReferenceNumber() {
+  public String getTransactionReferenceNumber() {
     return transactionReferenceNumber;
   }
 
   public RemittanceTransactionEntity setTransactionReferenceNumber(
-      Long transactionReferenceNumber) {
+      String transactionReferenceNumber) {
     this.transactionReferenceNumber = transactionReferenceNumber;
     return this;
   }
 
-  public Long getInstructionNumber() {
+  public String getInstructionNumber() {
     return instructionNumber;
   }
 
-  public RemittanceTransactionEntity setInstructionNumber(Long instructionNumber) {
+  public RemittanceTransactionEntity setInstructionNumber(String instructionNumber) {
     this.instructionNumber = instructionNumber;
     return this;
   }
@@ -186,12 +199,21 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
-  public Long getBeneficiaryId() {
-    return beneficiaryId;
+  public String getBeneficiaryName() {
+    return beneficiaryName;
   }
 
-  public RemittanceTransactionEntity setBeneficiaryId(Long beneficiaryId) {
-    this.beneficiaryId = beneficiaryId;
+  public RemittanceTransactionEntity setBeneficiaryName(String beneficiaryName) {
+    this.beneficiaryName = beneficiaryName;
+    return this;
+  }
+
+  public String getBeneficiaryAddress() {
+    return beneficiaryAddress;
+  }
+
+  public RemittanceTransactionEntity setBeneficiaryAddress(String beneficiaryAddress) {
+    this.beneficiaryAddress = beneficiaryAddress;
     return this;
   }
 
@@ -259,6 +281,24 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
+  public AccountType getChargeAccountType() {
+    return chargeAccountType;
+  }
+
+  public RemittanceTransactionEntity setChargeAccountType(AccountType chargeAccountType) {
+    this.chargeAccountType = chargeAccountType;
+    return this;
+  }
+
+  public String getChargeAccountNumber() {
+    return chargeAccountNumber;
+  }
+
+  public RemittanceTransactionEntity setChargeAccountNumber(String chargeAccountNumber) {
+    this.chargeAccountNumber = chargeAccountNumber;
+    return this;
+  }
+
   public String getCurrencyCode() {
     return currencyCode;
   }
@@ -277,12 +317,30 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
+  public BigDecimal getClientRate() {
+    return clientRate;
+  }
+
+  public RemittanceTransactionEntity setClientRate(BigDecimal clientRate) {
+    this.clientRate = clientRate;
+    return this;
+  }
+
   public Long getHoRateTypeId() {
     return hoRateTypeId;
   }
 
   public RemittanceTransactionEntity setHoRateTypeId(Long hoRateTypeId) {
     this.hoRateTypeId = hoRateTypeId;
+    return this;
+  }
+
+  public BigDecimal getHoRate() {
+    return hoRate;
+  }
+
+  public RemittanceTransactionEntity setHoRate(BigDecimal hoRate) {
+    this.hoRate = hoRate;
     return this;
   }
 
@@ -304,12 +362,12 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
-  public BigDecimal getExchangeGain() {
-    return exchangeGain;
+  public BigDecimal getExchangeGainLoss() {
+    return exchangeGainLoss;
   }
 
-  public RemittanceTransactionEntity setExchangeGain(BigDecimal exchangeGain) {
-    this.exchangeGain = exchangeGain;
+  public RemittanceTransactionEntity setExchangeGainLoss(BigDecimal exchangeGainLoss) {
+    this.exchangeGainLoss = exchangeGainLoss;
     return this;
   }
 }

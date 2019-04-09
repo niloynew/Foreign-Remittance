@@ -1,23 +1,23 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
-import com.mislbd.ababil.foreignremittance.domain.BankInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.BankInformationEntity;
+import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionTypeRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RemittanceTransactionMapper {
 
   private final RemittanceTransactionRepository remittanceTransactionRepository;
+  private final TransactionTypeRepository transactionTypeRepository;
 
   public RemittanceTransactionMapper(
-      RemittanceTransactionRepository remittanceTransactionRepository) {
+      RemittanceTransactionRepository remittanceTransactionRepository,
+      TransactionTypeRepository transactionTypeRepository) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
+    this.transactionTypeRepository = transactionTypeRepository;
   }
 
   public ResultMapper<RemittanceTransactionEntity, RemittanceTransaction> entityToDomain() {
@@ -49,21 +49,7 @@ public class RemittanceTransactionMapper {
             //            .setHoRateTypeId(entity.getHoRateTypeId())
             //            .setAmountFcy(entity.getAmountFcy())
             //            .setAmountLcy(entity.getAmountLcy())
-            .setExchangeGain(entity.getExchangeGain());
-  }
-
-  private List<BankInformation> getConvertedBankInformation(
-      List<BankInformationEntity> bankInformationEntities) {
-    List<BankInformation> bankInformationList = new ArrayList<>();
-    if (bankInformationEntities != null && !bankInformationEntities.isEmpty()) {
-      for (BankInformationEntity entity : bankInformationEntities) {
-        BankInformation bankInformation = new BankInformation();
-        bankInformation.setBankTypeId(entity.getBankTypeId());
-        bankInformation.setSwiftCode(entity.getSwiftCode());
-        bankInformationList.add(bankInformation);
-      }
-    }
-    return bankInformationList;
+            .setExchangeGainLoss(entity.getExchangeGainLoss());
   }
 
   public ResultMapper<RemittanceTransaction, RemittanceTransactionEntity> domainToEntity() {
@@ -71,45 +57,32 @@ public class RemittanceTransactionMapper {
         remittanceTransactionRepository
             .findById(Long.valueOf(domain.getId()))
             .orElseGet(RemittanceTransactionEntity::new)
-            //            .setTransactionTypeId(domain.getTransactionTypeId())
-            //            .setRemittanceType(domain.getRemittanceType())
-            //            .setOperationId(domain.getOperationId())
-            //            .setPaymentPurposeId(domain.getPaymentPurposeId())
-            //            .setCommodityDescription(domain.getCommodityDescription())
-            //            .setTransactionReferenceNumber(domain.getTransactionReferenceNumber())
-            //            .setInstructionNumber(domain.getInstructionNumber())
-            //            .setCbFundSourceId(domain.getCbFundSourceId())
-            //            .setDeliveryTerm(domain.getDeliveryTerm())
-            //            .setApplicantId(domain.getApplicantId())
-            //            .setApplicantAccountNumber(domain.getApplicantAccountNumber())
-            //            .setBeneficiaryId(domain.getBeneficiaryId())
-            //            .setBeneficiaryAccountNumber(domain.getBeneficiaryAccountNumber())
-            //            .setB2bInformation(domain.getB2bInformation())
-            //            .setBankInformationEntity(
-            //                getConvertedBankInformationEntity(domain.getBankInformation()))
-            //            .setDebitAccountTypeId(domain.getDebitAccountType())
-            //            .setDebitAccountNumber(domain.getDebitAccountNumber())
-            //            .setCreditAccountTypeId(domain.getCreditAccountTypeId())
-            //            .setCreditAccountNumber(domain.getCreditAccountNumber())
-            //            .setCurrencyCode(domain.getCurrencyCode())
-            //            .setClientRateTypeId(domain.getClientRateTypeId())
-            //            .setHoRateTypeId(domain.getHoRateTypeId())
-            //            .setAmountFcy(domain.getAmountFcy())
-            //            .setAmountLcy(domain.getAmountLcy())
-            .setExchangeGain(domain.getExchangeGain());
-  }
-
-  private List<BankInformationEntity> getConvertedBankInformationEntity(
-      List<BankInformation> bankInformationList) {
-    List<BankInformationEntity> bankInformationEntities = new ArrayList<>();
-    if (bankInformationList != null && !bankInformationList.isEmpty()) {
-      for (BankInformation bankInformation : bankInformationList) {
-        BankInformationEntity entity = new BankInformationEntity();
-        entity.setBankTypeId(bankInformation.getBankTypeId());
-        entity.setSwiftCode(bankInformation.getSwiftCode());
-        bankInformationEntities.add(entity);
-      }
-    }
-    return bankInformationEntities;
+            .setTransactionType(transactionTypeRepository.getOne(domain.getTransactionTypeId()))
+            .setPaymentPurposeId(domain.getPaymentPurposeId())
+            .setCommodityDescription(domain.getCommodityDescription())
+            .setTransactionReferenceNumber(domain.getTransactionReferenceNumber())
+            .setInstructionNumber(domain.getInstructionNumber())
+            .setCbFundSourceId(domain.getCbFundSourceId())
+            .setDeliveryTerm(domain.getDeliveryTerm())
+            .setApplicantId(domain.getApplicantId())
+            .setApplicantAccountNumber(domain.getApplicantAccountNumber())
+            .setBeneficiaryName(domain.getBeneficiaryName())
+            .setBeneficiaryAddress(domain.getBeneficiaryAddress())
+            .setBeneficiaryAccountNumber(domain.getBeneficiaryAccountNumber())
+            .setB2bInformation(domain.getB2bInformation())
+            .setDebitAccountType(domain.getDebitAccountType())
+            .setDebitAccountNumber(domain.getDebitAccountNumber())
+            .setCreditAccountType(domain.getCreditAccountType())
+            .setCreditAccountNumber(domain.getCreditAccountNumber())
+            .setChargeAccountType(domain.getChargeAccountType())
+            .setChargeAccountNumber(domain.getChargeAccountNumber())
+            .setCurrencyCode(domain.getCurrencyCode())
+            .setClientRateTypeId(domain.getClientRateTypeId())
+            .setClientRate(domain.getClientRate())
+            .setHoRateTypeId(domain.getHoRateTypeId())
+            .setHoRate(domain.getHoRate())
+            .setAmountFcy(domain.getAmountFcy())
+            .setAmountLcy(domain.getAmountLcy())
+            .setExchangeGainLoss(domain.getExchangeGainLoss());
   }
 }

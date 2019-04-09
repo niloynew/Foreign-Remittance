@@ -10,17 +10,13 @@ public class RemittanceTransaction {
 
   @NotNull private Long transactionTypeId;
 
-  @NotNull private RemittanceType remittanceType;
-
-  @NotNull private Long operationId;
-
   private Long paymentPurposeId;
 
   private String commodityDescription;
 
-  private Long transactionReferenceNumber;
+  private String transactionReferenceNumber;
 
-  private Long instructionNumber;
+  private String instructionNumber;
 
   private Long cbFundSourceId;
 
@@ -30,7 +26,13 @@ public class RemittanceTransaction {
 
   @NotNull private String applicantAccountNumber;
 
-  @NotNull private Long beneficiaryId;
+  private Boolean isBeneficiaryBankCustomer;
+
+  private String beneficiaryRelationWithApplicant;
+
+  @NotNull private String beneficiaryName;
+
+  @NotNull private String beneficiaryAddress;
 
   @NotNull private String beneficiaryAccountNumber;
 
@@ -46,17 +48,27 @@ public class RemittanceTransaction {
 
   @NotNull private String creditAccountNumber;
 
+  @NotNull private AccountType chargeAccountType;
+
+  @NotNull private String chargeAccountNumber;
+
   @NotNull private String currencyCode;
 
   private Long clientRateTypeId;
 
+  private BigDecimal clientRate;
+
   private Long hoRateTypeId;
+
+  private BigDecimal hoRate;
 
   @NotNull private BigDecimal amountFcy;
 
   @NotNull private BigDecimal amountLcy;
 
-  private BigDecimal exchangeGain;
+  private BigDecimal exchangeGainLoss;
+
+  private List<RemittanceChargeInformation> remittanceChargeInformationList;
 
   public long getId() {
     return id;
@@ -73,24 +85,6 @@ public class RemittanceTransaction {
 
   public RemittanceTransaction setTransactionTypeId(Long transactionTypeId) {
     this.transactionTypeId = transactionTypeId;
-    return this;
-  }
-
-  public RemittanceType getRemittanceType() {
-    return remittanceType;
-  }
-
-  public RemittanceTransaction setRemittanceType(RemittanceType remittanceType) {
-    this.remittanceType = remittanceType;
-    return this;
-  }
-
-  public Long getOperationId() {
-    return operationId;
-  }
-
-  public RemittanceTransaction setOperationId(Long operationId) {
-    this.operationId = operationId;
     return this;
   }
 
@@ -112,20 +106,20 @@ public class RemittanceTransaction {
     return this;
   }
 
-  public Long getTransactionReferenceNumber() {
+  public String getTransactionReferenceNumber() {
     return transactionReferenceNumber;
   }
 
-  public RemittanceTransaction setTransactionReferenceNumber(Long transactionReferenceNumber) {
+  public RemittanceTransaction setTransactionReferenceNumber(String transactionReferenceNumber) {
     this.transactionReferenceNumber = transactionReferenceNumber;
     return this;
   }
 
-  public Long getInstructionNumber() {
+  public String getInstructionNumber() {
     return instructionNumber;
   }
 
-  public RemittanceTransaction setInstructionNumber(Long instructionNumber) {
+  public RemittanceTransaction setInstructionNumber(String instructionNumber) {
     this.instructionNumber = instructionNumber;
     return this;
   }
@@ -166,12 +160,40 @@ public class RemittanceTransaction {
     return this;
   }
 
-  public Long getBeneficiaryId() {
-    return beneficiaryId;
+  public Boolean getBeneficiaryBankCustomer() {
+    return isBeneficiaryBankCustomer;
   }
 
-  public RemittanceTransaction setBeneficiaryId(Long beneficiaryId) {
-    this.beneficiaryId = beneficiaryId;
+  public RemittanceTransaction setBeneficiaryBankCustomer(Boolean beneficiaryBankCustomer) {
+    isBeneficiaryBankCustomer = beneficiaryBankCustomer;
+    return this;
+  }
+
+  public String getBeneficiaryRelationWithApplicant() {
+    return beneficiaryRelationWithApplicant;
+  }
+
+  public RemittanceTransaction setBeneficiaryRelationWithApplicant(
+      String beneficiaryRelationWithApplicant) {
+    this.beneficiaryRelationWithApplicant = beneficiaryRelationWithApplicant;
+    return this;
+  }
+
+  public String getBeneficiaryName() {
+    return beneficiaryName;
+  }
+
+  public RemittanceTransaction setBeneficiaryName(String beneficiaryName) {
+    this.beneficiaryName = beneficiaryName;
+    return this;
+  }
+
+  public String getBeneficiaryAddress() {
+    return beneficiaryAddress;
+  }
+
+  public RemittanceTransaction setBeneficiaryAddress(String beneficiaryAddress) {
+    this.beneficiaryAddress = beneficiaryAddress;
     return this;
   }
 
@@ -238,6 +260,24 @@ public class RemittanceTransaction {
     return this;
   }
 
+  public AccountType getChargeAccountType() {
+    return chargeAccountType;
+  }
+
+  public RemittanceTransaction setChargeAccountType(AccountType chargeAccountType) {
+    this.chargeAccountType = chargeAccountType;
+    return this;
+  }
+
+  public String getChargeAccountNumber() {
+    return chargeAccountNumber;
+  }
+
+  public RemittanceTransaction setChargeAccountNumber(String chargeAccountNumber) {
+    this.chargeAccountNumber = chargeAccountNumber;
+    return this;
+  }
+
   public String getCurrencyCode() {
     return currencyCode;
   }
@@ -256,12 +296,30 @@ public class RemittanceTransaction {
     return this;
   }
 
+  public BigDecimal getClientRate() {
+    return clientRate;
+  }
+
+  public RemittanceTransaction setClientRate(BigDecimal clientRate) {
+    this.clientRate = clientRate;
+    return this;
+  }
+
   public Long getHoRateTypeId() {
     return hoRateTypeId;
   }
 
   public RemittanceTransaction setHoRateTypeId(Long hoRateTypeId) {
     this.hoRateTypeId = hoRateTypeId;
+    return this;
+  }
+
+  public BigDecimal getHoRate() {
+    return hoRate;
+  }
+
+  public RemittanceTransaction setHoRate(BigDecimal hoRate) {
+    this.hoRate = hoRate;
     return this;
   }
 
@@ -283,12 +341,22 @@ public class RemittanceTransaction {
     return this;
   }
 
-  public BigDecimal getExchangeGain() {
-    return exchangeGain;
+  public BigDecimal getExchangeGainLoss() {
+    return exchangeGainLoss;
   }
 
-  public RemittanceTransaction setExchangeGain(BigDecimal exchangeGain) {
-    this.exchangeGain = exchangeGain;
+  public RemittanceTransaction setExchangeGainLoss(BigDecimal exchangeGainLoss) {
+    this.exchangeGainLoss = exchangeGainLoss;
+    return this;
+  }
+
+  public List<RemittanceChargeInformation> getRemittanceChargeInformationList() {
+    return remittanceChargeInformationList;
+  }
+
+  public RemittanceTransaction setRemittanceChargeInformationList(
+      List<RemittanceChargeInformation> remittanceChargeInformationList) {
+    this.remittanceChargeInformationList = remittanceChargeInformationList;
     return this;
   }
 }
