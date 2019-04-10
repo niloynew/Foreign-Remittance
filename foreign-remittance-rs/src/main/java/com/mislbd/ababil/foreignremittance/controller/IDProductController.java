@@ -11,6 +11,7 @@ import com.mislbd.ababil.foreignremittance.service.IDProductService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.commons.data.domain.PagedResult;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -29,14 +30,20 @@ public class IDProductController {
   }
 
   @GetMapping
-  public ResponseEntity<PagedResult<IDProduct>> getIDProducts(
+  public ResponseEntity<?> getIDProducts(
       Pageable pageable,
+      @RequestParam(value = "asPage", required = false) final boolean asPage,
       @RequestParam(value = "name", required = false) final String name,
       @RequestParam(value = "code", required = false) final String code,
       @RequestParam(value = "currency", required = false) final String currency) {
-    PagedResult<IDProduct> pagedIDProducts =
-        idproductService.findIDProducts(pageable, name, code, currency);
-    return new ResponseEntity<>(pagedIDProducts, OK);
+    if (asPage) {
+      PagedResult<IDProduct> pagedIDProducts =
+          idproductService.findIDProducts(pageable, name, code, currency);
+      return ResponseEntity.ok(pagedIDProducts);
+    } else {
+      List<IDProduct> products = idproductService.findIDProducts(name, code, currency);
+      return ResponseEntity.ok(products);
+    }
   }
 
   @GetMapping(path = "/{productId}")
@@ -61,6 +68,7 @@ public class IDProductController {
     return status(ACCEPTED).build();
   }
 
+  @DeleteMapping(path = "/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Void> deleteIDProduct(@PathVariable("productId") Long productId) {
     commandProcessor.executeUpdate(new DeleteIDProductCommand(productId));
     return status(ACCEPTED).build();

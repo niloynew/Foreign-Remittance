@@ -21,7 +21,140 @@ public enum Error {
       message = localeMessages.get(this.getModule() + this.getCode()).orElse("IDProduct not found");
       return message;
     }
-  };
+  },
+  GENERATED_SHADOW_ACCOUNT_NUMBER_NOT_FOUND("231", "002") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages
+              .get(this.getModule() + this.getCode())
+              .orElse("Generated shadow account number not found.");
+      return message;
+    }
+  },
+
+  CHARGE_AMOUNT_NOT_FOUND("230", "0004") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages.get(this.getModule() + this.getCode()).orElse("Charge amount not found.");
+      return message;
+    }
+  },
+
+  CHARGE_CONFIGURATION_CONFLICT_FOUND("230", "0002") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages
+              .get(this.getModule() + this.getCode())
+              .orElse("Charge configuration exists");
+      return message;
+    }
+  },
+
+  CHARGE_SLAB_NOT_FOUND("230", "0003") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages.get(this.getModule() + this.getCode()).orElse("Charge slab not found.");
+      return message;
+    }
+  },
+
+  CHARGE_PERCENTAGE_NOT_FOUND("230", "0005") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages
+              .get(this.getModule() + this.getCode())
+              .orElse("Charge percentage not found.");
+      return message;
+    }
+  },
+
+  CHARGE_VAT_AMOUNT_NOT_FOUND("230", "0006") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages.get(this.getModule() + this.getCode()).orElse("VAT amount not found.");
+      return message;
+    }
+  },
+
+  CHARGE_VAT_PERCENTAGE_NOT_FOUND("230", "0007") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages.get(this.getModule() + this.getCode()).orElse("VAT percentage not found.");
+      return message;
+    }
+  },
+
+  CHARGE_MIN_MAX_EXCEPTION("230", "0008") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message = localeMessages.get(this.getModule() + this.getCode()).orElse("");
+      return message;
+    }
+  },
+  ;
 
   // region <R>
   Error(final String module, final String code) {
@@ -76,4 +209,5 @@ public enum Error {
     }
   }
   // endregion
+
 }

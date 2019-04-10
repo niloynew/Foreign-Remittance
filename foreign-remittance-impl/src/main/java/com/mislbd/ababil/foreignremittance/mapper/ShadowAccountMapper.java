@@ -23,11 +23,14 @@ public class ShadowAccountMapper {
     return entity ->
         new Account()
             .setId(entity.getId())
-            .setProductId(String.valueOf(entity.getProduct().getId()))
+            .setProductId(entity.getProduct().getId())
+            .setProductName(entity.getProduct().getName())
             .setShadowAccountNumber(entity.getNumber())
+            .setAccountTitle(entity.getName())
+            .setNostroAccountNumber(entity.getNostroAccountNumber())
             .setCurrencyCode(entity.getCurrencyCode())
-            .setBankId(entity.getBankId() != null ? String.valueOf(entity.getBankId()) : null)
-            .setBranchId(entity.getBranchId() != null ? String.valueOf(entity.getBranchId()) : null)
+            .setBankId(entity.getBankId())
+            .setBranchId(entity.getBranchId())
             .setAccountOpenDate(entity.getAccountOpenDate())
             .setBalanceCcy(entity.getBalanceCcy())
             .setBalanceLcy(entity.getBalanceLcy());
@@ -36,18 +39,21 @@ public class ShadowAccountMapper {
   public ResultMapper<Account, ShadowAccountEntity> domainToEntity() {
     return domain ->
         shadowAccountRepository
-            .findById(domain.getId())
+            .findByNumber(domain.getShadowAccountNumber())
             .orElseGet(ShadowAccountEntity::new)
+            .setId(domain.getId())
             .setProduct(
                 domain.getProductId() != null
-                    ? idProductRepository.getOne(Long.valueOf(domain.getProductId()))
+                    ? idProductRepository.getOne(domain.getProductId())
                     : null)
             .setNumber(domain.getShadowAccountNumber())
             .setName(domain.getAccountTitle())
+            .setNostroAccountNumber(domain.getNostroAccountNumber())
             .setCurrencyCode(domain.getCurrencyCode())
             .setAccountOpenDate(domain.getAccountOpenDate())
-            .setBankId(domain.getBankId() != null ? Long.valueOf(domain.getBankId()) : null)
-            .setBranchId(domain.getBranchId() != null ? Long.valueOf(domain.getBranchId()) : null)
-            .setBalanceCcy(domain.getBalanceCcy());
+            .setBankId(domain.getBankId())
+            .setBranchId(domain.getBranchId())
+            .setBalanceCcy(domain.getBalanceCcy())
+            .setActive(true);
   }
 }

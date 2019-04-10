@@ -7,6 +7,7 @@ import com.mislbd.ababil.foreignremittance.repository.specification.ShadowAccoun
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,16 +25,52 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
   }
 
   @Override
-  public PagedResult<Account> findActiveAccounts(Pageable pageable) {
+  public PagedResult<Account> findActiveAccounts(
+      Pageable pageable,
+      String shadowAccountNumber,
+      String name,
+      String nostroAccountNumber,
+      String bank,
+      String branch,
+      LocalDate accountOpenDate,
+      String currency,
+      String product) {
     return PagedResultBuilder.build(
-        shadowAccountRepository.findAll(ShadowAccountSpecification.searchSpecification(), pageable),
+        shadowAccountRepository.findAll(
+            ShadowAccountSpecification.searchSpecification(
+                shadowAccountNumber,
+                name,
+                nostroAccountNumber,
+                bank,
+                branch,
+                accountOpenDate,
+                currency,
+                product),
+            pageable),
         shadowAccountMapper.entityToDomain());
   }
 
   @Override
-  public List<Account> findActiveAccounts() {
+  public List<Account> findActiveAccounts(
+      String shadowAccountNumber,
+      String name,
+      String nostroAccountNumber,
+      String bank,
+      String branch,
+      LocalDate accountOpenDate,
+      String currency,
+      String product) {
     return ListResultBuilder.build(
-        shadowAccountRepository.findAll(ShadowAccountSpecification.searchSpecification()),
+        shadowAccountRepository.findAll(
+            ShadowAccountSpecification.searchSpecification(
+                shadowAccountNumber,
+                name,
+                nostroAccountNumber,
+                bank,
+                branch,
+                accountOpenDate,
+                currency,
+                product)),
         shadowAccountMapper.entityToDomain());
   }
 }

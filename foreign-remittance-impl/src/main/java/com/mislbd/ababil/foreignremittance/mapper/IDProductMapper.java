@@ -6,7 +6,7 @@ import com.mislbd.ababil.foreignremittance.repository.schema.IDProductEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
 
-@Component("IDProductMapper")
+@Component
 public class IDProductMapper {
   private final IDProductRepository idProductRepository;
 

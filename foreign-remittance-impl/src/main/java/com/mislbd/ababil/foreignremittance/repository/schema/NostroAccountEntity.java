@@ -10,12 +10,19 @@ import javax.persistence.*;
 public class NostroAccountEntity extends BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "NOSTRO_ACCOUNT_ID_GEN")
+  @SequenceGenerator(
+      name = "NOSTRO_ACCOUNT_ID_GEN",
+      allocationSize = 1,
+      sequenceName = SchemaConstant.NOSTRO_ACCOUNT_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
 
-  @Column(name = "AccountNumber")
-  private String number;
+  @Column(name = "NostroAccountNumber")
+  private String nostroAccountNumber;
+
+  @Column(name = "ShadowAccountNumber")
+  private String shadowAccountNumber;
 
   @Column(name = "AccountName")
   private String name;
@@ -54,12 +61,21 @@ public class NostroAccountEntity extends BaseEntity {
     return this;
   }
 
-  public String getNumber() {
-    return number;
+  public String getNostroAccountNumber() {
+    return nostroAccountNumber;
   }
 
-  public NostroAccountEntity setNumber(String number) {
-    this.number = number;
+  public NostroAccountEntity setNostroAccountNumber(String nostroAccountNumber) {
+    this.nostroAccountNumber = nostroAccountNumber;
+    return this;
+  }
+
+  public String getShadowAccountNumber() {
+    return shadowAccountNumber;
+  }
+
+  public NostroAccountEntity setShadowAccountNumber(String shadowAccountNumber) {
+    this.shadowAccountNumber = shadowAccountNumber;
     return this;
   }
 
