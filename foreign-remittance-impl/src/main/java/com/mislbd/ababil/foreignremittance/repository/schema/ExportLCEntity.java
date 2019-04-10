@@ -1,7 +1,6 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
-import com.mislbd.ababil.contacts.repository.schema.AddressEntity;
 import com.mislbd.ababil.contacts.repository.schema.ContactInformationEntity;
 import javax.persistence.*;
 
@@ -30,7 +29,37 @@ public class ExportLCEntity extends BaseEntity {
   @Column(name = "DESIGNATION")
   private String designation;
 
-  @Embedded private AddressEntity addressEntity;
+  //  @Embedded private AddressEntity addressEntity;
+
+  @Column(name = "STREET")
+  private String street;
+
+  @Column(name = "BUILDING_IDENTIFIER")
+  private String buildingIdentifier;
+
+  @Column(name = "SUIT_IDENTIFIER")
+  private String suitIdentifier;
+
+  @Column(name = "FLOOR_IDENTIFIER")
+  private String floorIdentifier;
+
+  @Column(name = "DISTRICT_NAME")
+  private String districtName;
+
+  @Column(name = "PO_BOX_NUMBER")
+  private String poBoxNumber;
+
+  @Column(name = "POST_CODE")
+  private String postCode;
+
+  @Column(name = "CITY")
+  private String city;
+
+  @Column(name = "STATE")
+  private String state;
+
+  @Column(name = "COUNTRY")
+  private String country;
 
   @Embedded private ContactInformationEntity contactInformationEntity;
 
@@ -94,12 +123,102 @@ public class ExportLCEntity extends BaseEntity {
     return this;
   }
 
-  public AddressEntity getAddressEntity() {
-    return addressEntity;
+  //  public AddressEntity getAddressEntity() {
+  //    return addressEntity;
+  //  }
+  //
+  //  public ExportLCEntity setAddressEntity(AddressEntity addressEntity) {
+  //    this.addressEntity = addressEntity;
+  //    return this;
+  //  }
+
+  public String getStreet() {
+    return street;
   }
 
-  public ExportLCEntity setAddressEntity(AddressEntity addressEntity) {
-    this.addressEntity = addressEntity;
+  public ExportLCEntity setStreet(String street) {
+    this.street = street;
+    return this;
+  }
+
+  public String getBuildingIdentifier() {
+    return buildingIdentifier;
+  }
+
+  public ExportLCEntity setBuildingIdentifier(String buildingIdentifier) {
+    this.buildingIdentifier = buildingIdentifier;
+    return this;
+  }
+
+  public String getSuitIdentifier() {
+    return suitIdentifier;
+  }
+
+  public ExportLCEntity setSuitIdentifier(String suitIdentifier) {
+    this.suitIdentifier = suitIdentifier;
+    return this;
+  }
+
+  public String getFloorIdentifier() {
+    return floorIdentifier;
+  }
+
+  public ExportLCEntity setFloorIdentifier(String floorIdentifier) {
+    this.floorIdentifier = floorIdentifier;
+    return this;
+  }
+
+  public String getDistrictName() {
+    return districtName;
+  }
+
+  public ExportLCEntity setDistrictName(String districtName) {
+    this.districtName = districtName;
+    return this;
+  }
+
+  public String getPoBoxNumber() {
+    return poBoxNumber;
+  }
+
+  public ExportLCEntity setPoBoxNumber(String poBoxNumber) {
+    this.poBoxNumber = poBoxNumber;
+    return this;
+  }
+
+  public String getPostCode() {
+    return postCode;
+  }
+
+  public ExportLCEntity setPostCode(String postCode) {
+    this.postCode = postCode;
+    return this;
+  }
+
+  public String getCity() {
+    return city;
+  }
+
+  public ExportLCEntity setCity(String city) {
+    this.city = city;
+    return this;
+  }
+
+  public String getState() {
+    return state;
+  }
+
+  public ExportLCEntity setState(String state) {
+    this.state = state;
+    return this;
+  }
+
+  public String getCountry() {
+    return country;
+  }
+
+  public ExportLCEntity setCountry(String country) {
+    this.country = country;
     return this;
   }
 
