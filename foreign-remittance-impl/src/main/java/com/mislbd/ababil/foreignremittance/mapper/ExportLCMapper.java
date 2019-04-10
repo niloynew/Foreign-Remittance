@@ -1,9 +1,7 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
-import com.mislbd.ababil.contacts.domain.Address;
 import com.mislbd.ababil.contacts.domain.ContactInformation;
 import com.mislbd.ababil.contacts.repository.jpa.*;
-import com.mislbd.ababil.contacts.repository.schema.AddressEntity;
 import com.mislbd.ababil.contacts.repository.schema.ContactInformationEntity;
 import com.mislbd.ababil.foreignremittance.domain.ExportLC;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ExportLCRepository;
@@ -15,25 +13,25 @@ import org.springframework.stereotype.Component;
 public class ExportLCMapper {
 
   private final ExportLCRepository exportLCRepository;
-  private final DivisionRepository divisionRepository;
-  private final DistrictRepository districtRepository;
-  private final UpazillaRepository upazillaRepository;
-  private final PostCodeRepository postCodeRepository;
-  private final CountryRepository countryRepository;
+  //  private final DivisionRepository divisionRepository;
+  //  private final DistrictRepository districtRepository;
+  //  private final UpazillaRepository upazillaRepository;
+  //  private final PostCodeRepository postCodeRepository;
+  //  private final CountryRepository countryRepository;
 
-  public ExportLCMapper(
-      ExportLCRepository exportLCRepository,
-      DivisionRepository divisionRepository,
-      DistrictRepository districtRepository,
-      UpazillaRepository upazillaRepository,
-      PostCodeRepository postCodeRepository,
-      CountryRepository countryRepository) {
+  public ExportLCMapper(ExportLCRepository exportLCRepository
+      //      DivisionRepository divisionRepository,
+      //      DistrictRepository districtRepository,
+      //      UpazillaRepository upazillaRepository,
+      //      PostCodeRepository postCodeRepository,
+      //      CountryRepository countryRepository
+      ) {
     this.exportLCRepository = exportLCRepository;
-    this.divisionRepository = divisionRepository;
-    this.districtRepository = districtRepository;
-    this.upazillaRepository = upazillaRepository;
-    this.postCodeRepository = postCodeRepository;
-    this.countryRepository = countryRepository;
+    //    this.divisionRepository = divisionRepository;
+    //    this.districtRepository = districtRepository;
+    //    this.upazillaRepository = upazillaRepository;
+    //    this.postCodeRepository = postCodeRepository;
+    //    this.countryRepository = countryRepository;
   }
 
   public ResultMapper<ExportLC, ExportLCEntity> domainToEntity() {
@@ -46,7 +44,17 @@ public class ExportLCMapper {
             .setShortName(domain.getShortName())
             .setOwnerName(domain.getOwnerName())
             .setDesignation(domain.getDesignation())
-            .setAddressEntity(addressDomainToEntity().map(domain.getAddress()))
+            //            .setAddressEntity(addressDomainToEntity().map(domain.getAddress()))
+            .setStreet(domain.getStreet())
+            .setBuildingIdentifier(domain.getBuildingIdentifier())
+            .setSuitIdentifier(domain.getSuitIdentifier())
+            .setFloorIdentifier(domain.getFloorIdentifier())
+            .setDistrictName(domain.getDistrictName())
+            .setPoBoxNumber(domain.getPoBoxNumber())
+            .setPostCode(domain.getPostCode())
+            .setCity(domain.getCity())
+            .setState(domain.getState())
+            .setCountry(domain.getCountry())
             .setContactInformationEntity(
                 contactInformationDomainToEntity().map(domain.getContactInformation()))
             .setBlackListed(domain.getBlackListed())
@@ -65,38 +73,48 @@ public class ExportLCMapper {
             .setShortName(entity.getShortName())
             .setOwnerName(entity.getOwnerName())
             .setDesignation(entity.getDesignation())
-            .setAddress(addressEntityToDomain().map(entity.getAddressEntity()))
+            //            .setAddress(addressEntityToDomain().map(entity.getAddressEntity()))
+            .setStreet(entity.getStreet())
+            .setBuildingIdentifier(entity.getBuildingIdentifier())
+            .setSuitIdentifier(entity.getSuitIdentifier())
+            .setFloorIdentifier(entity.getFloorIdentifier())
+            .setDistrictName(entity.getDistrictName())
+            .setPoBoxNumber(entity.getPoBoxNumber())
+            .setPostCode(entity.getPostCode())
+            .setCity(entity.getCity())
+            .setState(entity.getState())
+            .setCountry(entity.getCountry())
             .setContactInformation(
                 contactInformationEntityToDomain().map(entity.getContactInformationEntity()))
             .setCpName(entity.getCpName())
             .setCpEmail(entity.getCpEmail());
   }
 
-  private ResultMapper<Address, AddressEntity> addressDomainToEntity() {
-    return domain -> {
-      AddressEntity entity = new AddressEntity();
-      entity.setAddressLine(domain.getAddressLine());
-      entity.setDivision(divisionRepository.findById(domain.getDivisionId()).get());
-      entity.setDistrict(districtRepository.getOne(domain.getDistrictId()));
-      entity.setUpazilla(upazillaRepository.getOne(domain.getDistrictId()));
-      entity.setPostCode(postCodeRepository.getOne(domain.getPostCodeId()));
-      entity.setCountry(countryRepository.getOne(domain.getCountryId()));
-      return entity;
-    };
-  }
-
-  private ResultMapper<AddressEntity, Address> addressEntityToDomain() {
-    return entity -> {
-      Address domain = new Address();
-      domain.setAddressLine(entity.getAddressLine());
-      domain.setDivisionId(entity.getDivision().getId());
-      domain.setDistrictId(entity.getDistrict().getId());
-      domain.setUpazillaId(entity.getUpazilla().getId());
-      domain.setPostCodeId(entity.getPostCode().getId());
-      domain.setCountryId(entity.getCountry().getId());
-      return domain;
-    };
-  }
+  //  private ResultMapper<Address, AddressEntity> addressDomainToEntity() {
+  //    return domain -> {
+  //      AddressEntity entity = new AddressEntity();
+  //      entity.setAddressLine(domain.getAddressLine());
+  //      entity.setDivision(divisionRepository.findById(domain.getDivisionId()).get());
+  //      entity.setDistrict(districtRepository.getOne(domain.getDistrictId()));
+  //      entity.setUpazilla(upazillaRepository.getOne(domain.getDistrictId()));
+  //      entity.setPostCode(postCodeRepository.getOne(domain.getPostCodeId()));
+  //      entity.setCountry(countryRepository.getOne(domain.getCountryId()));
+  //      return entity;
+  //    };
+  //  }
+  //
+  //  private ResultMapper<AddressEntity, Address> addressEntityToDomain() {
+  //    return entity -> {
+  //      Address domain = new Address();
+  //      domain.setAddressLine(entity.getAddressLine());
+  //      domain.setDivisionId(entity.getDivision().getId());
+  //      domain.setDistrictId(entity.getDistrict().getId());
+  //      domain.setUpazillaId(entity.getUpazilla().getId());
+  //      domain.setPostCodeId(entity.getPostCode().getId());
+  //      domain.setCountryId(entity.getCountry().getId());
+  //      return domain;
+  //    };
+  //  }
 
   private ResultMapper<ContactInformation, ContactInformationEntity>
       contactInformationDomainToEntity() {
