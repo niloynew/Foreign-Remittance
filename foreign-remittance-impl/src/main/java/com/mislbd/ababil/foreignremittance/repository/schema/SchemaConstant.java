@@ -37,4 +37,6 @@ public class SchemaConstant {
   public static final String CLIENT_RATE_TYPE_SEQUENCE_NAME = "S_ID_RATE_TYPE";
   public static final String BANK_TYPE_TABLE_NAME = "ID_BANK_TYPE";
   public static final String BANK_TYPE_SEQUENCE_NAME = "S_ID_BANK_TYPE";
+  public static final String SWIFT_MSG_SEQUENCE_NAME = "S_SWIFT_MSG";
+  public static final String NOSTRO_TXN_RECORD_SEQUENCE_NAME = "S_ID_PRODUCT";
 }

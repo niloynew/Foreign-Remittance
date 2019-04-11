@@ -157,6 +157,10 @@ configure(subprojects) { project ->
 				"org.springframework.data:spring-data-rest-hal-browser",
 				"org.springframework.boot:spring-boot-devtools",
 				"org.projectlombok:lombok",
+				"org.springframework.cloud:spring-cloud-stream",
+				"org.springframework.cloud:spring-cloud-starter-stream-kafka",
+				"com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8"			
+
 		)
 
 		implementation(
@@ -189,5 +193,11 @@ idea {
 		delegateActions {
 			delegateBuildRunToGradle = true
 		}
+	}
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.RELEASE"
 	}
 }
