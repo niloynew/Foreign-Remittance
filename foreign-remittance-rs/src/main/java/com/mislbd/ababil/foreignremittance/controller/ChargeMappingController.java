@@ -1,9 +1,11 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
+import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceChargeMappingCommand;
+import com.mislbd.ababil.foreignremittance.command.DeleteChargeMappingCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeMapping;
 import com.mislbd.ababil.foreignremittance.service.ChargeMappingService;
 import com.mislbd.asset.command.api.CommandProcessor;
@@ -29,11 +31,16 @@ public class ChargeMappingController {
 
   @GetMapping
   public ResponseEntity<?> getChargeMappings(
-      Pageable pageable, @RequestParam(value = "asPage", required = false) final boolean asPage) {
+      Pageable pageable,
+      @RequestParam(value = "asPage", required = false) final boolean asPage,
+      @RequestParam(value = "typeId", required = false) final Long typeId,
+      @RequestParam(value = "chargeId", required = false) final Long chargeId,
+      @RequestParam(value = "chargeModifiable", required = false) final Boolean chargeModifiable) {
     if (asPage) {
-      return ResponseEntity.ok(chargeMappingService.findAll(pageable));
+      return ResponseEntity.ok(
+          chargeMappingService.findAll(pageable, typeId, chargeId, chargeModifiable));
     } else {
-      return ResponseEntity.ok(chargeMappingService.findAll());
+      return ResponseEntity.ok(chargeMappingService.findAll(typeId, chargeId, chargeModifiable));
     }
   }
 
@@ -44,5 +51,11 @@ public class ChargeMappingController {
         .body(
             commandProcessor.executeResult(
                 new CreateRemittanceChargeMappingCommand(chargeMapping)));
+  }
+
+  @DeleteMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Void> deleteChargeMapping(@PathVariable("id") Long id) {
+    commandProcessor.executeUpdate(new DeleteChargeMappingCommand(id));
+    return status(ACCEPTED).build();
   }
 }
