@@ -22,6 +22,22 @@ public enum Error {
       return message;
     }
   },
+
+  CHARGE_MAPPING_NOT_FOUND("232", "0001") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message = localeMessages.get(this.getModule() + this.getCode()).orElse("IDProduct not found");
+      return message;
+    }
+  },
+
   GENERATED_SHADOW_ACCOUNT_NUMBER_NOT_FOUND("231", "002") {
     private String message;
 

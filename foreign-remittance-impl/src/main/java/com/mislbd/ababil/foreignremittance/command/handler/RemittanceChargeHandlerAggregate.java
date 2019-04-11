@@ -2,6 +2,7 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceChargeCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceChargeMappingCommand;
+import com.mislbd.ababil.foreignremittance.command.DeleteChargeMappingCommand;
 import com.mislbd.ababil.foreignremittance.command.UpdateRemittanceChargeCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceCharge;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeSlab;
@@ -187,5 +188,16 @@ public class RemittanceChargeHandlerAggregate {
         remittanceChargeMappingMapper.domainToEntity().map(command.getPayload());
     remittanceChargeMappingRepository.save(chargeMappingEntity);
     return CommandResponse.of(chargeMappingEntity.getId());
+  }
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Void> deleteChargeMapping(DeleteChargeMappingCommand command) {
+    RemittanceChargeMappingEntity chargeMappingEntity =
+        remittanceChargeMappingRepository
+            .findById(command.getPayload())
+            .orElseThrow(ChargeMappingNotFoundException::new);
+    remittanceChargeMappingRepository.delete(chargeMappingEntity);
+    return CommandResponse.asVoid();
   }
 }
