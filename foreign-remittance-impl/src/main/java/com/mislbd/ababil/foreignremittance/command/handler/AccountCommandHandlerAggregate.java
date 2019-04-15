@@ -38,6 +38,7 @@ public class AccountCommandHandlerAggregate {
   @Transactional
   @CommandHandler
   public CommandResponse<Void> saveShadowAccount(SaveShadowAccountCommand command) {
+
     ShadowAccountEntity shadowAccountEntity =
         shadowAccountMapper.domainToEntity().map(command.getPayload());
     shadowAccountNumberProviderService.makeAccountUsed(shadowAccountEntity.getNumber());
