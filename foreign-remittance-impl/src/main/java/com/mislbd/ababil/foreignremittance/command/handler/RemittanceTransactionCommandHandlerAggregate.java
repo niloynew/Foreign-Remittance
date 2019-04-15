@@ -22,19 +22,16 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final RemittanceTransactionMapper transactionMapper;
   private final BankInformationRepository bankInformationRepository;
   private final BankInformationMapper bankInformationMapper;
-  private final TransactionService transactionService;
 
   public RemittanceTransactionCommandHandlerAggregate(
       RemittanceTransactionRepository transactionRepository,
       RemittanceTransactionMapper transactionMapper,
       BankInformationRepository bankInformationRepository,
-      BankInformationMapper bankInformationMapper,
-      TransactionService transactionService) {
+      BankInformationMapper bankInformationMapper) {
     this.transactionRepository = transactionRepository;
     this.transactionMapper = transactionMapper;
     this.bankInformationRepository = bankInformationRepository;
     this.bankInformationMapper = bankInformationMapper;
-    this.transactionService = transactionService;
   }
 
   @Transactional

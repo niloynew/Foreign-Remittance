@@ -1,8 +1,6 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.foreignremittance.command.CreateSwiftMsgCommand;
-import com.mislbd.ababil.foreignremittance.mapper.RemittanceMsgDtoMapper;
-import com.mislbd.ababil.foreignremittance.repository.jpa.SwiftMsgRepository;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
