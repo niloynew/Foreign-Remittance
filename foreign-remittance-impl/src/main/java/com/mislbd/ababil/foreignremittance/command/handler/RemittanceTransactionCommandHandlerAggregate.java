@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Aggregate
 public class RemittanceTransactionCommandHandlerAggregate {
 
-    private static final Long DISBURSEMENT_ACTIVITY_ID = 501L;
+    private static final Long DISBURSEMENT_ACTIVITY_ID = 701L;
     private static final String SYSTEM_EXCHANGE_RATE_TYPE = "SYSTEM_EXCHANGE_RATE_TYPE";
     private final RemittanceTransactionRepository transactionRepository;
     private final RemittanceTransactionMapper transactionMapper;
@@ -61,6 +61,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
          * Save entries in BankInformation table
          * transaction begin for inward remittance
          * transaction from inward remittance charge by remittanceChargeInformationList
+         * add exchange gain
          * */
 
         AuditInformation auditInformation = new AuditInformation();
@@ -88,6 +89,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
                 transactionRepository
                         .save(remittanceTransactionEntity)
                         .getId();
+
         List<BankInformation> bankInformationList = command.getPayload().getBankInformation();
         if (!bankInformationList.isEmpty())
             bankInformationList.forEach(
@@ -99,6 +101,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
                         bankInformationRepository.save(bankInformationEntity);
                     });
 
-        return CommandResponse.of(disbursementService.doTransaction(remittanceTransactionEntity, auditInformation));
+        return CommandResponse.of(disbursementService.doTransaction(remittanceTransactionEntity, auditInformation, command.getPayload().getRemittanceChargeInformationList()));
     }
 }
