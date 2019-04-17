@@ -33,16 +33,29 @@ public class DisbursementService {
 
         // Managing Debit transaction
         ShadowAccountEntity shadowAccountEntity = shadowAccountRepository.findByNumber(remittanceTransactionEntity.getDebitAccountNumber()).get();
-        transactionService.doGlTransaction(remittanceTransactionMapper.getNetPayableGLDebit(remittanceTransactionEntity, shadowAccountEntity.getProduct().getGeneralLedgerId(), auditInformation), TransactionRequestType.TRANSFER);
+        transactionService.doGlTransaction(remittanceTransactionMapper
+                .getNetPayableGLDebit(
+                        remittanceTransactionEntity,
+                        shadowAccountEntity.getProduct().getProductGLCode(),
+                        auditInformation),
+                TransactionRequestType.TRANSFER);
 
         // Managing Credit transaction
         switch (remittanceTransactionEntity.getCreditAccountType()) {
             case GL:
-                transactionService.doGlTransaction(remittanceTransactionMapper.getNetPayableGLCredit(remittanceTransactionEntity, auditInformation), TransactionRequestType.TRANSFER);
+                transactionService.doGlTransaction(remittanceTransactionMapper
+                        .getNetPayableGLCredit(
+                                remittanceTransactionEntity,
+                                auditInformation),
+                        TransactionRequestType.TRANSFER);
                 break;
 
             case CASA:
-                transactionService.doCasaTransaction(remittanceTransactionMapper.getNetPayableCASACredit(remittanceTransactionEntity, auditInformation), TransactionRequestType.TRANSFER);
+                transactionService.doCasaTransaction(remittanceTransactionMapper
+                        .getNetPayableCASACredit(
+                                remittanceTransactionEntity,
+                                auditInformation),
+                        TransactionRequestType.TRANSFER);
                 break;
         }
         // Managing charge transaction

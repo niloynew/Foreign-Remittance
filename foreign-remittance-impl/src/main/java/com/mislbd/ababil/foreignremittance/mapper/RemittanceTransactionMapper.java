@@ -165,7 +165,7 @@ public class RemittanceTransactionMapper {
         return null;
     }
 
-    public GlTransactionRequest getNetPayableGLDebit(RemittanceTransactionEntity request, long generalLedgerId, AuditInformation auditInformation) {
+    public GlTransactionRequest getNetPayableGLDebit(RemittanceTransactionEntity request, String productGLCode, AuditInformation auditInformation) {
         GlTransactionRequest glRequest = new GlTransactionRequest();
         glRequest
                 .setActivityId(activityId)
@@ -188,7 +188,7 @@ public class RemittanceTransactionMapper {
                 .setApprovalFlowInstanceId(auditInformation.getProcessId())
                 .setInitiatorModule("ID")
                 .setInitiatorBranch(auditInformation.getUserBranch())
-                .setGlCode(request.getCreditAccountNumber());
+                .setGlCode(productGLCode);
         return glRequest;
     }
 }

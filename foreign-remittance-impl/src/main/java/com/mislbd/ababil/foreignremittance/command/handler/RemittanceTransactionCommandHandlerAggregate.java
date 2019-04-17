@@ -81,7 +81,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
                         auditInformation.getUserBranch().longValue()))
                 .setGlobalTransactionNo(
                         remittanceTransactionEntity.getGlobalTransactionNo() == null
-                                ? transactionService.getGlobalTransactionNumber(command.getExecutedBy(), 501L)
+                                ? transactionService.getGlobalTransactionNumber(command.getExecutedBy(), DISBURSEMENT_ACTIVITY_ID)
                                 : remittanceTransactionEntity.getGlobalTransactionNo())
         .setExchangeRate(transactionService.getSystemExchangeRate(remittanceTransactionEntity.getCurrencyCode()))
         .setExchangeRateType(Long.valueOf(configurationService.getConfiguration(SYSTEM_EXCHANGE_RATE_TYPE).get().getValue()));
