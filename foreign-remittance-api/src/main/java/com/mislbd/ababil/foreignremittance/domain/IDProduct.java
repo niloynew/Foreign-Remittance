@@ -19,14 +19,18 @@ public class IDProduct implements Serializable {
   @NotNull(message = "Code is required")
   private String code;
 
+  private Long productGLId;
+
+  private String productGLCode;
+
   //  @Positive
-  //  @NotNull(message = "General ledger is required")
-  private long generalLedgerId;
+  //  @NotNull(message = "Exchange Gain General ledger is required")
+  private Long exchangeGainGLId;
+
+  private String exchangeGainGLCode;
 
   //  @NotNull(message = "Currency is required")
   private List<String> currencies;
-
-  // region <Getter and Setter>
 
   public long getId() {
     return id;
@@ -55,12 +59,39 @@ public class IDProduct implements Serializable {
     return this;
   }
 
-  public long getGeneralLedgerId() {
-    return generalLedgerId;
+  public Long getProductGLId() {
+    return productGLId;
   }
 
-  public IDProduct setGeneralLedgerId(long generalLedgerId) {
-    this.generalLedgerId = generalLedgerId;
+  public IDProduct setProductGLId(Long productGLId) {
+    this.productGLId = productGLId;
+    return this;
+  }
+
+  public String getProductGLCode() {
+    return productGLCode;
+  }
+
+  public IDProduct setProductGLCode(String productGLCode) {
+    this.productGLCode = productGLCode;
+    return this;
+  }
+
+  public Long getExchangeGainGLId() {
+    return exchangeGainGLId;
+  }
+
+  public IDProduct setExchangeGainGLId(Long exchangeGainGLId) {
+    this.exchangeGainGLId = exchangeGainGLId;
+    return this;
+  }
+
+  public String getExchangeGainGLCode() {
+    return exchangeGainGLCode;
+  }
+
+  public IDProduct setExchangeGainGLCode(String exchangeGainGLCode) {
+    this.exchangeGainGLCode = exchangeGainGLCode;
     return this;
   }
 
@@ -72,5 +103,4 @@ public class IDProduct implements Serializable {
     this.currencies = currencies;
     return this;
   }
-  // endregion
 }

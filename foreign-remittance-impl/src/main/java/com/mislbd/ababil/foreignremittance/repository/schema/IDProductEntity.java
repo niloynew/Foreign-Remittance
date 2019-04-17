@@ -30,7 +30,17 @@ public class IDProductEntity extends BaseEntity implements Serializable {
   @Column(name = "CURRENCY_CODE")
   private List<String> currencies;
 
-  private long generalLedgerId;
+  @Column(name = "PRODUCT_GL_ID")
+  private Long productGLId;
+
+  @Column(name = "PRODUCT_GL_CODE")
+  private String productGLCode;
+
+  @Column(name = "EXCHANGE_GL_ID")
+  private Long exchangeGainGLId;
+
+  @Column(name = "EXCHANGE_GL_CODE")
+  private String exchangeGainGLCode;
 
   // ### This part is for mapping with other entities ###//
 
@@ -40,13 +50,11 @@ public class IDProductEntity extends BaseEntity implements Serializable {
   @OneToMany(mappedBy = "product")
   private List<ShadowAccountEntity> shadowAccounts;
 
-  // region <Getter and Setter>
-
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public IDProductEntity setId(long id) {
+  public IDProductEntity setId(Long id) {
     this.id = id;
     return this;
   }
@@ -78,12 +86,39 @@ public class IDProductEntity extends BaseEntity implements Serializable {
     return this;
   }
 
-  public long getGeneralLedgerId() {
-    return generalLedgerId;
+  public Long getProductGLId() {
+    return productGLId;
   }
 
-  public IDProductEntity setGeneralLedgerId(long generalLedgerId) {
-    this.generalLedgerId = generalLedgerId;
+  public IDProductEntity setProductGLId(Long productGLId) {
+    this.productGLId = productGLId;
+    return this;
+  }
+
+  public String getProductGLCode() {
+    return productGLCode;
+  }
+
+  public IDProductEntity setProductGLCode(String productGLCode) {
+    this.productGLCode = productGLCode;
+    return this;
+  }
+
+  public Long getExchangeGainGLId() {
+    return exchangeGainGLId;
+  }
+
+  public IDProductEntity setExchangeGainGLId(Long exchangeGainGLId) {
+    this.exchangeGainGLId = exchangeGainGLId;
+    return this;
+  }
+
+  public String getExchangeGainGLCode() {
+    return exchangeGainGLCode;
+  }
+
+  public IDProductEntity setExchangeGainGLCode(String exchangeGainGLCode) {
+    this.exchangeGainGLCode = exchangeGainGLCode;
     return this;
   }
 
@@ -91,15 +126,17 @@ public class IDProductEntity extends BaseEntity implements Serializable {
     return nostroAccounts;
   }
 
-  public void setNostroAccounts(List<NostroAccountEntity> nostroAccounts) {
+  public IDProductEntity setNostroAccounts(List<NostroAccountEntity> nostroAccounts) {
     this.nostroAccounts = nostroAccounts;
+    return this;
   }
 
   public List<ShadowAccountEntity> getShadowAccounts() {
     return shadowAccounts;
   }
 
-  public void setShadowAccounts(List<ShadowAccountEntity> shadowAccounts) {
+  public IDProductEntity setShadowAccounts(List<ShadowAccountEntity> shadowAccounts) {
     this.shadowAccounts = shadowAccounts;
+    return this;
   }
 }
