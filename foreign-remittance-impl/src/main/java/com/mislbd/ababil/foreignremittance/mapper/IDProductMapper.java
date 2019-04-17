@@ -20,7 +20,10 @@ public class IDProductMapper {
             .setId(entity.getId())
             .setName(entity.getName())
             .setCode(entity.getCode())
-            .setGeneralLedgerId(entity.getGeneralLedgerId())
+            .setProductGLId(entity.getProductGLId())
+            .setProductGLCode(entity.getProductGLCode())
+            .setExchangeGainGLId(entity.getExchangeGainGLId())
+            .setExchangeGainGLCode(entity.getExchangeGainGLCode())
             .setCurrencies(entity.getCurrencies());
   }
 
@@ -32,7 +35,10 @@ public class IDProductMapper {
             .setId(domain.getId())
             .setName(domain.getName())
             .setCode(domain.getCode())
-            .setGeneralLedgerId(domain.getGeneralLedgerId())
+            .setProductGLId(domain.getProductGLId())
+            .setProductGLCode(domain.getProductGLCode())
+            .setExchangeGainGLId(domain.getExchangeGainGLId())
+            .setExchangeGainGLCode(domain.getExchangeGainGLCode())
             .setCurrencies(domain.getCurrencies());
   }
 }
