@@ -32,8 +32,8 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "TRANSACTION_REFERENCE_NUMBER")
   private String transactionReferenceNumber;
 
-  @Column(name = "INSTRUCTION_NUMBER")
-  private String instructionNumber;
+  @Column(name = "INSTRUMENT_NUMBER")
+  private String instrumentNumber;
 
   @Column(name = "CB_FUND_SOURCE")
   private Long cbFundSourceId;
@@ -166,12 +166,12 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
-  public String getInstructionNumber() {
-    return instructionNumber;
+  public String getInstrumentNumber() {
+    return instrumentNumber;
   }
 
-  public RemittanceTransactionEntity setInstructionNumber(String instructionNumber) {
-    this.instructionNumber = instructionNumber;
+  public RemittanceTransactionEntity setInstrumentNumber(String instrumentNumber) {
+    this.instrumentNumber = instrumentNumber;
     return this;
   }
 

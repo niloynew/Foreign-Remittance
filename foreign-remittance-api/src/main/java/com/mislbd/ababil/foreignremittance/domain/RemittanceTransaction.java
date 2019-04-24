@@ -16,7 +16,7 @@ public class RemittanceTransaction {
 
   private String transactionReferenceNumber;
 
-  private String instructionNumber;
+  private String instrumentNumber;
 
   private Long cbFundSourceId;
 
@@ -115,12 +115,12 @@ public class RemittanceTransaction {
     return this;
   }
 
-  public String getInstructionNumber() {
-    return instructionNumber;
+  public String getInstrumentNumber() {
+    return instrumentNumber;
   }
 
-  public RemittanceTransaction setInstructionNumber(String instructionNumber) {
-    this.instructionNumber = instructionNumber;
+  public RemittanceTransaction setInstrumentNumber(String instrumentNumber) {
+    this.instrumentNumber = instrumentNumber;
     return this;
   }
 
