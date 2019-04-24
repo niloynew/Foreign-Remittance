@@ -61,9 +61,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
     /*
      * Save entries in RemittanceTransaction table
      * Save entries in BankInformation table
-     * transaction begin for inward remittance
-     * transaction from inward remittance charge by remittanceChargeInformationList
-     * add exchange gain
+     * transaction processing
      * */
 
     AuditInformation auditInformation = new AuditInformation();

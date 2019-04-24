@@ -115,7 +115,7 @@ public class RemittanceTransactionEntity extends BaseEntity {
   private String batchNumber;
 
   @Column(name = "EXCHANGE_RATE_TYPE")
-  private long exchangeRateType;
+  private Long exchangeRateType;
 
   @Column(name = "EXCHANGE_RATE")
   private BigDecimal exchangeRate;
@@ -401,11 +401,11 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
-  public long getExchangeRateType() {
+  public Long getExchangeRateType() {
     return exchangeRateType;
   }
 
-  public RemittanceTransactionEntity setExchangeRateType(long exchangeRateType) {
+  public RemittanceTransactionEntity setExchangeRateType(Long exchangeRateType) {
     this.exchangeRateType = exchangeRateType;
     return this;
   }
