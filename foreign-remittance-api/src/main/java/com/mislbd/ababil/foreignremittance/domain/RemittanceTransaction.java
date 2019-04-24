@@ -8,6 +8,8 @@ public class RemittanceTransaction {
 
   private long id;
 
+  private RemittanceType remittanceType;
+
   @NotNull private Long transactionTypeId;
 
   private Long paymentPurposeId;
@@ -76,6 +78,15 @@ public class RemittanceTransaction {
 
   public RemittanceTransaction setId(long id) {
     this.id = id;
+    return this;
+  }
+
+  public RemittanceType getRemittanceType() {
+    return remittanceType;
+  }
+
+  public RemittanceTransaction setRemittanceType(RemittanceType remittanceType) {
+    this.remittanceType = remittanceType;
     return this;
   }
 

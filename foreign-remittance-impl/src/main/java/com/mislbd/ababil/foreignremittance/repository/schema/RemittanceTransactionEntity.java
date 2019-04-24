@@ -2,6 +2,7 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import com.mislbd.ababil.foreignremittance.domain.AccountType;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.*;
@@ -18,6 +19,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
       sequenceName = SchemaConstant.REMITTANCE_TRANSACTION_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
+
+  @Column(name = "REMITTANCE_TYPE")
+  private RemittanceType remittanceType;
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "TXN_TYPE_ID")
@@ -126,6 +130,15 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   public RemittanceTransactionEntity setId(long id) {
     this.id = id;
+    return this;
+  }
+
+  public RemittanceType getRemittanceType() {
+    return remittanceType;
+  }
+
+  public RemittanceTransactionEntity setRemittanceType(RemittanceType remittanceType) {
+    this.remittanceType = remittanceType;
     return this;
   }
 
