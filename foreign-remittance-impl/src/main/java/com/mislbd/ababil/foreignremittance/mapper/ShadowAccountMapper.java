@@ -5,6 +5,7 @@ import com.mislbd.ababil.foreignremittance.repository.jpa.IDProductRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
+import com.mislbd.security.core.NgSession;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,11 +13,15 @@ public class ShadowAccountMapper {
 
   private final ShadowAccountRepository shadowAccountRepository;
   private final IDProductRepository idProductRepository;
+  private final NgSession ngSession;
 
   public ShadowAccountMapper(
-      ShadowAccountRepository shadowAccountRepository, IDProductRepository idProductRepository) {
+      ShadowAccountRepository shadowAccountRepository,
+      IDProductRepository idProductRepository,
+      NgSession ngSession) {
     this.shadowAccountRepository = shadowAccountRepository;
     this.idProductRepository = idProductRepository;
+    this.ngSession = ngSession;
   }
 
   public ResultMapper<ShadowAccountEntity, Account> entityToDomain() {
@@ -32,8 +37,8 @@ public class ShadowAccountMapper {
             .setBankId(entity.getBankId())
             .setBranchId(entity.getBranchId())
             .setAccountOpenDate(entity.getAccountOpenDate())
-            .setBalanceCcy(entity.getBalanceCcy())
-            .setBalanceLcy(entity.getBalanceLcy());
+            .setBalance(entity.getBalance())
+            .setBlockAmount(entity.getBlockAmount());
   }
 
   public ResultMapper<Account, ShadowAccountEntity> domainToEntity() {
@@ -53,7 +58,9 @@ public class ShadowAccountMapper {
             .setAccountOpenDate(domain.getAccountOpenDate())
             .setBankId(domain.getBankId())
             .setBranchId(domain.getBranchId())
-            .setBalanceCcy(domain.getBalanceCcy())
+            .setBalance(domain.getBalance())
+            .setBlockAmount(domain.getBlockAmount())
+            .setOwnerBranchId(ngSession.getUserBranch())
             .setActive(true);
   }
 }

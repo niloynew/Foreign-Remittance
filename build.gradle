@@ -36,7 +36,7 @@ configure(allprojects) { project ->
 	}
 
 	ext {
-		mislVersion = '0.0.31'
+		mislVersion = '0.0.36'
 		ojdbcVersion = '12.2.0.1'
 		googleJavaFormatVersion = '1.6'
 	}

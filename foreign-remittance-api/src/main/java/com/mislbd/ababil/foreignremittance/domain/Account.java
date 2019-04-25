@@ -25,9 +25,9 @@ public class Account {
 
   private LocalDate accountOpenDate;
 
-  private BigDecimal balanceCcy;
+  private BigDecimal balance;
 
-  private BigDecimal balanceLcy;
+  private BigDecimal blockAmount;
 
   public long getId() {
     return id;
@@ -44,6 +44,15 @@ public class Account {
 
   public Account setProductId(Long productId) {
     this.productId = productId;
+    return this;
+  }
+
+  public String getProductName() {
+    return productName;
+  }
+
+  public Account setProductName(String productName) {
+    this.productName = productName;
     return this;
   }
 
@@ -110,30 +119,21 @@ public class Account {
     return this;
   }
 
-  public BigDecimal getBalanceCcy() {
-    return balanceCcy;
+  public BigDecimal getBalance() {
+    return balance;
   }
 
-  public Account setBalanceCcy(BigDecimal balanceCcy) {
-    this.balanceCcy = balanceCcy;
+  public Account setBalance(BigDecimal balance) {
+    this.balance = balance;
     return this;
   }
 
-  public BigDecimal getBalanceLcy() {
-    return balanceLcy;
+  public BigDecimal getBlockAmount() {
+    return blockAmount;
   }
 
-  public Account setBalanceLcy(BigDecimal balanceLcy) {
-    this.balanceLcy = balanceLcy;
-    return this;
-  }
-
-  public String getProductName() {
-    return productName;
-  }
-
-  public Account setProductName(String productName) {
-    this.productName = productName;
+  public Account setBlockAmount(BigDecimal blockAmount) {
+    this.blockAmount = blockAmount;
     return this;
   }
 }

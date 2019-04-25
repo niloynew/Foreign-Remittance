@@ -32,7 +32,6 @@ public class DisbursementService {
       RemittanceTransactionEntity remittanceTransactionEntity,
       AuditInformation auditInformation,
       List<RemittanceChargeInformation> charges) {
-
     /*
      * Debit the principle amount to the respective GL defined in account product mapping
      * Credit the principle amount to the respective customer or GL account
@@ -50,11 +49,9 @@ public class DisbursementService {
         shadowAccountRepository
             .findByNumber(remittanceTransactionEntity.getDebitAccountNumber())
             .get();
-    transactionService.doGlTransaction(
+    transactionService.doIDTransaction(
         remittanceTransactionMapper.getNetPayableGLDebit(
-            remittanceTransactionEntity,
-            shadowAccountEntity.getProduct().getProductGLCode(),
-            auditInformation),
+            remittanceTransactionEntity, auditInformation),
         TransactionRequestType.TRANSFER);
 
     // Managing Credit transaction

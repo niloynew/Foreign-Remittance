@@ -33,23 +33,20 @@ public class NostroAccountEntity extends BaseEntity {
   @Column(name = "AccountOpenDate")
   private LocalDate accOpenDate;
 
-  @Column(name = "BalanceCcy")
-  private BigDecimal balanceCcy;
+  @Column(name = "Balance")
+  private BigDecimal balance;
 
-  @Column(name = "BalanceLcy")
-  private BigDecimal balanceLcy;
-
-  @Column(name = "Bank")
+  @Column(name = "NOSTRO_BANK")
   private Long bankId;
 
-  @Column(name = "Branch")
+  @Column(name = "NOSTRO_BRANCH")
   private Long branchId;
 
   @Column(name = "IsActive")
   private boolean isActive;
 
   @ManyToOne
-  @JoinColumn(name = "product")
+  @JoinColumn(name = "PRODUCT_ID")
   private IDProductEntity product;
 
   public long getId() {
@@ -106,21 +103,12 @@ public class NostroAccountEntity extends BaseEntity {
     return this;
   }
 
-  public BigDecimal getBalanceCcy() {
-    return balanceCcy;
+  public BigDecimal getBalance() {
+    return balance;
   }
 
-  public NostroAccountEntity setBalanceCcy(BigDecimal balanceCcy) {
-    this.balanceCcy = balanceCcy;
-    return this;
-  }
-
-  public BigDecimal getBalanceLcy() {
-    return balanceLcy;
-  }
-
-  public NostroAccountEntity setBalanceLcy(BigDecimal balanceLcy) {
-    this.balanceLcy = balanceLcy;
+  public NostroAccountEntity setBalance(BigDecimal balance) {
+    this.balance = balance;
     return this;
   }
 

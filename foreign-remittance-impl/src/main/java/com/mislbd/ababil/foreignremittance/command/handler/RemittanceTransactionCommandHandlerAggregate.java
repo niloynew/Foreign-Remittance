@@ -90,7 +90,9 @@ public class RemittanceTransactionCommandHandlerAggregate {
             transactionService.getSystemExchangeRate(remittanceTransactionEntity.getCurrencyCode()))
         .setExchangeRateType(
             Long.valueOf(
-                configurationService.getConfiguration(SYSTEM_EXCHANGE_RATE_TYPE).get().getValue()));
+                configurationService.getConfiguration(SYSTEM_EXCHANGE_RATE_TYPE).get().getValue()))
+    //        .setValueDate()
+    ;
     Long remittanceTxnId = transactionRepository.save(remittanceTransactionEntity).getId();
 
     List<BankInformation> bankInformationList = command.getPayload().getBankInformation();

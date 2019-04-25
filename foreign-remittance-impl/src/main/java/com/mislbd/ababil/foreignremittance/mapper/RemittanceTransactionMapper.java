@@ -4,10 +4,12 @@ import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionTypeRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.transaction.domain.CasaTransactionRequest;
 import com.mislbd.ababil.transaction.domain.GlTransactionRequest;
+import com.mislbd.ababil.transaction.domain.IDTransactionRequest;
 import com.mislbd.ababil.transaction.domain.SubGlTransactionRequest;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import java.math.BigDecimal;
@@ -19,12 +21,15 @@ public class RemittanceTransactionMapper {
   private static final Long activityId = Long.valueOf(501);
   private final RemittanceTransactionRepository remittanceTransactionRepository;
   private final TransactionTypeRepository transactionTypeRepository;
+  private final ShadowAccountRepository shadowAccountRepository;
 
   public RemittanceTransactionMapper(
       RemittanceTransactionRepository remittanceTransactionRepository,
-      TransactionTypeRepository transactionTypeRepository) {
+      TransactionTypeRepository transactionTypeRepository,
+      ShadowAccountRepository shadowAccountRepository) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.transactionTypeRepository = transactionTypeRepository;
+    this.shadowAccountRepository = shadowAccountRepository;
   }
 
   public ResultMapper<RemittanceTransactionEntity, RemittanceTransaction> entityToDomain() {
@@ -37,7 +42,7 @@ public class RemittanceTransactionMapper {
             //            .setPaymentPurposeId(entity.getPaymentPurposeId())
             //            .setCommodityDescription(entity.getCommodityDescription())
             //            .setTransactionReferenceNumber(entity.getTransactionReferenceNumber())
-            //            .setInstrumentNumber(entity.getInstrumentNumber())
+            //            .setInstructionNumber(entity.getInstructionNumber())
             //            .setCbFundSourceId(entity.getCbFundSourceId())
             //            .setDeliveryTerm(entity.getDeliveryTerm())
             //            .setApplicantId(entity.getApplicantId())
@@ -94,19 +99,19 @@ public class RemittanceTransactionMapper {
             .setExchangeGainLoss(domain.getExchangeGainLoss());
   }
 
-  public GlTransactionRequest getNetPayableGLDebit(
-      RemittanceTransactionEntity request,
-      String productGLCode,
-      AuditInformation auditInformation) {
-    GlTransactionRequest glRequest = new GlTransactionRequest();
-    glRequest
+  public IDTransactionRequest getNetPayableGLDebit(
+      RemittanceTransactionEntity request, AuditInformation auditInformation) {
+
+    IDTransactionRequest transactionRequest = new IDTransactionRequest();
+
+    transactionRequest
         .setActivityId(activityId)
         .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
         .setAmountLcy(request.getAmountLcy() == null ? BigDecimal.ZERO : request.getAmountLcy())
         .setCurrencyCode(request.getCurrencyCode())
         .setExchangeRate(request.getExchangeRate())
         .setRateType(request.getExchangeRateType())
-        .setDebitTransaction(false)
+        .setDebitTransaction(true)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
         .setEntryUser(auditInformation.getEntryUser())
@@ -114,16 +119,12 @@ public class RemittanceTransactionMapper {
         .setEntryTime(auditInformation.getEntryDate())
         .setVerifyUser(auditInformation.getVerifyUser())
         .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration(
-            "Disburse from A/C "
-                + request.getCreditAccountNumber()
-                + "\r\n"
-                + request.getB2bInformation())
+        .setNarration("Disburse from A/C " + request.getCreditAccountNumber())
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorModule("ID")
         .setInitiatorBranch(auditInformation.getUserBranch())
-        .setGlCode(productGLCode);
-    return glRequest;
+        .setAccNumber(request.getDebitAccountNumber());
+    return transactionRequest;
   }
 
   public GlTransactionRequest getNetPayableGLCredit(
@@ -136,19 +137,20 @@ public class RemittanceTransactionMapper {
         .setCurrencyCode(request.getCurrencyCode())
         .setExchangeRate(request.getExchangeRate())
         .setRateType(request.getExchangeRateType())
-        .setDebitTransaction(false)
+        .setDebitTransaction(true)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
+        .setOwnerBranch(
+            shadowAccountRepository
+                .findByNumber(request.getDebitAccountNumber())
+                .get()
+                .getOwnerBranchId())
         .setEntryUser(auditInformation.getEntryUser())
         .setEntryTerminal(auditInformation.getEntryTerminal())
         .setEntryTime(auditInformation.getEntryDate())
         .setVerifyUser(auditInformation.getVerifyUser())
         .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration(
-            "Disburse from A/C "
-                + request.getCreditAccountNumber()
-                + "\r\n"
-                + request.getB2bInformation())
+        .setNarration("Disburse from A/C " + request.getCreditAccountNumber())
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorModule("ID")
         .setInitiatorBranch(auditInformation.getUserBranch())
@@ -175,11 +177,7 @@ public class RemittanceTransactionMapper {
         .setEntryTime(auditInformation.getEntryDate())
         .setVerifyUser(auditInformation.getVerifyUser())
         .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration(
-            "Disburse from A/C "
-                + request.getCreditAccountNumber()
-                + "\r\n"
-                + request.getB2bInformation())
+        .setNarration("Disburse from A/C " + request.getCreditAccountNumber())
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorBranch(auditInformation.getUserBranch())
         .setInitiatorModule("ID")

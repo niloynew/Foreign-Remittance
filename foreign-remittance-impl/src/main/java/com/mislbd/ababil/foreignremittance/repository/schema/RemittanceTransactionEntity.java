@@ -4,6 +4,7 @@ import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import com.mislbd.ababil.foreignremittance.domain.AccountType;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.*;
 
@@ -123,6 +124,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   @Column(name = "EXCHANGE_RATE")
   private BigDecimal exchangeRate;
+
+  @Column(name = "VALUE_DATE")
+  private LocalDate valueDate;
 
   public long getId() {
     return id;
@@ -429,6 +433,15 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   public RemittanceTransactionEntity setExchangeRate(BigDecimal exchangeRate) {
     this.exchangeRate = exchangeRate;
+    return this;
+  }
+
+  public LocalDate getValueDate() {
+    return valueDate;
+  }
+
+  public RemittanceTransactionEntity setValueDate(LocalDate valueDate) {
+    this.valueDate = valueDate;
     return this;
   }
 }
