@@ -9,6 +9,8 @@ public class RemittanceTransaction {
 
   private long id;
 
+  private RemittanceType remittanceType;
+
   @NotNull private Long transactionTypeId;
 
   private Long paymentPurposeId;
@@ -17,7 +19,7 @@ public class RemittanceTransaction {
 
   private String transactionReferenceNumber;
 
-  private String instructionNumber;
+  private String instrumentNumber;
 
   private Long cbFundSourceId;
 
@@ -82,6 +84,15 @@ public class RemittanceTransaction {
     return this;
   }
 
+  public RemittanceType getRemittanceType() {
+    return remittanceType;
+  }
+
+  public RemittanceTransaction setRemittanceType(RemittanceType remittanceType) {
+    this.remittanceType = remittanceType;
+    return this;
+  }
+
   public Long getTransactionTypeId() {
     return transactionTypeId;
   }
@@ -118,12 +129,12 @@ public class RemittanceTransaction {
     return this;
   }
 
-  public String getInstructionNumber() {
-    return instructionNumber;
+  public String getInstrumentNumber() {
+    return instrumentNumber;
   }
 
-  public RemittanceTransaction setInstructionNumber(String instructionNumber) {
-    this.instructionNumber = instructionNumber;
+  public RemittanceTransaction setInstrumentNumber(String instrumentNumber) {
+    this.instrumentNumber = instrumentNumber;
     return this;
   }
 

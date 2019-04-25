@@ -2,6 +2,7 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import com.mislbd.ababil.foreignremittance.domain.AccountType;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +21,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "ID")
   private long id;
 
+  @Column(name = "REMITTANCE_TYPE")
+  private RemittanceType remittanceType;
+
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "TXN_TYPE_ID")
   private TransactionTypeEntity transactionType;
@@ -33,8 +37,8 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "TRANSACTION_REFERENCE_NUMBER")
   private String transactionReferenceNumber;
 
-  @Column(name = "INSTRUCTION_NUMBER")
-  private String instructionNumber;
+  @Column(name = "INSTRUMENT_NUMBER")
+  private String instrumentNumber;
 
   @Column(name = "CB_FUND_SOURCE")
   private Long cbFundSourceId;
@@ -133,6 +137,15 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
+  public RemittanceType getRemittanceType() {
+    return remittanceType;
+  }
+
+  public RemittanceTransactionEntity setRemittanceType(RemittanceType remittanceType) {
+    this.remittanceType = remittanceType;
+    return this;
+  }
+
   public TransactionTypeEntity getTransactionType() {
     return transactionType;
   }
@@ -170,12 +183,12 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
-  public String getInstructionNumber() {
-    return instructionNumber;
+  public String getInstrumentNumber() {
+    return instrumentNumber;
   }
 
-  public RemittanceTransactionEntity setInstructionNumber(String instructionNumber) {
-    this.instructionNumber = instructionNumber;
+  public RemittanceTransactionEntity setInstrumentNumber(String instrumentNumber) {
+    this.instrumentNumber = instrumentNumber;
     return this;
   }
 

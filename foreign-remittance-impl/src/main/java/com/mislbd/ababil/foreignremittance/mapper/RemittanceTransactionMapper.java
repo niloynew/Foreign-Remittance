@@ -68,11 +68,12 @@ public class RemittanceTransactionMapper {
         remittanceTransactionRepository
             .findById(Long.valueOf(domain.getId()))
             .orElseGet(RemittanceTransactionEntity::new)
+            .setRemittanceType(domain.getRemittanceType())
             .setTransactionType(transactionTypeRepository.getOne(domain.getTransactionTypeId()))
             .setPaymentPurposeId(domain.getPaymentPurposeId())
             .setCommodityDescription(domain.getCommodityDescription())
             .setTransactionReferenceNumber(domain.getTransactionReferenceNumber())
-            .setInstructionNumber(domain.getInstructionNumber())
+            .setInstrumentNumber(domain.getInstrumentNumber())
             .setCbFundSourceId(domain.getCbFundSourceId())
             .setDeliveryTerm(domain.getDeliveryTerm())
             .setApplicantId(domain.getApplicantId())

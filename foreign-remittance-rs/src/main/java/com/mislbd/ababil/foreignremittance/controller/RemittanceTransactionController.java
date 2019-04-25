@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/remittance-transaction", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class RemittanceTransactionController {
 
   private final CommandProcessor commandProcessor;
@@ -21,8 +21,17 @@ public class RemittanceTransactionController {
     this.commandProcessor = commandProcessor;
   }
 
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(path = "/inward-remittance-transaction", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> disburseRemittanceFromBranch(
+      @RequestBody @Valid RemittanceTransaction remittanceTransaction) {
+    commandProcessor.executeResult(new SaveRemittanceTransactionCommand(remittanceTransaction));
+    return ResponseEntity.accepted().build();
+  }
+
+  @PostMapping(
+      path = "/outward-remittance-transaction",
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> outgoingRemittanceFromBranch(
       @RequestBody @Valid RemittanceTransaction remittanceTransaction) {
     commandProcessor.executeResult(new SaveRemittanceTransactionCommand(remittanceTransaction));
     return ResponseEntity.accepted().build();
