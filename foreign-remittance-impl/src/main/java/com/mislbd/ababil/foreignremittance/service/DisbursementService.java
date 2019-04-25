@@ -49,11 +49,9 @@ public class DisbursementService {
         shadowAccountRepository
             .findByNumber(remittanceTransactionEntity.getDebitAccountNumber())
             .get();
-    transactionService.doGlTransaction(
+    transactionService.doIDTransaction(
         remittanceTransactionMapper.getNetPayableGLDebit(
-            remittanceTransactionEntity,
-            shadowAccountEntity.getProduct().getProductGLCode(),
-            auditInformation),
+            remittanceTransactionEntity, auditInformation),
         TransactionRequestType.TRANSFER);
 
     // Managing Credit transaction

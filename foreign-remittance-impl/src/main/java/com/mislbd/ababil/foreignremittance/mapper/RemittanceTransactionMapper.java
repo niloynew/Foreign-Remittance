@@ -9,6 +9,7 @@ import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionTypeReposit
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.transaction.domain.CasaTransactionRequest;
 import com.mislbd.ababil.transaction.domain.GlTransactionRequest;
+import com.mislbd.ababil.transaction.domain.IDTransactionRequest;
 import com.mislbd.ababil.transaction.domain.SubGlTransactionRequest;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import java.math.BigDecimal;
@@ -98,19 +99,12 @@ public class RemittanceTransactionMapper {
             .setExchangeGainLoss(domain.getExchangeGainLoss());
   }
 
-  public GlTransactionRequest getNetPayableGLDebit(
-      RemittanceTransactionEntity request,
-      String productGLCode,
-      AuditInformation auditInformation) {
+  public IDTransactionRequest getNetPayableGLDebit(
+      RemittanceTransactionEntity request, AuditInformation auditInformation) {
 
-    Long ownerBranchId =
-        shadowAccountRepository
-            .findByNumber(request.getDebitAccountNumber())
-            .get()
-            .getOwnerBranchId();
+    IDTransactionRequest transactionRequest = new IDTransactionRequest();
 
-    GlTransactionRequest glRequest = new GlTransactionRequest();
-    glRequest
+    transactionRequest
         .setActivityId(activityId)
         .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
         .setAmountLcy(request.getAmountLcy() == null ? BigDecimal.ZERO : request.getAmountLcy())
@@ -120,7 +114,6 @@ public class RemittanceTransactionMapper {
         .setDebitTransaction(true)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setOwnerBranch(ownerBranchId)
         .setEntryUser(auditInformation.getEntryUser())
         .setEntryTerminal(auditInformation.getEntryTerminal())
         .setEntryTime(auditInformation.getEntryDate())
@@ -130,8 +123,8 @@ public class RemittanceTransactionMapper {
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorModule("ID")
         .setInitiatorBranch(auditInformation.getUserBranch())
-        .setGlCode(productGLCode);
-    return glRequest;
+        .setAccNumber(request.getDebitAccountNumber());
+    return transactionRequest;
   }
 
   public GlTransactionRequest getNetPayableGLCredit(
@@ -144,7 +137,7 @@ public class RemittanceTransactionMapper {
         .setCurrencyCode(request.getCurrencyCode())
         .setExchangeRate(request.getExchangeRate())
         .setRateType(request.getExchangeRateType())
-        .setDebitTransaction(false)
+        .setDebitTransaction(true)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
         .setOwnerBranch(
