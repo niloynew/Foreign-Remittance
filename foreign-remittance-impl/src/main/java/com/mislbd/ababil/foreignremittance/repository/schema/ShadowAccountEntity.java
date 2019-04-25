@@ -18,38 +18,41 @@ public class ShadowAccountEntity extends BaseEntity {
   @Column(name = "ID")
   private long id;
 
-  @Column(name = "AccountNumber")
+  @Column(name = "ACCOUNT_NUMBER")
   private String number;
 
-  @Column(name = "AccountName")
+  @Column(name = "ACCOUNT_NAME")
   private String name;
 
-  @Column(name = "NostroAccountNumber")
+  @Column(name = "NOSTRO_ACCOUNT_NUMBER")
   private String nostroAccountNumber;
 
-  @Column(name = "Bank")
+  @Column(name = "NOSTRO_BANK")
   private Long bankId;
 
-  @Column(name = "Branch")
+  @Column(name = "NOSTRO_BRANCH")
   private Long branchId;
 
-  @Column(name = "accountOpenDate")
+  @Column(name = "BRANCH_ID")
+  private Long ownerBranchId;
+
+  @Column(name = "ACCOUNT_OPEN_DATE")
   private LocalDate accountOpenDate;
 
-  @Column(name = "Currency")
+  @Column(name = "CURRENCY")
   private String currencyCode;
 
-  @Column(name = "BalanceCcy")
-  private BigDecimal balanceCcy;
+  @Column(name = "Balance")
+  private BigDecimal balance;
 
-  @Column(name = "BalanceLcy")
-  private BigDecimal balanceLcy;
+  @Column(name = "BLOCK_AMOUNT")
+  private BigDecimal blockAmount;
 
   @Column(name = "IsActive")
   private boolean isActive;
 
   @ManyToOne
-  @JoinColumn(name = "product")
+  @JoinColumn(name = "PRODUCT_ID")
   private IDProductEntity product;
 
   public long getId() {
@@ -67,6 +70,15 @@ public class ShadowAccountEntity extends BaseEntity {
 
   public ShadowAccountEntity setNumber(String number) {
     this.number = number;
+    return this;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public ShadowAccountEntity setName(String name) {
+    this.name = name;
     return this;
   }
 
@@ -97,6 +109,15 @@ public class ShadowAccountEntity extends BaseEntity {
     return this;
   }
 
+  public Long getOwnerBranchId() {
+    return ownerBranchId;
+  }
+
+  public ShadowAccountEntity setOwnerBranchId(Long ownerBranchId) {
+    this.ownerBranchId = ownerBranchId;
+    return this;
+  }
+
   public LocalDate getAccountOpenDate() {
     return accountOpenDate;
   }
@@ -115,39 +136,21 @@ public class ShadowAccountEntity extends BaseEntity {
     return this;
   }
 
-  public BigDecimal getBalanceCcy() {
-    return balanceCcy;
+  public BigDecimal getBalance() {
+    return balance;
   }
 
-  public ShadowAccountEntity setBalanceCcy(BigDecimal balanceCcy) {
-    this.balanceCcy = balanceCcy;
+  public ShadowAccountEntity setBalance(BigDecimal balance) {
+    this.balance = balance;
     return this;
   }
 
-  public BigDecimal getBalanceLcy() {
-    return balanceLcy;
+  public BigDecimal getBlockAmount() {
+    return blockAmount;
   }
 
-  public ShadowAccountEntity setBalanceLcy(BigDecimal balanceLcy) {
-    this.balanceLcy = balanceLcy;
-    return this;
-  }
-
-  public IDProductEntity getProduct() {
-    return product;
-  }
-
-  public ShadowAccountEntity setProduct(IDProductEntity product) {
-    this.product = product;
-    return this;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public ShadowAccountEntity setName(String name) {
-    this.name = name;
+  public ShadowAccountEntity setBlockAmount(BigDecimal blockAmount) {
+    this.blockAmount = blockAmount;
     return this;
   }
 
@@ -157,6 +160,15 @@ public class ShadowAccountEntity extends BaseEntity {
 
   public ShadowAccountEntity setActive(boolean active) {
     isActive = active;
+    return this;
+  }
+
+  public IDProductEntity getProduct() {
+    return product;
+  }
+
+  public ShadowAccountEntity setProduct(IDProductEntity product) {
+    this.product = product;
     return this;
   }
 }

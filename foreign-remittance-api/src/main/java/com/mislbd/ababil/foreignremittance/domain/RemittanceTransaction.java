@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 
@@ -67,6 +68,8 @@ public class RemittanceTransaction {
   @NotNull private BigDecimal amountLcy;
 
   private BigDecimal exchangeGainLoss;
+
+  private LocalDate valueDate;
 
   private List<RemittanceChargeInformation> remittanceChargeInformationList;
 
@@ -357,6 +360,15 @@ public class RemittanceTransaction {
   public RemittanceTransaction setRemittanceChargeInformationList(
       List<RemittanceChargeInformation> remittanceChargeInformationList) {
     this.remittanceChargeInformationList = remittanceChargeInformationList;
+    return this;
+  }
+
+  public LocalDate getValueDate() {
+    return valueDate;
+  }
+
+  public RemittanceTransaction setValueDate(LocalDate valueDate) {
+    this.valueDate = valueDate;
     return this;
   }
 }

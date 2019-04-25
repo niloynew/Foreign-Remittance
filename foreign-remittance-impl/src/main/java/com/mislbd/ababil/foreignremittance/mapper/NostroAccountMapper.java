@@ -32,8 +32,7 @@ public class NostroAccountMapper {
             .setBankId(entity.getBankId())
             .setBranchId(entity.getBranchId())
             .setAccountOpenDate(entity.getAccOpenDate())
-            .setBalanceCcy(entity.getBalanceCcy())
-            .setBalanceLcy(entity.getBalanceLcy());
+            .setBalance(entity.getBalance());
   }
 
   public ResultMapper<Account, NostroAccountEntity> domainToEntity() {
@@ -53,7 +52,7 @@ public class NostroAccountMapper {
             .setAccOpenDate(domain.getAccountOpenDate())
             .setBankId(domain.getBankId())
             .setBranchId(domain.getBranchId())
-            .setBalanceCcy(domain.getBalanceCcy())
+            .setBalance(domain.getBalance())
             .setActive(true);
   }
 }
