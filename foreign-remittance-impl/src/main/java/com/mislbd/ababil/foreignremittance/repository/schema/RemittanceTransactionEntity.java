@@ -21,6 +21,7 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "ID")
   private long id;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "REMITTANCE_TYPE")
   private RemittanceType remittanceType;
 
@@ -77,12 +78,14 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "DEBIT_ACC_NUMBER")
   private String debitAccountNumber;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "CREDIT_ACC_TYPE")
   private AccountType creditAccountType;
 
   @Column(name = "CREDIT_ACC_NUMBER")
   private String creditAccountNumber;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "CHARGE_ACC_TYPE")
   private AccountType chargeAccountType;
 

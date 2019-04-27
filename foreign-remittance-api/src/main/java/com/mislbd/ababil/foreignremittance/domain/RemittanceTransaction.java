@@ -3,12 +3,15 @@ package com.mislbd.ababil.foreignremittance.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
 public class RemittanceTransaction {
 
   private long id;
 
+  @Enumerated(EnumType.STRING)
   private RemittanceType remittanceType;
 
   @NotNull private Long transactionTypeId;
@@ -43,15 +46,21 @@ public class RemittanceTransaction {
 
   private List<BankInformation> bankInformation;
 
-  @NotNull private AccountType debitAccountType;
+  @Enumerated(EnumType.STRING)
+  @NotNull
+  private AccountType debitAccountType;
 
   @NotNull private String debitAccountNumber;
 
-  @NotNull private AccountType creditAccountType;
+  @Enumerated(EnumType.STRING)
+  @NotNull
+  private AccountType creditAccountType;
 
   @NotNull private String creditAccountNumber;
 
-  @NotNull private AccountType chargeAccountType;
+  @Enumerated(EnumType.STRING)
+  @NotNull
+  private AccountType chargeAccountType;
 
   @NotNull private String chargeAccountNumber;
 
