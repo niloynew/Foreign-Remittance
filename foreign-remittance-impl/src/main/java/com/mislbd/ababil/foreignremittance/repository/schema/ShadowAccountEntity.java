@@ -18,7 +18,7 @@ public class ShadowAccountEntity extends BaseEntity {
   @Column(name = "ID")
   private long id;
 
-  @Column(name = "ACCOUNT_NUMBER")
+  @Column(name = "CODE")
   private String number;
 
   @Column(name = "ACCOUNT_NAME")
