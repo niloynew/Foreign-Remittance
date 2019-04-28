@@ -1,0 +1,174 @@
+package com.mislbd.ababil.foreignremittance.repository.schema;
+
+import com.mislbd.ababil.asset.repository.schema.BaseEntity;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import javax.persistence.*;
+
+@Entity
+@Table(name = SchemaConstant.SHADOW_ACCOUNT_TABLE_NAME)
+public class ShadowAccountEntity extends BaseEntity {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "SHADOW_ACCOUNT_ID_GEN")
+  @SequenceGenerator(
+      name = "SHADOW_ACCOUNT_ID_GEN",
+      allocationSize = 1,
+      sequenceName = SchemaConstant.SHADOW_ACCOUNT_SEQUENCE_NAME)
+  @Column(name = "ID")
+  private long id;
+
+  @Column(name = "ACCOUNT_NUMBER")
+  private String number;
+
+  @Column(name = "ACCOUNT_NAME")
+  private String name;
+
+  @Column(name = "NOSTRO_ACCOUNT_NUMBER")
+  private String nostroAccountNumber;
+
+  @Column(name = "NOSTRO_BANK")
+  private Long bankId;
+
+  @Column(name = "NOSTRO_BRANCH")
+  private Long branchId;
+
+  @Column(name = "BRANCH_ID")
+  private Long ownerBranchId;
+
+  @Column(name = "ACCOUNT_OPEN_DATE")
+  private LocalDate accountOpenDate;
+
+  @Column(name = "CURRENCY")
+  private String currencyCode;
+
+  @Column(name = "Balance")
+  private BigDecimal balance;
+
+  @Column(name = "BLOCK_AMOUNT")
+  private BigDecimal blockAmount;
+
+  @Column(name = "IsActive")
+  private boolean isActive;
+
+  @ManyToOne
+  @JoinColumn(name = "PRODUCT_ID")
+  private IDProductEntity product;
+
+  public long getId() {
+    return id;
+  }
+
+  public ShadowAccountEntity setId(long id) {
+    this.id = id;
+    return this;
+  }
+
+  public String getNumber() {
+    return number;
+  }
+
+  public ShadowAccountEntity setNumber(String number) {
+    this.number = number;
+    return this;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public ShadowAccountEntity setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public String getNostroAccountNumber() {
+    return nostroAccountNumber;
+  }
+
+  public ShadowAccountEntity setNostroAccountNumber(String nostroAccountNumber) {
+    this.nostroAccountNumber = nostroAccountNumber;
+    return this;
+  }
+
+  public Long getBankId() {
+    return bankId;
+  }
+
+  public ShadowAccountEntity setBankId(Long bankId) {
+    this.bankId = bankId;
+    return this;
+  }
+
+  public Long getBranchId() {
+    return branchId;
+  }
+
+  public ShadowAccountEntity setBranchId(Long branchId) {
+    this.branchId = branchId;
+    return this;
+  }
+
+  public Long getOwnerBranchId() {
+    return ownerBranchId;
+  }
+
+  public ShadowAccountEntity setOwnerBranchId(Long ownerBranchId) {
+    this.ownerBranchId = ownerBranchId;
+    return this;
+  }
+
+  public LocalDate getAccountOpenDate() {
+    return accountOpenDate;
+  }
+
+  public ShadowAccountEntity setAccountOpenDate(LocalDate accountOpenDate) {
+    this.accountOpenDate = accountOpenDate;
+    return this;
+  }
+
+  public String getCurrencyCode() {
+    return currencyCode;
+  }
+
+  public ShadowAccountEntity setCurrencyCode(String currencyCode) {
+    this.currencyCode = currencyCode;
+    return this;
+  }
+
+  public BigDecimal getBalance() {
+    return balance;
+  }
+
+  public ShadowAccountEntity setBalance(BigDecimal balance) {
+    this.balance = balance;
+    return this;
+  }
+
+  public BigDecimal getBlockAmount() {
+    return blockAmount;
+  }
+
+  public ShadowAccountEntity setBlockAmount(BigDecimal blockAmount) {
+    this.blockAmount = blockAmount;
+    return this;
+  }
+
+  public boolean isActive() {
+    return isActive;
+  }
+
+  public ShadowAccountEntity setActive(boolean active) {
+    isActive = active;
+    return this;
+  }
+
+  public IDProductEntity getProduct() {
+    return product;
+  }
+
+  public ShadowAccountEntity setProduct(IDProductEntity product) {
+    this.product = product;
+    return this;
+  }
+}
