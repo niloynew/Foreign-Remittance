@@ -1,12 +1,15 @@
 package com.mislbd.ababil.foreignremittance.repository.specification;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import java.time.LocalDate;
 import javax.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 public class RemittanceTransactionSpecification {
   public static Specification<RemittanceTransaction> searchSpecification(
+      String voucherNumber,
+      RemittanceType remittanceType,
       String transactionReferenceNumber,
       String applicantName,
       String beneficiaryName,
@@ -14,6 +17,14 @@ public class RemittanceTransactionSpecification {
       LocalDate toDate) {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
+
+      if (voucherNumber != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("voucherNumber"), voucherNumber));
+      }
+
+      if (remittanceType != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("remittanceType"), remittanceType));
+      }
 
       if (transactionReferenceNumber != null) {
         predicate =

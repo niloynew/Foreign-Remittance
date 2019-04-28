@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.specification.RemittanceTransactionSpecification;
@@ -28,6 +29,8 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   @Override
   public PagedResult<RemittanceTransaction> getTransactions(
       Pageable pageable,
+      String voucherNumber,
+      RemittanceType remittanceType,
       String transactionReferenceNumber,
       String applicantName,
       String beneficiaryName,
@@ -36,13 +39,21 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
     return PagedResultBuilder.build(
         remittanceTransactionRepository.findAll(
             RemittanceTransactionSpecification.searchSpecification(
-                transactionReferenceNumber, applicantName, beneficiaryName, fromDate, toDate),
+                voucherNumber,
+                remittanceType,
+                transactionReferenceNumber,
+                applicantName,
+                beneficiaryName,
+                fromDate,
+                toDate),
             pageable),
         remittanceTransactionMapper.entityToDomain());
   }
 
   @Override
   public List<RemittanceTransaction> getTransactions(
+      String voucherNumber,
+      RemittanceType remittanceType,
       String transactionReferenceNumber,
       String applicantName,
       String beneficiaryName,
@@ -51,7 +62,13 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
     return ListResultBuilder.build(
         remittanceTransactionRepository.findAll(
             RemittanceTransactionSpecification.searchSpecification(
-                transactionReferenceNumber, applicantName, beneficiaryName, fromDate, toDate)),
+                voucherNumber,
+                remittanceType,
+                transactionReferenceNumber,
+                applicantName,
+                beneficiaryName,
+                fromDate,
+                toDate)),
         remittanceTransactionMapper.entityToDomain());
   }
 }
