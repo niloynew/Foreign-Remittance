@@ -4,11 +4,15 @@ import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.SaveRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.BankInformation;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
 import com.mislbd.ababil.foreignremittance.mapper.BankInformationMapper;
+import com.mislbd.ababil.foreignremittance.mapper.RemittanceChargeInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.BankInformationRepository;
+import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.BankInformationEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeInformationEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.DisbursementService;
 import com.mislbd.ababil.transaction.service.TransactionService;
@@ -29,24 +33,28 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final RemittanceTransactionMapper transactionMapper;
   private final BankInformationRepository bankInformationRepository;
   private final BankInformationMapper bankInformationMapper;
+  private final RemittanceChargeInformationRepository chargeInformationRepository;
+  private final RemittanceChargeInformationMapper chargeInformationMapper;
   private final NgSession ngSession;
   private final DisbursementService disbursementService;
   private final TransactionService transactionService;
   private final ConfigurationService configurationService;
 
   public RemittanceTransactionCommandHandlerAggregate(
-      RemittanceTransactionRepository transactionRepository,
-      RemittanceTransactionMapper transactionMapper,
-      BankInformationRepository bankInformationRepository,
-      BankInformationMapper bankInformationMapper,
-      NgSession ngSession,
-      DisbursementService disbursementService,
-      TransactionService transactionService,
-      ConfigurationService configurationService) {
+          RemittanceTransactionRepository transactionRepository,
+          RemittanceTransactionMapper transactionMapper,
+          BankInformationRepository bankInformationRepository,
+          BankInformationMapper bankInformationMapper,
+          RemittanceChargeInformationRepository chargeInformationRepository, RemittanceChargeInformationMapper chargeInformationMapper, NgSession ngSession,
+          DisbursementService disbursementService,
+          TransactionService transactionService,
+          ConfigurationService configurationService) {
     this.transactionRepository = transactionRepository;
     this.transactionMapper = transactionMapper;
     this.bankInformationRepository = bankInformationRepository;
     this.bankInformationMapper = bankInformationMapper;
+    this.chargeInformationRepository = chargeInformationRepository;
+    this.chargeInformationMapper = chargeInformationMapper;
     this.ngSession = ngSession;
     this.disbursementService = disbursementService;
     this.transactionService = transactionService;
@@ -105,6 +113,17 @@ public class RemittanceTransactionCommandHandlerAggregate {
                 transactionRepository.getOne(remittanceTxnId));
             bankInformationRepository.save(bankInformationEntity);
           });
+
+    List<RemittanceChargeInformation> chargeInformationList = command.getPayload().getRemittanceChargeInformationList();
+    if(!chargeInformationList.isEmpty())
+      chargeInformationList.forEach(
+              chargeInformation -> {
+                RemittanceChargeInformationEntity chargeInformationEntity = chargeInformationMapper.domainToEntity().map(chargeInformation);
+                chargeInformationEntity.setRemittanceTransaction(
+                        transactionRepository.getOne(remittanceTxnId));
+                chargeInformationRepository.save(chargeInformationEntity);
+              }
+      );
 
     return CommandResponse.of(
         disbursementService.doTransaction(

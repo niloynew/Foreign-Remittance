@@ -29,6 +29,8 @@ public class SchemaConstant {
   public static final String PAYMENT_PURPOSE_SEQUENCE_NAME = "S_ID_PAYMENT_PURPOSE";
   public static final String ID_CB_FUND_SOURCE_TABLE_NAME = "ID_CB_FUND_SOURCE";
   public static final String ID_CB_FUND_SOURCE_SEQUENCE_NAME = "S_ID_CB_FUND_SOURCE";
+  public static final String ID_REMITTANCE_CHARGE_INFO_TABLE_NAME = "ID_CHARGE_INFO_INFO";
+  public static final String ID_REMITTANCE_CHARGE_INFO_SEQUENCE_NAME = "S_ID_CHARGE_INFO_INFO";
   public static final String REMITTANCE_CHARGE_MAPPING_TABLE = "ID_CHARGE_MAPPING";
   public static final String REMITTANCE_CHARGE_MAPPING_SEQUENCE_NAME = "S_ID_CHARGE_MAPPING";
   public static final String EXPORT_LC_TABLE_NAME = "ID_EXPORT_LC";
