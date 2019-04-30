@@ -1,25 +1,23 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
-import com.mislbd.ababil.foreignremittance.command.SaveRemittanceTransactionCommand;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.ResponseEntity.status;
+
+import com.mislbd.ababil.foreignremittance.command.SaveInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
 import com.mislbd.asset.command.api.CommandProcessor;
+import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.time.LocalDate;
 import java.util.List;
-
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import com.mislbd.asset.command.api.CommandResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -77,19 +75,22 @@ public class RemittanceTransactionController {
     }
   }
 
-    @PostMapping(path = "/inward-remittance-transaction", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommandResponse<Long>> disburseRemittanceFromBranch(
-            @RequestBody @Valid RemittanceTransaction remittanceTransaction) {
-        return status(CREATED)
-                .body(commandProcessor.executeResult(new SaveRemittanceTransactionCommand(remittanceTransaction)));
-    }
+  @PostMapping(path = "/inward-remittance-transaction", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<CommandResponse<Long>> disburseRemittanceFromBranch(
+      @RequestBody @Valid RemittanceTransaction remittanceTransaction) {
+    return status(CREATED)
+        .body(
+            commandProcessor.executeResult(
+                new SaveInwardRemittanceTransactionCommand(remittanceTransaction)));
+  }
 
   @PostMapping(
       path = "/outward-remittance-transaction",
       consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> outgoingRemittanceFromBranch(
       @RequestBody @Valid RemittanceTransaction remittanceTransaction) {
-    commandProcessor.executeResult(new SaveRemittanceTransactionCommand(remittanceTransaction));
+    commandProcessor.executeResult(
+        new SaveInwardRemittanceTransactionCommand(remittanceTransaction));
     return ResponseEntity.accepted().build();
   }
 }

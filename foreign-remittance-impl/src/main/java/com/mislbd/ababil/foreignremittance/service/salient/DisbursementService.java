@@ -1,4 +1,4 @@
-package com.mislbd.ababil.foreignremittance.service;
+package com.mislbd.ababil.foreignremittance.service.salient;
 
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;

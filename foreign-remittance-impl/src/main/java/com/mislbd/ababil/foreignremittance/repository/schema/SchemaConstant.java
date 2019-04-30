@@ -21,24 +21,19 @@ public class SchemaConstant {
   public static final String REMITTANCE_TRANSACTION_SEQUENCE_NAME = "S_TRANSACTION";
   public static final String ID_REMITTANCE_BANK_INFO_TABLE_NAME = "ID_BANK_INFO";
   public static final String ID_REMITTANCE_BANK_SEQUENCE_NAME = "S_ID_BANK_INFO";
-  public static final String ID_TRANSACTION_OPERATION_TABLE_NAME = "ID_TRANSACTION_OPERATION";
-  public static final String ID_TRANSACTION_OPERATION_SEQUENCE_NAME = "S_ID_TRANSACTION_OPERATION";
   public static final String ID_TRANSACTION_TYPE_TABLE_NAME = "ID_TRANSACTION_TYPE";
   public static final String ID_TRANSACTION_TYPE_SEQUENCE_NAME = "S_ID_TRANSACTION_TYPE";
   public static final String PAYMENT_PURPOSE_TABLE_NAME = "ID_PAYMENT_PURPOSE";
   public static final String PAYMENT_PURPOSE_SEQUENCE_NAME = "S_ID_PAYMENT_PURPOSE";
   public static final String ID_CB_FUND_SOURCE_TABLE_NAME = "ID_CB_FUND_SOURCE";
   public static final String ID_CB_FUND_SOURCE_SEQUENCE_NAME = "S_ID_CB_FUND_SOURCE";
-  public static final String ID_REMITTANCE_CHARGE_INFO_TABLE_NAME = "ID_CHARGE_INFO_INFO";
-  public static final String ID_REMITTANCE_CHARGE_INFO_SEQUENCE_NAME = "S_ID_CHARGE_INFO_INFO";
+  public static final String ID_REMITTANCE_CHARGE_INFO_TABLE_NAME = "ID_CHARGE_INFO";
+  public static final String ID_REMITTANCE_CHARGE_INFO_SEQUENCE_NAME = "S_ID_CHARGE_INFO";
   public static final String REMITTANCE_CHARGE_MAPPING_TABLE = "ID_CHARGE_MAPPING";
   public static final String REMITTANCE_CHARGE_MAPPING_SEQUENCE_NAME = "S_ID_CHARGE_MAPPING";
   public static final String EXPORT_LC_TABLE_NAME = "ID_EXPORT_LC";
   public static final String EXPORT_LC_SEQUENCE_NAME = "S_ID_EXPORT_LC";
-  public static final String CLIENT_RATE_TYPE_TABLE_NAME = "ID_RATE_TYPE";
-  public static final String CLIENT_RATE_TYPE_SEQUENCE_NAME = "S_ID_RATE_TYPE";
   public static final String BANK_TYPE_TABLE_NAME = "ID_BANK_TYPE";
   public static final String BANK_TYPE_SEQUENCE_NAME = "S_ID_BANK_TYPE";
-  public static final String SWIFT_MSG_SEQUENCE_NAME = "S_SWIFT_MSG";
   public static final String NOSTRO_TXN_RECORD_SEQUENCE_NAME = "S_ID_PRODUCT";
 }

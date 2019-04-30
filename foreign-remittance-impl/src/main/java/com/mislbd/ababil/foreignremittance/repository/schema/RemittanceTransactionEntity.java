@@ -131,6 +131,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "VALUE_DATE")
   private LocalDate valueDate;
 
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "remittanceTransaction")
+  private List<RemittanceChargeInformationEntity> chargeInformationEntities;
+
   public long getId() {
     return id;
   }
@@ -445,6 +448,16 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   public RemittanceTransactionEntity setValueDate(LocalDate valueDate) {
     this.valueDate = valueDate;
+    return this;
+  }
+
+  public List<RemittanceChargeInformationEntity> getChargeInformationEntities() {
+    return chargeInformationEntities;
+  }
+
+  public RemittanceTransactionEntity setChargeInformationEntities(
+      List<RemittanceChargeInformationEntity> chargeInformationEntities) {
+    this.chargeInformationEntities = chargeInformationEntities;
     return this;
   }
 }

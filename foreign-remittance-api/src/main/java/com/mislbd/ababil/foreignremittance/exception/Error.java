@@ -170,6 +170,21 @@ public enum Error {
       return message;
     }
   },
+
+  REMITTANCE_TRANSACTION_EXCEPTION("230", "0009") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message = localeMessages.get(this.getModule() + this.getCode()).orElse("IDProduct not found");
+      return message;
+    }
+  },
   ;
 
   // region <R>
