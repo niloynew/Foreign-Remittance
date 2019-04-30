@@ -8,18 +8,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class RemittanceChargeInformationMapper {
 
-    public ResultMapper<RemittanceChargeInformation, RemittanceChargeInformationEntity> domainToEntity() {
-        return domain ->
-                new RemittanceChargeInformationEntity()
-                        .setChargeId(domain.getChargeId())
-                        .setChargeName(domain.getChargeName())
-                        .setChargeAccountType(domain.getChargeAccountType())
-                        .setChargeAccountCode(domain.getChargeAccountCode())
-                        .setChargeAmount(domain.getChargeAmount())
-                        .setVatAccountType(domain.getVatAccountType())
-                        .setVatAccountCode(domain.getVatAccountCode())
-                        .setVatAmount(domain.getVatAmount())
-                        .setCurrency(domain.getCurrency())
-                        .setExchangeRate(domain.getExchangeRate());
-    }
+  public ResultMapper<RemittanceChargeInformation, RemittanceChargeInformationEntity>
+      domainToEntity() {
+    return domain ->
+        new RemittanceChargeInformationEntity()
+            .setChargeId(domain.getChargeId())
+            .setChargeName(domain.getChargeName())
+            .setChargeAccountType(domain.getChargeAccountType())
+            .setChargeAccountCode(domain.getChargeAccountCode())
+            .setChargeAmount(domain.getChargeAmount())
+            .setVatAccountType(domain.getVatAccountType())
+            .setVatAccountCode(domain.getVatAccountCode())
+            .setVatAmount(domain.getVatAmount())
+            .setCurrency(domain.getCurrency())
+            .setExchangeRate(domain.getExchangeRate());
+  }
 }

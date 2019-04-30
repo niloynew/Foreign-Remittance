@@ -170,6 +170,24 @@ public enum Error {
       return message;
     }
   },
+  // transaction region
+  REMITTANCE_TRANSACTION_NOT_FOUND_EXCEPTION("260", "0010") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages
+              .get(this.getModule() + this.getCode())
+              .orElse("Remittance transaction not found");
+      return message;
+    }
+  },
   ;
 
   // region <R>

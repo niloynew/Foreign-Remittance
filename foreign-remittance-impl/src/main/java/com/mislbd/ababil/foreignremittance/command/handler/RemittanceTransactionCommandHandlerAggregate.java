@@ -1,10 +1,12 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.ConfigurationService;
+import com.mislbd.ababil.foreignremittance.command.ApproveInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.SaveRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.BankInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
+import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.BankInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceChargeInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
@@ -41,14 +43,16 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final ConfigurationService configurationService;
 
   public RemittanceTransactionCommandHandlerAggregate(
-          RemittanceTransactionRepository transactionRepository,
-          RemittanceTransactionMapper transactionMapper,
-          BankInformationRepository bankInformationRepository,
-          BankInformationMapper bankInformationMapper,
-          RemittanceChargeInformationRepository chargeInformationRepository, RemittanceChargeInformationMapper chargeInformationMapper, NgSession ngSession,
-          DisbursementService disbursementService,
-          TransactionService transactionService,
-          ConfigurationService configurationService) {
+      RemittanceTransactionRepository transactionRepository,
+      RemittanceTransactionMapper transactionMapper,
+      BankInformationRepository bankInformationRepository,
+      BankInformationMapper bankInformationMapper,
+      RemittanceChargeInformationRepository chargeInformationRepository,
+      RemittanceChargeInformationMapper chargeInformationMapper,
+      NgSession ngSession,
+      DisbursementService disbursementService,
+      TransactionService transactionService,
+      ConfigurationService configurationService) {
     this.transactionRepository = transactionRepository;
     this.transactionMapper = transactionMapper;
     this.bankInformationRepository = bankInformationRepository;
@@ -114,21 +118,33 @@ public class RemittanceTransactionCommandHandlerAggregate {
             bankInformationRepository.save(bankInformationEntity);
           });
 
-    List<RemittanceChargeInformation> chargeInformationList = command.getPayload().getRemittanceChargeInformationList();
-    if(!chargeInformationList.isEmpty())
+    List<RemittanceChargeInformation> chargeInformationList =
+        command.getPayload().getRemittanceChargeInformationList();
+    if (!chargeInformationList.isEmpty())
       chargeInformationList.forEach(
-              chargeInformation -> {
-                RemittanceChargeInformationEntity chargeInformationEntity = chargeInformationMapper.domainToEntity().map(chargeInformation);
-                chargeInformationEntity.setRemittanceTransaction(
-                        transactionRepository.getOne(remittanceTxnId));
-                chargeInformationRepository.save(chargeInformationEntity);
-              }
-      );
+          chargeInformation -> {
+            RemittanceChargeInformationEntity chargeInformationEntity =
+                chargeInformationMapper.domainToEntity().map(chargeInformation);
+            chargeInformationEntity.setRemittanceTransaction(
+                transactionRepository.getOne(remittanceTxnId));
+            chargeInformationRepository.save(chargeInformationEntity);
+          });
 
     return CommandResponse.of(
         disbursementService.doTransaction(
             remittanceTransactionEntity,
             auditInformation,
             command.getPayload().getRemittanceChargeInformationList()));
+  }
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Void> approveInwardRemittanceTransaction(
+      ApproveInwardRemittanceTransactionCommand command) {
+    RemittanceTransactionEntity remittanceTransactionEntity =
+        transactionRepository
+            .findById(command.getPayload())
+            .orElseThrow(RemittanceTransactionNotFoundException::new);
+    return CommandResponse.asVoid();
   }
 }

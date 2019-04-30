@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface RemittanceTransactionService {
   PagedResult<RemittanceTransaction> getTransactions(
       Pageable pageable,
-      String voucherNumber,
+      String globalTransactionNo,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
       String applicantName,
@@ -19,7 +19,7 @@ public interface RemittanceTransactionService {
       LocalDate toDate);
 
   List<RemittanceTransaction> getTransactions(
-      String voucherNumber,
+      String globalTransactionNo,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
       String applicantName,

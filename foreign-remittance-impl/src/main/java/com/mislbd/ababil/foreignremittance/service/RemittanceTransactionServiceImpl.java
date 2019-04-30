@@ -29,7 +29,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   @Override
   public PagedResult<RemittanceTransaction> getTransactions(
       Pageable pageable,
-      String voucherNumber,
+      String globalTransactionNo,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
       String applicantName,
@@ -39,7 +39,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
     return PagedResultBuilder.build(
         remittanceTransactionRepository.findAll(
             RemittanceTransactionSpecification.searchSpecification(
-                voucherNumber,
+                globalTransactionNo,
                 remittanceType,
                 transactionReferenceNumber,
                 applicantName,
@@ -52,7 +52,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
 
   @Override
   public List<RemittanceTransaction> getTransactions(
-      String voucherNumber,
+      String globalTransactionNo,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
       String applicantName,
@@ -62,7 +62,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
     return ListResultBuilder.build(
         remittanceTransactionRepository.findAll(
             RemittanceTransactionSpecification.searchSpecification(
-                voucherNumber,
+                globalTransactionNo,
                 remittanceType,
                 transactionReferenceNumber,
                 applicantName,
