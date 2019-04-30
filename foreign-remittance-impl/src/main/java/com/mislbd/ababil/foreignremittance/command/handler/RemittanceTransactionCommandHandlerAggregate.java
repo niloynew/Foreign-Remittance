@@ -61,6 +61,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
     /*
      * Save entries in RemittanceTransaction table
      * Save entries in BankInformation table
+     * Save charge information along with global transaction number
      * transaction processing
      * */
 
