@@ -14,13 +14,8 @@ public class RemittanceChargeInformationMapper {
         new RemittanceChargeInformationEntity()
             .setChargeId(domain.getChargeId())
             .setChargeName(domain.getChargeName())
-            .setChargeAccountType(domain.getChargeAccountType())
-            .setChargeAccountCode(domain.getChargeAccountCode())
             .setChargeAmount(domain.getChargeAmount())
-            .setVatAccountType(domain.getVatAccountType())
-            .setVatAccountCode(domain.getVatAccountCode())
             .setVatAmount(domain.getVatAmount())
-            .setCurrency(domain.getCurrency())
-            .setExchangeRate(domain.getExchangeRate());
+            .setCurrency(domain.getCurrency());
   }
 }

@@ -103,17 +103,19 @@ public class RemittanceTransactionMapper {
   }
 
   public IDTransactionRequest getNetPayableGLDebit(
-      RemittanceTransactionEntity request, AuditInformation auditInformation) {
+      RemittanceTransactionEntity request,
+      BigDecimal hoAmountLcy,
+      AuditInformation auditInformation) {
 
     IDTransactionRequest transactionRequest = new IDTransactionRequest();
 
     transactionRequest
         .setActivityId(activityId)
         .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
-        .setAmountLcy(request.getAmountLcy() == null ? BigDecimal.ZERO : request.getAmountLcy())
+        .setAmountLcy(hoAmountLcy)
         .setCurrencyCode(request.getCurrencyCode())
-        .setExchangeRate(request.getExchangeRate())
-        .setRateType(request.getExchangeRateType())
+        .setExchangeRate(request.getHoRate())
+        .setRateType(request.getHoRateTypeId())
         .setDebitTransaction(true)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
@@ -131,15 +133,17 @@ public class RemittanceTransactionMapper {
   }
 
   public GlTransactionRequest getNetPayableGLCredit(
-      RemittanceTransactionEntity request, AuditInformation auditInformation) {
+      RemittanceTransactionEntity request,
+      BigDecimal clientAmount,
+      AuditInformation auditInformation) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest
         .setActivityId(activityId)
         .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
-        .setAmountLcy(request.getAmountLcy() == null ? BigDecimal.ZERO : request.getAmountLcy())
+        .setAmountLcy(clientAmount == null ? BigDecimal.ZERO : clientAmount)
         .setCurrencyCode(request.getCurrencyCode())
-        .setExchangeRate(request.getExchangeRate())
-        .setRateType(request.getExchangeRateType())
+        .setExchangeRate(request.getClientRate())
+        .setRateType(request.getClientRateTypeId())
         .setDebitTransaction(true)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
@@ -162,16 +166,18 @@ public class RemittanceTransactionMapper {
   }
 
   public CasaTransactionRequest getNetPayableCASACredit(
-      RemittanceTransactionEntity request, AuditInformation auditInformation) {
+      RemittanceTransactionEntity request,
+      BigDecimal clientAmount,
+      AuditInformation auditInformation) {
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest
         .setInstrumentNo("V-")
         .setActivityId(activityId)
         .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
-        .setAmountLcy(request.getAmountLcy() == null ? BigDecimal.ZERO : request.getAmountLcy())
+        .setAmountLcy(clientAmount)
         .setCurrencyCode(request.getCurrencyCode())
-        .setExchangeRate(request.getExchangeRate())
-        .setRateType(request.getExchangeRateType())
+        .setExchangeRate(request.getClientRate())
+        .setRateType(request.getClientRateTypeId())
         .setDebitTransaction(false)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
@@ -190,6 +196,7 @@ public class RemittanceTransactionMapper {
 
   public GlTransactionRequest getExchangeGainGL(
       RemittanceTransactionEntity request,
+      String baseCurrency,
       String exchangeGainGLCode,
       AuditInformation auditInformation) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
@@ -199,10 +206,10 @@ public class RemittanceTransactionMapper {
             request.getExchangeGainLoss() == null ? BigDecimal.ZERO : request.getExchangeGainLoss())
         .setAmountLcy(
             request.getExchangeGainLoss() == null ? BigDecimal.ZERO : request.getExchangeGainLoss())
-        .setCurrencyCode(request.getCurrencyCode())
-        .setExchangeRate(request.getExchangeRate())
-        .setRateType(request.getExchangeRateType())
-        .setDebitTransaction(true)
+        .setCurrencyCode(baseCurrency)
+        .setExchangeRate(BigDecimal.ONE)
+        .setRateType(1)
+        .setDebitTransaction(false)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
         .setEntryUser(auditInformation.getEntryUser())
@@ -210,11 +217,8 @@ public class RemittanceTransactionMapper {
         .setEntryTime(auditInformation.getEntryDate())
         .setVerifyUser(auditInformation.getVerifyUser())
         .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration(
-            "Disburse from A/C "
-                + request.getCreditAccountNumber()
-                + "\r\n"
-                + request.getB2bInformation())
+        .setOwnerBranch(auditInformation.getUserBranch())
+        .setNarration("Exchange gain")
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorModule("ID")
         .setInitiatorBranch(auditInformation.getUserBranch())
@@ -232,9 +236,10 @@ public class RemittanceTransactionMapper {
         .setAmountCcy(charge.getChargeAmount())
         .setAmountLcy(charge.getChargeAmount())
         .setCurrencyCode(charge.getCurrency())
-        .setExchangeRate(request.getExchangeRate())
-        .setRateType(request.getExchangeRateType() == null ? 1 : request.getExchangeRateType())
+        .setExchangeRate(charge.getExchangeRate())
+        .setRateType(1)
         .setDebitTransaction(false)
+        .setOwnerBranch(auditInformation.getUserBranch())
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
         .setEntryUser(auditInformation.getEntryUser())
@@ -288,11 +293,11 @@ public class RemittanceTransactionMapper {
 
     glRequest
         .setActivityId(activityId)
-        .setAmountCcy(charge.getChargeAmount())
-        .setAmountLcy(charge.getChargeAmount())
+        .setAmountCcy(charge.getVatAmount())
+        .setAmountLcy(charge.getVatAmount())
         .setCurrencyCode(charge.getCurrency())
         .setExchangeRate(charge.getExchangeRate())
-        //                .setRateType(charge.)
+        .setRateType(1)
         .setCurrencyCode(charge.getCurrency())
         .setDebitTransaction(false)
         .setBatchNo(request.getBatchNumber())
@@ -319,8 +324,8 @@ public class RemittanceTransactionMapper {
     SubGlTransactionRequest subGLRequest = new SubGlTransactionRequest();
     subGLRequest
         .setActivityId(activityId)
-        .setAmountCcy(charge.getChargeAmount())
-        .setAmountLcy(charge.getChargeAmount())
+        .setAmountCcy(charge.getVatAmount())
+        .setAmountLcy(charge.getVatAmount())
         .setCurrencyCode(charge.getCurrency())
         .setExchangeRate(charge.getExchangeRate())
         //                .setRateType()
@@ -345,14 +350,15 @@ public class RemittanceTransactionMapper {
   public CasaTransactionRequest getChargeableCASADebit(
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
-      BigDecimal totalCharges) {
+      BigDecimal totalCharges,
+      String baseCurrency) {
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest
         .setInstrumentNo("V-")
         .setActivityId(activityId)
         .setAmountCcy(totalCharges)
         .setAmountLcy(totalCharges)
-        //                .setCurrencyCode(request.getCurrencyCode())
+        .setCurrencyCode(baseCurrency)
         //                .setExchangeRate(request.getExchangeRate())
         //                .setRateType(request.getExchangeRateType())
         .setDebitTransaction(true)
@@ -374,7 +380,8 @@ public class RemittanceTransactionMapper {
   public GlTransactionRequest getChargeableGLDebit(
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
-      BigDecimal totalCharges) {
+      BigDecimal totalCharges,
+      String baseCurrancy) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest
         .setActivityId(activityId)
@@ -383,7 +390,7 @@ public class RemittanceTransactionMapper {
         //                .setCurrencyCode(request.getCurrencyCode())
         //                .setExchangeRate(request.getExchangeRate())
         //                .setRateType(request.getExchangeRateType())
-        //                .setCurrencyCode(transactionCurrency)
+        .setCurrencyCode(baseCurrancy)
         .setDebitTransaction(true)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
