@@ -28,6 +28,7 @@ public class RemittanceChargeMappingMapper {
     return entity ->
         new RemittanceChargeMapping()
             .setId(entity.getId())
+            .setRemittanceType(entity.getRemittanceType())
             .setChargeId(entity.getRemittanceCharge().getId())
             .setChargeName(entity.getRemittanceCharge().getChargeName())
             .setChargeModifiable(entity.isChargeModifiable())
@@ -43,6 +44,7 @@ public class RemittanceChargeMappingMapper {
             .findById(domain.getId())
             .orElseGet(RemittanceChargeMappingEntity::new)
             .setId(domain.getId())
+            .setRemittanceType(domain.getRemittanceType())
             .setChargeModifiable(domain.getChargeModifiable())
             .setRemittanceCharge(remittanceChargeRepository.findById(domain.getChargeId()).get())
             .setTransactionType(transactionTypeRepository.getOne(domain.getTypeId()));

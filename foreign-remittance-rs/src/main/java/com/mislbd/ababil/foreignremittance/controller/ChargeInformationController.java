@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.service.RemittanceChargeInformationService;
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,10 +25,12 @@ public class ChargeInformationController {
 
   @GetMapping
   public ResponseEntity<List<RemittanceChargeInformation>> getCharges(
+      @RequestParam(value = "remittanceType", required = false) final RemittanceType remittanceType,
       @RequestParam(value = "typeId") Long typeId,
       @RequestParam(value = "account-number", required = false) String accountNumber,
       @RequestParam(value = "amount", required = false) BigDecimal amount) {
     return ResponseEntity.ok(
-        remittanceChargeInformationService.getChargeInfo(typeId, accountNumber, amount));
+        remittanceChargeInformationService.getChargeInfo(
+            remittanceType, typeId, accountNumber, amount));
   }
 }
