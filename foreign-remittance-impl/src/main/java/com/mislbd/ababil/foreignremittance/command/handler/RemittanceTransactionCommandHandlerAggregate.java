@@ -2,7 +2,7 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.ApproveInwardRemittanceTransactionCommand;
-import com.mislbd.ababil.foreignremittance.command.SaveRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.SaveInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.BankInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
@@ -16,7 +16,7 @@ import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionR
 import com.mislbd.ababil.foreignremittance.repository.schema.BankInformationEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeInformationEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
-import com.mislbd.ababil.foreignremittance.service.DisbursementService;
+import com.mislbd.ababil.foreignremittance.service.salient.DisbursementService;
 import com.mislbd.ababil.transaction.service.TransactionService;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
@@ -41,18 +41,19 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final DisbursementService disbursementService;
   private final TransactionService transactionService;
   private final ConfigurationService configurationService;
+  //  CalendarConfigurationService calendarConfigurationService;
 
   public RemittanceTransactionCommandHandlerAggregate(
-      RemittanceTransactionRepository transactionRepository,
-      RemittanceTransactionMapper transactionMapper,
-      BankInformationRepository bankInformationRepository,
-      BankInformationMapper bankInformationMapper,
-      RemittanceChargeInformationRepository chargeInformationRepository,
-      RemittanceChargeInformationMapper chargeInformationMapper,
-      NgSession ngSession,
-      DisbursementService disbursementService,
-      TransactionService transactionService,
-      ConfigurationService configurationService) {
+          RemittanceTransactionRepository transactionRepository,
+          RemittanceTransactionMapper transactionMapper,
+          BankInformationRepository bankInformationRepository,
+          BankInformationMapper bankInformationMapper,
+          RemittanceChargeInformationRepository chargeInformationRepository,
+          RemittanceChargeInformationMapper chargeInformationMapper,
+          NgSession ngSession,
+          DisbursementService disbursementService,
+          TransactionService transactionService,
+          ConfigurationService configurationService) {
     this.transactionRepository = transactionRepository;
     this.transactionMapper = transactionMapper;
     this.bankInformationRepository = bankInformationRepository;
@@ -68,73 +69,72 @@ public class RemittanceTransactionCommandHandlerAggregate {
   @Transactional
   @CommandHandler
   public CommandResponse<Long> remittanceTransactionEntry(
-      SaveRemittanceTransactionCommand command) {
+          SaveInwardRemittanceTransactionCommand command) {
 
     /*
      * Save entries in RemittanceTransaction table
      * Save entries in BankInformation table
+     * Save charge information along with global transaction number
      * transaction processing
      * */
 
     AuditInformation auditInformation = new AuditInformation();
     auditInformation
-        .setEntryUser(command.getExecutedBy())
-        .setVerifyUser(ngSession.getUsername())
-        .setVerifyTerminal(ngSession.getTerminal())
-        .setUserBranch(ngSession.getUserBranch().intValue())
-        .setProcessId(command.getProcessId())
-        .setEntryDate(LocalDate.now());
+            .setEntryUser(command.getExecutedBy())
+            .setVerifyUser(ngSession.getUsername())
+            .setVerifyTerminal(ngSession.getTerminal())
+            .setUserBranch(ngSession.getUserBranch().intValue())
+            .setProcessId(command.getProcessId())
+            .setEntryDate(LocalDate.now());
 
     RemittanceTransactionEntity remittanceTransactionEntity =
-        transactionMapper.domainToEntity().map(command.getPayload());
+            transactionMapper.domainToEntity().map(command.getPayload());
     remittanceTransactionEntity
-        .setBatchNumber(
-            transactionService.getBatchNumber(
-                auditInformation.getEntryUser(),
-                DISBURSEMENT_ACTIVITY_ID,
-                auditInformation.getUserBranch().longValue()))
-        .setGlobalTransactionNo(
-            remittanceTransactionEntity.getGlobalTransactionNo() == null
-                ? transactionService.getGlobalTransactionNumber(
-                    command.getExecutedBy(), DISBURSEMENT_ACTIVITY_ID)
-                : remittanceTransactionEntity.getGlobalTransactionNo())
-        .setExchangeRate(
-            transactionService.getSystemExchangeRate(remittanceTransactionEntity.getCurrencyCode()))
-        .setExchangeRateType(
-            Long.valueOf(
-                configurationService.getConfiguration(SYSTEM_EXCHANGE_RATE_TYPE).get().getValue()))
-    //        .setValueDate()
+            .setBatchNumber(
+                    transactionService.getBatchNumber(
+                            auditInformation.getEntryUser(),
+                            DISBURSEMENT_ACTIVITY_ID,
+                            auditInformation.getUserBranch().longValue()))
+            .setGlobalTransactionNo(
+                    remittanceTransactionEntity.getGlobalTransactionNo() == null
+                            ? transactionService.getGlobalTransactionNumber(
+                            command.getExecutedBy(), DISBURSEMENT_ACTIVITY_ID)
+                            : remittanceTransactionEntity.getGlobalTransactionNo())
+            .setExchangeRate(
+                    transactionService.getSystemExchangeRate(remittanceTransactionEntity.getCurrencyCode()))
+            .setExchangeRateType(
+                    Long.valueOf(
+                            configurationService.getConfiguration(SYSTEM_EXCHANGE_RATE_TYPE).get().getValue()))
+    //            .setValueDate()
     ;
-    Long remittanceTxnId = transactionRepository.save(remittanceTransactionEntity).getId();
+    RemittanceTransactionEntity entity = transactionRepository.save(remittanceTransactionEntity);
 
     List<BankInformation> bankInformationList = command.getPayload().getBankInformation();
     if (!bankInformationList.isEmpty())
       bankInformationList.forEach(
-          bankInformation -> {
-            BankInformationEntity bankInformationEntity =
-                bankInformationMapper.domainToEntity().map(bankInformation);
-            bankInformationEntity.setRemittanceTransaction(
-                transactionRepository.getOne(remittanceTxnId));
-            bankInformationRepository.save(bankInformationEntity);
-          });
+              bankInformation -> {
+                BankInformationEntity bankInformationEntity =
+                        bankInformationMapper.domainToEntity().map(bankInformation);
+                bankInformationEntity.setRemittanceTransaction(entity);
+                bankInformationRepository.save(bankInformationEntity);
+              });
 
     List<RemittanceChargeInformation> chargeInformationList =
-        command.getPayload().getRemittanceChargeInformationList();
+            command.getPayload().getRemittanceChargeInformationList();
     if (!chargeInformationList.isEmpty())
       chargeInformationList.forEach(
-          chargeInformation -> {
-            RemittanceChargeInformationEntity chargeInformationEntity =
-                chargeInformationMapper.domainToEntity().map(chargeInformation);
-            chargeInformationEntity.setRemittanceTransaction(
-                transactionRepository.getOne(remittanceTxnId));
-            chargeInformationRepository.save(chargeInformationEntity);
-          });
+              chargeInformation -> {
+                RemittanceChargeInformationEntity chargeInformationEntity =
+                        chargeInformationMapper.domainToEntity().map(chargeInformation);
+                chargeInformationEntity.setRemittanceTransaction(entity);
+                chargeInformationRepository.save(chargeInformationEntity);
+              });
 
     return CommandResponse.of(
-        disbursementService.doTransaction(
-            remittanceTransactionEntity,
-            auditInformation,
-            command.getPayload().getRemittanceChargeInformationList()));
+            disbursementService.doTransaction(
+                    remittanceTransactionEntity,
+                    auditInformation,
+                    command.getPayload().getRemittanceChargeInformationList()));
   }
 
   @Transactional

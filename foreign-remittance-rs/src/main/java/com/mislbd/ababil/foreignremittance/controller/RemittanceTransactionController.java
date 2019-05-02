@@ -2,7 +2,6 @@ package com.mislbd.ababil.foreignremittance.controller;
 
 import com.mislbd.ababil.foreignremittance.command.ApproveInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.SaveInwardRemittanceTransactionCommand;
-import com.mislbd.ababil.foreignremittance.command.SaveRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
