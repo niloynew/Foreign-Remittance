@@ -36,6 +36,7 @@ public class DisbursementService {
       RemittanceTransactionEntity remittanceTransactionEntity,
       AuditInformation auditInformation,
       List<RemittanceChargeInformation> charges) {
+    String baseCurrency = configurationService.getBaseCurrencyCode();
     /*
      * Debit the principle amount to the respective GL defined in account product mapping
      * Credit the principle amount to the respective customer or GL account
@@ -72,7 +73,7 @@ public class DisbursementService {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getNetPayableGLCredit(
-                remittanceTransactionEntity, clientAmountLcy, auditInformation),
+                remittanceTransactionEntity, clientAmountLcy, baseCurrency, auditInformation),
             TransactionRequestType.TRANSFER);
         break;
 
@@ -88,7 +89,7 @@ public class DisbursementService {
     transactionService.doGlTransaction(
         remittanceTransactionMapper.getExchangeGainGL(
             remittanceTransactionEntity,
-            configurationService.getBaseCurrencyCode(),
+            baseCurrency,
             shadowAccountEntity.getProduct().getExchangeGainGLCode(),
             auditInformation),
         TransactionRequestType.TRANSFER);
@@ -141,19 +142,13 @@ public class DisbursementService {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getChargeableGLDebit(
-                remittanceTransactionEntity,
-                auditInformation,
-                total,
-                configurationService.getBaseCurrencyCode()),
+                remittanceTransactionEntity, auditInformation, total, baseCurrency),
             TransactionRequestType.TRANSFER);
         break;
       case CASA:
         transactionService.doCasaTransaction(
             remittanceTransactionMapper.getChargeableCASADebit(
-                remittanceTransactionEntity,
-                auditInformation,
-                total,
-                configurationService.getBaseCurrencyCode()),
+                remittanceTransactionEntity, auditInformation, total, baseCurrency),
             TransactionRequestType.TRANSFER);
         break;
     }

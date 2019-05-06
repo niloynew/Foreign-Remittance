@@ -1,7 +1,6 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
-
 import java.math.BigDecimal;
 import javax.persistence.*;
 

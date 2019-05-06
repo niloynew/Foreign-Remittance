@@ -84,6 +84,10 @@ public class RemittanceTransaction {
 
   private List<RemittanceChargeInformation> remittanceChargeInformationList;
 
+  private BigDecimal totalChargeAmount;
+
+  private BigDecimal totalVatAmount;
+
   public long getId() {
     return id;
   }
@@ -391,4 +395,23 @@ public class RemittanceTransaction {
     this.valueDate = valueDate;
     return this;
   }
+
+  public BigDecimal getTotalChargeAmount() {
+    return totalChargeAmount;
+  }
+
+  public RemittanceTransaction setTotalChargeAmount(BigDecimal totalChargeAmount) {
+    this.totalChargeAmount = totalChargeAmount;
+    return this;
+  }
+
+  public BigDecimal getTotalVatAmount() {
+    return totalVatAmount;
+  }
+
+  public RemittanceTransaction setTotalVatAmount(BigDecimal totalVatAmount) {
+    this.totalVatAmount = totalVatAmount;
+    return this;
+  }
+
 }

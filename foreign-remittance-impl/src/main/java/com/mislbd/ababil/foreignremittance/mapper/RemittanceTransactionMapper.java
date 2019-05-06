@@ -134,23 +134,19 @@ public class RemittanceTransactionMapper {
   public GlTransactionRequest getNetPayableGLCredit(
       RemittanceTransactionEntity request,
       BigDecimal clientAmount,
+      String baseCurrency,
       AuditInformation auditInformation) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest
         .setActivityId(activityId)
-        .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
         .setAmountLcy(clientAmount == null ? BigDecimal.ZERO : clientAmount)
-        .setCurrencyCode(request.getCurrencyCode())
-        .setExchangeRate(request.getClientRate())
-        .setRateType(request.getClientRateTypeId())
-        .setDebitTransaction(true)
+        .setCurrencyCode(baseCurrency)
+        .setExchangeRate(BigDecimal.ONE)
+        .setRateType(1)
+        .setDebitTransaction(false)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setOwnerBranch(
-            shadowAccountRepository
-                .findByNumber(request.getDebitAccountNumber())
-                .get()
-                .getOwnerBranchId())
+        .setOwnerBranch(auditInformation.getUserBranch())
         .setEntryUser(auditInformation.getEntryUser())
         .setEntryTerminal(auditInformation.getEntryTerminal())
         .setEntryTime(auditInformation.getEntryDate())
