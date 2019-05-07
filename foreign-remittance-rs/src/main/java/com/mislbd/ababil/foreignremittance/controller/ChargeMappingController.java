@@ -7,6 +7,7 @@ import static org.springframework.http.ResponseEntity.status;
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceChargeMappingCommand;
 import com.mislbd.ababil.foreignremittance.command.DeleteChargeMappingCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeMapping;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.service.ChargeMappingService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
@@ -33,14 +34,17 @@ public class ChargeMappingController {
   public ResponseEntity<?> getChargeMappings(
       Pageable pageable,
       @RequestParam(value = "asPage", required = false) final boolean asPage,
+      @RequestParam(value = "remittanceType", required = false) final RemittanceType remittanceType,
       @RequestParam(value = "typeId", required = false) final Long typeId,
       @RequestParam(value = "chargeId", required = false) final Long chargeId,
       @RequestParam(value = "chargeModifiable", required = false) final Boolean chargeModifiable) {
     if (asPage) {
       return ResponseEntity.ok(
-          chargeMappingService.findAll(pageable, typeId, chargeId, chargeModifiable));
+          chargeMappingService.findAll(
+              pageable, remittanceType, typeId, chargeId, chargeModifiable));
     } else {
-      return ResponseEntity.ok(chargeMappingService.findAll(typeId, chargeId, chargeModifiable));
+      return ResponseEntity.ok(
+          chargeMappingService.findAll(remittanceType, typeId, chargeId, chargeModifiable));
     }
   }
 

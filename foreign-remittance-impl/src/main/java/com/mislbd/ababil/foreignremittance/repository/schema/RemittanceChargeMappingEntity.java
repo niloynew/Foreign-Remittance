@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import javax.persistence.*;
 
 @Entity
@@ -15,6 +16,10 @@ public class RemittanceChargeMappingEntity extends BaseEntity {
       sequenceName = SchemaConstant.REMITTANCE_CHARGE_MAPPING_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "REMITTANCE_TYPE")
+  private RemittanceType remittanceType;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "TXN_TYPE_ID")
@@ -33,6 +38,15 @@ public class RemittanceChargeMappingEntity extends BaseEntity {
 
   public RemittanceChargeMappingEntity setId(long id) {
     this.id = id;
+    return this;
+  }
+
+  public RemittanceType getRemittanceType() {
+    return remittanceType;
+  }
+
+  public RemittanceChargeMappingEntity setRemittanceType(RemittanceType remittanceType) {
+    this.remittanceType = remittanceType;
     return this;
   }
 

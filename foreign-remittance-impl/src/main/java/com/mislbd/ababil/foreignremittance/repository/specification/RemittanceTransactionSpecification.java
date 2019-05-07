@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class RemittanceTransactionSpecification {
   public static Specification<RemittanceTransaction> searchSpecification(
-      String voucherNumber,
+      String globalTransactionNo,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
       String applicantName,
@@ -18,8 +18,9 @@ public class RemittanceTransactionSpecification {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
 
-      if (voucherNumber != null) {
-        predicate = cb.and(predicate, cb.equal(root.get("voucherNumber"), voucherNumber));
+      if (globalTransactionNo != null) {
+        predicate =
+            cb.and(predicate, cb.equal(root.get("globalTransactionNo"), globalTransactionNo));
       }
 
       if (remittanceType != null) {

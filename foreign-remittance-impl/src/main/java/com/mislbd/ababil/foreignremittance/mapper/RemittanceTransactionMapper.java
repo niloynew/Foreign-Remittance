@@ -58,7 +58,8 @@ public class RemittanceTransactionMapper {
             .setHoRateTypeId(entity.getHoRateTypeId())
             .setAmountFcy(entity.getAmountFcy())
             .setAmountLcy(entity.getAmountLcy())
-            .setExchangeGainLoss(entity.getExchangeGainLoss());
+            .setExchangeGainLoss(entity.getExchangeGainLoss())
+            .setGlobalTransactionNo(entity.getGlobalTransactionNo());
   }
 
   public ResultMapper<RemittanceTransaction, RemittanceTransactionEntity> domainToEntity() {

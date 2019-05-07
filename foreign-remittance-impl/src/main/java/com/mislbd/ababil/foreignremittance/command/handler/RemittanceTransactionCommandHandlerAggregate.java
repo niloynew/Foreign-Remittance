@@ -1,10 +1,12 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.ConfigurationService;
+import com.mislbd.ababil.foreignremittance.command.ApproveInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.SaveInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.BankInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
+import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.BankInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceChargeInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
@@ -133,5 +135,16 @@ public class RemittanceTransactionCommandHandlerAggregate {
             remittanceTransactionEntity,
             auditInformation,
             command.getPayload().getRemittanceChargeInformationList()));
+  }
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Void> approveInwardRemittanceTransaction(
+      ApproveInwardRemittanceTransactionCommand command) {
+    RemittanceTransactionEntity remittanceTransactionEntity =
+        transactionRepository
+            .findById(command.getPayload())
+            .orElseThrow(RemittanceTransactionNotFoundException::new);
+    return CommandResponse.asVoid();
   }
 }

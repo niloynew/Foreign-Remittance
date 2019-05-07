@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeMapping;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceChargeMappingMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeMappingRepository;
 import com.mislbd.ababil.foreignremittance.repository.specification.RemittanceChargeMappingSpecification;
@@ -26,22 +27,29 @@ public class ChargeMappingServiceImpl implements ChargeMappingService {
 
   @Override
   public PagedResult<RemittanceChargeMapping> findAll(
-      Pageable pageable, Long typeId, Long remittanceChargeId, Boolean chargeModifiable) {
+      Pageable pageable,
+      RemittanceType remittanceType,
+      Long typeId,
+      Long remittanceChargeId,
+      Boolean chargeModifiable) {
     return PagedResultBuilder.build(
         remittanceChargeMappingRepository.findAll(
             RemittanceChargeMappingSpecification.findSpecificChargeMappings(
-                typeId, remittanceChargeId, chargeModifiable),
+                remittanceType, typeId, remittanceChargeId, chargeModifiable),
             pageable),
         remittanceChargeMappingMapper.entityToDomain());
   }
 
   @Override
   public List<RemittanceChargeMapping> findAll(
-      Long typeId, Long remittanceChargeId, Boolean chargeModifiable) {
+      RemittanceType remittanceType,
+      Long typeId,
+      Long remittanceChargeId,
+      Boolean chargeModifiable) {
     return ListResultBuilder.build(
         remittanceChargeMappingRepository.findAll(
             RemittanceChargeMappingSpecification.findSpecificChargeMappings(
-                typeId, remittanceChargeId, chargeModifiable)),
+                remittanceType, typeId, remittanceChargeId, chargeModifiable)),
         remittanceChargeMappingMapper.entityToDomain());
   }
 }

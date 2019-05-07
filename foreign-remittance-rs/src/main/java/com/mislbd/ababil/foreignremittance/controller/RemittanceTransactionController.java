@@ -1,8 +1,10 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
+import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
+import com.mislbd.ababil.foreignremittance.command.ApproveInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.SaveInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
@@ -37,7 +39,7 @@ public class RemittanceTransactionController {
   public ResponseEntity<?> getTransactions(
       Pageable pageable,
       @RequestParam(value = "asPage", required = false) final boolean asPage,
-      @RequestParam(value = "voucherNumber", required = false) final String voucherNumber,
+      @RequestParam(value = "voucherNumber", required = false) final String globalTransactionNo,
       @RequestParam(value = "remittanceType", required = false) final RemittanceType remittanceType,
       @RequestParam(value = "transactionReferenceNumber", required = false)
           final String transactionReferenceNumber,
@@ -53,7 +55,7 @@ public class RemittanceTransactionController {
       PagedResult<RemittanceTransaction> pagedTransactions =
           remittanceTransactionService.getTransactions(
               pageable,
-              voucherNumber,
+              globalTransactionNo,
               remittanceType,
               transactionReferenceNumber,
               applicantName,
@@ -64,7 +66,7 @@ public class RemittanceTransactionController {
     } else {
       List<RemittanceTransaction> transactions =
           remittanceTransactionService.getTransactions(
-              voucherNumber,
+              globalTransactionNo,
               remittanceType,
               transactionReferenceNumber,
               applicantName,
@@ -92,5 +94,14 @@ public class RemittanceTransactionController {
     commandProcessor.executeResult(
         new SaveInwardRemittanceTransactionCommand(remittanceTransaction));
     return ResponseEntity.accepted().build();
+  }
+
+  @PostMapping(path = "/{transactionId}/command", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Void> approveTransactionCommand(
+      @PathVariable("transactionId") Long transactionId,
+      @Valid @RequestBody ApproveInwardRemittanceTransactionCommand command) {
+
+    commandProcessor.executeUpdate(new ApproveInwardRemittanceTransactionCommand(transactionId));
+    return status(ACCEPTED).build();
   }
 }

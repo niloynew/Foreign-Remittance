@@ -84,6 +84,8 @@ public class RemittanceTransaction {
 
   private List<RemittanceChargeInformation> remittanceChargeInformationList;
 
+  private Long globalTransactionNo;
+
   private BigDecimal totalChargeAmount;
 
   private BigDecimal totalVatAmount;
@@ -393,6 +395,15 @@ public class RemittanceTransaction {
 
   public RemittanceTransaction setValueDate(LocalDate valueDate) {
     this.valueDate = valueDate;
+    return this;
+  }
+
+  public Long getGlobalTransactionNo() {
+    return globalTransactionNo;
+  }
+
+  public RemittanceTransaction setGlobalTransactionNo(Long globalTransactionNo) {
+    this.globalTransactionNo = globalTransactionNo;
     return this;
   }
 
