@@ -51,8 +51,6 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
       =========================
       * if credit account is active then
       *   check the debit account currency and credit account currency
-      *   if debit account currency is foreign and credit account currency is local
-      *     then proceed transaction
       *   if both the currency are equal
       *     then proceed transaction
       *   if both currencies are foreign and they are not same
@@ -73,10 +71,8 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
                 .getAccountByNumber(remittanceTransaction.getCreditAccountNumber())
                 .getCurrencyCode();
         if (!debitAccountCurrency.equalsIgnoreCase(creditAccountCurrency)) {
-          if (!creditAccountCurrency.equalsIgnoreCase(localCurrency)) {
             throw new RemittanceTransactionException(
-                "Debit account currency must be equal to credit account currency or local currency");
-          }
+                "Debit account currency must be equal to credit account currency");
         }
       } else {
         throw new RemittanceTransactionException("Selected credit account is not active");

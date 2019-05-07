@@ -1,13 +1,13 @@
 package com.mislbd.ababil.foreignremittance.repository.specification;
 
-import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
+import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import java.time.LocalDate;
 import javax.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 public class RemittanceTransactionSpecification {
-  public static Specification<RemittanceTransaction> searchSpecification(
+  public static Specification<RemittanceTransactionEntity> searchSpecification(
       String globalTransactionNo,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
@@ -52,11 +52,11 @@ public class RemittanceTransactionSpecification {
       }
 
       if (fromDate != null) {
-        predicate = cb.and(predicate, cb.equal(root.get("fromDate"), fromDate));
+        predicate = cb.and(predicate, cb.greaterThanOrEqualTo(root.get("valueDate"), fromDate));
       }
 
       if (toDate != null) {
-        predicate = cb.and(predicate, cb.equal(root.get("toDate"), toDate));
+        predicate = cb.and(predicate, cb.lessThanOrEqualTo(root.get("valueDate"), toDate));
       }
 
       return predicate;
