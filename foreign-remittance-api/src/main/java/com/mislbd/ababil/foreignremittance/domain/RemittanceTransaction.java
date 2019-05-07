@@ -413,5 +413,4 @@ public class RemittanceTransaction {
     this.totalVatAmount = totalVatAmount;
     return this;
   }
-
 }

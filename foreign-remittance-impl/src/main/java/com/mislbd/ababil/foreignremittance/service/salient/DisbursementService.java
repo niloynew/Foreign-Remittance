@@ -37,6 +37,7 @@ public class DisbursementService {
       AuditInformation auditInformation,
       List<RemittanceChargeInformation> charges) {
     String baseCurrency = configurationService.getBaseCurrencyCode();
+
     /*
      * Debit the principle amount to the respective GL defined in account product mapping
      * Credit the principle amount to the respective customer or GL account

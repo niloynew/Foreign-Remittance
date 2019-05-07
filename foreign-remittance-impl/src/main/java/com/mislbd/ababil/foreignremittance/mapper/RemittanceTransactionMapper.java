@@ -47,16 +47,11 @@ public class RemittanceTransactionMapper {
             .setDeliveryTerm(entity.getDeliveryTerm())
             .setApplicantId(entity.getApplicantId())
             .setApplicantAccountNumber(entity.getApplicantAccountNumber())
-            //                        .setBeneficiaryId(entity.getBeneficiaryId())
+            .setValueDate(entity.getValueDate())
             .setBeneficiaryName(entity.getBeneficiaryName())
             .setBeneficiaryAccountNumber(entity.getBeneficiaryAccountNumber())
             .setB2bInformation(entity.getB2bInformation())
-
-            //
-            // .setBankInformation(getConvertedBankInformation(entity.getBankInformationEntity()))
-            //                        .setDebitAccountTypeId(entity.getDebitAccountType())
             .setDebitAccountNumber(entity.getDebitAccountNumber())
-            //                        .setCreditAccountTypeId(entity.getCreditAccountType())
             .setCreditAccountNumber(entity.getCreditAccountNumber())
             .setCurrencyCode(entity.getCurrencyCode())
             .setClientRateTypeId(entity.getClientRateTypeId())
@@ -98,7 +93,8 @@ public class RemittanceTransactionMapper {
             .setHoRate(domain.getHoRate())
             .setAmountFcy(domain.getAmountFcy())
             .setAmountLcy(domain.getAmountLcy())
-            .setExchangeGainLoss(domain.getExchangeGainLoss());
+            .setExchangeGainLoss(domain.getExchangeGainLoss())
+            .setValueDate(domain.getValueDate());
   }
 
   public IDTransactionRequest getNetPayableGLDebit(
@@ -376,16 +372,15 @@ public class RemittanceTransactionMapper {
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
       BigDecimal totalCharges,
-      String baseCurrancy) {
+      String baseCurrency) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest
         .setActivityId(activityId)
         .setAmountCcy(totalCharges)
         .setAmountLcy(totalCharges)
-        //                .setCurrencyCode(request.getCurrencyCode())
         //                .setExchangeRate(request.getExchangeRate())
         //                .setRateType(request.getExchangeRateType())
-        .setCurrencyCode(baseCurrancy)
+        .setCurrencyCode(baseCurrency)
         .setDebitTransaction(true)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
