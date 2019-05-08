@@ -51,6 +51,12 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "APPLICANT_ID")
   private Long applicantId;
 
+  @Column(name = "APPLICANT_NAME")
+  private String applicant;
+
+  @Column(name = "APPLICANT_ADDRESS")
+  private String applicantAddress;
+
   @Column(name = "APPLICANT_ACC_NUMBER")
   private String applicantAccountNumber;
 
@@ -222,6 +228,24 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   public RemittanceTransactionEntity setApplicantId(Long applicantId) {
     this.applicantId = applicantId;
+    return this;
+  }
+
+  public String getApplicant() {
+    return applicant;
+  }
+
+  public RemittanceTransactionEntity setApplicant(String applicant) {
+    this.applicant = applicant;
+    return this;
+  }
+
+  public String getApplicantAddress() {
+    return applicantAddress;
+  }
+
+  public RemittanceTransactionEntity setApplicantAddress(String applicantAddress) {
+    this.applicantAddress = applicantAddress;
     return this;
   }
 

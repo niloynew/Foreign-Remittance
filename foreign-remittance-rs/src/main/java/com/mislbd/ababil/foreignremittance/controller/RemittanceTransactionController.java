@@ -1,6 +1,5 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
-import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
@@ -83,7 +82,7 @@ public class RemittanceTransactionController {
     return status(CREATED)
         .body(
             commandProcessor.executeResult(
-                new SaveInwardRemittanceTransactionCommand(remittanceTransaction)));
+                new ApproveInwardRemittanceTransactionCommand(remittanceTransaction)));
   }
 
   @PostMapping(
@@ -96,12 +95,13 @@ public class RemittanceTransactionController {
     return ResponseEntity.accepted().build();
   }
 
-  @PostMapping(path = "/{transactionId}/command", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Void> approveTransactionCommand(
-      @PathVariable("transactionId") Long transactionId,
-      @Valid @RequestBody ApproveInwardRemittanceTransactionCommand command) {
-
-    commandProcessor.executeUpdate(new ApproveInwardRemittanceTransactionCommand(transactionId));
-    return status(ACCEPTED).build();
-  }
+  //  @PostMapping(path = "/{transactionId}/command", consumes = MediaType.APPLICATION_JSON_VALUE)
+  //  public ResponseEntity<Void> approveTransactionCommand(
+  //      @PathVariable("transactionId") Long transactionId,
+  //      @Valid @RequestBody ApproveInwardRemittanceTransactionCommand command) {
+  //
+  //    commandProcessor.executeUpdate(new
+  // ApproveInwardRemittanceTransactionCommand(transactionId));
+  //    return status(ACCEPTED).build();
+  //  }
 }

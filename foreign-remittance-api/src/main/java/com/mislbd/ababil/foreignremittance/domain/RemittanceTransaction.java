@@ -30,7 +30,11 @@ public class RemittanceTransaction {
 
   @NotNull private Long applicantId;
 
-  @NotNull private String applicantAccountNumber;
+  private String applicant;
+
+  private String applicantAddress;
+
+  private String applicantAccountNumber;
 
   private Boolean isBeneficiaryBankCustomer;
 
@@ -40,7 +44,7 @@ public class RemittanceTransaction {
 
   @NotNull private String beneficiaryAddress;
 
-  @NotNull private String beneficiaryAccountNumber;
+  private String beneficiaryAccountNumber;
 
   private String b2bInformation;
 
@@ -173,6 +177,24 @@ public class RemittanceTransaction {
 
   public RemittanceTransaction setApplicantId(Long applicantId) {
     this.applicantId = applicantId;
+    return this;
+  }
+
+  public String getApplicant() {
+    return applicant;
+  }
+
+  public RemittanceTransaction setApplicant(String applicant) {
+    this.applicant = applicant;
+    return this;
+  }
+
+  public String getApplicantAddress() {
+    return applicantAddress;
+  }
+
+  public RemittanceTransaction setApplicantAddress(String applicantAddress) {
+    this.applicantAddress = applicantAddress;
     return this;
   }
 

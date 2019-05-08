@@ -1,7 +1,7 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.ConfigurationService;
-import com.mislbd.ababil.foreignremittance.command.SaveInwardRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.ApproveInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionException;
 import com.mislbd.ababil.foreignremittance.external.service.CASAAccountService;
@@ -26,7 +26,7 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
   }
 
   @ValidationHandler
-  public void validateInwardDisbursement(SaveInwardRemittanceTransactionCommand command) {
+  public void validateInwardDisbursement(ApproveInwardRemittanceTransactionCommand command) {
     RemittanceTransaction remittanceTransaction = command.getPayload();
     /*
     =========================
