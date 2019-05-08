@@ -3,6 +3,7 @@ package com.mislbd.ababil.foreignremittance.service.salient;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
+import com.mislbd.ababil.foreignremittance.external.service.CASAAccountService;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
@@ -20,22 +21,27 @@ public class DisbursementService {
   private final RemittanceTransactionMapper remittanceTransactionMapper;
   private final ShadowAccountRepository shadowAccountRepository;
   private final ConfigurationService configurationService;
+  private final CASAAccountService casaAccountService;
 
   public DisbursementService(
       TransactionService transactionService,
       RemittanceTransactionMapper remittanceTransactionMapper,
       ShadowAccountRepository shadowAccountRepository,
-      ConfigurationService configurationService) {
+      ConfigurationService configurationService,
+      CASAAccountService casaAccountService) {
     this.transactionService = transactionService;
     this.remittanceTransactionMapper = remittanceTransactionMapper;
     this.shadowAccountRepository = shadowAccountRepository;
     this.configurationService = configurationService;
+    this.casaAccountService = casaAccountService;
   }
 
   public Long doTransaction(
       RemittanceTransactionEntity remittanceTransactionEntity,
       AuditInformation auditInformation,
       List<RemittanceChargeInformation> charges) {
+    String baseCurrency = configurationService.getBaseCurrencyCode();
+
     /*
      * Debit the principle amount to the respective GL defined in account product mapping
      * Credit the principle amount to the respective customer or GL account
@@ -72,15 +78,25 @@ public class DisbursementService {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getNetPayableGLCredit(
-                remittanceTransactionEntity, clientAmountLcy, auditInformation),
+                remittanceTransactionEntity, clientAmountLcy, baseCurrency, auditInformation),
             TransactionRequestType.TRANSFER);
         break;
 
       case CASA:
-        transactionService.doCasaTransaction(
-            remittanceTransactionMapper.getNetPayableCASACredit(
-                remittanceTransactionEntity, clientAmountLcy, auditInformation),
-            TransactionRequestType.TRANSFER);
+        if (casaAccountService
+            .getAccountByNumber(remittanceTransactionEntity.getCreditAccountNumber())
+            .getCurrencyCode()
+            .equalsIgnoreCase(baseCurrency)) {
+          transactionService.doCasaTransaction(
+              remittanceTransactionMapper.getNetPayableCASACreditForForLcy(
+                  remittanceTransactionEntity, baseCurrency, clientAmountLcy, auditInformation),
+              TransactionRequestType.TRANSFER);
+        } else {
+          transactionService.doCasaTransaction(
+              remittanceTransactionMapper.getNetPayableCASACreditForForFcy(
+                  remittanceTransactionEntity, clientAmountLcy, auditInformation),
+              TransactionRequestType.TRANSFER);
+        }
         break;
     }
 
@@ -88,7 +104,7 @@ public class DisbursementService {
     transactionService.doGlTransaction(
         remittanceTransactionMapper.getExchangeGainGL(
             remittanceTransactionEntity,
-            configurationService.getBaseCurrencyCode(),
+            baseCurrency,
             shadowAccountEntity.getProduct().getExchangeGainGLCode(),
             auditInformation),
         TransactionRequestType.TRANSFER);
@@ -141,19 +157,13 @@ public class DisbursementService {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getChargeableGLDebit(
-                remittanceTransactionEntity,
-                auditInformation,
-                total,
-                configurationService.getBaseCurrencyCode()),
+                remittanceTransactionEntity, auditInformation, total, baseCurrency),
             TransactionRequestType.TRANSFER);
         break;
       case CASA:
         transactionService.doCasaTransaction(
             remittanceTransactionMapper.getChargeableCASADebit(
-                remittanceTransactionEntity,
-                auditInformation,
-                total,
-                configurationService.getBaseCurrencyCode()),
+                remittanceTransactionEntity, auditInformation, total, baseCurrency),
             TransactionRequestType.TRANSFER);
         break;
     }

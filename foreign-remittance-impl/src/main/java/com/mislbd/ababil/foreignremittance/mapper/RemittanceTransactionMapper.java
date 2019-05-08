@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RemittanceTransactionMapper {
 
-  private static final Long activityId = Long.valueOf(501);
+  private static final Long activityId = Long.valueOf(601);
   private final RemittanceTransactionRepository remittanceTransactionRepository;
   private final TransactionTypeRepository transactionTypeRepository;
   private final ShadowAccountRepository shadowAccountRepository;
@@ -49,16 +49,11 @@ public class RemittanceTransactionMapper {
             .setApplicant(entity.getApplicant())
             .setApplicantAddress(entity.getApplicantAddress())
             .setApplicantAccountNumber(entity.getApplicantAccountNumber())
-            //                        .setBeneficiaryId(entity.getBeneficiaryId())
+            .setValueDate(entity.getValueDate())
             .setBeneficiaryName(entity.getBeneficiaryName())
             .setBeneficiaryAccountNumber(entity.getBeneficiaryAccountNumber())
             .setB2bInformation(entity.getB2bInformation())
-
-            //
-            // .setBankInformation(getConvertedBankInformation(entity.getBankInformationEntity()))
-            //                        .setDebitAccountTypeId(entity.getDebitAccountType())
             .setDebitAccountNumber(entity.getDebitAccountNumber())
-            //                        .setCreditAccountTypeId(entity.getCreditAccountType())
             .setCreditAccountNumber(entity.getCreditAccountNumber())
             .setCurrencyCode(entity.getCurrencyCode())
             .setClientRateTypeId(entity.getClientRateTypeId())
@@ -103,7 +98,8 @@ public class RemittanceTransactionMapper {
             .setHoRate(domain.getHoRate())
             .setAmountFcy(domain.getAmountFcy())
             .setAmountLcy(domain.getAmountLcy())
-            .setExchangeGainLoss(domain.getExchangeGainLoss());
+            .setExchangeGainLoss(domain.getExchangeGainLoss())
+            .setValueDate(domain.getValueDate());
   }
 
   public IDTransactionRequest getNetPayableGLDebit(
@@ -128,7 +124,7 @@ public class RemittanceTransactionMapper {
         .setEntryTime(auditInformation.getEntryDate())
         .setVerifyUser(auditInformation.getVerifyUser())
         .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration("Disburse from A/C " + request.getCreditAccountNumber())
+        .setNarration("Disburse from A/C " + request.getCreditAccountNumber() + " for GL debit")
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorModule("ID")
         .setInitiatorBranch(auditInformation.getUserBranch())
@@ -139,29 +135,25 @@ public class RemittanceTransactionMapper {
   public GlTransactionRequest getNetPayableGLCredit(
       RemittanceTransactionEntity request,
       BigDecimal clientAmount,
+      String baseCurrency,
       AuditInformation auditInformation) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest
         .setActivityId(activityId)
-        .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
         .setAmountLcy(clientAmount == null ? BigDecimal.ZERO : clientAmount)
-        .setCurrencyCode(request.getCurrencyCode())
-        .setExchangeRate(request.getClientRate())
-        .setRateType(request.getClientRateTypeId())
-        .setDebitTransaction(true)
+        .setCurrencyCode(baseCurrency)
+        .setExchangeRate(BigDecimal.ONE)
+        .setRateType(1)
+        .setDebitTransaction(false)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setOwnerBranch(
-            shadowAccountRepository
-                .findByNumber(request.getDebitAccountNumber())
-                .get()
-                .getOwnerBranchId())
+        .setOwnerBranch(auditInformation.getUserBranch())
         .setEntryUser(auditInformation.getEntryUser())
         .setEntryTerminal(auditInformation.getEntryTerminal())
         .setEntryTime(auditInformation.getEntryDate())
         .setVerifyUser(auditInformation.getVerifyUser())
         .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration("Disburse from A/C " + request.getCreditAccountNumber())
+        .setNarration("Disburse from A/C " + request.getCreditAccountNumber() + " for GL credit")
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorModule("ID")
         .setInitiatorBranch(auditInformation.getUserBranch())
@@ -169,7 +161,7 @@ public class RemittanceTransactionMapper {
     return glRequest;
   }
 
-  public CasaTransactionRequest getNetPayableCASACredit(
+  public CasaTransactionRequest getNetPayableCASACreditForForFcy(
       RemittanceTransactionEntity request,
       BigDecimal clientAmount,
       AuditInformation auditInformation) {
@@ -190,7 +182,38 @@ public class RemittanceTransactionMapper {
         .setEntryTime(auditInformation.getEntryDate())
         .setVerifyUser(auditInformation.getVerifyUser())
         .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration("Disburse from A/C " + request.getCreditAccountNumber())
+        .setNarration("Disburse from A/C " + request.getCreditAccountNumber() + " for casa credit")
+        .setApprovalFlowInstanceId(auditInformation.getProcessId())
+        .setInitiatorBranch(auditInformation.getUserBranch())
+        .setInitiatorModule("ID")
+        .setAccNumber(request.getCreditAccountNumber());
+    return casaRequest;
+  }
+
+  public CasaTransactionRequest getNetPayableCASACreditForForLcy(
+      RemittanceTransactionEntity request,
+      String baseCurrency,
+      BigDecimal clientAmount,
+      AuditInformation auditInformation) {
+    CasaTransactionRequest casaRequest = new CasaTransactionRequest();
+    casaRequest
+        .setInstrumentNo("V-")
+        .setActivityId(activityId)
+        .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
+        .setAmountLcy(clientAmount)
+        .setCurrencyCode(baseCurrency)
+        .setExchangeRate(BigDecimal.ONE)
+        .setRateType(1)
+        .setRateType(request.getClientRateTypeId())
+        .setDebitTransaction(false)
+        .setBatchNo(request.getBatchNumber())
+        .setGlobalTxnNo(request.getGlobalTransactionNo())
+        .setEntryUser(auditInformation.getEntryUser())
+        .setEntryTerminal(auditInformation.getEntryTerminal())
+        .setEntryTime(auditInformation.getEntryDate())
+        .setVerifyUser(auditInformation.getVerifyUser())
+        .setVerifyTerminal(auditInformation.getVerifyTerminal())
+        .setNarration("Disburse from A/C " + request.getCreditAccountNumber() + " for casa credit")
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorBranch(auditInformation.getUserBranch())
         .setInitiatorModule("ID")
@@ -385,16 +408,15 @@ public class RemittanceTransactionMapper {
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
       BigDecimal totalCharges,
-      String baseCurrancy) {
+      String baseCurrency) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest
         .setActivityId(activityId)
         .setAmountCcy(totalCharges)
         .setAmountLcy(totalCharges)
-        //                .setCurrencyCode(request.getCurrencyCode())
         //                .setExchangeRate(request.getExchangeRate())
         //                .setRateType(request.getExchangeRateType())
-        .setCurrencyCode(baseCurrancy)
+        .setCurrencyCode(baseCurrency)
         .setDebitTransaction(true)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
