@@ -71,8 +71,10 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
                 .getAccountByNumber(remittanceTransaction.getCreditAccountNumber())
                 .getCurrencyCode();
         if (!debitAccountCurrency.equalsIgnoreCase(creditAccountCurrency)) {
-          throw new RemittanceTransactionException(
-              "Debit account currency must be equal to credit account currency");
+          if (!creditAccountCurrency.equalsIgnoreCase(localCurrency)) {
+            throw new RemittanceTransactionException(
+                "Debit account currency must be equal to credit account currency or local currency");
+          }
         }
       } else {
         throw new RemittanceTransactionException("Selected credit account is not active");
