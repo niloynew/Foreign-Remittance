@@ -38,7 +38,8 @@ public class RemittanceTransactionController {
   public ResponseEntity<?> getTransactions(
       Pageable pageable,
       @RequestParam(value = "asPage", required = false) final boolean asPage,
-      @RequestParam(value = "voucherNumber", required = false) final String globalTransactionNo,
+      @RequestParam(value = "globalTransactionNo", required = false)
+          final String globalTransactionNo,
       @RequestParam(value = "remittanceType", required = false) final RemittanceType remittanceType,
       @RequestParam(value = "transactionReferenceNumber", required = false)
           final String transactionReferenceNumber,
