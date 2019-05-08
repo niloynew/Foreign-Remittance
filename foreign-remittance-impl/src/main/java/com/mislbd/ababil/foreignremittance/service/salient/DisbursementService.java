@@ -3,6 +3,7 @@ package com.mislbd.ababil.foreignremittance.service.salient;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
+import com.mislbd.ababil.foreignremittance.external.service.CASAAccountService;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
@@ -20,16 +21,19 @@ public class DisbursementService {
   private final RemittanceTransactionMapper remittanceTransactionMapper;
   private final ShadowAccountRepository shadowAccountRepository;
   private final ConfigurationService configurationService;
+  private final CASAAccountService casaAccountService;
 
   public DisbursementService(
       TransactionService transactionService,
       RemittanceTransactionMapper remittanceTransactionMapper,
       ShadowAccountRepository shadowAccountRepository,
-      ConfigurationService configurationService) {
+      ConfigurationService configurationService,
+      CASAAccountService casaAccountService) {
     this.transactionService = transactionService;
     this.remittanceTransactionMapper = remittanceTransactionMapper;
     this.shadowAccountRepository = shadowAccountRepository;
     this.configurationService = configurationService;
+    this.casaAccountService = casaAccountService;
   }
 
   public Long doTransaction(
@@ -79,10 +83,20 @@ public class DisbursementService {
         break;
 
       case CASA:
-        transactionService.doCasaTransaction(
-            remittanceTransactionMapper.getNetPayableCASACredit(
-                remittanceTransactionEntity, clientAmountLcy, auditInformation),
-            TransactionRequestType.TRANSFER);
+        if (casaAccountService
+            .getAccountByNumber(remittanceTransactionEntity.getCreditAccountNumber())
+            .getCurrencyCode()
+            .equalsIgnoreCase(baseCurrency)) {
+          transactionService.doCasaTransaction(
+              remittanceTransactionMapper.getNetPayableCASACreditForForLcy(
+                  remittanceTransactionEntity, baseCurrency, clientAmountLcy, auditInformation),
+              TransactionRequestType.TRANSFER);
+        } else {
+          transactionService.doCasaTransaction(
+              remittanceTransactionMapper.getNetPayableCASACreditForForFcy(
+                  remittanceTransactionEntity, clientAmountLcy, auditInformation),
+              TransactionRequestType.TRANSFER);
+        }
         break;
     }
 

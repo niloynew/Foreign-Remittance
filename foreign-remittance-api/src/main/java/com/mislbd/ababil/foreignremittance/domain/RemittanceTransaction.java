@@ -30,6 +30,8 @@ public class RemittanceTransaction {
 
   @NotNull private Long applicantId;
 
+  private String applicantName;
+
   @NotNull private String applicantAccountNumber;
 
   private Boolean isBeneficiaryBankCustomer;
@@ -422,6 +424,15 @@ public class RemittanceTransaction {
 
   public RemittanceTransaction setTotalVatAmount(BigDecimal totalVatAmount) {
     this.totalVatAmount = totalVatAmount;
+    return this;
+  }
+
+  public String getApplicantName() {
+    return applicantName;
+  }
+
+  public RemittanceTransaction setApplicantName(String applicantName) {
+    this.applicantName = applicantName;
     return this;
   }
 }

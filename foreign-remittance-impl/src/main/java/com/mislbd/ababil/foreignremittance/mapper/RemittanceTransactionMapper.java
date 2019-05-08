@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RemittanceTransactionMapper {
 
-  private static final Long activityId = Long.valueOf(501);
+  private static final Long activityId = Long.valueOf(601);
   private final RemittanceTransactionRepository remittanceTransactionRepository;
   private final TransactionTypeRepository transactionTypeRepository;
   private final ShadowAccountRepository shadowAccountRepository;
@@ -46,6 +46,7 @@ public class RemittanceTransactionMapper {
             .setCbFundSourceId(entity.getCbFundSourceId())
             .setDeliveryTerm(entity.getDeliveryTerm())
             .setApplicantId(entity.getApplicantId())
+            .setApplicantName(entity.getApplicantName())
             .setApplicantAccountNumber(entity.getApplicantAccountNumber())
             .setValueDate(entity.getValueDate())
             .setBeneficiaryName(entity.getBeneficiaryName())
@@ -76,6 +77,7 @@ public class RemittanceTransactionMapper {
             .setCbFundSourceId(domain.getCbFundSourceId())
             .setDeliveryTerm(domain.getDeliveryTerm())
             .setApplicantId(domain.getApplicantId())
+            .setApplicantName(domain.getApplicantName())
             .setApplicantAccountNumber(domain.getApplicantAccountNumber())
             .setBeneficiaryName(domain.getBeneficiaryName())
             .setBeneficiaryAddress(domain.getBeneficiaryAddress())
@@ -120,7 +122,7 @@ public class RemittanceTransactionMapper {
         .setEntryTime(auditInformation.getEntryDate())
         .setVerifyUser(auditInformation.getVerifyUser())
         .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration("Disburse from A/C " + request.getCreditAccountNumber())
+        .setNarration("Disburse from A/C " + request.getCreditAccountNumber() + " for GL debit")
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorModule("ID")
         .setInitiatorBranch(auditInformation.getUserBranch())
@@ -149,7 +151,7 @@ public class RemittanceTransactionMapper {
         .setEntryTime(auditInformation.getEntryDate())
         .setVerifyUser(auditInformation.getVerifyUser())
         .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration("Disburse from A/C " + request.getCreditAccountNumber())
+        .setNarration("Disburse from A/C " + request.getCreditAccountNumber() + " for GL credit")
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorModule("ID")
         .setInitiatorBranch(auditInformation.getUserBranch())
@@ -157,7 +159,7 @@ public class RemittanceTransactionMapper {
     return glRequest;
   }
 
-  public CasaTransactionRequest getNetPayableCASACredit(
+  public CasaTransactionRequest getNetPayableCASACreditForForFcy(
       RemittanceTransactionEntity request,
       BigDecimal clientAmount,
       AuditInformation auditInformation) {
@@ -178,7 +180,38 @@ public class RemittanceTransactionMapper {
         .setEntryTime(auditInformation.getEntryDate())
         .setVerifyUser(auditInformation.getVerifyUser())
         .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration("Disburse from A/C " + request.getCreditAccountNumber())
+        .setNarration("Disburse from A/C " + request.getCreditAccountNumber() + " for casa credit")
+        .setApprovalFlowInstanceId(auditInformation.getProcessId())
+        .setInitiatorBranch(auditInformation.getUserBranch())
+        .setInitiatorModule("ID")
+        .setAccNumber(request.getCreditAccountNumber());
+    return casaRequest;
+  }
+
+  public CasaTransactionRequest getNetPayableCASACreditForForLcy(
+      RemittanceTransactionEntity request,
+      String baseCurrency,
+      BigDecimal clientAmount,
+      AuditInformation auditInformation) {
+    CasaTransactionRequest casaRequest = new CasaTransactionRequest();
+    casaRequest
+        .setInstrumentNo("V-")
+        .setActivityId(activityId)
+        .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
+        .setAmountLcy(clientAmount)
+        .setCurrencyCode(baseCurrency)
+        .setExchangeRate(BigDecimal.ONE)
+        .setRateType(1)
+        .setRateType(request.getClientRateTypeId())
+        .setDebitTransaction(false)
+        .setBatchNo(request.getBatchNumber())
+        .setGlobalTxnNo(request.getGlobalTransactionNo())
+        .setEntryUser(auditInformation.getEntryUser())
+        .setEntryTerminal(auditInformation.getEntryTerminal())
+        .setEntryTime(auditInformation.getEntryDate())
+        .setVerifyUser(auditInformation.getVerifyUser())
+        .setVerifyTerminal(auditInformation.getVerifyTerminal())
+        .setNarration("Disburse from A/C " + request.getCreditAccountNumber() + " for casa credit")
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorBranch(auditInformation.getUserBranch())
         .setInitiatorModule("ID")
