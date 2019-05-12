@@ -14,7 +14,9 @@ import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.time.LocalDate;
 import java.util.List;
 import javax.validation.Valid;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +38,6 @@ public class RemittanceTransactionController {
 
   @GetMapping(path = "/remittance-transaction")
   public ResponseEntity<?> getTransactions(
-      Pageable pageable,
       @RequestParam(value = "asPage", required = false) final boolean asPage,
       @RequestParam(value = "globalTransactionNo", required = false)
           final String globalTransactionNo,
@@ -52,6 +53,7 @@ public class RemittanceTransactionController {
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           final LocalDate toDate) {
     if (asPage) {
+      Pageable pageable = PageRequest.of(0, 20, Sort.by("globalTransactionNo").descending());
       PagedResult<RemittanceTransaction> pagedTransactions =
           remittanceTransactionService.getTransactions(
               pageable,
