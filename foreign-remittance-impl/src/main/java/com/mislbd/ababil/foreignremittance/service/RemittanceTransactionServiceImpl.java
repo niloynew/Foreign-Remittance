@@ -4,12 +4,16 @@ import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.RemittanceTransactionSpecification;
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +40,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
       String beneficiaryName,
       LocalDate fromDate,
       LocalDate toDate) {
-    return PagedResultBuilder.build(
+    Page<RemittanceTransactionEntity> remittanceTransactions =
         remittanceTransactionRepository.findAll(
             RemittanceTransactionSpecification.searchSpecification(
                 globalTransactionNo,
@@ -46,8 +50,10 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
                 beneficiaryName,
                 fromDate,
                 toDate),
-            pageable),
-        remittanceTransactionMapper.entityToDomain());
+            pageable);
+
+    return PagedResultBuilder.build(
+        remittanceTransactions, remittanceTransactionMapper.entityToDomain());
   }
 
   @Override
@@ -59,7 +65,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
       String beneficiaryName,
       LocalDate fromDate,
       LocalDate toDate) {
-    return ListResultBuilder.build(
+    List<RemittanceTransactionEntity> remittanceTransactions =
         remittanceTransactionRepository.findAll(
             RemittanceTransactionSpecification.searchSpecification(
                 globalTransactionNo,
@@ -68,7 +74,17 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
                 applicantName,
                 beneficiaryName,
                 fromDate,
-                toDate)),
-        remittanceTransactionMapper.entityToDomain());
+                toDate));
+
+    Collections.sort(
+        remittanceTransactions,
+        new Comparator<RemittanceTransactionEntity>() {
+          @Override
+          public int compare(RemittanceTransactionEntity rm1, RemittanceTransactionEntity rm2) {
+            return rm2.getGlobalTransactionNo().compareTo(rm1.getGlobalTransactionNo());
+          }
+        });
+    return ListResultBuilder.build(
+        remittanceTransactions, remittanceTransactionMapper.entityToDomain());
   }
 }
