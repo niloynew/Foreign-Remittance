@@ -76,7 +76,6 @@ public class NostroTransactionRecordEntity extends BaseEntity {
   @Column(name = "NOSTRO_RECONCILED")
   private String nostroReconciled;
 
-
   public Long getId() {
     return id;
   }

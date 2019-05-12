@@ -46,7 +46,7 @@ public class NostroReconcileEntity extends BaseEntity {
   @Column(name = "SUPP_DETAILS")
   private String suppDetails;
 
-  @Column(name = "SUPP_DETAILS")
+  @Column(name = "VALUE_DATE")
   private LocalDate valueDate;
 
   @Column(name = "REMARK")
