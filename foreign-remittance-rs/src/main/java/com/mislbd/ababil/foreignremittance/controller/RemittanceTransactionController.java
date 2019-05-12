@@ -4,7 +4,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.ApproveInwardRemittanceTransactionCommand;
-import com.mislbd.ababil.foreignremittance.command.SaveInwardRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.ApproveOutwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
@@ -91,11 +91,12 @@ public class RemittanceTransactionController {
   @PostMapping(
       path = "/outward-remittance-transaction",
       consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> outgoingRemittanceFromBranch(
+  public ResponseEntity<CommandResponse<Long>> outgoingRemittanceFromBranch(
       @RequestBody @Valid RemittanceTransaction remittanceTransaction) {
-    commandProcessor.executeResult(
-        new SaveInwardRemittanceTransactionCommand(remittanceTransaction));
-    return ResponseEntity.accepted().build();
+    return status(CREATED)
+        .body(
+            commandProcessor.executeResult(
+                new ApproveOutwardRemittanceTransactionCommand(remittanceTransaction)));
   }
 
   //  @PostMapping(path = "/{transactionId}/command", consumes = MediaType.APPLICATION_JSON_VALUE)

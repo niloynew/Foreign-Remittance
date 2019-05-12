@@ -55,13 +55,17 @@ public class RemittanceTransactionMapper {
             .setB2bInformation(entity.getB2bInformation())
             .setDebitAccountNumber(entity.getDebitAccountNumber())
             .setCreditAccountNumber(entity.getCreditAccountNumber())
+            .setChargeAccountNumber(entity.getChargeAccountNumber())
             .setCurrencyCode(entity.getCurrencyCode())
             .setClientRateTypeId(entity.getClientRateTypeId())
+            .setClientRate(entity.getClientRate())
             .setHoRateTypeId(entity.getHoRateTypeId())
+            .setHoRate(entity.getHoRate())
             .setAmountFcy(entity.getAmountFcy())
             .setAmountLcy(entity.getAmountLcy())
             .setExchangeGainLoss(entity.getExchangeGainLoss())
-            .setGlobalTransactionNo(entity.getGlobalTransactionNo());
+            .setGlobalTransactionNo(entity.getGlobalTransactionNo())
+            .setTotalChargeAmount(entity.getTotalChargeAmount());
   }
 
   public ResultMapper<RemittanceTransaction, RemittanceTransactionEntity> domainToEntity() {
@@ -99,7 +103,8 @@ public class RemittanceTransactionMapper {
             .setAmountFcy(domain.getAmountFcy())
             .setAmountLcy(domain.getAmountLcy())
             .setExchangeGainLoss(domain.getExchangeGainLoss())
-            .setValueDate(domain.getValueDate());
+            .setValueDate(domain.getValueDate())
+            .setTotalChargeAmount(domain.getTotalChargeAmount());
   }
 
   public IDTransactionRequest getNetPayableGLDebit(
