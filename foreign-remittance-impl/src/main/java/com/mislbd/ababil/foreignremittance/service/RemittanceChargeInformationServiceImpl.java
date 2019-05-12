@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceChargeAmountNotFoundException;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeMappingRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeRepository;
@@ -29,12 +30,15 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
   }
 
   public List<RemittanceChargeInformation> getChargeInfo(
-      long transactionTypeId, String accountNumber, BigDecimal amount) {
+      RemittanceType remittanceType,
+      long transactionTypeId,
+      String accountNumber,
+      BigDecimal amount) {
 
     List<RemittanceChargeMappingEntity> chargeMappingList =
         remittanceChargeMappingRepository.findAll(
             RemittanceChargeMappingSpecification.findSpecificChargeMappings(
-                transactionTypeId, null, null));
+                remittanceType, transactionTypeId, null, null));
     List<RemittanceChargeEntity> chargeList = getChargeList(chargeMappingList, accountNumber);
     List<RemittanceChargeInformation> remittanceChargeInformationList = new ArrayList<>();
     if (chargeList.isEmpty()) return remittanceChargeInformationList;

@@ -51,6 +51,12 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "APPLICANT_ID")
   private Long applicantId;
 
+  @Column(name = "APPLICANT_NAME")
+  private String applicant;
+
+  @Column(name = "APPLICANT_ADDRESS")
+  private String applicantAddress;
+
   @Column(name = "APPLICANT_ACC_NUMBER")
   private String applicantAccountNumber;
 
@@ -119,6 +125,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "GLOBALTXNNO")
   private Long globalTransactionNo;
 
+  @Column(name = "TOTAL_CHARGE_AMOUNT")
+  private BigDecimal totalChargeAmount;
+
   @Column(name = "BATCH_NUMBER")
   private String batchNumber;
 
@@ -130,6 +139,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   @Column(name = "VALUE_DATE")
   private LocalDate valueDate;
+
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "remittanceTransaction")
+  private List<RemittanceChargeInformationEntity> chargeInformationEntities;
 
   public long getId() {
     return id;
@@ -219,6 +231,24 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   public RemittanceTransactionEntity setApplicantId(Long applicantId) {
     this.applicantId = applicantId;
+    return this;
+  }
+
+  public String getApplicant() {
+    return applicant;
+  }
+
+  public RemittanceTransactionEntity setApplicant(String applicant) {
+    this.applicant = applicant;
+    return this;
+  }
+
+  public String getApplicantAddress() {
+    return applicantAddress;
+  }
+
+  public RemittanceTransactionEntity setApplicantAddress(String applicantAddress) {
+    this.applicantAddress = applicantAddress;
     return this;
   }
 
@@ -412,6 +442,15 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
+  public BigDecimal getTotalChargeAmount() {
+    return totalChargeAmount;
+  }
+
+  public RemittanceTransactionEntity setTotalChargeAmount(BigDecimal totalChargeAmount) {
+    this.totalChargeAmount = totalChargeAmount;
+    return this;
+  }
+
   public String getBatchNumber() {
     return batchNumber;
   }
@@ -445,6 +484,16 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   public RemittanceTransactionEntity setValueDate(LocalDate valueDate) {
     this.valueDate = valueDate;
+    return this;
+  }
+
+  public List<RemittanceChargeInformationEntity> getChargeInformationEntities() {
+    return chargeInformationEntities;
+  }
+
+  public RemittanceTransactionEntity setChargeInformationEntities(
+      List<RemittanceChargeInformationEntity> chargeInformationEntities) {
+    this.chargeInformationEntities = chargeInformationEntities;
     return this;
   }
 }
