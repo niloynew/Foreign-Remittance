@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "NOSTRO_TRANSACTION_RECORD")
+@Table(name = SchemaConstant.NOSTRO_TRANSACTION_RECORD)
 public class NostroTransactionRecordEntity extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "NOSTRO_TXN_GEN")
@@ -17,16 +17,16 @@ public class NostroTransactionRecordEntity extends BaseEntity {
   private Long id;
 
   @Column(name = "NOSTRO_TXNID")
-  private Long nostroTxnid;
+  private Long nostroTxnId;
 
   @Column(name = "NOSTRO_DR_CR")
   private String nostroDrCr;
 
   @Column(name = "NOSTRO_REF_ACCNO")
-  private String nostroRefAccno;
+  private String nostroRefAccountNo;
 
   @Column(name = "NOSTRO_TRPARTICULARS")
-  private String nostroTrparticulars;
+  private String nostroTxnParticulars;
 
   @Column(name = "NOSTRO_DEBIT_AMT_CCY")
   private BigDecimal nostroDebitAmtCcy;
@@ -35,40 +35,43 @@ public class NostroTransactionRecordEntity extends BaseEntity {
   private String nostroCurCode;
 
   @Column(name = "NOSTRO_TRN_INIT_BRID")
-  private Long nostroTrnInitBrid;
+  private Long nostroTxnInitBrid;
 
   @Column(name = "NOSTRO_INIT_MODULE")
   private String nostroInitModule;
 
   @Column(name = "NOSTRO_TRN_ISVALID_YN")
-  private String nostroTrnIsvalidYn;
+  private String nostroTxnIsValidYn;
 
   @Column(name = "NOSTRO_TR_CODE")
-  private Long nostroTrCode;
+  private Long nostroTxnCode;
 
   @Column(name = "NOSTRO_TRN_DATE")
-  private LocalDate nostroTrnDate;
+  private LocalDate nostroTxnDate;
 
   @Column(name = "NOSTRO_VALUE_DATE")
   private LocalDate nostroValueDate;
 
-  private String nostroCreatedterminal;
-  private String nostroModifiedterminal;
+  @Column(name = "NOSTRO_CREATEDTERMINAL")
+  private String nostroCreatedTerminal;
+
+  @Column(name = "NOSTRO_MODIFIEDTERMINAL")
+  private String nostroModifiedTerminal;
 
   @Column(name = "NOSTRO_TR_REF_NO")
-  private String nostroTrRefNo;
+  private String nostroTxnReferenceNo;
 
   @Column(name = "NOSTRO_OWNER_BRID")
   private Long nostroOwnerBrid;
 
   @Column(name = "NOSTRO_TRPOSTBALANCE")
-  private Long nostroTrpostbalance;
+  private Long nostroTxnPostBalance;
 
   @Column(name = "NOSTRO_CREDIT_AMT_CCY")
   private BigDecimal nostroCreditAmtCcy;
 
   @Column(name = "NOSTRO_GLOBALTRN_NO")
-  private Long nostroGlobaltrnNo;
+  private Long nostroGlobalTxnNo;
 
   @Column(name = "NOSTRO_RECONCILED")
   private String nostroReconciled;
@@ -82,12 +85,12 @@ public class NostroTransactionRecordEntity extends BaseEntity {
     return this;
   }
 
-  public Long getNostroTxnid() {
-    return nostroTxnid;
+  public Long getNostroTxnId() {
+    return nostroTxnId;
   }
 
-  public NostroTransactionRecordEntity setNostroTxnid(Long nostroTxnid) {
-    this.nostroTxnid = nostroTxnid;
+  public NostroTransactionRecordEntity setNostroTxnId(Long nostroTxnId) {
+    this.nostroTxnId = nostroTxnId;
     return this;
   }
 
@@ -100,21 +103,21 @@ public class NostroTransactionRecordEntity extends BaseEntity {
     return this;
   }
 
-  public String getNostroRefAccno() {
-    return nostroRefAccno;
+  public String getNostroRefAccountNo() {
+    return nostroRefAccountNo;
   }
 
-  public NostroTransactionRecordEntity setNostroRefAccno(String nostroRefAccno) {
-    this.nostroRefAccno = nostroRefAccno;
+  public NostroTransactionRecordEntity setNostroRefAccountNo(String nostroRefAccountNo) {
+    this.nostroRefAccountNo = nostroRefAccountNo;
     return this;
   }
 
-  public String getNostroTrparticulars() {
-    return nostroTrparticulars;
+  public String getNostroTxnParticulars() {
+    return nostroTxnParticulars;
   }
 
-  public NostroTransactionRecordEntity setNostroTrparticulars(String nostroTrparticulars) {
-    this.nostroTrparticulars = nostroTrparticulars;
+  public NostroTransactionRecordEntity setNostroTxnParticulars(String nostroTxnParticulars) {
+    this.nostroTxnParticulars = nostroTxnParticulars;
     return this;
   }
 
@@ -136,12 +139,12 @@ public class NostroTransactionRecordEntity extends BaseEntity {
     return this;
   }
 
-  public Long getNostroTrnInitBrid() {
-    return nostroTrnInitBrid;
+  public Long getNostroTxnInitBrid() {
+    return nostroTxnInitBrid;
   }
 
-  public NostroTransactionRecordEntity setNostroTrnInitBrid(Long nostroTrnInitBrid) {
-    this.nostroTrnInitBrid = nostroTrnInitBrid;
+  public NostroTransactionRecordEntity setNostroTxnInitBrid(Long nostroTxnInitBrid) {
+    this.nostroTxnInitBrid = nostroTxnInitBrid;
     return this;
   }
 
@@ -154,30 +157,30 @@ public class NostroTransactionRecordEntity extends BaseEntity {
     return this;
   }
 
-  public String getNostroTrnIsvalidYn() {
-    return nostroTrnIsvalidYn;
+  public String getNostroTxnIsValidYn() {
+    return nostroTxnIsValidYn;
   }
 
-  public NostroTransactionRecordEntity setNostroTrnIsvalidYn(String nostroTrnIsvalidYn) {
-    this.nostroTrnIsvalidYn = nostroTrnIsvalidYn;
+  public NostroTransactionRecordEntity setNostroTxnIsValidYn(String nostroTxnIsValidYn) {
+    this.nostroTxnIsValidYn = nostroTxnIsValidYn;
     return this;
   }
 
-  public Long getNostroTrCode() {
-    return nostroTrCode;
+  public Long getNostroTxnCode() {
+    return nostroTxnCode;
   }
 
-  public NostroTransactionRecordEntity setNostroTrCode(Long nostroTrCode) {
-    this.nostroTrCode = nostroTrCode;
+  public NostroTransactionRecordEntity setNostroTxnCode(Long nostroTxnCode) {
+    this.nostroTxnCode = nostroTxnCode;
     return this;
   }
 
-  public LocalDate getNostroTrnDate() {
-    return nostroTrnDate;
+  public LocalDate getNostroTxnDate() {
+    return nostroTxnDate;
   }
 
-  public NostroTransactionRecordEntity setNostroTrnDate(LocalDate nostroTrnDate) {
-    this.nostroTrnDate = nostroTrnDate;
+  public NostroTransactionRecordEntity setNostroTxnDate(LocalDate nostroTxnDate) {
+    this.nostroTxnDate = nostroTxnDate;
     return this;
   }
 
@@ -190,30 +193,30 @@ public class NostroTransactionRecordEntity extends BaseEntity {
     return this;
   }
 
-  public String getNostroCreatedterminal() {
-    return nostroCreatedterminal;
+  public String getNostroCreatedTerminal() {
+    return nostroCreatedTerminal;
   }
 
-  public NostroTransactionRecordEntity setNostroCreatedterminal(String nostroCreatedterminal) {
-    this.nostroCreatedterminal = nostroCreatedterminal;
+  public NostroTransactionRecordEntity setNostroCreatedTerminal(String nostroCreatedTerminal) {
+    this.nostroCreatedTerminal = nostroCreatedTerminal;
     return this;
   }
 
-  public String getNostroModifiedterminal() {
-    return nostroModifiedterminal;
+  public String getNostroModifiedTerminal() {
+    return nostroModifiedTerminal;
   }
 
-  public NostroTransactionRecordEntity setNostroModifiedterminal(String nostroModifiedterminal) {
-    this.nostroModifiedterminal = nostroModifiedterminal;
+  public NostroTransactionRecordEntity setNostroModifiedTerminal(String nostroModifiedTerminal) {
+    this.nostroModifiedTerminal = nostroModifiedTerminal;
     return this;
   }
 
-  public String getNostroTrRefNo() {
-    return nostroTrRefNo;
+  public String getNostroTxnReferenceNo() {
+    return nostroTxnReferenceNo;
   }
 
-  public NostroTransactionRecordEntity setNostroTrRefNo(String nostroTrRefNo) {
-    this.nostroTrRefNo = nostroTrRefNo;
+  public NostroTransactionRecordEntity setNostroTxnReferenceNo(String nostroTxnReferenceNo) {
+    this.nostroTxnReferenceNo = nostroTxnReferenceNo;
     return this;
   }
 
@@ -226,12 +229,12 @@ public class NostroTransactionRecordEntity extends BaseEntity {
     return this;
   }
 
-  public Long getNostroTrpostbalance() {
-    return nostroTrpostbalance;
+  public Long getNostroTxnPostBalance() {
+    return nostroTxnPostBalance;
   }
 
-  public NostroTransactionRecordEntity setNostroTrpostbalance(Long nostroTrpostbalance) {
-    this.nostroTrpostbalance = nostroTrpostbalance;
+  public NostroTransactionRecordEntity setNostroTxnPostBalance(Long nostroTxnPostBalance) {
+    this.nostroTxnPostBalance = nostroTxnPostBalance;
     return this;
   }
 
@@ -244,12 +247,12 @@ public class NostroTransactionRecordEntity extends BaseEntity {
     return this;
   }
 
-  public Long getNostroGlobaltrnNo() {
-    return nostroGlobaltrnNo;
+  public Long getNostroGlobalTxnNo() {
+    return nostroGlobalTxnNo;
   }
 
-  public NostroTransactionRecordEntity setNostroGlobaltrnNo(Long nostroGlobaltrnNo) {
-    this.nostroGlobaltrnNo = nostroGlobaltrnNo;
+  public NostroTransactionRecordEntity setNostroGlobalTxnNo(Long nostroGlobalTxnNo) {
+    this.nostroGlobalTxnNo = nostroGlobalTxnNo;
     return this;
   }
 

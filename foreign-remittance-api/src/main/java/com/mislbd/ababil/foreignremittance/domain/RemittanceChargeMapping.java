@@ -1,10 +1,15 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
 public class RemittanceChargeMapping {
 
   private long id;
+
+  @Enumerated(EnumType.STRING)
+  private RemittanceType remittanceType;
 
   @NotNull private Long chargeId;
 
@@ -22,6 +27,15 @@ public class RemittanceChargeMapping {
 
   public RemittanceChargeMapping setId(long id) {
     this.id = id;
+    return this;
+  }
+
+  public RemittanceType getRemittanceType() {
+    return remittanceType;
+  }
+
+  public RemittanceChargeMapping setRemittanceType(RemittanceType remittanceType) {
+    this.remittanceType = remittanceType;
     return this;
   }
 

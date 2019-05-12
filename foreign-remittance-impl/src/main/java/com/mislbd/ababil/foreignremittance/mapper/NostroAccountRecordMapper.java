@@ -24,9 +24,9 @@ public class NostroAccountRecordMapper {
             .setNostroCurCode(entity.getNostroCurCode())
             .setNostroDrCr(entity.getNostroDrCr())
             .setNostroValueDate(entity.getNostroValueDate())
-            .setNostroRefAccno(entity.getNostroRefAccno())
-            .setNostroTrRefNo(entity.getNostroTrRefNo())
-            .setNostroTrpostbalance(entity.getNostroTrpostbalance());
+            .setNostroRefAccno(entity.getNostroRefAccountNo())
+            .setNostroTrRefNo(entity.getNostroTxnReferenceNo())
+            .setNostroTrpostbalance(entity.getNostroTxnPostBalance());
   }
 
   public ResultMapper<NostroTransactionRecord, NostroTransactionRecordEntity> domainToEntity() {
@@ -39,8 +39,8 @@ public class NostroAccountRecordMapper {
             .setNostroCurCode(domain.getNostroCurCode())
             .setNostroDrCr(domain.getNostroDrCr())
             .setNostroValueDate(domain.getNostroValueDate())
-            .setNostroRefAccno(domain.getNostroRefAccno())
-            .setNostroTrRefNo(domain.getNostroTrRefNo())
-            .setNostroTrpostbalance(domain.getNostroTrpostbalance());
+            .setNostroRefAccountNo(domain.getNostroRefAccno())
+            .setNostroTxnReferenceNo(domain.getNostroTrRefNo())
+            .setNostroTxnPostBalance(domain.getNostroTrpostbalance());
   }
 }
