@@ -125,6 +125,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "GLOBALTXNNO")
   private Long globalTransactionNo;
 
+  @Column(name = "TOTAL_CHARGE_AMOUNT")
+  private BigDecimal totalChargeAmount;
+
   @Column(name = "BATCH_NUMBER")
   private String batchNumber;
 
@@ -436,6 +439,15 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   public RemittanceTransactionEntity setGlobalTransactionNo(Long globalTransactionNo) {
     this.globalTransactionNo = globalTransactionNo;
+    return this;
+  }
+
+  public BigDecimal getTotalChargeAmount() {
+    return totalChargeAmount;
+  }
+
+  public RemittanceTransactionEntity setTotalChargeAmount(BigDecimal totalChargeAmount) {
+    this.totalChargeAmount = totalChargeAmount;
     return this;
   }
 
