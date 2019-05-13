@@ -37,7 +37,6 @@ configure(allprojects) { project ->
         mislVersion = '0.0.39'
         ojdbcVersion = '12.2.0.1'
         googleJavaFormatVersion = '1.6'
-        springCloudVersion = 'Greenwich.RELEASE'
     }
 
     repositories {
