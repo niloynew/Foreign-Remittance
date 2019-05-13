@@ -32,7 +32,7 @@ pipeline {
     }
   }
   environment {
-    ARTIFACT_NAME = 'ababil-foreign-remittance'
+    ARTIFACT_NAME = 'foreign-remittance'
     ARTIFACT_MODULE = "${ARTIFACT_NAME}-rs"
   }
 }
