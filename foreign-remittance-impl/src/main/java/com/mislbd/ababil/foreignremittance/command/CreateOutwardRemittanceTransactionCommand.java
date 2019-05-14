@@ -5,10 +5,11 @@ import com.mislbd.asset.command.api.Command;
 import com.mislbd.asset.command.api.annotation.CommandAttribute;
 
 @CommandAttribute(name = "Approve Outward Remittance Transaction", group = "FOREIGN REMITTANCE")
-public class ApproveOutwardRemittanceTransactionCommand extends Command<RemittanceTransaction> {
-  public ApproveOutwardRemittanceTransactionCommand() {}
+public class CreateOutwardRemittanceTransactionCommand extends Command<RemittanceTransaction> {
 
-  public ApproveOutwardRemittanceTransactionCommand(RemittanceTransaction payload) {
+  public CreateOutwardRemittanceTransactionCommand() {}
+
+  public CreateOutwardRemittanceTransactionCommand(RemittanceTransaction payload) {
     super(payload);
   }
 }

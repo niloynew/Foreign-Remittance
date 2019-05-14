@@ -1,10 +1,12 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.ConfigurationService;
-import com.mislbd.ababil.foreignremittance.command.ApproveInwardRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.BankInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.mapper.BankInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceChargeInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
@@ -16,10 +18,12 @@ import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeInf
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.salient.DisbursementService;
 import com.mislbd.ababil.transaction.service.TransactionService;
+import com.mislbd.asset.command.api.Command;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.security.core.NgSession;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RemittanceTransactionCommandHandlerAggregate {
 
   private static final Long DISBURSEMENT_ACTIVITY_ID = 701L;
+  private static final Long PAYMENT_ACTIVITY_ID = 702L;
   private static final String SYSTEM_EXCHANGE_RATE_TYPE = "SYSTEM_EXCHANGE_RATE_TYPE";
   private final RemittanceTransactionRepository transactionRepository;
   private final RemittanceTransactionMapper transactionMapper;
@@ -67,8 +72,8 @@ public class RemittanceTransactionCommandHandlerAggregate {
   @Transactional
   @CommandHandler
   public CommandResponse<Long> remittanceTransactionEntry(
-      ApproveInwardRemittanceTransactionCommand command) {
-
+      CreateInwardRemittanceTransactionCommand command) {
+    RemittanceTransaction transaction = command.getPayload();
     /*
      * Save entries in RemittanceTransaction table
      * Save entries in BankInformation table
@@ -76,6 +81,36 @@ public class RemittanceTransactionCommandHandlerAggregate {
      * transaction processing
      * */
 
+    AuditInformation auditInformation = getAuditInformation(command);
+
+    RemittanceTransactionEntity remittanceTransactionEntity =
+        saveTransactionEntity(transaction, DISBURSEMENT_ACTIVITY_ID, auditInformation);
+    BigDecimal totalChargeAndVat =
+        transaction.getTotalChargeAmount().add(transaction.getTotalVatAmount());
+    return CommandResponse.of(
+        disbursementService.doInwardTransaction(
+            remittanceTransactionEntity,
+            auditInformation,
+            transaction.getRemittanceChargeInformationList(),
+            totalChargeAndVat));
+  }
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Long> createOutwardRemittanceTransaction(
+      CreateOutwardRemittanceTransactionCommand command) {
+
+    AuditInformation auditInformation = getAuditInformation(command);
+    RemittanceTransactionEntity remittanceTransactionEntity =
+        saveTransactionEntity(command.getPayload(), PAYMENT_ACTIVITY_ID, auditInformation);
+    return CommandResponse.of(
+        disbursementService.doOutwardTransaction(
+            remittanceTransactionEntity,
+            auditInformation,
+            command.getPayload().getRemittanceChargeInformationList()));
+  }
+
+  private AuditInformation getAuditInformation(Command<RemittanceTransaction> command) {
     AuditInformation auditInformation = new AuditInformation();
     auditInformation
         .setEntryUser(command.getExecutedBy())
@@ -84,30 +119,35 @@ public class RemittanceTransactionCommandHandlerAggregate {
         .setUserBranch(ngSession.getUserBranch().intValue())
         .setProcessId(command.getProcessId())
         .setEntryDate(LocalDate.now());
+    return auditInformation;
+  }
+
+  private RemittanceTransactionEntity saveTransactionEntity(
+      RemittanceTransaction domain, Long activityId, AuditInformation auditInformation) {
 
     RemittanceTransactionEntity remittanceTransactionEntity =
-        transactionMapper.domainToEntity().map(command.getPayload());
+        transactionMapper.domainToEntity().map(domain);
+
     remittanceTransactionEntity
         .setBatchNumber(
             transactionService.getBatchNumber(
                 auditInformation.getEntryUser(),
-                DISBURSEMENT_ACTIVITY_ID,
+                activityId,
                 auditInformation.getUserBranch().longValue()))
         .setGlobalTransactionNo(
             remittanceTransactionEntity.getGlobalTransactionNo() == null
                 ? transactionService.getGlobalTransactionNumber(
-                    command.getExecutedBy(), DISBURSEMENT_ACTIVITY_ID)
+                    auditInformation.getEntryUser(), activityId)
                 : remittanceTransactionEntity.getGlobalTransactionNo())
         .setExchangeRate(
             transactionService.getSystemExchangeRate(remittanceTransactionEntity.getCurrencyCode()))
         .setExchangeRateType(
             Long.valueOf(
-                configurationService.getConfiguration(SYSTEM_EXCHANGE_RATE_TYPE).get().getValue()))
-    //            .setValueDate()
-    ;
+                configurationService.getConfiguration(SYSTEM_EXCHANGE_RATE_TYPE).get().getValue()));
+
     RemittanceTransactionEntity entity = transactionRepository.save(remittanceTransactionEntity);
 
-    List<BankInformation> bankInformationList = command.getPayload().getBankInformation();
+    List<BankInformation> bankInformationList = domain.getBankInformation();
     if (!bankInformationList.isEmpty())
       bankInformationList.forEach(
           bankInformation -> {
@@ -118,7 +158,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
           });
 
     List<RemittanceChargeInformation> chargeInformationList =
-        command.getPayload().getRemittanceChargeInformationList();
+        domain.getRemittanceChargeInformationList();
     if (!chargeInformationList.isEmpty())
       chargeInformationList.forEach(
           chargeInformation -> {
@@ -128,21 +168,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
             chargeInformationRepository.save(chargeInformationEntity);
           });
 
-    return CommandResponse.of(
-        disbursementService.doTransaction(
-            remittanceTransactionEntity,
-            auditInformation,
-            command.getPayload().getRemittanceChargeInformationList()));
+    return entity;
   }
-
-  //  @Transactional
-  //  @CommandHandler
-  //  public CommandResponse<Void> approveInwardRemittanceTransaction(
-  //      ApproveInwardRemittanceTransactionCommand command) {
-  //    RemittanceTransactionEntity remittanceTransactionEntity =
-  //        transactionRepository
-  //            .findById(command.getPayload())
-  //            .orElseThrow(RemittanceTransactionNotFoundException::new);
-  //    return CommandResponse.asVoid();
-  //  }
 }

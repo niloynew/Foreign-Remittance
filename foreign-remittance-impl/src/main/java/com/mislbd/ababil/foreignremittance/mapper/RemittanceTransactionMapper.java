@@ -107,9 +107,10 @@ public class RemittanceTransactionMapper {
             .setTotalChargeAmount(domain.getTotalChargeAmount());
   }
 
-  public IDTransactionRequest getNetPayableGLDebit(
+  public IDTransactionRequest getNetPayableShadow(
       RemittanceTransactionEntity request,
       BigDecimal hoAmountLcy,
+      boolean isDebit,
       AuditInformation auditInformation) {
 
     IDTransactionRequest transactionRequest = new IDTransactionRequest();
@@ -121,7 +122,7 @@ public class RemittanceTransactionMapper {
         .setCurrencyCode(request.getCurrencyCode())
         .setExchangeRate(request.getHoRate())
         .setRateType(request.getHoRateTypeId())
-        .setDebitTransaction(true)
+        .setDebitTransaction(isDebit)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
         .setEntryUser(auditInformation.getEntryUser())
@@ -133,14 +134,15 @@ public class RemittanceTransactionMapper {
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorModule("ID")
         .setInitiatorBranch(auditInformation.getUserBranch())
-        .setAccNumber(request.getDebitAccountNumber());
+        .setAccNumber(isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber());
     return transactionRequest;
   }
 
-  public GlTransactionRequest getNetPayableGLCredit(
+  public GlTransactionRequest getNetPayableClientGL(
       RemittanceTransactionEntity request,
       BigDecimal clientAmount,
       String baseCurrency,
+      boolean isDebit,
       AuditInformation auditInformation) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest
@@ -149,7 +151,7 @@ public class RemittanceTransactionMapper {
         .setCurrencyCode(baseCurrency)
         .setExchangeRate(BigDecimal.ONE)
         .setRateType(1)
-        .setDebitTransaction(false)
+        .setDebitTransaction(isDebit)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
         .setOwnerBranch(auditInformation.getUserBranch())
@@ -162,13 +164,14 @@ public class RemittanceTransactionMapper {
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorModule("ID")
         .setInitiatorBranch(auditInformation.getUserBranch())
-        .setGlCode(request.getCreditAccountNumber());
+        .setGlCode(isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber());
     return glRequest;
   }
 
-  public CasaTransactionRequest getNetPayableCASACreditForForFcy(
+  public CasaTransactionRequest getNetPayableCASAClientForForFcy(
       RemittanceTransactionEntity request,
       BigDecimal clientAmount,
+      boolean isDebit,
       AuditInformation auditInformation) {
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest
@@ -179,7 +182,7 @@ public class RemittanceTransactionMapper {
         .setCurrencyCode(request.getCurrencyCode())
         .setExchangeRate(request.getClientRate())
         .setRateType(request.getClientRateTypeId())
-        .setDebitTransaction(false)
+        .setDebitTransaction(isDebit)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
         .setEntryUser(auditInformation.getEntryUser())
@@ -191,14 +194,15 @@ public class RemittanceTransactionMapper {
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorBranch(auditInformation.getUserBranch())
         .setInitiatorModule("ID")
-        .setAccNumber(request.getCreditAccountNumber());
+        .setAccNumber(isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber());
     return casaRequest;
   }
 
-  public CasaTransactionRequest getNetPayableCASACreditForForLcy(
+  public CasaTransactionRequest getNetPayableCASAClientForForLcy(
       RemittanceTransactionEntity request,
       String baseCurrency,
       BigDecimal clientAmount,
+      boolean isDebit,
       AuditInformation auditInformation) {
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest
@@ -210,7 +214,7 @@ public class RemittanceTransactionMapper {
         .setExchangeRate(BigDecimal.ONE)
         .setRateType(1)
         .setRateType(request.getClientRateTypeId())
-        .setDebitTransaction(false)
+        .setDebitTransaction(isDebit)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
         .setEntryUser(auditInformation.getEntryUser())
@@ -222,7 +226,7 @@ public class RemittanceTransactionMapper {
         .setApprovalFlowInstanceId(auditInformation.getProcessId())
         .setInitiatorBranch(auditInformation.getUserBranch())
         .setInitiatorModule("ID")
-        .setAccNumber(request.getCreditAccountNumber());
+        .setAccNumber(isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber());
     return casaRequest;
   }
 

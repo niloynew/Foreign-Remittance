@@ -36,15 +36,16 @@ public class DisbursementService {
     this.casaAccountService = casaAccountService;
   }
 
-  public Long doTransaction(
+  public Long doInwardTransaction(
       RemittanceTransactionEntity remittanceTransactionEntity,
       AuditInformation auditInformation,
-      List<RemittanceChargeInformation> charges) {
+      List<RemittanceChargeInformation> charges,
+      BigDecimal totalChargeAndVat) {
     String baseCurrency = configurationService.getBaseCurrencyCode();
 
     /*
-     * Debit the principle amount to the respective GL defined in account product mapping
-     * Credit the principle amount to the respective customer or GL account
+     * Debit the principle amount to the respective GL
+     * Credit the payable amount to the respective customer or GL account
      *
      * Find the total charge and vat
      * For each kind of charge, credit the charge account either on GL or SubGL defined in charge configuration
@@ -54,22 +55,7 @@ public class DisbursementService {
      * Debit the exchange gain to GL account defined in product definition
      * */
 
-    // Managing Debit transaction
-    ShadowAccountEntity shadowAccountEntity =
-        shadowAccountRepository
-            .findByNumber(remittanceTransactionEntity.getDebitAccountNumber())
-            .get();
-
-    BigDecimal hoAmountLcy =
-        remittanceTransactionEntity
-            .getAmountFcy()
-            .multiply(remittanceTransactionEntity.getHoRate());
-    transactionService.doIDTransaction(
-        remittanceTransactionMapper.getNetPayableGLDebit(
-            remittanceTransactionEntity, hoAmountLcy, auditInformation),
-        TransactionRequestType.TRANSFER);
-
-    // Managing Credit transaction
+    shadowAccountTransaction(remittanceTransactionEntity, true, auditInformation);
     BigDecimal clientAmountLcy =
         remittanceTransactionEntity
             .getAmountFcy()
@@ -77,8 +63,12 @@ public class DisbursementService {
     switch (remittanceTransactionEntity.getCreditAccountType()) {
       case GL:
         transactionService.doGlTransaction(
-            remittanceTransactionMapper.getNetPayableGLCredit(
-                remittanceTransactionEntity, clientAmountLcy, baseCurrency, auditInformation),
+            remittanceTransactionMapper.getNetPayableClientGL(
+                remittanceTransactionEntity,
+                clientAmountLcy,
+                baseCurrency,
+                false,
+                auditInformation),
             TransactionRequestType.TRANSFER);
         break;
 
@@ -88,48 +78,115 @@ public class DisbursementService {
             .getCurrencyCode()
             .equalsIgnoreCase(baseCurrency)) {
           transactionService.doCasaTransaction(
-              remittanceTransactionMapper.getNetPayableCASACreditForForLcy(
-                  remittanceTransactionEntity, baseCurrency, clientAmountLcy, auditInformation),
+              remittanceTransactionMapper.getNetPayableCASAClientForForLcy(
+                  remittanceTransactionEntity,
+                  baseCurrency,
+                  clientAmountLcy,
+                  false,
+                  auditInformation),
               TransactionRequestType.TRANSFER);
         } else {
           transactionService.doCasaTransaction(
-              remittanceTransactionMapper.getNetPayableCASACreditForForFcy(
-                  remittanceTransactionEntity, clientAmountLcy, auditInformation),
+              remittanceTransactionMapper.getNetPayableCASAClientForForFcy(
+                  remittanceTransactionEntity, clientAmountLcy, false, auditInformation),
               TransactionRequestType.TRANSFER);
         }
         break;
     }
 
-    // manage exchange gain transaction
+    exchangeGainTransaction(remittanceTransactionEntity, baseCurrency, auditInformation);
+    chargeTransaction(
+        remittanceTransactionEntity, charges, auditInformation, totalChargeAndVat, baseCurrency);
+    return remittanceTransactionEntity.getGlobalTransactionNo();
+  }
+
+  public Long doOutwardTransaction(
+      RemittanceTransactionEntity remittanceTransactionEntity,
+      AuditInformation auditInformation,
+      List<RemittanceChargeInformation> remittanceChargeInformationList) {
+
+    /*
+     * Credit the principle amount to the respective GL
+     * Debit the payable amount to the respective customer or GL account
+     *
+     * Find the total charge and vat
+     * For each kind of charge, credit the charge account either on GL or SubGL defined in charge configuration
+     * For each kind of charge, credit the vat amount either on GL or SubGL defined in charge configuration
+     * From customer account or from GL account, debit the total vat and charge
+     *
+     * Debit the exchange gain to GL account defined in product definition
+     * */
+    String baseCurrency = configurationService.getBaseCurrencyCode();
+    // Managing Credit transaction
+    shadowAccountTransaction(remittanceTransactionEntity, false, auditInformation);
+    BigDecimal clientAmountLcy =
+        remittanceTransactionEntity
+            .getAmountFcy()
+            .multiply(remittanceTransactionEntity.getClientRate());
+    switch (remittanceTransactionEntity.getDebitAccountType()) {
+      case GL:
+        transactionService.doGlTransaction(
+            remittanceTransactionMapper.getNetPayableClientGL(
+                remittanceTransactionEntity, clientAmountLcy, baseCurrency, true, auditInformation),
+            TransactionRequestType.TRANSFER);
+        break;
+
+      case CASA:
+        if (casaAccountService
+            .getAccountByNumber(remittanceTransactionEntity.getCreditAccountNumber())
+            .getCurrencyCode()
+            .equalsIgnoreCase(baseCurrency)) {
+          transactionService.doCasaTransaction(
+              remittanceTransactionMapper.getNetPayableCASAClientForForLcy(
+                  remittanceTransactionEntity,
+                  baseCurrency,
+                  clientAmountLcy,
+                  true,
+                  auditInformation),
+              TransactionRequestType.TRANSFER);
+        } else {
+          transactionService.doCasaTransaction(
+              remittanceTransactionMapper.getNetPayableCASAClientForForFcy(
+                  remittanceTransactionEntity, clientAmountLcy, true, auditInformation),
+              TransactionRequestType.TRANSFER);
+        }
+        break;
+    }
+    return remittanceTransactionEntity.getGlobalTransactionNo();
+  }
+
+  public void exchangeGainTransaction(
+      RemittanceTransactionEntity entity, String baseCurrency, AuditInformation auditInformation) {
+    ShadowAccountEntity shadowAccountEntity =
+        shadowAccountRepository.findByNumber(entity.getDebitAccountNumber()).get();
     transactionService.doGlTransaction(
         remittanceTransactionMapper.getExchangeGainGL(
-            remittanceTransactionEntity,
+            entity,
             baseCurrency,
             shadowAccountEntity.getProduct().getExchangeGainGLCode(),
             auditInformation),
         TransactionRequestType.TRANSFER);
+  }
 
-    // Managing charge transaction
-    BigDecimal totalCharge = BigDecimal.ZERO;
-    BigDecimal totalVat = BigDecimal.ZERO;
+  public void chargeTransaction(
+      RemittanceTransactionEntity entity,
+      List<RemittanceChargeInformation> charges,
+      AuditInformation auditInformation,
+      BigDecimal totalChargeAndVat,
+      String baseCurrency) {
 
     if (charges != null && !charges.isEmpty()) {
-
       for (RemittanceChargeInformation charge : charges) {
-        totalCharge = totalCharge.add(charge.getChargeAmount());
-        totalVat = totalVat.add(charge.getVatAmount());
-        // individual charge account Credit
         switch (charge.getChargeAccountType()) {
           case GL:
             transactionService.doGlTransaction(
-                remittanceTransactionMapper.getChargeableGLCredit(
-                    remittanceTransactionEntity, auditInformation, charge),
+                remittanceTransactionMapper.getChargeableGLCredit(entity, auditInformation, charge),
                 TransactionRequestType.TRANSFER);
             break;
           case SUBGL:
             transactionService.doSubGlTransaction(
                 remittanceTransactionMapper.getChargeableSubGLCredit(
-                    remittanceTransactionEntity, auditInformation, charge),
+                    entity, auditInformation, charge),
                 TransactionRequestType.TRANSFER);
             break;
         }
@@ -137,37 +194,40 @@ public class DisbursementService {
         switch (charge.getVatAccountType()) {
           case GL:
             transactionService.doGlTransaction(
-                remittanceTransactionMapper.getVATGLCredit(
-                    remittanceTransactionEntity, auditInformation, charge),
+                remittanceTransactionMapper.getVATGLCredit(entity, auditInformation, charge),
                 TransactionRequestType.TRANSFER);
             break;
           case SUBGL:
             transactionService.doSubGlTransaction(
-                remittanceTransactionMapper.getVALSubGLCredit(
-                    remittanceTransactionEntity, auditInformation, charge),
+                remittanceTransactionMapper.getVALSubGLCredit(entity, auditInformation, charge),
                 TransactionRequestType.TRANSFER);
             break;
         }
       }
     }
-
-    BigDecimal total = totalCharge.add(totalVat);
     // customer Account Debit
-    switch (remittanceTransactionEntity.getChargeAccountType()) {
+    switch (entity.getChargeAccountType()) {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getChargeableGLDebit(
-                remittanceTransactionEntity, auditInformation, total, baseCurrency),
+                entity, auditInformation, totalChargeAndVat, baseCurrency),
             TransactionRequestType.TRANSFER);
         break;
       case CASA:
         transactionService.doCasaTransaction(
             remittanceTransactionMapper.getChargeableCASADebit(
-                remittanceTransactionEntity, auditInformation, total, baseCurrency),
+                entity, auditInformation, totalChargeAndVat, baseCurrency),
             TransactionRequestType.TRANSFER);
         break;
     }
+  }
 
-    return remittanceTransactionEntity.getGlobalTransactionNo();
+  public void shadowAccountTransaction(
+      RemittanceTransactionEntity entity, boolean isDebit, AuditInformation auditInformation) {
+    BigDecimal hoAmountLcy = entity.getAmountFcy().multiply(entity.getHoRate());
+    transactionService.doIDTransaction(
+        remittanceTransactionMapper.getNetPayableShadow(
+            entity, hoAmountLcy, isDebit, auditInformation),
+        TransactionRequestType.TRANSFER);
   }
 }

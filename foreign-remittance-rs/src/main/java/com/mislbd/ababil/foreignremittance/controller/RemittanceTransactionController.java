@@ -3,8 +3,8 @@ package com.mislbd.ababil.foreignremittance.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
-import com.mislbd.ababil.foreignremittance.command.ApproveInwardRemittanceTransactionCommand;
-import com.mislbd.ababil.foreignremittance.command.ApproveOutwardRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
@@ -85,7 +85,7 @@ public class RemittanceTransactionController {
     return status(CREATED)
         .body(
             commandProcessor.executeResult(
-                new ApproveInwardRemittanceTransactionCommand(remittanceTransaction)));
+                new CreateInwardRemittanceTransactionCommand(remittanceTransaction)));
   }
 
   @PostMapping(
@@ -96,16 +96,7 @@ public class RemittanceTransactionController {
     return status(CREATED)
         .body(
             commandProcessor.executeResult(
-                new ApproveOutwardRemittanceTransactionCommand(remittanceTransaction)));
+                new CreateOutwardRemittanceTransactionCommand(remittanceTransaction)));
   }
 
-  //  @PostMapping(path = "/{transactionId}/command", consumes = MediaType.APPLICATION_JSON_VALUE)
-  //  public ResponseEntity<Void> approveTransactionCommand(
-  //      @PathVariable("transactionId") Long transactionId,
-  //      @Valid @RequestBody ApproveInwardRemittanceTransactionCommand command) {
-  //
-  //    commandProcessor.executeUpdate(new
-  // ApproveInwardRemittanceTransactionCommand(transactionId));
-  //    return status(ACCEPTED).build();
-  //  }
 }

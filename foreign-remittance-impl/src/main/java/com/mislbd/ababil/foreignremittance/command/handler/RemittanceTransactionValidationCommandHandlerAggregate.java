@@ -1,7 +1,7 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.ConfigurationService;
-import com.mislbd.ababil.foreignremittance.command.ApproveInwardRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.AccountType;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionException;
@@ -29,7 +29,7 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
   }
 
   @ValidationHandler
-  public void validateInwardDisbursement(ApproveInwardRemittanceTransactionCommand command) {
+  public void validateInwardDisbursement(CreateInwardRemittanceTransactionCommand command) {
     String localCurrency = configurationService.getBaseCurrencyCode();
     RemittanceTransaction remittanceTransaction = command.getPayload();
     /*
