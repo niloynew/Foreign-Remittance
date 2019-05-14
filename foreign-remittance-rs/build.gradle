@@ -13,3 +13,7 @@ springBoot {
         }
     }
 }
+
+bootJar {
+    baseName = PROJECT_ARTIFACT
+}
