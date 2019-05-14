@@ -98,5 +98,4 @@ public class RemittanceTransactionController {
             commandProcessor.executeResult(
                 new CreateOutwardRemittanceTransactionCommand(remittanceTransaction)));
   }
-
 }
