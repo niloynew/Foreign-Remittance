@@ -99,15 +99,18 @@ public class RemittanceTransactionCommandHandlerAggregate {
   @CommandHandler
   public CommandResponse<Long> createOutwardRemittanceTransaction(
       CreateOutwardRemittanceTransactionCommand command) {
-
+    RemittanceTransaction transaction = command.getPayload();
     AuditInformation auditInformation = getAuditInformation(command);
     RemittanceTransactionEntity remittanceTransactionEntity =
-        saveTransactionEntity(command.getPayload(), PAYMENT_ACTIVITY_ID, auditInformation);
+        saveTransactionEntity(transaction, PAYMENT_ACTIVITY_ID, auditInformation);
+    BigDecimal totalChargeAndVat =
+        transaction.getTotalChargeAmount().add(transaction.getTotalVatAmount());
     return CommandResponse.of(
         disbursementService.doOutwardTransaction(
             remittanceTransactionEntity,
             auditInformation,
-            command.getPayload().getRemittanceChargeInformationList()));
+            command.getPayload().getRemittanceChargeInformationList(),
+            totalChargeAndVat));
   }
 
   private AuditInformation getAuditInformation(Command<RemittanceTransaction> command) {

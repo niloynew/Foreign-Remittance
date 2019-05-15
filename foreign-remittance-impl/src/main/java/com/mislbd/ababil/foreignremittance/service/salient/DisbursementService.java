@@ -103,7 +103,8 @@ public class DisbursementService {
   public Long doOutwardTransaction(
       RemittanceTransactionEntity remittanceTransactionEntity,
       AuditInformation auditInformation,
-      List<RemittanceChargeInformation> remittanceChargeInformationList) {
+      List<RemittanceChargeInformation> charges,
+      BigDecimal totalChargeAndVat) {
 
     /*
      * Credit the principle amount to the respective GL
@@ -133,7 +134,7 @@ public class DisbursementService {
 
       case CASA:
         if (casaAccountService
-            .getAccountByNumber(remittanceTransactionEntity.getCreditAccountNumber())
+            .getAccountByNumber(remittanceTransactionEntity.getDebitAccountNumber())
             .getCurrencyCode()
             .equalsIgnoreCase(baseCurrency)) {
           transactionService.doCasaTransaction(
@@ -152,13 +153,16 @@ public class DisbursementService {
         }
         break;
     }
+    exchangeGainTransaction(remittanceTransactionEntity, baseCurrency, auditInformation);
+    chargeTransaction(
+        remittanceTransactionEntity, charges, auditInformation, totalChargeAndVat, baseCurrency);
     return remittanceTransactionEntity.getGlobalTransactionNo();
   }
 
   public void exchangeGainTransaction(
       RemittanceTransactionEntity entity, String baseCurrency, AuditInformation auditInformation) {
     ShadowAccountEntity shadowAccountEntity =
-        shadowAccountRepository.findByNumber(entity.getDebitAccountNumber()).get();
+        shadowAccountRepository.findByNumber(entity.getCreditAccountNumber()).get();
     transactionService.doGlTransaction(
         remittanceTransactionMapper.getExchangeGainGL(
             entity,
