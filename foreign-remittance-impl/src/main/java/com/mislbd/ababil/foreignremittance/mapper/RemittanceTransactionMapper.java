@@ -116,9 +116,9 @@ public class RemittanceTransactionMapper {
             AuditInformation auditInformation) {
         String narration;
         if(isDebit){
-            narration = "Disburse from A/C " + request.getDebitAccountNumber() + " : shadow account debit";
+            narration = "Disburse from A/C " + request.getDebitAccountNumber() + " : shadow account";
         }else{
-            narration = "Payment from A/C " + request.getCreditAccountNumber() + " : shadow account credit";
+            narration = "Payment from A/C " + request.getCreditAccountNumber() + " : shadow account";
         }
         IDTransactionRequest transactionRequest = new IDTransactionRequest();
 
@@ -153,9 +153,9 @@ public class RemittanceTransactionMapper {
             AuditInformation auditInformation) {
         String narration;
         if (isDebit) {
-            narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for GL debit";
+            narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for GL ";
         } else {
-            narration = "Payment from A/C " + request.getCreditAccountNumber() + " for GL credit";
+            narration = "Payment from A/C " + request.getCreditAccountNumber() + " for GL ";
         }
         GlTransactionRequest glRequest = new GlTransactionRequest();
         glRequest
@@ -188,9 +188,9 @@ public class RemittanceTransactionMapper {
             AuditInformation auditInformation) {
         String narration;
         if (isDebit) {
-            narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA credit";
+            narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
         } else {
-            narration = "Payment from A/C " + request.getCreditAccountNumber() + " for CASA debit";
+            narration = "Payment from A/C " + request.getCreditAccountNumber() + " for CASA ";
         }
         CasaTransactionRequest casaRequest = new CasaTransactionRequest();
         casaRequest
@@ -225,9 +225,9 @@ public class RemittanceTransactionMapper {
             AuditInformation auditInformation) {
         String narration;
         if (isDebit) {
-            narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA credit";
+            narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
         } else {
-            narration = "Payment from A/C " + request.getCreditAccountNumber() + " for CASA debit";
+            narration = "Payment from A/C " + request.getCreditAccountNumber() + " for CASA ";
         }
         CasaTransactionRequest casaRequest = new CasaTransactionRequest();
         casaRequest
