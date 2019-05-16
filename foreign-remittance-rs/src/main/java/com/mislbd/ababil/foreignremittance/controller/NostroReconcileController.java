@@ -38,12 +38,13 @@ public class NostroReconcileController {
   @RequestMapping(method = RequestMethod.GET)
   public ResponseEntity<PagedResult<NostroReconcileDto>> getMessages(
       Pageable pageable,
+      @RequestParam(required = false) Long id,
       @RequestParam(required = false) String accountNo,
       @RequestParam(required = false) LocalDate valueDate) {
 
     PagedResult<NostroReconcileDto> pagedMessages =
         (PagedResult<NostroReconcileDto>)
-            nostroReconcileServce.getMessages(pageable, accountNo, valueDate);
+            nostroReconcileServce.getMessages(pageable, id, accountNo, valueDate);
     return ResponseEntity.ok(pagedMessages);
   }
 }

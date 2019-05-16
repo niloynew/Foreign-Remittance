@@ -94,7 +94,7 @@ public class DisbursementService {
         break;
     }
 
-    exchangeGainTransaction(remittanceTransactionEntity, baseCurrency, auditInformation);
+    exchangeGainTransaction(remittanceTransactionEntity, baseCurrency, true, auditInformation);
     chargeTransaction(
         remittanceTransactionEntity, charges, auditInformation, totalChargeAndVat, baseCurrency);
     return remittanceTransactionEntity.getGlobalTransactionNo();
@@ -153,16 +153,25 @@ public class DisbursementService {
         }
         break;
     }
-    exchangeGainTransaction(remittanceTransactionEntity, baseCurrency, auditInformation);
+    exchangeGainTransaction(remittanceTransactionEntity, baseCurrency, false, auditInformation);
     chargeTransaction(
         remittanceTransactionEntity, charges, auditInformation, totalChargeAndVat, baseCurrency);
     return remittanceTransactionEntity.getGlobalTransactionNo();
   }
 
   public void exchangeGainTransaction(
-      RemittanceTransactionEntity entity, String baseCurrency, AuditInformation auditInformation) {
-    ShadowAccountEntity shadowAccountEntity =
-        shadowAccountRepository.findByNumber(entity.getCreditAccountNumber()).get();
+      RemittanceTransactionEntity entity,
+      String baseCurrency,
+      boolean isDebit,
+      AuditInformation auditInformation) {
+    ShadowAccountEntity shadowAccountEntity;
+    if (isDebit) {
+      shadowAccountEntity =
+          shadowAccountRepository.findByNumber(entity.getDebitAccountNumber()).get();
+    } else {
+      shadowAccountEntity =
+          shadowAccountRepository.findByNumber(entity.getCreditAccountNumber()).get();
+    }
     transactionService.doGlTransaction(
         remittanceTransactionMapper.getExchangeGainGL(
             entity,
