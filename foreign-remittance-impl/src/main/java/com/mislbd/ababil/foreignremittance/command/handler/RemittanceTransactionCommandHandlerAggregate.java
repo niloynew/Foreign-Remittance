@@ -71,7 +71,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
 
   @Transactional
   @CommandHandler
-  public CommandResponse<Long> remittanceTransactionEntry(
+  public CommandResponse<Long> createInwardRemittanceTransaction(
       CreateInwardRemittanceTransactionCommand command) {
     RemittanceTransaction transaction = command.getPayload();
     /*
