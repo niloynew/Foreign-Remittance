@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -86,5 +87,12 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
         });
     return ListResultBuilder.build(
         remittanceTransactions, remittanceTransactionMapper.entityToDomain());
+  }
+
+  @Override
+  public Optional<RemittanceTransaction> findTransaction(Long id) {
+    return remittanceTransactionRepository
+        .findById(id)
+        .map(remittanceTransactionMapper.entityToDomain()::map);
   }
 }

@@ -26,14 +26,15 @@ public class TransactionTypeController {
   @GetMapping
   public ResponseEntity<?> getTransactionTypes(
       Pageable pageable,
+      @RequestParam(required = false, name = "id") Long id,
       @RequestParam(name = "asPage") final boolean asPage,
       @RequestParam(name = "remittance-type") final RemittanceType remittanceType) {
     if (asPage) {
       PagedResult<TransactionType> pagedResults =
-          transactionTypeService.getTypes(pageable, remittanceType);
+          transactionTypeService.getTypes(pageable, id, remittanceType);
       return ResponseEntity.ok(pagedResults);
     } else {
-      List<TransactionType> types = transactionTypeService.getTypes(remittanceType);
+      List<TransactionType> types = transactionTypeService.getTypes(id, remittanceType);
       return ResponseEntity.ok(types);
     }
   }

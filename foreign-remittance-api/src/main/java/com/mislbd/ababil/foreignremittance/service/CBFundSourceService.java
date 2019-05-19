@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface CBFundSourceService {
 
-  PagedResult<CBFundSource> getFundSources(Pageable pageable);
+  PagedResult<CBFundSource> getFundSources(Pageable pageable, Long id);
 
-  List<CBFundSource> getFundSources();
+  List<CBFundSource> getFundSources(Long id);
 }

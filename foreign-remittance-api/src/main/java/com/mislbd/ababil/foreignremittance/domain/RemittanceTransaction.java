@@ -94,6 +94,8 @@ public class RemittanceTransaction {
 
   private BigDecimal totalVatAmount;
 
+  private String batchNumber;
+
   public long getId() {
     return id;
   }
@@ -444,6 +446,15 @@ public class RemittanceTransaction {
 
   public RemittanceTransaction setTotalVatAmount(BigDecimal totalVatAmount) {
     this.totalVatAmount = totalVatAmount;
+    return this;
+  }
+
+  public String getBatchNumber() {
+    return batchNumber;
+  }
+
+  public RemittanceTransaction setBatchNumber(String batchNumber) {
+    this.batchNumber = batchNumber;
     return this;
   }
 }

@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface TransactionTypeService {
 
-  PagedResult<TransactionType> getTypes(Pageable pageable, RemittanceType remittanceType);
+  PagedResult<TransactionType> getTypes(Pageable pageable, Long id, RemittanceType remittanceType);
 
-  List<TransactionType> getTypes(RemittanceType remittanceType);
+  List<TransactionType> getTypes(Long id, RemittanceType remittanceType);
 }

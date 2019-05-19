@@ -23,12 +23,14 @@ public class CBFundSourceController {
 
   @GetMapping
   public ResponseEntity<?> getFundSources(
-      Pageable pageable, @RequestParam(name = "asPage") final boolean asPage) {
+      Pageable pageable,
+      @RequestParam(required = false, name = "id") Long id,
+      @RequestParam(name = "asPage") final boolean asPage) {
     if (asPage) {
-      PagedResult<CBFundSource> pagedResults = cbFundSourceService.getFundSources(pageable);
+      PagedResult<CBFundSource> pagedResults = cbFundSourceService.getFundSources(pageable, id);
       return ResponseEntity.ok(pagedResults);
     } else {
-      List<CBFundSource> fundSources = cbFundSourceService.getFundSources();
+      List<CBFundSource> fundSources = cbFundSourceService.getFundSources(id);
       return ResponseEntity.ok(fundSources);
     }
   }
