@@ -65,7 +65,8 @@ public class RemittanceTransactionMapper {
             .setAmountLcy(entity.getAmountLcy())
             .setExchangeGainLoss(entity.getExchangeGainLoss())
             .setGlobalTransactionNo(entity.getGlobalTransactionNo())
-            .setTotalChargeAmount(entity.getTotalChargeAmount());
+            .setTotalChargeAmount(entity.getTotalChargeAmount())
+            .setTotalChargeAmountAfterWaived(entity.getTotalChargeAmountAfterWaived());
   }
 
   public ResultMapper<RemittanceTransaction, RemittanceTransactionEntity> domainToEntity() {
@@ -104,7 +105,8 @@ public class RemittanceTransactionMapper {
             .setAmountLcy(domain.getAmountLcy())
             .setExchangeGainLoss(domain.getExchangeGainLoss())
             .setValueDate(domain.getValueDate())
-            .setTotalChargeAmount(domain.getTotalChargeAmount());
+            .setTotalChargeAmount(domain.getTotalChargeAmount())
+            .setTotalChargeAmountAfterWaived(domain.getTotalChargeAmountAfterWaived());
   }
 
   public IDTransactionRequest getNetPayableShadow(

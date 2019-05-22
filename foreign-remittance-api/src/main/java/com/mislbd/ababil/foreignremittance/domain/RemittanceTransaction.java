@@ -92,6 +92,8 @@ public class RemittanceTransaction {
 
   private BigDecimal totalChargeAmount;
 
+  private BigDecimal totalChargeAmountAfterWaived;
+
   private BigDecimal totalVatAmount;
 
   private String batchNumber;
@@ -437,6 +439,16 @@ public class RemittanceTransaction {
 
   public RemittanceTransaction setTotalChargeAmount(BigDecimal totalChargeAmount) {
     this.totalChargeAmount = totalChargeAmount;
+    return this;
+  }
+
+  public BigDecimal getTotalChargeAmountAfterWaived() {
+    return totalChargeAmountAfterWaived;
+  }
+
+  public RemittanceTransaction setTotalChargeAmountAfterWaived(
+      BigDecimal totalChargeAmountAfterWaived) {
+    this.totalChargeAmountAfterWaived = totalChargeAmountAfterWaived;
     return this;
   }
 

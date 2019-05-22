@@ -10,6 +10,7 @@ public class RemittanceChargeInformation {
   private ChargeAccountType chargeAccountType;
   private String chargeAccountCode;
   private BigDecimal chargeAmount;
+  private BigDecimal chargeAmountAfterWaived;
   private ChargeAccountType vatAccountType;
   private String vatAccountCode;
   private BigDecimal vatAmount;
@@ -67,6 +68,16 @@ public class RemittanceChargeInformation {
 
   public RemittanceChargeInformation setChargeAmount(BigDecimal chargeAmount) {
     this.chargeAmount = chargeAmount;
+    return this;
+  }
+
+  public BigDecimal getChargeAmountAfterWaived() {
+    return chargeAmountAfterWaived;
+  }
+
+  public RemittanceChargeInformation setChargeAmountAfterWaived(
+      BigDecimal chargeAmountAfterWaived) {
+    this.chargeAmountAfterWaived = chargeAmountAfterWaived;
     return this;
   }
 
