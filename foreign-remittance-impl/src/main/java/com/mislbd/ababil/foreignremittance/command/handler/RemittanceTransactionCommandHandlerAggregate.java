@@ -44,6 +44,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final DisbursementService disbursementService;
   private final TransactionService transactionService;
   private final ConfigurationService configurationService;
+  private BigDecimal totalChargeAmount = null;
   //  CalendarConfigurationService calendarConfigurationService;
 
   public RemittanceTransactionCommandHandlerAggregate(
@@ -85,8 +86,12 @@ public class RemittanceTransactionCommandHandlerAggregate {
 
     RemittanceTransactionEntity remittanceTransactionEntity =
         saveTransactionEntity(transaction, DISBURSEMENT_ACTIVITY_ID, auditInformation);
-    BigDecimal totalChargeAndVat =
-        transaction.getTotalChargeAmount().add(transaction.getTotalVatAmount());
+    if (transaction.getTotalChargeAmountAfterWaived() == null) {
+      totalChargeAmount = transaction.getTotalChargeAmount();
+    } else {
+      totalChargeAmount = transaction.getTotalChargeAmountAfterWaived();
+    }
+    BigDecimal totalChargeAndVat = totalChargeAmount.add(transaction.getTotalVatAmount());
     return CommandResponse.of(
         disbursementService.doInwardTransaction(
             remittanceTransactionEntity,
@@ -103,8 +108,12 @@ public class RemittanceTransactionCommandHandlerAggregate {
     AuditInformation auditInformation = getAuditInformation(command);
     RemittanceTransactionEntity remittanceTransactionEntity =
         saveTransactionEntity(transaction, PAYMENT_ACTIVITY_ID, auditInformation);
-    BigDecimal totalChargeAndVat =
-        transaction.getTotalChargeAmount().add(transaction.getTotalVatAmount());
+    if (transaction.getTotalChargeAmountAfterWaived() == null) {
+      totalChargeAmount = transaction.getTotalChargeAmount();
+    } else {
+      totalChargeAmount = transaction.getTotalChargeAmountAfterWaived();
+    }
+    BigDecimal totalChargeAndVat = totalChargeAmount.add(transaction.getTotalVatAmount());
     return CommandResponse.of(
         disbursementService.doOutwardTransaction(
             remittanceTransactionEntity,

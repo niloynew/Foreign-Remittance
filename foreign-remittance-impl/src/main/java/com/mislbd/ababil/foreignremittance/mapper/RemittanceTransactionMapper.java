@@ -22,6 +22,8 @@ public class RemittanceTransactionMapper {
   private final RemittanceTransactionRepository remittanceTransactionRepository;
   private final TransactionTypeRepository transactionTypeRepository;
   private final ShadowAccountRepository shadowAccountRepository;
+  private BigDecimal chargeAmount = null;
+  private BigDecimal totalChargeAmount = null;
 
   public RemittanceTransactionMapper(
       RemittanceTransactionRepository remittanceTransactionRepository,
@@ -292,10 +294,15 @@ public class RemittanceTransactionMapper {
       AuditInformation auditInformation,
       RemittanceChargeInformation charge) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
+    if (charge.getChargeAmountAfterWaived() == null) {
+      chargeAmount = charge.getChargeAmount();
+    } else {
+      chargeAmount = charge.getChargeAmountAfterWaived();
+    }
     glRequest
         .setActivityId(activityId)
-        .setAmountCcy(charge.getChargeAmount())
-        .setAmountLcy(charge.getChargeAmount())
+        .setAmountCcy(chargeAmount)
+        .setAmountLcy(chargeAmount)
         .setCurrencyCode(charge.getCurrency())
         .setExchangeRate(charge.getExchangeRate())
         .setRateType(1)
@@ -321,10 +328,15 @@ public class RemittanceTransactionMapper {
       AuditInformation auditInformation,
       RemittanceChargeInformation charge) {
     SubGlTransactionRequest subGLRequest = new SubGlTransactionRequest();
+    if (charge.getChargeAmountAfterWaived() == null) {
+      chargeAmount = charge.getChargeAmount();
+    } else {
+      chargeAmount = charge.getChargeAmountAfterWaived();
+    }
     subGLRequest
         .setActivityId(activityId)
-        .setAmountCcy(charge.getChargeAmount())
-        .setAmountLcy(charge.getChargeAmount())
+        .setAmountCcy(chargeAmount)
+        .setAmountLcy(chargeAmount)
         .setCurrencyCode(charge.getCurrency())
         .setExchangeRate(charge.getExchangeRate())
         //                .setRateType(charge.getR)
