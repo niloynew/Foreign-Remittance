@@ -1,25 +1,31 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
+import static org.springframework.http.HttpStatus.ACCEPTED;
+import static org.springframework.http.ResponseEntity.status;
+
+import com.mislbd.ababil.foreignremittance.command.UpdateNostroReconcileCommand;
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDto;
 import com.mislbd.ababil.foreignremittance.service.NostroReconcileServce;
+import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.time.LocalDate;
+import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/messages", produces = MediaType.APPLICATION_JSON_VALUE)
 public class NostroReconcileController {
 
   private final NostroReconcileServce nostroReconcileServce;
+  private final CommandProcessor commandProcessor;
 
-  public NostroReconcileController(NostroReconcileServce nostroReconcileServce) {
+  public NostroReconcileController(
+      NostroReconcileServce nostroReconcileServce, CommandProcessor commandProcessor) {
     this.nostroReconcileServce = nostroReconcileServce;
+    this.commandProcessor = commandProcessor;
   }
 
   /*@RequestMapping(method = RequestMethod.GET)
@@ -46,5 +52,12 @@ public class NostroReconcileController {
         (PagedResult<NostroReconcileDto>)
             nostroReconcileServce.getMessages(pageable, id, accountNo, valueDate);
     return ResponseEntity.ok(pagedMessages);
+  }
+
+  @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Void> updateMessage(
+      @PathVariable("id") Long id, @Valid @RequestBody NostroReconcileDto nostroReconcileDto) {
+    commandProcessor.executeUpdate(new UpdateNostroReconcileCommand(id, nostroReconcileDto));
+    return status(ACCEPTED).build();
   }
 }
