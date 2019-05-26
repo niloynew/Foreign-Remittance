@@ -20,10 +20,10 @@ public class NostroReconcileEntity extends BaseEntity {
   private String currency;
 
   @Column(name = "REF_TO_ACCOUNT")
-  private String referenceToAccount;
+  private String refToAccount;
 
   @Column(name = "REF_TO_SERVICING_ACCOUNT")
-  private String referenceToServicingAccount;
+  private String refOfServicingAccount;
 
   @Column(name = "TXNTYPE")
   private String txnType;
@@ -32,16 +32,16 @@ public class NostroReconcileEntity extends BaseEntity {
   private BigDecimal amount;
 
   @Column(name = "ADV_BRANCH")
-  private String advisingBranch;
+  private String advBranch;
 
   @Column(name = "BENEF_CUSTOMER")
-  private String beneficiaryCustomer;
+  private String benefCustomer;
 
   @Column(name = "BENEF_INSTITUTE")
-  private String beneficiaryInstitute;
+  private String benefInstitute;
 
   @Column(name = "BENE_NAME_AND_ADDRESS")
-  private String beneficiaryNameAndAddress;
+  private String beneNameAndAddress;
 
   @Column(name = "SUPP_DETAILS")
   private String suppDetails;
@@ -88,21 +88,21 @@ public class NostroReconcileEntity extends BaseEntity {
     return this;
   }
 
-  public String getReferenceToAccount() {
-    return referenceToAccount;
+  public String getRefToAccount() {
+    return refToAccount;
   }
 
-  public NostroReconcileEntity setReferenceToAccount(String referenceToAccount) {
-    this.referenceToAccount = referenceToAccount;
+  public NostroReconcileEntity setRefToAccount(String refToAccount) {
+    this.refToAccount = refToAccount;
     return this;
   }
 
-  public String getReferenceToServicingAccount() {
-    return referenceToServicingAccount;
+  public String getRefOfServicingAccount() {
+    return refOfServicingAccount;
   }
 
-  public NostroReconcileEntity setReferenceToServicingAccount(String referenceToServicingAccount) {
-    this.referenceToServicingAccount = referenceToServicingAccount;
+  public NostroReconcileEntity setRefOfServicingAccount(String refOfServicingAccount) {
+    this.refOfServicingAccount = refOfServicingAccount;
     return this;
   }
 
@@ -124,39 +124,39 @@ public class NostroReconcileEntity extends BaseEntity {
     return this;
   }
 
-  public String getAdvisingBranch() {
-    return advisingBranch;
+  public String getAdvBranch() {
+    return advBranch;
   }
 
-  public NostroReconcileEntity setAdvisingBranch(String advisingBranch) {
-    this.advisingBranch = advisingBranch;
+  public NostroReconcileEntity setAdvBranch(String advBranch) {
+    this.advBranch = advBranch;
     return this;
   }
 
-  public String getBeneficiaryCustomer() {
-    return beneficiaryCustomer;
+  public String getBenefCustomer() {
+    return benefCustomer;
   }
 
-  public NostroReconcileEntity setBeneficiaryCustomer(String beneficiaryCustomer) {
-    this.beneficiaryCustomer = beneficiaryCustomer;
+  public NostroReconcileEntity setBenefCustomer(String benefCustomer) {
+    this.benefCustomer = benefCustomer;
     return this;
   }
 
-  public String getBeneficiaryInstitute() {
-    return beneficiaryInstitute;
+  public String getBenefInstitute() {
+    return benefInstitute;
   }
 
-  public NostroReconcileEntity setBeneficiaryInstitute(String beneficiaryInstitute) {
-    this.beneficiaryInstitute = beneficiaryInstitute;
+  public NostroReconcileEntity setBenefInstitute(String benefInstitute) {
+    this.benefInstitute = benefInstitute;
     return this;
   }
 
-  public String getBeneficiaryNameAndAddress() {
-    return beneficiaryNameAndAddress;
+  public String getBeneNameAndAddress() {
+    return beneNameAndAddress;
   }
 
-  public NostroReconcileEntity setBeneficiaryNameAndAddress(String beneficiaryNameAndAddress) {
-    this.beneficiaryNameAndAddress = beneficiaryNameAndAddress;
+  public NostroReconcileEntity setBeneNameAndAddress(String beneNameAndAddress) {
+    this.beneNameAndAddress = beneNameAndAddress;
     return this;
   }
 
