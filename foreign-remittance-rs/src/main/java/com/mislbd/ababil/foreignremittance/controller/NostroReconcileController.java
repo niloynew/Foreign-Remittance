@@ -9,6 +9,7 @@ import com.mislbd.ababil.foreignremittance.service.NostroReconcileServce;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.time.LocalDate;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -42,16 +43,23 @@ public class NostroReconcileController {
     return ResponseEntity.ok(pagedMessages);
   }*/
   @RequestMapping(method = RequestMethod.GET)
-  public ResponseEntity<PagedResult<NostroReconcileDto>> getMessages(
+  public ResponseEntity<?> getMessages(
       Pageable pageable,
+      @RequestParam(required = false) boolean asPage,
       @RequestParam(required = false) Long id,
       @RequestParam(required = false) String accountNo,
       @RequestParam(required = false) LocalDate valueDate) {
 
-    PagedResult<NostroReconcileDto> pagedMessages =
-        (PagedResult<NostroReconcileDto>)
-            nostroReconcileServce.getMessages(pageable, id, accountNo, valueDate);
-    return ResponseEntity.ok(pagedMessages);
+    if (asPage) {
+      PagedResult<NostroReconcileDto> pagedMessages =
+          (PagedResult<NostroReconcileDto>)
+              nostroReconcileServce.getMessages(pageable, id, accountNo, valueDate);
+      return ResponseEntity.ok(pagedMessages);
+    } else {
+      List<NostroReconcileDto> messages =
+          (List<NostroReconcileDto>) nostroReconcileServce.getMessages(id, accountNo, valueDate);
+      return ResponseEntity.ok(messages);
+    }
   }
 
   @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)

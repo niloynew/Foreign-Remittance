@@ -4,9 +4,11 @@ import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDto;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroReconcileRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroReconcileEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.NostroReconcileSpecification;
+import com.mislbd.ababil.foreignremittance.utils.ListResultBuilderFR;
 import com.mislbd.ababil.foreignremittance.utils.PagedResultBuilderFR;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +35,14 @@ public class NostroReconcileServiceImpl implements NostroReconcileServce {
     return PagedResultBuilderFR.build(
         nostroReconcileRepository.findAll(
             NostroReconcileSpecification.searchSpecification(id, accountNo, valueDate), pageable),
+        NostroReconcileDto.class);
+  }
+
+  @Override
+  public List<NostroReconcileDto> getMessages(Long id, String accountNo, LocalDate valueDate) {
+    return ListResultBuilderFR.build(
+        nostroReconcileRepository.findAll(
+            NostroReconcileSpecification.searchSpecification(id, accountNo, valueDate)),
         NostroReconcileDto.class);
   }
 
