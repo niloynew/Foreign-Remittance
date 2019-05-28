@@ -217,7 +217,10 @@ public enum Error {
 
     @Override
     public String getMessages(LocaleMessages localeMessages) {
-      message = localeMessages.get(this.getModule() + this.getCode()).orElse("IDProduct not found");
+      message =
+          localeMessages
+              .get(this.getModule() + this.getCode())
+              .orElse("Remittance transaction exception");
       return message;
     }
   },

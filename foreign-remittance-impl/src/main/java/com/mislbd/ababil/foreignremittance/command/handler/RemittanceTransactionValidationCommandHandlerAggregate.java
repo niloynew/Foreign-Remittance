@@ -2,6 +2,7 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.AccountType;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionException;
@@ -11,6 +12,7 @@ import com.mislbd.ababil.foreignremittance.external.service.CASAAccountService;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.ValidationHandler;
+import java.math.BigDecimal;
 
 @Aggregate
 public class RemittanceTransactionValidationCommandHandlerAggregate {
@@ -95,6 +97,75 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
     *     else
     *       proceed transaction
     * */
+
+    if (remittanceTransaction.getChargeAccountType() == AccountType.CASA) {
+      Account chargeAccount =
+          casaAccountService.getAccountByNumber(remittanceTransaction.getChargeAccountNumber());
+      if (chargeAccount.getStatus().equalsIgnoreCase("ACTIVATED")) {
+        if (!chargeAccount.getCurrencyCode().equalsIgnoreCase(localCurrency)) {
+          throw new RemittanceTransactionException("Charge account must be of local currency");
+        } else {
+          Balance balance =
+              casaAccountService.getDepositAccountBalance(
+                  remittanceTransaction.getChargeAccountNumber());
+
+          if (balance
+                  .getAvailableBalance()
+                  .compareTo(
+                      remittanceTransaction
+                          .getTotalChargeAmount()
+                          .add(remittanceTransaction.getTotalVatAmount()))
+              == -1) {
+            throw new RemittanceTransactionException(
+                "Insufficient balance in " + remittanceTransaction.getChargeAccountNumber());
+          }
+        }
+      } else {
+        throw new RemittanceTransactionException("Selected charge account is not active");
+      }
+    }
+  }
+
+  @ValidationHandler
+  public void validateOutwardDisbursement(CreateOutwardRemittanceTransactionCommand command) {
+    String localCurrency = configurationService.getBaseCurrencyCode();
+    RemittanceTransaction remittanceTransaction = command.getPayload();
+
+    if (remittanceTransaction.getDebitAccountType() == AccountType.CASA) {
+      Account debitAccount =
+          casaAccountService.getAccountByNumber(remittanceTransaction.getDebitAccountNumber());
+      if (debitAccount.getStatus().equalsIgnoreCase("ACTIVATED")) {
+        Balance balance =
+            casaAccountService.getDepositAccountBalance(
+                remittanceTransaction.getDebitAccountNumber());
+        BigDecimal totalChargeAndVatAmount =
+            remittanceTransaction
+                .getTotalChargeAmount()
+                .add(remittanceTransaction.getTotalVatAmount());
+        if (!debitAccount.getCurrencyCode().equalsIgnoreCase(localCurrency)) {
+          if (!debitAccount
+              .getCurrencyCode()
+              .equalsIgnoreCase(remittanceTransaction.getCurrencyCode())) {
+            throw new RemittanceTransactionException("Debit account currency mismatch");
+          } else if (balance.getAvailableBalance().compareTo(remittanceTransaction.getAmountFcy())
+              == -1) {
+            throw new RemittanceTransactionException(
+                "Insufficient balance in " + remittanceTransaction.getDebitAccountNumber());
+          }
+        } else if (remittanceTransaction.getDebitAccountNumber()
+            == remittanceTransaction.getChargeAccountNumber()) {
+          if (balance
+                  .getAvailableBalance()
+                  .compareTo(remittanceTransaction.getAmountLcy().add(totalChargeAndVatAmount))
+              == -1) {
+            throw new RemittanceTransactionException(
+                "Insufficient balance in " + remittanceTransaction.getDebitAccountNumber());
+          }
+        }
+      } else {
+        throw new RemittanceTransactionException("Selected debit account is not active");
+      }
+    }
 
     if (remittanceTransaction.getChargeAccountType() == AccountType.CASA) {
       Account chargeAccount =
