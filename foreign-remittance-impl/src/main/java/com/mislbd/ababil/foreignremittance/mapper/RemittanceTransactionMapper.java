@@ -155,17 +155,17 @@ public class RemittanceTransactionMapper {
       AuditInformation auditInformation) {
     String narration;
     if (isDebit) {
-      narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for GL ";
+      narration = "Payment from A/C " + request.getCreditAccountNumber() + " for GL ";
     } else {
-      narration = "Payment from A/C " + request.getDebitAccountNumber() + " for GL ";
+      narration = "Disburse from A/C " + request.getDebitAccountNumber() + " for GL ";
     }
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest
         .setActivityId(activityId)
         .setAmountLcy(clientAmount == null ? BigDecimal.ZERO : clientAmount)
-        .setCurrencyCode(baseCurrency)
-        .setExchangeRate(BigDecimal.ONE)
-        .setRateType(1)
+        .setCurrencyCode(request.getCurrencyCode())
+        .setExchangeRate(request.getClientRate())
+        .setRateType(request.getExchangeRateType())
         .setDebitTransaction(isDebit)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
@@ -190,9 +190,9 @@ public class RemittanceTransactionMapper {
       AuditInformation auditInformation) {
     String narration;
     if (isDebit) {
-      narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
-    } else {
       narration = "Payment from A/C " + request.getCreditAccountNumber() + " for CASA ";
+    } else {
+      narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
     }
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest
@@ -227,9 +227,9 @@ public class RemittanceTransactionMapper {
       AuditInformation auditInformation) {
     String narration;
     if (isDebit) {
-      narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
-    } else {
       narration = "Payment from A/C " + request.getCreditAccountNumber() + " for CASA ";
+    } else {
+      narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
     }
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest
