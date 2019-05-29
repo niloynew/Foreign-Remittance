@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
@@ -77,6 +78,15 @@ public class RemittanceTransactionController {
               toDate);
       return ResponseEntity.ok(transactions);
     }
+  }
+
+  @GetMapping(path = "/remittance-transaction/{transactionId}")
+  public ResponseEntity<RemittanceTransaction> getTransaction(
+      @PathVariable("transactionId") Long transactionId) {
+    return remittanceTransactionService
+        .findTransaction(transactionId)
+        .map(ResponseEntity::ok)
+        .orElseGet(status(NOT_FOUND)::build);
   }
 
   @PostMapping(path = "/inward-remittance-transaction", consumes = MediaType.APPLICATION_JSON_VALUE)

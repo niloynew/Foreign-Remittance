@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface PaymentPurposeService {
 
-  PagedResult<PaymentPurpose> getPaymentPurposes(Pageable pageable);
+  PagedResult<PaymentPurpose> getPaymentPurposes(Pageable pageable, Long id);
 
-  List<PaymentPurpose> getPaymentPurposes();
+  List<PaymentPurpose> getPaymentPurposes(Long id);
 }

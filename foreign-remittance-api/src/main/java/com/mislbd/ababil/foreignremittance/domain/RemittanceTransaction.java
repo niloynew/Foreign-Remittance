@@ -92,7 +92,11 @@ public class RemittanceTransaction {
 
   private BigDecimal totalChargeAmount;
 
+  private BigDecimal totalChargeAmountAfterWaived;
+
   private BigDecimal totalVatAmount;
+
+  private String batchNumber;
 
   public long getId() {
     return id;
@@ -438,12 +442,31 @@ public class RemittanceTransaction {
     return this;
   }
 
+  public BigDecimal getTotalChargeAmountAfterWaived() {
+    return totalChargeAmountAfterWaived;
+  }
+
+  public RemittanceTransaction setTotalChargeAmountAfterWaived(
+      BigDecimal totalChargeAmountAfterWaived) {
+    this.totalChargeAmountAfterWaived = totalChargeAmountAfterWaived;
+    return this;
+  }
+
   public BigDecimal getTotalVatAmount() {
     return totalVatAmount;
   }
 
   public RemittanceTransaction setTotalVatAmount(BigDecimal totalVatAmount) {
     this.totalVatAmount = totalVatAmount;
+    return this;
+  }
+
+  public String getBatchNumber() {
+    return batchNumber;
+  }
+
+  public RemittanceTransaction setBatchNumber(String batchNumber) {
+    this.batchNumber = batchNumber;
     return this;
   }
 }

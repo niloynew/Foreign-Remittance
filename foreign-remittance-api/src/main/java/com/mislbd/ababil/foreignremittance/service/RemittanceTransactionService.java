@@ -5,6 +5,7 @@ import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 
 public interface RemittanceTransactionService {
@@ -26,4 +27,6 @@ public interface RemittanceTransactionService {
       String beneficiaryName,
       LocalDate fromDate,
       LocalDate toDate);
+
+  Optional<RemittanceTransaction> findTransaction(Long id);
 }

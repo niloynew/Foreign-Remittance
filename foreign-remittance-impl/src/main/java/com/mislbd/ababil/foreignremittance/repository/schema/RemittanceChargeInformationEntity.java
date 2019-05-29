@@ -28,6 +28,9 @@ public class RemittanceChargeInformationEntity {
   @Column(name = "CHARGE_AMOUNT")
   private BigDecimal chargeAmount;
 
+  @Column(name = "CHARGE_AMOUNT_AFTER_WAIVED")
+  private BigDecimal chargeAmountAfterWaived;
+
   @Column(name = "VAT_AMOUNT")
   private BigDecimal vatAmount;
 
@@ -71,6 +74,16 @@ public class RemittanceChargeInformationEntity {
 
   public RemittanceChargeInformationEntity setChargeAmount(BigDecimal chargeAmount) {
     this.chargeAmount = chargeAmount;
+    return this;
+  }
+
+  public BigDecimal getChargeAmountAfterWaived() {
+    return chargeAmountAfterWaived;
+  }
+
+  public RemittanceChargeInformationEntity setChargeAmountAfterWaived(
+      BigDecimal chargeAmountAfterWaived) {
+    this.chargeAmountAfterWaived = chargeAmountAfterWaived;
     return this;
   }
 

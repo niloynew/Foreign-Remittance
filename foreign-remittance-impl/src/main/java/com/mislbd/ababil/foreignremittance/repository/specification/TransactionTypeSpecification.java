@@ -8,10 +8,17 @@ import org.springframework.data.jpa.domain.Specification;
 public class TransactionTypeSpecification {
 
   public static Specification<TransactionTypeEntity> findTransactionTypes(
-      RemittanceType remittanceType) {
+      Long id, RemittanceType remittanceType) {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
-      return cb.and(predicate, cb.equal(root.get("remittanceType"), remittanceType));
+      if (id != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("id"), id));
+      }
+
+      if (remittanceType != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("remittanceType"), remittanceType));
+      }
+      return predicate;
     };
   }
 }

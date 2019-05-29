@@ -26,18 +26,19 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
   }
 
   @Override
-  public PagedResult<TransactionType> getTypes(Pageable pageable, RemittanceType remittanceType) {
+  public PagedResult<TransactionType> getTypes(
+      Pageable pageable, Long id, RemittanceType remittanceType) {
     return PagedResultBuilder.build(
         transactionTypeRepository.findAll(
-            TransactionTypeSpecification.findTransactionTypes(remittanceType), pageable),
+            TransactionTypeSpecification.findTransactionTypes(id, remittanceType), pageable),
         transactionTypeMapper.entityToDomain());
   }
 
   @Override
-  public List<TransactionType> getTypes(RemittanceType remittanceType) {
+  public List<TransactionType> getTypes(Long id, RemittanceType remittanceType) {
     return ListResultBuilder.build(
         transactionTypeRepository.findAll(
-            TransactionTypeSpecification.findTransactionTypes(remittanceType)),
+            TransactionTypeSpecification.findTransactionTypes(id, remittanceType)),
         transactionTypeMapper.entityToDomain());
   }
 }

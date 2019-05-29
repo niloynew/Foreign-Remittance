@@ -8,21 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 public enum Error {
-  ID_PRODUCT_NOT_FOUND("231", "0001") {
-    private String message;
-
-    @Override
-    public String getMessages() {
-      return message;
-    }
-
-    @Override
-    public String getMessages(LocaleMessages localeMessages) {
-      message = localeMessages.get(this.getModule() + this.getCode()).orElse("IDProduct not found");
-      return message;
-    }
-  },
-
   CHARGE_MAPPING_NOT_FOUND("232", "0001") {
     private String message;
 
@@ -34,24 +19,6 @@ public enum Error {
     @Override
     public String getMessages(LocaleMessages localeMessages) {
       message = localeMessages.get(this.getModule() + this.getCode()).orElse("IDProduct not found");
-      return message;
-    }
-  },
-
-  GENERATED_SHADOW_ACCOUNT_NUMBER_NOT_FOUND("231", "002") {
-    private String message;
-
-    @Override
-    public String getMessages() {
-      return message;
-    }
-
-    @Override
-    public String getMessages(LocaleMessages localeMessages) {
-      message =
-          localeMessages
-              .get(this.getModule() + this.getCode())
-              .orElse("Generated shadow account number not found.");
       return message;
     }
   },
@@ -170,6 +137,58 @@ public enum Error {
       return message;
     }
   },
+
+  // ID product region
+  ID_PRODUCT_NOT_FOUND("260", "0001") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message = localeMessages.get(this.getModule() + this.getCode()).orElse("IDProduct not found");
+      return message;
+    }
+  },
+
+  ID_PRODUCT_CURRENCIES_NOT_EXISTS("260", "0003") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages.get(this.getModule() + this.getCode()).orElse("Currencies is required");
+      return message;
+    }
+  },
+
+  // Shadow account region
+  GENERATED_SHADOW_ACCOUNT_NUMBER_NOT_FOUND("260", "002") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages
+              .get(this.getModule() + this.getCode())
+              .orElse("Generated shadow account number not found.");
+      return message;
+    }
+  },
+
   // transaction region
   REMITTANCE_TRANSACTION_NOT_FOUND_EXCEPTION("260", "0010") {
     private String message;
@@ -198,7 +217,10 @@ public enum Error {
 
     @Override
     public String getMessages(LocaleMessages localeMessages) {
-      message = localeMessages.get(this.getModule() + this.getCode()).orElse("IDProduct not found");
+      message =
+          localeMessages
+              .get(this.getModule() + this.getCode())
+              .orElse("Remittance transaction exception");
       return message;
     }
   },
