@@ -39,6 +39,7 @@ public class RemittanceTransactionMapper {
         new RemittanceTransaction()
             .setId(entity.getId())
             .setRemittanceType(entity.getRemittanceType())
+            .setTransactionTypeId(entity.getTransactionType().getId())
             .setPaymentPurposeId(entity.getPaymentPurposeId())
             .setCommodityDescription(entity.getCommodityDescription())
             .setTransactionReferenceNumber(entity.getTransactionReferenceNumber())
