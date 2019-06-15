@@ -16,7 +16,10 @@ public class PaymentPurposeSpecification {
         predicate = cb.and(predicate, cb.equal(root.get("code"), code));
       }
       if (description != null) {
-        predicate = cb.and(predicate, cb.equal(root.get("description"), description));
+        predicate =
+            cb.and(
+                predicate,
+                cb.like(cb.lower(root.get("description")), "%" + description.toLowerCase() + "%"));
       }
       return predicate;
     };
