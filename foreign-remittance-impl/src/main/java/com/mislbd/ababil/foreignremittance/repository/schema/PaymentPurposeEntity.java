@@ -1,18 +1,13 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
-import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import javax.persistence.*;
 
 @Entity
 @Table(name = SchemaConstant.PAYMENT_PURPOSE_TABLE_NAME)
-public class PaymentPurposeEntity extends BaseEntity {
+public class PaymentPurposeEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "PAYMENT_PURPOSE_ID_GEN")
-  @SequenceGenerator(
-      name = "PAYMENT_PURPOSE_ID_GEN",
-      allocationSize = 1,
-      sequenceName = SchemaConstant.PAYMENT_PURPOSE_SEQUENCE_NAME)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "ID")
   private long id;
 
