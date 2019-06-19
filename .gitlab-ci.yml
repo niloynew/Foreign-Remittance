@@ -1,6 +1,6 @@
 variables:
   ARTIFACT_NAME: ababil-foreign-remittance
-  ARTIFACT_BUILD_PATH: ababil-foreign-remittance-rs/build
+  ARTIFACT_BUILD_PATH: foreign-remittance-rs/build
 
 stages:
   - build
