@@ -1,5 +1,5 @@
 variables:
-  ARTIFACT_NAME: foreign-remittance-service
+  ARTIFACT_NAME: foreign-remittance
   ARTIFACT_BUILD_PATH: foreign-remittance-rs/build
 
 stages:
