@@ -1,0 +1,87 @@
+variables:
+  ARTIFACT_NAME: ababil-foreign-remittance
+  ARTIFACT_BUILD_PATH: ababil-foreign-remittance-rs/build
+
+stages:
+  - build
+  - build_image
+  - push_image
+  - deploy_dev
+  - deploy_qa
+
+cache:
+  paths:
+    - ${ARTIFACT_BUILD_PATH}/
+
+
+build:
+  stage: build
+  before_script:
+    - chmod +x gradlew
+  script:
+    - ./gradlew clean build -x test
+  only: ['master']
+  tags:
+    - 'openjdk:8u181'
+#   when: manual
+
+build_image:
+  stage: build_image
+  when: on_success
+  script:
+    - 'export BUILD_NUMBER=$(echo "$CI_PIPELINE_IID + $CI_PIPELINE_IID_OFFSET" | bc)'
+    - export ARTIFACT="${ARTIFACT_BUILD_PATH}/libs/$(cat gradle.properties | grep PROJECT_ARTIFACT | cut -d'=' -f2-)-$(cat gradle.properties | grep PROJECT_VERSION | cut -d'=' -f2-).jar"
+    - export VERSION="$(cat gradle.properties | grep PROJECT_VERSION | cut -d'=' -f2-)"
+    - docker build --rm --force-rm --label "com.mislbd.global.build.id=$CI_PIPELINE_ID" --label "com.mislbd.local.build.id=$BUILD_NUMBER" --label "com.mislbd.version=${VERSION}"  --build-arg BUILD_ID="$BUILD_NUMBER" --build-arg ARTIFACT="$ARTIFACT" --build-arg VERSION="${VERSION}" -t mislbd/${ARTIFACT_NAME}-service:latest .
+    - docker tag mislbd/${ARTIFACT_NAME}-service mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
+  only: ['master']
+  tags: ['shell']
+#  when: manual
+
+push_image:
+  stage: push_image
+  when: on_success
+  only:
+    - master
+  tags:
+    - shell
+  script:
+    - 'export BUILD_NUMBER=$(echo "$CI_PIPELINE_IID + $CI_PIPELINE_IID_OFFSET" | bc)'
+    - export ARTIFACT="${ARTIFACT_BUILD_PATH}/libs/$(cat gradle.properties | grep PROJECT_ARTIFACT | cut -d'=' -f2-)-$(cat gradle.properties | grep PROJECT_VERSION | cut -d'=' -f2-).jar"
+    - export VERSION="$(cat gradle.properties | grep PROJECT_VERSION | cut -d'=' -f2-)"
+    - docker tag mislbd/${ARTIFACT_NAME}-service 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:latest
+    - docker tag mislbd/${ARTIFACT_NAME}-service 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
+    - docker push 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:latest
+    - docker push 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
+    # clean up image
+    - docker rmi 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
+    - docker rmi 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:latest
+    - docker rmi mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
+    - docker rmi mislbd/${ARTIFACT_NAME}-service:latest
+
+deploy_dev:
+  stage: deploy_dev
+  when: on_success
+  only:
+    - master
+  tags:
+    - docker-server-ssh
+  script:
+    - 'export BUILD_NUMBER=$(echo "$CI_PIPELINE_IID + $CI_PIPELINE_IID_OFFSET" | bc)'
+    - docker pull 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:latest
+    - bash  ~/.bin/ababil_dev_auto deploy_service
+
+deploy_qa:
+  stage: deploy_qa
+  when: manual
+  only:
+    - master
+  tags:
+    - docker-server-ssh
+  script:
+    - 'export BUILD_NUMBER=$(echo "$CI_PIPELINE_IID + $CI_PIPELINE_IID_OFFSET" | bc)'
+    - export VERSION="$(cat gradle.properties | grep PROJECT_VERSION | cut -d'=' -f2-)"
+    - docker pull 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
+    - docker tag  172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:qa-latest
+    - docker rmi  172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
+    - bash  ~/.bin/ababil_qa_auto deploy_service
