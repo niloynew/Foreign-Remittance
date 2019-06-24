@@ -28,6 +28,9 @@ public class RemittanceChargeInformationEntity {
   @Column(name = "CHARGE_AMOUNT")
   private BigDecimal chargeAmount;
 
+  @Column(name = "IS_CHARGE_MODIFIABLE")
+  private boolean chargeModifiable;
+
   @Column(name = "CHARGE_AMOUNT_AFTER_WAIVED")
   private BigDecimal chargeAmountAfterWaived;
 
@@ -74,6 +77,24 @@ public class RemittanceChargeInformationEntity {
 
   public RemittanceChargeInformationEntity setChargeAmount(BigDecimal chargeAmount) {
     this.chargeAmount = chargeAmount;
+    return this;
+  }
+
+  public RemittanceType getRemittanceType() {
+    return remittanceType;
+  }
+
+  public RemittanceChargeInformationEntity setRemittanceType(RemittanceType remittanceType) {
+    this.remittanceType = remittanceType;
+    return this;
+  }
+
+  public boolean isChargeModifiable() {
+    return chargeModifiable;
+  }
+
+  public RemittanceChargeInformationEntity setChargeModifiable(boolean chargeModifiable) {
+    this.chargeModifiable = chargeModifiable;
     return this;
   }
 
