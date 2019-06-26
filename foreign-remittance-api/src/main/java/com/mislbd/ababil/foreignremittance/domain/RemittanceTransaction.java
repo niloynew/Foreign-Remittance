@@ -16,7 +16,8 @@ public class RemittanceTransaction {
 
   @NotNull private Long transactionTypeId;
 
-  private Long paymentPurposeId;
+  //  private Long paymentPurposeId;
+  @NotNull private String ppCode;
 
   private String commodityDescription;
 
@@ -125,12 +126,12 @@ public class RemittanceTransaction {
     return this;
   }
 
-  public Long getPaymentPurposeId() {
-    return paymentPurposeId;
+  public String getPpCode() {
+    return ppCode;
   }
 
-  public RemittanceTransaction setPaymentPurposeId(Long paymentPurposeId) {
-    this.paymentPurposeId = paymentPurposeId;
+  public RemittanceTransaction setPpCode(String ppCode) {
+    this.ppCode = ppCode;
     return this;
   }
 

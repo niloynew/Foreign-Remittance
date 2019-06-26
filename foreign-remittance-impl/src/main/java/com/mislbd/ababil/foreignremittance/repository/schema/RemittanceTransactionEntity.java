@@ -29,8 +29,11 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @JoinColumn(name = "TXN_TYPE_ID")
   private TransactionTypeEntity transactionType;
 
-  @Column(name = "PAYMENT_PURPOSE_ID")
-  private Long paymentPurposeId;
+  //  @Column(name = "PAYMENT_PURPOSE_ID")
+  //  private Long paymentPurposeId;
+
+  @Column(name = "PP_CODE")
+  private String ppCode;
 
   @Column(name = "COMMODITY_DESCRIPTION")
   private String commodityDescription;
@@ -173,12 +176,12 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
-  public Long getPaymentPurposeId() {
-    return paymentPurposeId;
+  public String getPpCode() {
+    return ppCode;
   }
 
-  public RemittanceTransactionEntity setPaymentPurposeId(Long paymentPurposeId) {
-    this.paymentPurposeId = paymentPurposeId;
+  public RemittanceTransactionEntity setPpCode(String ppCode) {
+    this.ppCode = ppCode;
     return this;
   }
 
