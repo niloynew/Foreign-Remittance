@@ -26,13 +26,15 @@ public class PaymentPurposeController {
   public ResponseEntity<?> getPaymentPurposes(
       Pageable pageable,
       @RequestParam(required = false, name = "id") Long id,
-      @RequestParam(name = "asPage") final boolean asPage) {
+      @RequestParam(name = "asPage") final boolean asPage,
+      @RequestParam(value = "code", required = false) final String code,
+      @RequestParam(value = "description", required = false) final String description) {
     if (asPage) {
       PagedResult<PaymentPurpose> pagedResults =
-          paymentPurposeService.getPaymentPurposes(pageable, id);
+          paymentPurposeService.getPaymentPurposes(pageable, id, code, description);
       return ResponseEntity.ok(pagedResults);
     } else {
-      List<PaymentPurpose> types = paymentPurposeService.getPaymentPurposes(id);
+      List<PaymentPurpose> types = paymentPurposeService.getPaymentPurposes(id, code, description);
       return ResponseEntity.ok(types);
     }
   }

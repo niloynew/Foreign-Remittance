@@ -25,17 +25,19 @@ public class PaymentPurposeServiceImpl implements PaymentPurposeService {
   }
 
   @Override
-  public PagedResult<PaymentPurpose> getPaymentPurposes(Pageable pageable, Long id) {
+  public PagedResult<PaymentPurpose> getPaymentPurposes(
+      Pageable pageable, Long id, String code, String description) {
     return PagedResultBuilder.build(
         paymentPurposeRepository.findAll(
-            PaymentPurposeSpecification.findPaymentPurpose(id), pageable),
+            PaymentPurposeSpecification.findPaymentPurpose(id, code, description), pageable),
         paymentPurposeMapper.entityToDomain());
   }
 
   @Override
-  public List<PaymentPurpose> getPaymentPurposes(Long id) {
+  public List<PaymentPurpose> getPaymentPurposes(Long id, String code, String description) {
     return ListResultBuilder.build(
-        paymentPurposeRepository.findAll(PaymentPurposeSpecification.findPaymentPurpose(id)),
+        paymentPurposeRepository.findAll(
+            PaymentPurposeSpecification.findPaymentPurpose(id, code, description)),
         paymentPurposeMapper.entityToDomain());
   }
 }

@@ -21,6 +21,8 @@ public class RemittanceCharge {
 
   private String vatAccountCode;
 
+  private boolean chargeModifiable;
+
   private boolean slabBased;
 
   private boolean fixedCharge;
@@ -123,6 +125,15 @@ public class RemittanceCharge {
 
   public RemittanceCharge setFixedCharge(boolean fixedCharge) {
     this.fixedCharge = fixedCharge;
+    return this;
+  }
+
+  public boolean isChargeModifiable() {
+    return chargeModifiable;
+  }
+
+  public RemittanceCharge setChargeModifiable(boolean chargeModifiable) {
+    this.chargeModifiable = chargeModifiable;
     return this;
   }
 

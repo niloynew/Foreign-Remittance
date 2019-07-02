@@ -5,11 +5,21 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 public class PaymentPurposeSpecification {
-  public static Specification<PaymentPurposeEntity> findPaymentPurpose(Long id) {
+  public static Specification<PaymentPurposeEntity> findPaymentPurpose(
+      Long id, String code, String description) {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
       if (id != null) {
         predicate = cb.and(predicate, cb.equal(root.get("id"), id));
+      }
+      if (code != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("code"), code));
+      }
+      if (description != null) {
+        predicate =
+            cb.and(
+                predicate,
+                cb.like(cb.lower(root.get("description")), "%" + description.toLowerCase() + "%"));
       }
       return predicate;
     };
