@@ -28,6 +28,7 @@ public class AccountStatementController {
 
   @GetMapping(path = "/account-statement")
   public ResponseEntity<?> getAccountStatements(
+      @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
       @RequestParam(value = "asPage", required = false) final boolean asPage,
       @RequestParam(value = "accountId", required = false) final Long accountId,
       @RequestParam(value = "fromDate", required = false)
@@ -37,7 +38,8 @@ public class AccountStatementController {
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           final LocalDate toDate) {
     if (asPage) {
-      Pageable pageable = PageRequest.of(0, 20, Sort.by("txnDate").ascending());
+      pageNumber = pageNumber != null ? pageNumber : 0;
+      Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("txnDate").ascending());
       PagedResult<AccountStatement> accountStatementPaged =
           accountStatementService.getAccountStatements(pageable, accountId, fromDate, toDate);
       return ResponseEntity.ok(accountStatementPaged);
