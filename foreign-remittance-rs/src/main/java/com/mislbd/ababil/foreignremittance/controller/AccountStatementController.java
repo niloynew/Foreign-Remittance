@@ -39,7 +39,8 @@ public class AccountStatementController {
           final LocalDate toDate) {
     if (asPage) {
       pageNumber = pageNumber != null ? pageNumber : 0;
-      Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("txnDate").ascending());
+      //      Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("txnDate").ascending());
+      Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("id").ascending());
       PagedResult<AccountStatement> accountStatementPaged =
           accountStatementService.getAccountStatements(pageable, accountId, fromDate, toDate);
       return ResponseEntity.ok(accountStatementPaged);
