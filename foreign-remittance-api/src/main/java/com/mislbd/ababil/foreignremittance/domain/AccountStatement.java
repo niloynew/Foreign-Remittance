@@ -23,6 +23,7 @@ public class AccountStatement {
   private BigDecimal eventId;
   private String batchNumber;
   private LocalDate valueDate;
+  private BigDecimal postBalance;
 
   public long getId() {
     return id;
@@ -183,6 +184,15 @@ public class AccountStatement {
 
   public AccountStatement setValueDate(LocalDate valueDate) {
     this.valueDate = valueDate;
+    return this;
+  }
+
+  public BigDecimal getPostBalance() {
+    return postBalance;
+  }
+
+  public AccountStatement setPostBalance(BigDecimal postBalance) {
+    this.postBalance = postBalance;
     return this;
   }
 }

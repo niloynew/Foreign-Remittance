@@ -66,6 +66,9 @@ public class AccountStatementEntity {
   @Column(name = "VALUEDATE")
   private LocalDate valueDate;
 
+  @Column(name = "POST_BALANCE")
+  private BigDecimal postBalance;
+
   public long getId() {
     return id;
   }
@@ -225,6 +228,15 @@ public class AccountStatementEntity {
 
   public AccountStatementEntity setValueDate(LocalDate valueDate) {
     this.valueDate = valueDate;
+    return this;
+  }
+
+  public BigDecimal getPostBalance() {
+    return postBalance;
+  }
+
+  public AccountStatementEntity setPostBalance(BigDecimal postBalance) {
+    this.postBalance = postBalance;
     return this;
   }
 }

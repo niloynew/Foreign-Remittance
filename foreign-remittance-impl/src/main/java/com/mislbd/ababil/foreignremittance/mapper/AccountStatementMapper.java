@@ -27,6 +27,7 @@ public class AccountStatementMapper {
             .setInitiatorBranchId(entity.getInitiatorBranchId())
             .setEventId(entity.getEventId())
             .setBatchNumber(entity.getBatchNumber())
-            .setValueDate(entity.getValueDate());
+            .setValueDate(entity.getValueDate())
+            .setPostBalance(entity.getPostBalance());
   }
 }
