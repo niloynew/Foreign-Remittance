@@ -11,4 +11,7 @@ public interface AccountStatementService {
       Pageable pageable, Long accountId, LocalDate fromDate, LocalDate toDate);
 
   List<AccountStatement> getAccountStatements(Long accountId, LocalDate fromDate, LocalDate toDate);
+
+  PagedResult<AccountStatement> getAccountStatement(
+      Pageable pageable, String shadowAccountNumber, LocalDate fromDate, LocalDate toDate);
 }

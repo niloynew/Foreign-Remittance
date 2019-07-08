@@ -1,9 +1,12 @@
 package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.AccountStatement;
+import com.mislbd.ababil.foreignremittance.exception.AccountNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.AccountStatementMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.AccountStatementRepository;
+import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.AccountStatementEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.AccountStatementSpecification;
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
@@ -18,12 +21,15 @@ import org.springframework.stereotype.Service;
 public class AccountStatementServiceImpl implements AccountStatementService {
 
   private final AccountStatementRepository accountStatementRepository;
+  private final ShadowAccountRepository shadowAccountRepository;
   private final AccountStatementMapper accountStatementMapper;
 
   public AccountStatementServiceImpl(
       AccountStatementRepository accountStatementRepository,
+      ShadowAccountRepository shadowAccountRepository,
       AccountStatementMapper accountStatementMapper) {
     this.accountStatementRepository = accountStatementRepository;
+    this.shadowAccountRepository = shadowAccountRepository;
     this.accountStatementMapper = accountStatementMapper;
   }
 
@@ -44,5 +50,21 @@ public class AccountStatementServiceImpl implements AccountStatementService {
         accountStatementRepository.findAll(
             AccountStatementSpecification.searchSpecification(accountId, fromDate, toDate));
     return ListResultBuilder.build(accountStatement, accountStatementMapper.entityToDomain());
+  }
+
+  @Override
+  public PagedResult<AccountStatement> getAccountStatement(
+      Pageable pageable, String shadowAccountNumber, LocalDate fromDate, LocalDate toDate) {
+    ShadowAccountEntity accountEntity =
+        shadowAccountRepository
+            .findByNumber(shadowAccountNumber)
+            .orElseThrow(AccountNotFoundException::new);
+
+    Page<AccountStatementEntity> accountStatement =
+        accountStatementRepository.findAll(
+            AccountStatementSpecification.searchSpecification(
+                accountEntity.getId(), fromDate, toDate),
+            pageable);
+    return PagedResultBuilder.build(accountStatement, accountStatementMapper.entityToDomain());
   }
 }

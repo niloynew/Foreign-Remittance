@@ -171,6 +171,20 @@ public enum Error {
   },
 
   // Shadow account region
+  ACCOUNT_NOT_FOUND("260", "0004") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message = localeMessages.get(this.getModule() + this.getCode()).orElse("Account not found");
+      return message;
+    }
+  },
   GENERATED_SHADOW_ACCOUNT_NUMBER_NOT_FOUND("260", "002") {
     private String message;
 
