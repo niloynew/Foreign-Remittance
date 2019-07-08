@@ -435,7 +435,7 @@ public class RemittanceTransactionMapper {
         .setAmountCcy(totalCharges)
         .setAmountLcy(totalCharges)
         .setCurrencyCode(baseCurrency)
-        //                .setExchangeRate(request.getExchangeRate())
+        //        .setExchangeRate(request.getExchangeRate())
         //                .setRateType(request.getExchangeRateType())
         .setDebitTransaction(true)
         .setBatchNo(request.getBatchNumber())

@@ -29,6 +29,8 @@ public class Account {
 
   private BigDecimal blockAmount;
 
+  private boolean active;
+
   public long getId() {
     return id;
   }
@@ -134,6 +136,15 @@ public class Account {
 
   public Account setBlockAmount(BigDecimal blockAmount) {
     this.blockAmount = blockAmount;
+    return this;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public Account setActive(boolean active) {
+    this.active = active;
     return this;
   }
 }
