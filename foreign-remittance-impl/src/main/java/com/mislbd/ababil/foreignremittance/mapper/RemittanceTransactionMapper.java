@@ -187,10 +187,7 @@ public class RemittanceTransactionMapper {
   }
 
   public CasaTransactionRequest getNetPayableCASAClientForForFcy(
-      RemittanceTransactionEntity request,
-      BigDecimal clientAmount,
-      boolean isDebit,
-      AuditInformation auditInformation) {
+      RemittanceTransactionEntity request, boolean isDebit, AuditInformation auditInformation) {
     String narration;
     if (isDebit) {
       narration = "Payment from A/C " + request.getCreditAccountNumber() + " for CASA ";
@@ -202,7 +199,7 @@ public class RemittanceTransactionMapper {
         .setInstrumentNo("V-")
         .setActivityId(activityId)
         .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
-        .setAmountLcy(clientAmount)
+        .setAmountLcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
         .setCurrencyCode(request.getCurrencyCode())
         .setExchangeRate(request.getClientRate())
         .setRateType(request.getClientRateTypeId())
@@ -238,7 +235,7 @@ public class RemittanceTransactionMapper {
     casaRequest
         .setInstrumentNo("V-")
         .setActivityId(activityId)
-        .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
+        .setAmountCcy(clientAmount)
         .setAmountLcy(clientAmount)
         .setCurrencyCode(baseCurrency)
         .setExchangeRate(BigDecimal.ONE)

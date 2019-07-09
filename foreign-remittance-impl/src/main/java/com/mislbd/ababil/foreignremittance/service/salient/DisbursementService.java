@@ -88,7 +88,7 @@ public class DisbursementService {
         } else {
           transactionService.doCasaTransaction(
               remittanceTransactionMapper.getNetPayableCASAClientForForFcy(
-                  remittanceTransactionEntity, clientAmountLcy, false, auditInformation),
+                  remittanceTransactionEntity, false, auditInformation),
               TransactionRequestType.TRANSFER);
         }
         break;
@@ -148,7 +148,7 @@ public class DisbursementService {
         } else {
           transactionService.doCasaTransaction(
               remittanceTransactionMapper.getNetPayableCASAClientForForFcy(
-                  remittanceTransactionEntity, clientAmountLcy, true, auditInformation),
+                  remittanceTransactionEntity, true, auditInformation),
               TransactionRequestType.TRANSFER);
         }
         break;
