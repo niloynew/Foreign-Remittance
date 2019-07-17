@@ -1,6 +1,6 @@
 package com.mislbd.ababil.foreignremittance.broker.config;
 
-import com.mislbd.ababil.foreignremittance.domain.RemittanceMsgDto;
+import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDto;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -17,7 +17,7 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 @EnableKafka
 public class KafkaStreamsConfig {
   @Bean
-  public ConsumerFactory<String, RemittanceMsgDto> consumerFactory() {
+  public ConsumerFactory<String, NostroReconcileDto> consumerFactory() {
     Map<String, Object> config = new HashMap<>();
 
     config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.1.140:9092");
@@ -33,16 +33,16 @@ public class KafkaStreamsConfig {
     config.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 20);
 
     return new DefaultKafkaConsumerFactory<>(
-        config, new StringDeserializer(), new JsonDeserializer<>(RemittanceMsgDto.class));
+        config, new StringDeserializer(), new JsonDeserializer<>(NostroReconcileDto.class));
   }
 
   @Bean
-  public ConcurrentKafkaListenerContainerFactory<String, RemittanceMsgDto>
+  public ConcurrentKafkaListenerContainerFactory<String, NostroReconcileDto>
       kafkaListenerContainerFactory() {
     /*  ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory();
     factory.setConsumerFactory(consumerFactory());
     return factory;*/
-    ConcurrentKafkaListenerContainerFactory<String, RemittanceMsgDto> factory =
+    ConcurrentKafkaListenerContainerFactory<String, NostroReconcileDto> factory =
         new ConcurrentKafkaListenerContainerFactory<>();
     factory.setConsumerFactory(consumerFactory());
     return factory;

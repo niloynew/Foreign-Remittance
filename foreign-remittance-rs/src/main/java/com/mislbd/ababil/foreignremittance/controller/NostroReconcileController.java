@@ -5,7 +5,7 @@ import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.UpdateNostroReconcileCommand;
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDto;
-import com.mislbd.ababil.foreignremittance.service.NostroReconcileServce;
+import com.mislbd.ababil.foreignremittance.service.NostroReconcileService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.time.LocalDate;
@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/messages", produces = MediaType.APPLICATION_JSON_VALUE)
 public class NostroReconcileController {
 
-  private final NostroReconcileServce nostroReconcileServce;
+  private final NostroReconcileService nostroReconcileServce;
   private final CommandProcessor commandProcessor;
 
   public NostroReconcileController(
-      NostroReconcileServce nostroReconcileServce, CommandProcessor commandProcessor) {
+      NostroReconcileService nostroReconcileServce, CommandProcessor commandProcessor) {
     this.nostroReconcileServce = nostroReconcileServce;
     this.commandProcessor = commandProcessor;
   }
@@ -53,8 +53,7 @@ public class NostroReconcileController {
 
     if (asPage) {
       PagedResult<NostroReconcileDto> pagedMessages =
-          (PagedResult<NostroReconcileDto>)
-              nostroReconcileServce.getMessages(pageable, id, accountNo, selected, valueDate);
+          nostroReconcileServce.getMessages(pageable, id, accountNo, selected, valueDate);
       return ResponseEntity.ok(pagedMessages);
     } else {
       List<NostroReconcileDto> messages =

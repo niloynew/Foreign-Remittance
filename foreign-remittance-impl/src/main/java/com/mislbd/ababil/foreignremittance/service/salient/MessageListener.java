@@ -2,7 +2,7 @@ package com.mislbd.ababil.foreignremittance.service.salient;
 
 import com.mislbd.ababil.foreignremittance.broker.MessageStreams;
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDto;
-import com.mislbd.ababil.foreignremittance.service.NostroReconcileServce;
+import com.mislbd.ababil.foreignremittance.service.NostroReconcileService;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
@@ -10,27 +10,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageListener {
 
-  private final NostroReconcileServce nostroReconcileServce;
+  private final NostroReconcileService nostroReconcileService;
 
-  public MessageListener(NostroReconcileServce nostroReconcileServce) {
-
-    this.nostroReconcileServce = nostroReconcileServce;
+  public MessageListener(NostroReconcileService nostroReconcileService) {
+    this.nostroReconcileService = nostroReconcileService;
   }
 
   //  @KafkaListener(topics = "swift", containerFactory = "kafkaListenerContainerFactory")
-  //  public void nostroreconciledtoListener(NostroReconcileDto nostroReconcileDto) {
+  //  public void nostroReconcileDtoListener(NostroReconcileDto nostroReconcileDto) {
   //
   //    System.out.print("received message");
   //    nostroReconcileServce.save(nostroReconcileDto);
-  //
   //  }
 
   @StreamListener(MessageStreams.INPUT)
   public void handleGreetings(@Payload NostroReconcileDto msg) {
-    // log.info("Received greetings: {}", msg);
 
     System.out.print("received message");
 
-    nostroReconcileServce.save(msg);
+    nostroReconcileService.save(msg);
   }
 }
