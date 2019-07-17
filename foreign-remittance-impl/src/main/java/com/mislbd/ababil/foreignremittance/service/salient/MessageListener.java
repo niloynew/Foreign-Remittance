@@ -10,14 +10,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageListener {
 
-  // private final SwiftMsgRepository swiftMsgRepository;
-  // private final RemittanceMsgDtoMapper mapper;
   private final NostroReconcileServce nostroReconcileServce;
 
   public MessageListener(NostroReconcileServce nostroReconcileServce) {
 
     this.nostroReconcileServce = nostroReconcileServce;
   }
+
+  //  @KafkaListener(topics = "swift", containerFactory = "kafkaListenerContainerFactory")
+  //  public void nostroreconciledtoListener(NostroReconcileDto nostroReconcileDto) {
+  //
+  //    System.out.print("received message");
+  //    nostroReconcileServce.save(nostroReconcileDto);
+  //
+  //  }
 
   @StreamListener(MessageStreams.INPUT)
   public void handleGreetings(@Payload NostroReconcileDto msg) {

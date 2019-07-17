@@ -20,10 +20,17 @@ public class KafkaStreamsConfig {
   public ConsumerFactory<String, RemittanceMsgDto> consumerFactory() {
     Map<String, Object> config = new HashMap<>();
 
-    // config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
-    // config.put(ConsumerConfig.GROUP_ID_CONFIG, "group_id");
+    config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.1.140:9092");
+    config.put(ConsumerConfig.GROUP_ID_CONFIG, "group_id");
     config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+    config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+    config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+    config.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, 132000);
+    config.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, 132000);
+    config.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG, 132001);
+    config.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, 1000);
+    config.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 20);
 
     return new DefaultKafkaConsumerFactory<>(
         config, new StringDeserializer(), new JsonDeserializer<>(RemittanceMsgDto.class));
