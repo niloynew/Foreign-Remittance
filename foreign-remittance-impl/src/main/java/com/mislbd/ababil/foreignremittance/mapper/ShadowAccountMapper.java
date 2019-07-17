@@ -38,7 +38,8 @@ public class ShadowAccountMapper {
             .setBranchId(entity.getBranchId())
             .setAccountOpenDate(entity.getAccountOpenDate())
             .setBalance(entity.getBalance())
-            .setBlockAmount(entity.getBlockAmount());
+            .setBlockAmount(entity.getBlockAmount())
+            .setActive(entity.isActive());
   }
 
   public ResultMapper<Account, ShadowAccountEntity> domainToEntity() {

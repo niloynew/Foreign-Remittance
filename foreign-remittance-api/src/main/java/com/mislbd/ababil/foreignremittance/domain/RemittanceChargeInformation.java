@@ -7,6 +7,7 @@ public class RemittanceChargeInformation {
   private long chargeId;
   private String chargeName;
   private Boolean canModifyCharge;
+  private boolean chargeModifiable;
   private ChargeAccountType chargeAccountType;
   private String chargeAccountCode;
   private BigDecimal chargeAmount;
@@ -41,6 +42,15 @@ public class RemittanceChargeInformation {
 
   public RemittanceChargeInformation setCanModifyCharge(Boolean canModifyCharge) {
     this.canModifyCharge = canModifyCharge;
+    return this;
+  }
+
+  public boolean isChargeModifiable() {
+    return chargeModifiable;
+  }
+
+  public RemittanceChargeInformation setChargeModifiable(boolean chargeModifiable) {
+    this.chargeModifiable = chargeModifiable;
     return this;
   }
 

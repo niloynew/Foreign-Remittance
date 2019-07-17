@@ -39,7 +39,9 @@ public class RemittanceTransactionMapper {
         new RemittanceTransaction()
             .setId(entity.getId())
             .setRemittanceType(entity.getRemittanceType())
-            .setPaymentPurposeId(entity.getPaymentPurposeId())
+            .setTransactionTypeId(entity.getTransactionType().getId())
+            //                .setPaymentPurposeId(entity.getPaymentPurposeId())
+            .setPpCode(entity.getPpCode())
             .setCommodityDescription(entity.getCommodityDescription())
             .setTransactionReferenceNumber(entity.getTransactionReferenceNumber())
             .setInstrumentNumber(entity.getInstrumentNumber())
@@ -78,7 +80,8 @@ public class RemittanceTransactionMapper {
             .orElseGet(RemittanceTransactionEntity::new)
             .setRemittanceType(domain.getRemittanceType())
             .setTransactionType(transactionTypeRepository.getOne(domain.getTransactionTypeId()))
-            .setPaymentPurposeId(domain.getPaymentPurposeId())
+            //            .setPaymentPurposeId(domain.getPaymentPurposeId())
+            .setPpCode(domain.getPpCode())
             .setCommodityDescription(domain.getCommodityDescription())
             .setTransactionReferenceNumber(domain.getTransactionReferenceNumber())
             .setInstrumentNumber(domain.getInstrumentNumber())
@@ -155,17 +158,17 @@ public class RemittanceTransactionMapper {
       AuditInformation auditInformation) {
     String narration;
     if (isDebit) {
-      narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for GL ";
+      narration = "Payment from A/C " + request.getCreditAccountNumber() + " for GL ";
     } else {
-      narration = "Payment from A/C " + request.getDebitAccountNumber() + " for GL ";
+      narration = "Disburse from A/C " + request.getDebitAccountNumber() + " for GL ";
     }
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest
         .setActivityId(activityId)
         .setAmountLcy(clientAmount == null ? BigDecimal.ZERO : clientAmount)
-        .setCurrencyCode(baseCurrency)
-        .setExchangeRate(BigDecimal.ONE)
-        .setRateType(1)
+        .setCurrencyCode(request.getCurrencyCode())
+        .setExchangeRate(request.getClientRate())
+        .setRateType(request.getExchangeRateType())
         .setDebitTransaction(isDebit)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())
@@ -184,22 +187,19 @@ public class RemittanceTransactionMapper {
   }
 
   public CasaTransactionRequest getNetPayableCASAClientForForFcy(
-      RemittanceTransactionEntity request,
-      BigDecimal clientAmount,
-      boolean isDebit,
-      AuditInformation auditInformation) {
+      RemittanceTransactionEntity request, boolean isDebit, AuditInformation auditInformation) {
     String narration;
     if (isDebit) {
-      narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
-    } else {
       narration = "Payment from A/C " + request.getCreditAccountNumber() + " for CASA ";
+    } else {
+      narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
     }
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest
         .setInstrumentNo("V-")
         .setActivityId(activityId)
         .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
-        .setAmountLcy(clientAmount)
+        .setAmountLcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
         .setCurrencyCode(request.getCurrencyCode())
         .setExchangeRate(request.getClientRate())
         .setRateType(request.getClientRateTypeId())
@@ -227,15 +227,15 @@ public class RemittanceTransactionMapper {
       AuditInformation auditInformation) {
     String narration;
     if (isDebit) {
-      narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
-    } else {
       narration = "Payment from A/C " + request.getCreditAccountNumber() + " for CASA ";
+    } else {
+      narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
     }
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest
         .setInstrumentNo("V-")
         .setActivityId(activityId)
-        .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
+        .setAmountCcy(clientAmount)
         .setAmountLcy(clientAmount)
         .setCurrencyCode(baseCurrency)
         .setExchangeRate(BigDecimal.ONE)
@@ -432,8 +432,8 @@ public class RemittanceTransactionMapper {
         .setAmountCcy(totalCharges)
         .setAmountLcy(totalCharges)
         .setCurrencyCode(baseCurrency)
-        //                .setExchangeRate(request.getExchangeRate())
-        //                .setRateType(request.getExchangeRateType())
+        .setExchangeRate(request.getExchangeRate())
+        .setRateType(request.getExchangeRateType())
         .setDebitTransaction(true)
         .setBatchNo(request.getBatchNumber())
         .setGlobalTxnNo(request.getGlobalTransactionNo())

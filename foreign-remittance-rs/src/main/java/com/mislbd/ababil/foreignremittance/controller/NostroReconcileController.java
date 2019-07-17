@@ -48,16 +48,18 @@ public class NostroReconcileController {
       @RequestParam(required = false) boolean asPage,
       @RequestParam(required = false) Long id,
       @RequestParam(required = false) String accountNo,
+      @RequestParam(required = false) boolean selected,
       @RequestParam(required = false) LocalDate valueDate) {
 
     if (asPage) {
       PagedResult<NostroReconcileDto> pagedMessages =
           (PagedResult<NostroReconcileDto>)
-              nostroReconcileServce.getMessages(pageable, id, accountNo, valueDate);
+              nostroReconcileServce.getMessages(pageable, id, accountNo, selected, valueDate);
       return ResponseEntity.ok(pagedMessages);
     } else {
       List<NostroReconcileDto> messages =
-          (List<NostroReconcileDto>) nostroReconcileServce.getMessages(id, accountNo, valueDate);
+          (List<NostroReconcileDto>)
+              nostroReconcileServce.getMessages(id, accountNo, selected, valueDate);
       return ResponseEntity.ok(messages);
     }
   }

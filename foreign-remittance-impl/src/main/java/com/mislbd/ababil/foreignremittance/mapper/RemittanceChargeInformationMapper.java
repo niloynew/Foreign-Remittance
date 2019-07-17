@@ -15,6 +15,7 @@ public class RemittanceChargeInformationMapper {
             .setChargeId(domain.getChargeId())
             .setChargeName(domain.getChargeName())
             .setChargeAmount(domain.getChargeAmount())
+            .setChargeModifiable(domain.isChargeModifiable())
             .setChargeAmountAfterWaived(domain.getChargeAmountAfterWaived())
             .setVatAmount(domain.getVatAmount())
             .setCurrency(domain.getCurrency());

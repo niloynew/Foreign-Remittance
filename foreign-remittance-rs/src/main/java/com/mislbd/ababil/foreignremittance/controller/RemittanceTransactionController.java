@@ -39,6 +39,7 @@ public class RemittanceTransactionController {
 
   @GetMapping(path = "/remittance-transaction")
   public ResponseEntity<?> getTransactions(
+      @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
       @RequestParam(value = "asPage", required = false) final boolean asPage,
       @RequestParam(value = "globalTransactionNo", required = false)
           final String globalTransactionNo,
@@ -54,7 +55,9 @@ public class RemittanceTransactionController {
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           final LocalDate toDate) {
     if (asPage) {
-      Pageable pageable = PageRequest.of(0, 20, Sort.by("globalTransactionNo").descending());
+      pageNumber = pageNumber != null ? pageNumber : 0;
+      Pageable pageable =
+          PageRequest.of(pageNumber, 20, Sort.by("globalTransactionNo").descending());
       PagedResult<RemittanceTransaction> pagedTransactions =
           remittanceTransactionService.getTransactions(
               pageable,

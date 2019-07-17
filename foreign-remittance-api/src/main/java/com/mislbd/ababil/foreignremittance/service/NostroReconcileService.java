@@ -10,9 +10,9 @@ import org.springframework.data.domain.Pageable;
 public interface NostroReconcileServce {
 
   PagedResult<NostroReconcileDto> getMessages(
-      Pageable pageable, Long id, String accountNo, LocalDate valueDate);
+      Pageable pageable, Long id, String accountNo, boolean selected, LocalDate valueDate);
 
-  List getMessages(Long id, String accountNo, LocalDate valueDate);
+  List getMessages(Long id, String accountNo, boolean selected, LocalDate valueDate);
 
   Optional<NostroReconcileDto> getMessageById(long id);
 
