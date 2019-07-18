@@ -28,4 +28,6 @@ public interface AccountService {
       LocalDate accountOpenDate,
       String currency,
       String product);
+
+  Account findById(Long id);
 }

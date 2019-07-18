@@ -60,11 +60,18 @@ public class AccountStatementServiceImpl implements AccountStatementService {
             .findByNumber(shadowAccountNumber)
             .orElseThrow(AccountNotFoundException::new);
 
-    Page<AccountStatementEntity> accountStatement =
+    //    Page<AccountStatementEntity> accountStatement =
+    //        accountStatementRepository.findAll(
+    //            AccountStatementSpecification.searchSpecification(
+    //                accountEntity.getId(), fromDate, toDate),
+    //            pageable);
+    //    return PagedResultBuilder.build(accountStatement,
+    // accountStatementMapper.entityToDomain());
+    return PagedResultBuilder.build(
         accountStatementRepository.findAll(
             AccountStatementSpecification.searchSpecification(
                 accountEntity.getId(), fromDate, toDate),
-            pageable);
-    return PagedResultBuilder.build(accountStatement, accountStatementMapper.entityToDomain());
+            pageable),
+        accountStatementMapper.entityToDomain());
   }
 }

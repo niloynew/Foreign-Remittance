@@ -5,11 +5,11 @@ import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.*;
 import com.mislbd.ababil.foreignremittance.domain.Account;
-import com.mislbd.ababil.foreignremittance.service.AccountService;
+import com.mislbd.ababil.foreignremittance.query.AccountQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
-import com.mislbd.asset.commons.data.domain.PagedResult;
+import com.mislbd.asset.query.api.QueryManager;
+import com.mislbd.asset.query.api.QueryResult;
 import java.time.LocalDate;
-import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/id-accounts", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AccountController {
 
-  private final AccountService accountService;
   private final CommandProcessor commandProcessor;
+  private final QueryManager queryManager;
 
-  public AccountController(AccountService accountService, CommandProcessor commandProcessor) {
-    this.accountService = accountService;
+  public AccountController(CommandProcessor commandProcessor, QueryManager queryManager) {
     this.commandProcessor = commandProcessor;
+    this.queryManager = queryManager;
   }
 
   @GetMapping
@@ -43,25 +43,24 @@ public class AccountController {
           final LocalDate accountOpenDate,
       @RequestParam(value = "currencyCode", required = false) final String currency,
       @RequestParam(value = "productId", required = false) final String product) {
-    if (asPage) {
-      PagedResult<Account> pagedResults =
-          accountService.getAccounts(
-              pageable,
-              number,
-              name,
-              nostroAccountNumber,
-              bank,
-              branch,
-              accountOpenDate,
-              currency,
-              product);
-      return ResponseEntity.ok(pagedResults);
-    } else {
-      List<Account> accounts =
-          accountService.getAccounts(
-              number, name, nostroAccountNumber, bank, branch, accountOpenDate, currency, product);
-      return ResponseEntity.ok(accounts);
+
+    QueryResult<?> queryResult =
+        queryManager.executeQuery(
+            new AccountQuery(
+                pageable,
+                asPage,
+                number,
+                name,
+                nostroAccountNumber,
+                bank,
+                branch,
+                accountOpenDate,
+                currency,
+                product));
+    if (queryResult.isEmpty()) {
+      return ResponseEntity.noContent().build();
     }
+    return ResponseEntity.ok(queryResult.getResult());
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
