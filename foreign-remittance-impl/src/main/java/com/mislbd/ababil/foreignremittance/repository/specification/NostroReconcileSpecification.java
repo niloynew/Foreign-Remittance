@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 public class NostroReconcileSpecification {
 
   public static Specification<NostroReconcileEntity> searchSpecification(
-      Long id, String accNo, boolean selected, LocalDate valueDate) {
+      Long id, String accNo, String advBranch, boolean selected, LocalDate valueDate) {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
 
@@ -17,6 +17,9 @@ public class NostroReconcileSpecification {
       }
       if (accNo != null) {
         predicate = cb.and(predicate, cb.equal(root.get("accountNo"), accNo));
+      }
+      if (advBranch != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("advBranch"), advBranch));
       }
       if (selected == true || selected == false) {
         predicate = cb.and(predicate, cb.equal(root.get("selected"), selected));

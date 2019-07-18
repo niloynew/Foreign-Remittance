@@ -29,22 +29,29 @@ public class NostroReconcileServiceImpl implements NostroReconcileServce {
 
   @Override
   public PagedResult<NostroReconcileDto> getMessages(
-      Pageable pageable, Long id, String accountNo, boolean selected, LocalDate valueDate) {
+      Pageable pageable,
+      Long id,
+      String accountNo,
+      String advBranch,
+      boolean selected,
+      LocalDate valueDate) {
 
     // Page<NostroReconcileEntity> messages =
     return PagedResultBuilderFR.build(
         nostroReconcileRepository.findAll(
-            NostroReconcileSpecification.searchSpecification(id, accountNo, selected, valueDate),
+            NostroReconcileSpecification.searchSpecification(
+                id, accountNo, advBranch, selected, valueDate),
             pageable),
         NostroReconcileDto.class);
   }
 
   @Override
   public List<NostroReconcileDto> getMessages(
-      Long id, String accountNo, boolean selected, LocalDate valueDate) {
+      Long id, String accountNo, String advBranch, boolean selected, LocalDate valueDate) {
     return ListResultBuilderFR.build(
         nostroReconcileRepository.findAll(
-            NostroReconcileSpecification.searchSpecification(id, accountNo, selected, valueDate)),
+            NostroReconcileSpecification.searchSpecification(
+                id, accountNo, advBranch, selected, valueDate)),
         NostroReconcileDto.class);
   }
 
