@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.query;
 
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.asset.query.api.QueryRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,18 +8,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.domain.Pageable;
 
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExportCQuery extends QueryRequest {
-
-  private boolean asPage;
+public class TransactionTypeQuery extends QueryRequest {
   private Pageable pageable;
-  private String name;
-  private String ownerName;
-  private String address;
-  private String country;
-  private String cpName;
-  private String cpEmail;
+  private Long id;
+  private boolean asPage;
+  private RemittanceType remittanceType;
 }

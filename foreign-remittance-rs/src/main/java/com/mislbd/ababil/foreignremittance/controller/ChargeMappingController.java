@@ -45,14 +45,6 @@ public class ChargeMappingController {
             new ChargeMappingQuery(
                 pageable, asPage, remittanceType, typeId, chargeId, chargeModifiable));
     return ResponseEntity.ok(queryResult);
-    //    if (asPage) {
-    //      return ResponseEntity.ok(
-    //          chargeMappingService.findAll(
-    //              pageable, remittanceType, typeId, chargeId, chargeModifiable));
-    //    } else {
-    //      return ResponseEntity.ok(
-    //          chargeMappingService.findAll(remittanceType, typeId, chargeId, chargeModifiable));
-    //    }
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

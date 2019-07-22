@@ -7,18 +7,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.domain.Pageable;
 
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExportCQuery extends QueryRequest {
+@Getter
+@Setter
+public class IDProductQuery extends QueryRequest {
 
   private boolean asPage;
   private Pageable pageable;
   private String name;
-  private String ownerName;
-  private String address;
-  private String country;
-  private String cpName;
-  private String cpEmail;
+  private String code;
+  private String currency;
 }

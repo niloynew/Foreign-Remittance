@@ -2,7 +2,7 @@
 //
 // import com.mislbd.ababil.foreignremittance.broker.MessageStreams;
 // import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDto;
-// import com.mislbd.ababil.foreignremittance.service.NostroReconcileServce;
+// import com.mislbd.ababil.foreignremittance.service.NostroReconcileService;
 // import org.springframework.cloud.stream.annotation.StreamListener;
 // import org.springframework.messaging.handler.annotation.Payload;
 // import org.springframework.stereotype.Component;
@@ -12,9 +12,9 @@
 //
 //  // private final SwiftMsgRepository swiftMsgRepository;
 //  // private final RemittanceMsgDtoMapper mapper;
-//  private final NostroReconcileServce nostroReconcileServce;
+//  private final NostroReconcileService nostroReconcileServce;
 //
-//  public MessageListener(NostroReconcileServce nostroReconcileServce) {
+//  public MessageListener(NostroReconcileService nostroReconcileServce) {
 //
 //    this.nostroReconcileServce = nostroReconcileServce;
 //  }
