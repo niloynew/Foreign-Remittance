@@ -42,8 +42,3 @@ public class BankTypeController {
     return ResponseEntity.ok(queryResult.getResult());
   }
 }
-
-//    return bankTypeService
-//            .getBankType(bankTypeId)
-//            .map(ResponseEntity::ok)
-//        .orElseGet(status(NOT_FOUND)::build);

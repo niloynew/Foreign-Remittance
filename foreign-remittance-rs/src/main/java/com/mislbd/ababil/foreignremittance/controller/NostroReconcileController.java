@@ -58,8 +58,7 @@ public class NostroReconcileController {
       return ResponseEntity.ok(pagedMessages);
     } else {
       List<NostroReconcileDto> messages =
-          (List<NostroReconcileDto>)
-              nostroReconcileServce.getMessages(id, accountNo, selected, valueDate);
+          nostroReconcileServce.getMessages(id, accountNo, selected, valueDate);
       return ResponseEntity.ok(messages);
     }
   }

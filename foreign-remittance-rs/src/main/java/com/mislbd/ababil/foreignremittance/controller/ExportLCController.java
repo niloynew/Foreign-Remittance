@@ -6,8 +6,11 @@ import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.SaveExportLCCommand;
 import com.mislbd.ababil.foreignremittance.domain.ExportLC;
+import com.mislbd.ababil.foreignremittance.query.ExportCQuery;
 import com.mislbd.ababil.foreignremittance.service.ExportLCService;
 import com.mislbd.asset.command.api.CommandProcessor;
+import com.mislbd.asset.query.api.QueryManager;
+import com.mislbd.asset.query.api.QueryResult;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +22,12 @@ public class ExportLCController {
 
   private final CommandProcessor commandProcessor;
   private final ExportLCService exportLCService;
+  private final QueryManager queryManager;
 
-  public ExportLCController(CommandProcessor commandProcessor, ExportLCService exportLCService) {
+  public ExportLCController(CommandProcessor commandProcessor, ExportLCService exportLCService, QueryManager queryManager) {
     this.commandProcessor = commandProcessor;
     this.exportLCService = exportLCService;
+      this.queryManager = queryManager;
   }
 
   @GetMapping
@@ -35,13 +40,18 @@ public class ExportLCController {
       @RequestParam(value = "country", required = false) String country,
       @RequestParam(value = "cpName", required = false) String cpName,
       @RequestParam(value = "cpEmail", required = false) String cpEmail) {
-    if (asPage) {
-      return ResponseEntity.ok(
-          exportLCService.getLcs(pageable, name, ownerName, address, country, cpName, cpEmail));
-    } else {
-      return ResponseEntity.ok(
-          exportLCService.getLcList(name, ownerName, address, country, cpName, cpEmail));
-    }
+      QueryResult<?>queryResult=queryManager.executeQuery(new ExportCQuery(asPage,pageable, name, ownerName, address, country, cpName, cpEmail));
+      return  ResponseEntity.ok(queryResult);
+
+
+
+//    if (asPage) {
+//      return ResponseEntity.ok(
+//          exportLCService.getLcs(pageable, name, ownerName, address, country, cpName, cpEmail));
+//    } else {
+//      return ResponseEntity.ok(
+//          exportLCService.getLcList(name, ownerName, address, country, cpName, cpEmail));
+//    }
   }
 
   @GetMapping(path = "/{id}")
