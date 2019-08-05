@@ -1,19 +1,19 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
-import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
+import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
+import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
-import com.mislbd.asset.commons.data.domain.PagedResult;
+import com.mislbd.asset.query.api.QueryManager;
+import com.mislbd.asset.query.api.QueryResult;
 import java.time.LocalDate;
-import java.util.List;
 import javax.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,13 +28,12 @@ import org.springframework.web.bind.annotation.*;
 public class RemittanceTransactionController {
 
   private final CommandProcessor commandProcessor;
-  private final RemittanceTransactionService remittanceTransactionService;
+  private final QueryManager queryManager;
 
   public RemittanceTransactionController(
-      CommandProcessor commandProcessor,
-      RemittanceTransactionService remittanceTransactionService) {
+      CommandProcessor commandProcessor, QueryManager queryManager) {
     this.commandProcessor = commandProcessor;
-    this.remittanceTransactionService = remittanceTransactionService;
+    this.queryManager = queryManager;
   }
 
   @GetMapping(path = "/remittance-transaction")
@@ -54,42 +53,30 @@ public class RemittanceTransactionController {
       @RequestParam(value = "toDate", required = false)
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           final LocalDate toDate) {
-    if (asPage) {
-      pageNumber = pageNumber != null ? pageNumber : 0;
-      Pageable pageable =
-          PageRequest.of(pageNumber, 20, Sort.by("globalTransactionNo").descending());
-      PagedResult<RemittanceTransaction> pagedTransactions =
-          remittanceTransactionService.getTransactions(
-              pageable,
-              globalTransactionNo,
-              remittanceType,
-              transactionReferenceNumber,
-              applicantName,
-              beneficiaryName,
-              fromDate,
-              toDate);
-      return ResponseEntity.ok(pagedTransactions);
-    } else {
-      List<RemittanceTransaction> transactions =
-          remittanceTransactionService.getTransactions(
-              globalTransactionNo,
-              remittanceType,
-              transactionReferenceNumber,
-              applicantName,
-              beneficiaryName,
-              fromDate,
-              toDate);
-      return ResponseEntity.ok(transactions);
-    }
+    pageNumber = pageNumber != null ? pageNumber : 0;
+    Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("globalTransactionNo").descending());
+
+    QueryResult<?> queryResult =
+        queryManager.executeQuery(
+            new RemittanceTransactionQuery(
+                asPage,
+                pageable,
+                globalTransactionNo,
+                remittanceType,
+                transactionReferenceNumber,
+                applicantName,
+                beneficiaryName,
+                fromDate,
+                toDate));
+
+    return ResponseEntity.ok(queryResult);
   }
 
   @GetMapping(path = "/remittance-transaction/{transactionId}")
-  public ResponseEntity<RemittanceTransaction> getTransaction(
-      @PathVariable("transactionId") Long transactionId) {
-    return remittanceTransactionService
-        .findTransaction(transactionId)
-        .map(ResponseEntity::ok)
-        .orElseGet(status(NOT_FOUND)::build);
+  public ResponseEntity<?> getTransaction(@PathVariable("transactionId") Long transactionId) {
+    QueryResult<?> queryResult =
+        queryManager.executeQuery(new RemittanceTransactionIdQuery(transactionId));
+    return ResponseEntity.ok(queryResult);
   }
 
   @PostMapping(path = "/inward-remittance-transaction", consumes = MediaType.APPLICATION_JSON_VALUE)

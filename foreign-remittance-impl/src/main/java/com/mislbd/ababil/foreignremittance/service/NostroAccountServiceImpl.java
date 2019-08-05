@@ -1,5 +1,7 @@
 package com.mislbd.ababil.foreignremittance.service;
 
+import com.mislbd.ababil.foreignremittance.domain.Account;
+import com.mislbd.ababil.foreignremittance.exception.AccountNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.NostroAccountMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroAccountRepository;
 import org.springframework.stereotype.Service;
@@ -15,39 +17,9 @@ public class NostroAccountServiceImpl implements NostroAccountService {
     this.mapper = mapper;
   }
 
-  //    @Override
-  //    public PagedResult<NostroAccount> getAccounts(Pageable pageable) {
-  //        Page<NostroAccountEntity> pagedNostroAccountEntities =
-  //                repository.findAll(pageable);
-  //        return PagedResultBuilder.build(
-  //                pagedNostroAccountEntities, mapper.entityToDomain());
-  //
-  //    }
-  //
-  //    @Override
-  //    public Optional<NostroAccount> getIdAccount(Long id) {
-  //        Optional<NostroAccountEntity> nostroAccountEntity = repository.findById(id);
-  //        return nostroAccountEntity.map(mapper.entityToDomain()::map);
-  //
-  //    }
-  //
-  //    @Override
-  //    public boolean isExists(Long id) {
-  //        return false;
-  //    }
-  //
-  //    @Override
-  //    public NostroAccount findByNumber(String accNumber) {
-  //        return null;
-  //    }
-  //
-  //    @Override
-  //    public BigDecimal getBalanceCcy(String accNum) {
-  //        return null;
-  //    }
-  //
-  //    @Override
-  //    public BigDecimal getBalanceLimits(String accNum) {
-  //        return null;
-  //    }
+  public Account findById(Long id) {
+    return mapper
+        .entityToDomain()
+        .map(repository.findById(id).orElseThrow(AccountNotFoundException::new));
+  }
 }

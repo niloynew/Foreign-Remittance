@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.Account;
+import com.mislbd.ababil.foreignremittance.exception.AccountNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.ShadowAccountMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.specification.ShadowAccountSpecification;
@@ -72,5 +73,12 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
                 currency,
                 product)),
         shadowAccountMapper.entityToDomain());
+  }
+
+  @Override
+  public Account findById(Long id) {
+    return shadowAccountMapper
+        .entityToDomain()
+        .map(shadowAccountRepository.findById(id).orElseThrow(AccountNotFoundException::new));
   }
 }

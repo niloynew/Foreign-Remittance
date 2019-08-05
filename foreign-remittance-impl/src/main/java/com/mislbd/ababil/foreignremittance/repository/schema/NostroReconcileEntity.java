@@ -22,7 +22,7 @@ public class NostroReconcileEntity extends BaseEntity {
   @Column(name = "REF_TO_ACCOUNT")
   private String refToAccount;
 
-  @Column(name = "REF_TO_SERVICING_ACCOUNT")
+  @Column(name = "REF_OF_SERVICING_ACCOUNT")
   private String refOfServicingAccount;
 
   @Column(name = "TXNTYPE")

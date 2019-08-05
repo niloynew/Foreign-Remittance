@@ -28,4 +28,6 @@ public interface ShadowAccountService {
       LocalDate accountOpenDate,
       String currency,
       String product);
+
+  Account findById(Long id);
 }

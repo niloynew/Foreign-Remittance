@@ -1,13 +1,14 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
 import static org.springframework.http.HttpStatus.ACCEPTED;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.SaveExportLCCommand;
 import com.mislbd.ababil.foreignremittance.domain.ExportLC;
-import com.mislbd.ababil.foreignremittance.service.ExportLCService;
+import com.mislbd.ababil.foreignremittance.query.ExportCByIdQuery;
+import com.mislbd.ababil.foreignremittance.query.ExportCQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
+import com.mislbd.asset.query.api.QueryManager;
+import com.mislbd.asset.query.api.QueryResult;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +19,11 @@ import org.springframework.web.bind.annotation.*;
 public class ExportLCController {
 
   private final CommandProcessor commandProcessor;
-  private final ExportLCService exportLCService;
+  private final QueryManager queryManager;
 
-  public ExportLCController(CommandProcessor commandProcessor, ExportLCService exportLCService) {
+  public ExportLCController(CommandProcessor commandProcessor, QueryManager queryManager) {
     this.commandProcessor = commandProcessor;
-    this.exportLCService = exportLCService;
+    this.queryManager = queryManager;
   }
 
   @GetMapping
@@ -35,18 +36,17 @@ public class ExportLCController {
       @RequestParam(value = "country", required = false) String country,
       @RequestParam(value = "cpName", required = false) String cpName,
       @RequestParam(value = "cpEmail", required = false) String cpEmail) {
-    if (asPage) {
-      return ResponseEntity.ok(
-          exportLCService.getLcs(pageable, name, ownerName, address, country, cpName, cpEmail));
-    } else {
-      return ResponseEntity.ok(
-          exportLCService.getLcList(name, ownerName, address, country, cpName, cpEmail));
-    }
+    QueryResult<?> queryResult =
+        queryManager.executeQuery(
+            new ExportCQuery(asPage, pageable, name, ownerName, address, country, cpName, cpEmail));
+    return ResponseEntity.ok(queryResult);
   }
 
   @GetMapping(path = "/{id}")
-  public ResponseEntity<ExportLC> getLc(@PathVariable("id") Long id) {
-    return exportLCService.getLc(id).map(ResponseEntity::ok).orElseGet(status(NOT_FOUND)::build);
+  public ResponseEntity<?> getLc(@PathVariable("id") long id) {
+    QueryResult<?> queryResult = queryManager.executeQuery(new ExportCByIdQuery(id));
+
+    return ResponseEntity.ok(queryResult);
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -1,8 +1,8 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
-import com.mislbd.ababil.foreignremittance.service.IDProductService;
-import com.mislbd.ababil.foreignremittance.service.ShadowAccountNumberProviderService;
-import com.mislbd.security.core.NgSession;
+import com.mislbd.ababil.foreignremittance.query.ShadowAccountNumberQuery;
+import com.mislbd.asset.query.api.QueryManager;
+import com.mislbd.asset.query.api.QueryResult;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,29 +13,17 @@ import org.springframework.web.bind.annotation.*;
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class ShadowAccountNumberProviderController {
 
-  private final ShadowAccountNumberProviderService shadowAccountNumberProviderService;
-  private final IDProductService idProductService;
-  private final NgSession ngSession;
+  private final QueryManager queryManager;
 
-  public ShadowAccountNumberProviderController(
-      ShadowAccountNumberProviderService shadowAccountNumberProviderService,
-      IDProductService idProductService,
-      NgSession ngSession) {
-    this.shadowAccountNumberProviderService = shadowAccountNumberProviderService;
-    this.idProductService = idProductService;
-    this.ngSession = ngSession;
+  public ShadowAccountNumberProviderController(QueryManager queryManager) {
+    this.queryManager = queryManager;
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public ResponseEntity<String> getShadowAccount(
-      @PathVariable("productId") long productId) {
-
-    if (idProductService.isExists(productId)) {
-      return ResponseEntity.ok(
-          shadowAccountNumberProviderService.getAccountNumber(
-              productId, ngSession.getUserBranch(), ngSession.getUsername()));
-    }
-
-    return ResponseEntity.notFound().build();
+  public ResponseEntity<?> getShadowAccount(
+      @PathVariable("productId") long productId, @RequestParam(name = "branchId") long branchId) {
+    QueryResult<?> queryResult =
+        queryManager.executeQuery(new ShadowAccountNumberQuery(productId, branchId));
+    return ResponseEntity.ok(queryResult);
   }
 }
