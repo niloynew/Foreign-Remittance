@@ -2,7 +2,6 @@ package com.mislbd.ababil.foreignremittance.controller;
 
 import com.mislbd.ababil.foreignremittance.query.BankTypeIdQuery;
 import com.mislbd.ababil.foreignremittance.query.BankTypeQuery;
-import com.mislbd.ababil.foreignremittance.service.BankTypeService;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
 import org.springframework.data.domain.Pageable;
@@ -14,11 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "bank-types", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BankTypeController {
 
-  private final BankTypeService bankTypeService;
   private final QueryManager queryManager;
 
-  public BankTypeController(BankTypeService bankTypeService, QueryManager queryManager) {
-    this.bankTypeService = bankTypeService;
+  public BankTypeController(QueryManager queryManager) {
     this.queryManager = queryManager;
   }
 

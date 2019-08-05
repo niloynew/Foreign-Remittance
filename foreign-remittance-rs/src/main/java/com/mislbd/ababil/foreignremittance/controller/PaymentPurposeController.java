@@ -1,7 +1,6 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
 import com.mislbd.ababil.foreignremittance.query.PaymentPurposeQuery;
-import com.mislbd.ababil.foreignremittance.service.PaymentPurposeService;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
 import org.springframework.data.domain.Pageable;
@@ -16,12 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "payment-purposes", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PaymentPurposeController {
 
-  private final PaymentPurposeService paymentPurposeService;
   private final QueryManager queryManager;
 
-  public PaymentPurposeController(
-      PaymentPurposeService paymentPurposeService, QueryManager queryManager) {
-    this.paymentPurposeService = paymentPurposeService;
+  public PaymentPurposeController(QueryManager queryManager) {
     this.queryManager = queryManager;
   }
 

@@ -1,11 +1,8 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
 import com.mislbd.ababil.foreignremittance.query.ShadowAccountNumberQuery;
-import com.mislbd.ababil.foreignremittance.service.IDProductService;
-import com.mislbd.ababil.foreignremittance.service.ShadowAccountNumberProviderService;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
-import com.mislbd.security.core.NgSession;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,19 +13,9 @@ import org.springframework.web.bind.annotation.*;
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class ShadowAccountNumberProviderController {
 
-  private final ShadowAccountNumberProviderService shadowAccountNumberProviderService;
-  private final IDProductService idProductService;
-  private final NgSession ngSession;
   private final QueryManager queryManager;
 
-  public ShadowAccountNumberProviderController(
-      ShadowAccountNumberProviderService shadowAccountNumberProviderService,
-      IDProductService idProductService,
-      NgSession ngSession,
-      QueryManager queryManager) {
-    this.shadowAccountNumberProviderService = shadowAccountNumberProviderService;
-    this.idProductService = idProductService;
-    this.ngSession = ngSession;
+  public ShadowAccountNumberProviderController(QueryManager queryManager) {
     this.queryManager = queryManager;
   }
 
@@ -38,13 +25,5 @@ public class ShadowAccountNumberProviderController {
     QueryResult<?> queryResult =
         queryManager.executeQuery(new ShadowAccountNumberQuery(productId, branchId));
     return ResponseEntity.ok(queryResult);
-    //    if (idProductService.isExists(productId)) {
-    //        return ResponseEntity.ok(
-    //                shadowAccountNumberProviderService.getAccountNumber(
-    //                        productId, ngSession.getUserBranch(), ngSession.getUsername()));
-    //    }
-    //
-    //    return ResponseEntity.notFound().build();
-    // }
   }
 }

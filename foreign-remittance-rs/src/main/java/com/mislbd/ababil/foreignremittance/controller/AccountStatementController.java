@@ -1,7 +1,6 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
 import com.mislbd.ababil.foreignremittance.query.AccountStatementQuery;
-import com.mislbd.ababil.foreignremittance.service.AccountStatementService;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
 import java.time.LocalDate;
@@ -20,12 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class AccountStatementController {
 
-  private final AccountStatementService accountStatementService;
   private final QueryManager queryManager;
 
-  public AccountStatementController(
-      AccountStatementService accountStatementService, QueryManager queryManager) {
-    this.accountStatementService = accountStatementService;
+  public AccountStatementController(QueryManager queryManager) {
     this.queryManager = queryManager;
   }
 

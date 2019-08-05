@@ -5,13 +5,12 @@ import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.UpdateNostroReconcileCommand;
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDto;
+import com.mislbd.ababil.foreignremittance.query.NostroReconcileQuery;
 import com.mislbd.ababil.foreignremittance.service.NostroReconcileService;
 import com.mislbd.asset.command.api.CommandProcessor;
-import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.query.api.QueryManager;
-
+import com.mislbd.asset.query.api.QueryResult;
 import java.time.LocalDate;
-import java.util.List;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -26,47 +25,43 @@ public class NostroReconcileController {
   private final CommandProcessor commandProcessor;
   private final QueryManager queryManager;
 
-    public NostroReconcileController(NostroReconcileService nostroReconcileService, CommandProcessor commandProcessor, QueryManager queryManager) {
-        this.nostroReconcileService = nostroReconcileService;
-        this.commandProcessor = commandProcessor;
-        this.queryManager = queryManager;
-    }
+  public NostroReconcileController(
+      NostroReconcileService nostroReconcileService,
+      CommandProcessor commandProcessor,
+      QueryManager queryManager) {
+    this.nostroReconcileService = nostroReconcileService;
+    this.commandProcessor = commandProcessor;
+    this.queryManager = queryManager;
+  }
 
+  /*@RequestMapping(method = RequestMethod.GET)
+  public ResponseEntity<PagedResult<RemittanceMsgDto>> getMessages(
+      Pageable pageable,
+      @RequestParam(required = false) String msgType,
+      @RequestParam(required = false) String lcNo,
+      @RequestParam(required = false) BigDecimal amount,
+      @RequestParam(required = false) LocalDate valueDate) {
 
-    /*@RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<PagedResult<RemittanceMsgDto>> getMessages(
-        Pageable pageable,
-        @RequestParam(required = false) String msgType,
-        @RequestParam(required = false) String lcNo,
-        @RequestParam(required = false) BigDecimal amount,
-        @RequestParam(required = false) LocalDate valueDate) {
-
-      PagedResult<RemittanceMsgDto> pagedMessages =
-          (PagedResult<RemittanceMsgDto>)
-              swiftMsgService.findAll(pageable, msgType, lcNo, amount, valueDate);
-      return ResponseEntity.ok(pagedMessages);
-    }*/
+    PagedResult<RemittanceMsgDto> pagedMessages =
+        (PagedResult<RemittanceMsgDto>)
+            swiftMsgService.findAll(pageable, msgType, lcNo, amount, valueDate);
+    return ResponseEntity.ok(pagedMessages);
+  }*/
   @RequestMapping(method = RequestMethod.GET)
   public ResponseEntity<?> getMessages(
       Pageable pageable,
       @RequestParam(required = false) boolean asPage,
       @RequestParam(required = false) Long id,
-      @RequestParam(required = false) String accountNo,
       @RequestParam(required = false) String advBranch,
+      @RequestParam(required = false) String accountNo,
       @RequestParam(required = false) boolean selected,
       @RequestParam(required = false) LocalDate valueDate) {
 
-    if (asPage) {
-      PagedResult<NostroReconcileDto> pagedMessages =
-              nostroReconcileService.getMessages(
-                  pageable, id, accountNo, advBranch, selected, valueDate);
-      return ResponseEntity.ok(pagedMessages);
-    } else {
-      List<NostroReconcileDto> messages =
-          (List<NostroReconcileDto>)
-              nostroReconcileService.getMessages(id, accountNo, advBranch, selected, valueDate);
-      return ResponseEntity.ok(messages);
-    }
+    QueryResult<?> queryResult =
+        queryManager.executeQuery(
+            new NostroReconcileQuery(
+                pageable, asPage, id, advBranch, accountNo, selected, valueDate));
+    return ResponseEntity.ok(queryResult);
   }
 
   @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)

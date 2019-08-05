@@ -9,7 +9,6 @@ import com.mislbd.ababil.foreignremittance.command.UpdateIDProductCommand;
 import com.mislbd.ababil.foreignremittance.domain.IDProduct;
 import com.mislbd.ababil.foreignremittance.query.IDProductByIdQuery;
 import com.mislbd.ababil.foreignremittance.query.IDProductQuery;
-import com.mislbd.ababil.foreignremittance.service.IDProductService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.query.api.QueryManager;
@@ -24,15 +23,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/id-products", produces = MediaType.APPLICATION_JSON_VALUE)
 public class IDProductController {
   private final CommandProcessor commandProcessor;
-  private final IDProductService idproductService;
   private final QueryManager queryManager;
 
-  public IDProductController(
-      CommandProcessor commandProcessor,
-      IDProductService idproductService,
-      QueryManager queryManager) {
+  public IDProductController(CommandProcessor commandProcessor, QueryManager queryManager) {
     this.commandProcessor = commandProcessor;
-    this.idproductService = idproductService;
     this.queryManager = queryManager;
   }
 

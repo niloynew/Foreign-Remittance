@@ -1,7 +1,6 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
 import com.mislbd.ababil.foreignremittance.query.CBFundSourceQuery;
-import com.mislbd.ababil.foreignremittance.service.CBFundSourceService;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
 import org.springframework.data.domain.Pageable;
@@ -15,12 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "cb-fund-sources", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CBFundSourceController {
-  private final CBFundSourceService cbFundSourceService;
+
   private final QueryManager queryManager;
 
-  public CBFundSourceController(
-      CBFundSourceService cbFundSourceService, QueryManager queryManager) {
-    this.cbFundSourceService = cbFundSourceService;
+  public CBFundSourceController(QueryManager queryManager) {
     this.queryManager = queryManager;
   }
 

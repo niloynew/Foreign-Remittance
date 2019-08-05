@@ -16,6 +16,7 @@ public class NostroReconcileQuery extends QueryRequest {
   private Pageable pageable;
   private boolean asPage;
   private Long id;
+  String advBranch;
   private String accountNo;
   private boolean selected;
   private LocalDate valueDate;

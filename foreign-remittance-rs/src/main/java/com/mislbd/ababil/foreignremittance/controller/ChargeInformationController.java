@@ -2,7 +2,6 @@ package com.mislbd.ababil.foreignremittance.controller;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.query.ChargeInformationQuery;
-import com.mislbd.ababil.foreignremittance.service.RemittanceChargeInformationService;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
 import java.math.BigDecimal;
@@ -17,13 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/remittance-charge-info", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ChargeInformationController {
   private final QueryManager queryManager;
-  private final RemittanceChargeInformationService remittanceChargeInformationService;
 
-  public ChargeInformationController(
-      QueryManager queryManager,
-      RemittanceChargeInformationService remittanceChargeInformationService) {
+  public ChargeInformationController(QueryManager queryManager) {
     this.queryManager = queryManager;
-    this.remittanceChargeInformationService = remittanceChargeInformationService;
   }
 
   @GetMapping
@@ -38,7 +33,3 @@ public class ChargeInformationController {
     return ResponseEntity.ok(queryResult);
   }
 }
-//    List<RemittanceChargeInformation>
-// return ResponseEntity.ok(
-//        remittanceChargeInformationService.getChargeInfo(
-//        remittanceType, typeId, accountNumber, amount));

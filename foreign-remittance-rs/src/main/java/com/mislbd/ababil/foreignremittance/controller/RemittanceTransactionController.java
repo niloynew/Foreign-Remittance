@@ -9,7 +9,6 @@ import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionQuery;
-import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.query.api.QueryManager;
@@ -29,15 +28,11 @@ import org.springframework.web.bind.annotation.*;
 public class RemittanceTransactionController {
 
   private final CommandProcessor commandProcessor;
-  private final RemittanceTransactionService remittanceTransactionService;
   private final QueryManager queryManager;
 
   public RemittanceTransactionController(
-      CommandProcessor commandProcessor,
-      RemittanceTransactionService remittanceTransactionService,
-      QueryManager queryManager) {
+      CommandProcessor commandProcessor, QueryManager queryManager) {
     this.commandProcessor = commandProcessor;
-    this.remittanceTransactionService = remittanceTransactionService;
     this.queryManager = queryManager;
   }
 
@@ -82,10 +77,6 @@ public class RemittanceTransactionController {
     QueryResult<?> queryResult =
         queryManager.executeQuery(new RemittanceTransactionIdQuery(transactionId));
     return ResponseEntity.ok(queryResult);
-    //    return remittanceTransactionService
-    //        .findTransaction(transactionId)
-    //        .map(ResponseEntity::ok)
-    //        .orElseGet(status(NOT_FOUND)::build);
   }
 
   @PostMapping(path = "/inward-remittance-transaction", consumes = MediaType.APPLICATION_JSON_VALUE)

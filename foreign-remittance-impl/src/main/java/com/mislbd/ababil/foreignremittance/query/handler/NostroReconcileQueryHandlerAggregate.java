@@ -25,6 +25,7 @@ public class NostroReconcileQueryHandlerAggregate {
               nostroReconcileQuery.getPageable(),
               nostroReconcileQuery.getId(),
               nostroReconcileQuery.getAccountNo(),
+              nostroReconcileQuery.getAdvBranch(),
               nostroReconcileQuery.isSelected(),
               nostroReconcileQuery.getValueDate());
       return QueryResult.of(pagedResult);
@@ -33,6 +34,7 @@ public class NostroReconcileQueryHandlerAggregate {
           nostroReconcileService.getMessages(
               nostroReconcileQuery.getId(),
               nostroReconcileQuery.getAccountNo(),
+              nostroReconcileQuery.getAdvBranch(),
               nostroReconcileQuery.isSelected(),
               nostroReconcileQuery.getValueDate());
       return QueryResult.of(listResult);

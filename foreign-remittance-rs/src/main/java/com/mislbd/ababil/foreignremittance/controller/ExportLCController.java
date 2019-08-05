@@ -6,7 +6,6 @@ import com.mislbd.ababil.foreignremittance.command.SaveExportLCCommand;
 import com.mislbd.ababil.foreignremittance.domain.ExportLC;
 import com.mislbd.ababil.foreignremittance.query.ExportCByIdQuery;
 import com.mislbd.ababil.foreignremittance.query.ExportCQuery;
-import com.mislbd.ababil.foreignremittance.service.ExportLCService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
@@ -20,15 +19,10 @@ import org.springframework.web.bind.annotation.*;
 public class ExportLCController {
 
   private final CommandProcessor commandProcessor;
-  private final ExportLCService exportLCService;
   private final QueryManager queryManager;
 
-  public ExportLCController(
-      CommandProcessor commandProcessor,
-      ExportLCService exportLCService,
-      QueryManager queryManager) {
+  public ExportLCController(CommandProcessor commandProcessor, QueryManager queryManager) {
     this.commandProcessor = commandProcessor;
-    this.exportLCService = exportLCService;
     this.queryManager = queryManager;
   }
 

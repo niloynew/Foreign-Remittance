@@ -28,7 +28,6 @@ public class ChargeMappingController {
 
   public ChargeMappingController(QueryManager queryManager, CommandProcessor commandProcessor) {
     this.queryManager = queryManager;
-
     this.commandProcessor = commandProcessor;
   }
 

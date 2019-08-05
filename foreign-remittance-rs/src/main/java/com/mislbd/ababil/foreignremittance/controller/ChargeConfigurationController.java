@@ -10,7 +10,6 @@ import com.mislbd.ababil.foreignremittance.domain.ChargeAccountType;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceCharge;
 import com.mislbd.ababil.foreignremittance.query.ChargeConfigurationIdQuery;
 import com.mislbd.ababil.foreignremittance.query.ChargeConfigurationQuery;
-import com.mislbd.ababil.foreignremittance.service.RemittanceChargeService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.query.api.QueryManager;
@@ -25,15 +24,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/remittance-charges", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ChargeConfigurationController {
 
-  private final RemittanceChargeService remittanceChargeService;
   private final CommandProcessor commandProcessor;
   private final QueryManager queryManager;
 
   public ChargeConfigurationController(
-      RemittanceChargeService remittanceChargeService,
-      CommandProcessor commandProcessor,
-      QueryManager queryManager) {
-    this.remittanceChargeService = remittanceChargeService;
+      CommandProcessor commandProcessor, QueryManager queryManager) {
     this.commandProcessor = commandProcessor;
     this.queryManager = queryManager;
   }
@@ -60,10 +55,6 @@ public class ChargeConfigurationController {
 
     QueryResult<?> queryResult = queryManager.executeQuery(new ChargeConfigurationIdQuery(id));
     return ResponseEntity.ok(queryResult);
-    //            return remittanceChargeService
-    //    //                    .findRemittanceChargeById(id)
-    //    //                    .map(ResponseEntity::ok)
-    //    //                    .orElseGet(status(NOT_FOUND)::build);
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
