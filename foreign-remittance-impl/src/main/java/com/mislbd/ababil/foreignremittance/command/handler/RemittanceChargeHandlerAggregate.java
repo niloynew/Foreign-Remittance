@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
+import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceChargeCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceChargeMappingCommand;
 import com.mislbd.ababil.foreignremittance.command.DeleteChargeMappingCommand;
@@ -16,9 +17,11 @@ import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeSlabRe
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeSlabEntity;
+import com.mislbd.asset.command.api.CommandEvent;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
+import com.mislbd.asset.command.api.annotation.CommandListener;
 import java.math.BigDecimal;
 import javax.transaction.Transactional;
 
@@ -31,6 +34,7 @@ public class RemittanceChargeHandlerAggregate {
   private final RemittanceChargeSlabMapper remittanceChargeSlabMapper;
   private final RemittanceChargeMappingMapper remittanceChargeMappingMapper;
   private final RemittanceChargeMappingRepository remittanceChargeMappingRepository;
+  private final Auditor auditor;
 
   public RemittanceChargeHandlerAggregate(
       RemittanceChargeMapper remittanceChargeMapper,
@@ -38,13 +42,34 @@ public class RemittanceChargeHandlerAggregate {
       RemittanceChargeSlabRepository remittanceChargeSlabRepository,
       RemittanceChargeSlabMapper remittanceChargeSlabMapper,
       RemittanceChargeMappingMapper remittanceChargeMappingMapper,
-      RemittanceChargeMappingRepository remittanceChargeMappingRepository) {
+      RemittanceChargeMappingRepository remittanceChargeMappingRepository,
+      Auditor auditor) {
     this.remittanceChargeMapper = remittanceChargeMapper;
     this.remittanceChargeRepository = remittanceChargeRepository;
     this.remittanceChargeSlabRepository = remittanceChargeSlabRepository;
     this.remittanceChargeSlabMapper = remittanceChargeSlabMapper;
     this.remittanceChargeMappingMapper = remittanceChargeMappingMapper;
     this.remittanceChargeMappingRepository = remittanceChargeMappingRepository;
+    this.auditor = auditor;
+  }
+
+  @CommandListener(
+      commandClasses = {
+        CreateRemittanceChargeMappingCommand.class,
+        CreateRemittanceChargeCommand.class,
+        UpdateRemittanceChargeCommand.class
+      })
+  public void auditAccountCreateAndUpdate(CommandEvent e) {
+
+    auditor.audit(e.getCommand().getPayload(), e.getCommand());
+  }
+
+  @CommandListener(commandClasses = {DeleteChargeMappingCommand.class})
+  public void deleteChargeMapping(CommandEvent e) {
+
+    auditor.audit(
+        remittanceChargeMappingRepository.findById((Long) e.getCommand().getPayload()),
+        e.getCommand());
   }
 
   @Transactional

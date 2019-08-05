@@ -8,9 +8,11 @@ import com.mislbd.ababil.foreignremittance.command.CreateRemittanceChargeMapping
 import com.mislbd.ababil.foreignremittance.command.DeleteChargeMappingCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeMapping;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
-import com.mislbd.ababil.foreignremittance.service.ChargeMappingService;
+import com.mislbd.ababil.foreignremittance.query.ChargeMappingQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
+import com.mislbd.asset.query.api.QueryManager;
+import com.mislbd.asset.query.api.QueryResult;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -21,12 +23,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "charge-mappings", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ChargeMappingController {
 
-  private final ChargeMappingService chargeMappingService;
+  private final QueryManager queryManager;
   private final CommandProcessor commandProcessor;
 
-  public ChargeMappingController(
-      ChargeMappingService chargeMappingService, CommandProcessor commandProcessor) {
-    this.chargeMappingService = chargeMappingService;
+  public ChargeMappingController(QueryManager queryManager, CommandProcessor commandProcessor) {
+    this.queryManager = queryManager;
+
     this.commandProcessor = commandProcessor;
   }
 
@@ -38,14 +40,11 @@ public class ChargeMappingController {
       @RequestParam(value = "typeId", required = false) final Long typeId,
       @RequestParam(value = "chargeId", required = false) final Long chargeId,
       @RequestParam(value = "chargeModifiable", required = false) final Boolean chargeModifiable) {
-    if (asPage) {
-      return ResponseEntity.ok(
-          chargeMappingService.findAll(
-              pageable, remittanceType, typeId, chargeId, chargeModifiable));
-    } else {
-      return ResponseEntity.ok(
-          chargeMappingService.findAll(remittanceType, typeId, chargeId, chargeModifiable));
-    }
+    QueryResult<?> queryResult =
+        queryManager.executeQuery(
+            new ChargeMappingQuery(
+                pageable, asPage, remittanceType, typeId, chargeId, chargeModifiable));
+    return ResponseEntity.ok(queryResult);
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -57,7 +56,7 @@ public class ChargeMappingController {
                 new CreateRemittanceChargeMappingCommand(chargeMapping)));
   }
 
-  @DeleteMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @DeleteMapping(path = "/{id}")
   public ResponseEntity<Void> deleteChargeMapping(@PathVariable("id") Long id) {
     commandProcessor.executeUpdate(new DeleteChargeMappingCommand(id));
     return status(ACCEPTED).build();

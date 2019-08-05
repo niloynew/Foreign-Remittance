@@ -1,9 +1,9 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
-import com.mislbd.ababil.foreignremittance.domain.PaymentPurpose;
+import com.mislbd.ababil.foreignremittance.query.PaymentPurposeQuery;
 import com.mislbd.ababil.foreignremittance.service.PaymentPurposeService;
-import com.mislbd.asset.commons.data.domain.PagedResult;
-import java.util.List;
+import com.mislbd.asset.query.api.QueryManager;
+import com.mislbd.asset.query.api.QueryResult;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentPurposeController {
 
   private final PaymentPurposeService paymentPurposeService;
+  private final QueryManager queryManager;
 
-  public PaymentPurposeController(PaymentPurposeService paymentPurposeService) {
+  public PaymentPurposeController(
+      PaymentPurposeService paymentPurposeService, QueryManager queryManager) {
     this.paymentPurposeService = paymentPurposeService;
+    this.queryManager = queryManager;
   }
 
   @GetMapping
@@ -29,13 +32,8 @@ public class PaymentPurposeController {
       @RequestParam(name = "asPage") final boolean asPage,
       @RequestParam(value = "code", required = false) final String code,
       @RequestParam(value = "description", required = false) final String description) {
-    if (asPage) {
-      PagedResult<PaymentPurpose> pagedResults =
-          paymentPurposeService.getPaymentPurposes(pageable, id, code, description);
-      return ResponseEntity.ok(pagedResults);
-    } else {
-      List<PaymentPurpose> types = paymentPurposeService.getPaymentPurposes(id, code, description);
-      return ResponseEntity.ok(types);
-    }
+    QueryResult<?> queryResult =
+        queryManager.executeQuery(new PaymentPurposeQuery(asPage, pageable, id, code, description));
+    return ResponseEntity.ok(queryResult);
   }
 }

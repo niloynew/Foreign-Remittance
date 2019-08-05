@@ -1,11 +1,14 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
+import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.foreignremittance.command.UpdateNostroReconcileCommand;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroReconcileRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroReconcileEntity;
+import com.mislbd.asset.command.api.CommandEvent;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
+import com.mislbd.asset.command.api.annotation.CommandListener;
 import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,28 +17,22 @@ public class SwiftMesgCommandHandlerAggregate {
 
   private final NostroReconcileRepository nostroReconcileRepository;
   private final ModelMapper modelMapper;
+  private final Auditor auditor;
 
   public SwiftMesgCommandHandlerAggregate(
-      NostroReconcileRepository nostroReconcileRepository, ModelMapper modelMapper) {
+      NostroReconcileRepository nostroReconcileRepository,
+      ModelMapper modelMapper,
+      Auditor auditor) {
     this.nostroReconcileRepository = nostroReconcileRepository;
     this.modelMapper = modelMapper;
+    this.auditor = auditor;
   }
 
-  //  private final SwiftMsgRepository swiftMsgRepository;
-  //  private final RemittanceMsgDtoMapper mapper;
-  //
-  //  public SwiftMesgCommandHandlerAggregate(
-  //      SwiftMsgRepository swiftMsgRepository, RemittanceMsgDtoMapper mapper) {
-  //    this.swiftMsgRepository = swiftMsgRepository;
-  //    this.mapper = mapper;
-  //  }
-  //
-  //  @Transactional
-  //  @CommandHandler
-  //  public CommandResponse<Long> createSwiftMsg(CreateSwiftMsgCommand command) {
-  //    return CommandResponse.of(
-  //        swiftMsgRepository.save(mapper.domainToEntity().map(command.getPayload())).getId());
-  //  }
+  @CommandListener(commandClasses = {UpdateNostroReconcileCommand.class})
+  public void auditIDProductCreateAndUpdate(CommandEvent e) {
+
+    auditor.audit(e.getCommand().getPayload(), e.getCommand());
+  }
 
   @Transactional
   @CommandHandler

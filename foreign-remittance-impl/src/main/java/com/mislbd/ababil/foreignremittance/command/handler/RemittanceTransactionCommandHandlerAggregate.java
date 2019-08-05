@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
+import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
@@ -19,9 +20,11 @@ import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransacti
 import com.mislbd.ababil.foreignremittance.service.salient.DisbursementService;
 import com.mislbd.ababil.transaction.service.TransactionService;
 import com.mislbd.asset.command.api.Command;
+import com.mislbd.asset.command.api.CommandEvent;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
+import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.security.core.NgSession;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -45,6 +48,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final TransactionService transactionService;
   private final ConfigurationService configurationService;
   private BigDecimal totalChargeAmount = null;
+  private final Auditor auditor;
   //  CalendarConfigurationService calendarConfigurationService;
 
   public RemittanceTransactionCommandHandlerAggregate(
@@ -57,7 +61,9 @@ public class RemittanceTransactionCommandHandlerAggregate {
       NgSession ngSession,
       DisbursementService disbursementService,
       TransactionService transactionService,
-      ConfigurationService configurationService) {
+      ConfigurationService configurationService,
+      Auditor auditor) {
+
     this.transactionRepository = transactionRepository;
     this.transactionMapper = transactionMapper;
     this.bankInformationRepository = bankInformationRepository;
@@ -68,6 +74,18 @@ public class RemittanceTransactionCommandHandlerAggregate {
     this.disbursementService = disbursementService;
     this.transactionService = transactionService;
     this.configurationService = configurationService;
+    this.auditor = auditor;
+  }
+
+  @CommandListener(
+      commandClasses = {
+        CreateInwardRemittanceTransactionCommand.class,
+        CreateOutwardRemittanceTransactionCommand.class
+      })
+  public void auditCreateInwardRemittanceTransactionAndCreateInwardRemittanceTransaction(
+      CommandEvent e) {
+
+    auditor.audit(e.getCommand().getPayload(), e.getCommand());
   }
 
   @Transactional

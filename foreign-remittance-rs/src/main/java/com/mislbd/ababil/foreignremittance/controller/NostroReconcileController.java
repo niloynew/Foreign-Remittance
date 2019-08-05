@@ -5,11 +5,12 @@ import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.UpdateNostroReconcileCommand;
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDto;
+import com.mislbd.ababil.foreignremittance.query.NostroReconcileQuery;
 import com.mislbd.ababil.foreignremittance.service.NostroReconcileService;
 import com.mislbd.asset.command.api.CommandProcessor;
-import com.mislbd.asset.commons.data.domain.PagedResult;
+import com.mislbd.asset.query.api.QueryManager;
+import com.mislbd.asset.query.api.QueryResult;
 import java.time.LocalDate;
-import java.util.List;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -22,9 +23,14 @@ public class NostroReconcileController {
 
   private final NostroReconcileService nostroReconcileService;
   private final CommandProcessor commandProcessor;
+  private final QueryManager queryManager;
 
   public NostroReconcileController(
       NostroReconcileService nostroReconcileService, CommandProcessor commandProcessor) {
+    this.nostroReconcileService = nostroReconcileService;
+      NostroReconcileService nostroReconcileService,
+      CommandProcessor commandProcessor,
+      QueryManager queryManager) {
     this.nostroReconcileService = nostroReconcileService;
     this.commandProcessor = commandProcessor;
   }

@@ -7,11 +7,13 @@ import com.mislbd.ababil.foreignremittance.command.CreateIDProductCommand;
 import com.mislbd.ababil.foreignremittance.command.DeleteIDProductCommand;
 import com.mislbd.ababil.foreignremittance.command.UpdateIDProductCommand;
 import com.mislbd.ababil.foreignremittance.domain.IDProduct;
+import com.mislbd.ababil.foreignremittance.query.IDProductByIdQuery;
+import com.mislbd.ababil.foreignremittance.query.IDProductQuery;
 import com.mislbd.ababil.foreignremittance.service.IDProductService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
-import com.mislbd.asset.commons.data.domain.PagedResult;
-import java.util.List;
+import com.mislbd.asset.query.api.QueryManager;
+import com.mislbd.asset.query.api.QueryResult;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -23,10 +25,15 @@ import org.springframework.web.bind.annotation.*;
 public class IDProductController {
   private final CommandProcessor commandProcessor;
   private final IDProductService idproductService;
+  private final QueryManager queryManager;
 
-  public IDProductController(CommandProcessor commandProcessor, IDProductService idproductService) {
+  public IDProductController(
+      CommandProcessor commandProcessor,
+      IDProductService idproductService,
+      QueryManager queryManager) {
     this.commandProcessor = commandProcessor;
     this.idproductService = idproductService;
+    this.queryManager = queryManager;
   }
 
   @GetMapping
@@ -36,22 +43,15 @@ public class IDProductController {
       @RequestParam(value = "name", required = false) final String name,
       @RequestParam(value = "code", required = false) final String code,
       @RequestParam(value = "currency", required = false) final String currency) {
-    if (asPage) {
-      PagedResult<IDProduct> pagedIDProducts =
-          idproductService.findIDProducts(pageable, name, code, currency);
-      return ResponseEntity.ok(pagedIDProducts);
-    } else {
-      List<IDProduct> products = idproductService.findIDProducts(name, code, currency);
-      return ResponseEntity.ok(products);
-    }
+    QueryResult<?> queryResult =
+        queryManager.executeQuery(new IDProductQuery(asPage, pageable, name, code, currency));
+    return ResponseEntity.ok(queryResult);
   }
 
   @GetMapping(path = "/{productId}")
-  public ResponseEntity<IDProduct> getIDProduct(@PathVariable("productId") Long productId) {
-    return idproductService
-        .findIDProduct(productId)
-        .map(ResponseEntity::ok)
-        .orElseGet(status(NOT_FOUND)::build);
+  public ResponseEntity<?> getIDProduct(@PathVariable("productId") Long productId) {
+    QueryResult<?> queryResult = queryManager.executeQuery(new IDProductByIdQuery(productId));
+    return ResponseEntity.ok(queryResult);
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -68,7 +68,7 @@ public class IDProductController {
     return status(ACCEPTED).build();
   }
 
-  @DeleteMapping(path = "/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @DeleteMapping(path = "/{productId}")
   public ResponseEntity<Void> deleteIDProduct(@PathVariable("productId") Long productId) {
     commandProcessor.executeUpdate(new DeleteIDProductCommand(productId));
     return status(ACCEPTED).build();

@@ -55,4 +55,9 @@ public class AccountServiceImpl implements AccountService {
     return shadowAccountService.findActiveAccounts(
         number, name, nostroAccountNumber, bank, branch, accountOpenDate, currency, product);
   }
+
+  @Override
+  public Account findById(Long id) {
+    return shadowAccountService.findById(id);
+  }
 }
