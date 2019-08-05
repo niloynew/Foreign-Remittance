@@ -27,8 +27,7 @@ public class ShadowAccountNumberProviderController {
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public ResponseEntity<String> getShadowAccount(
-      @PathVariable("productId") long productId) {
+  public ResponseEntity<String> getShadowAccount(@PathVariable("productId") long productId) {
 
     if (idProductService.isExists(productId)) {
       return ResponseEntity.ok(

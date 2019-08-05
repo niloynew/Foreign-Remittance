@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/messages", produces = MediaType.APPLICATION_JSON_VALUE)
 public class NostroReconcileController {
 
-  private final NostroReconcileService nostroReconcileServce;
+  private final NostroReconcileService nostroReconcileService;
   private final CommandProcessor commandProcessor;
 
   public NostroReconcileController(
-      NostroReconcileService nostroReconcileServce, CommandProcessor commandProcessor) {
-    this.nostroReconcileServce = nostroReconcileServce;
+      NostroReconcileService nostroReconcileService, CommandProcessor commandProcessor) {
+    this.nostroReconcileService = nostroReconcileService;
     this.commandProcessor = commandProcessor;
   }
 
@@ -54,14 +54,13 @@ public class NostroReconcileController {
 
     if (asPage) {
       PagedResult<NostroReconcileDto> pagedMessages =
-          (PagedResult<NostroReconcileDto>)
-              nostroReconcileServce.getMessages(
+              nostroReconcileService.getMessages(
                   pageable, id, accountNo, advBranch, selected, valueDate);
       return ResponseEntity.ok(pagedMessages);
     } else {
       List<NostroReconcileDto> messages =
           (List<NostroReconcileDto>)
-              nostroReconcileServce.getMessages(id, accountNo, advBranch, selected, valueDate);
+              nostroReconcileService.getMessages(id, accountNo, advBranch, selected, valueDate);
       return ResponseEntity.ok(messages);
     }
   }
