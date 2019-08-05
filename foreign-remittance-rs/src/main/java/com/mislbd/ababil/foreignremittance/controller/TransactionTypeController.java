@@ -30,6 +30,6 @@ public class TransactionTypeController {
       @RequestParam(name = "remittance-type") final RemittanceType remittanceType) {
     QueryResult<?> queryResult =
         queryManager.executeQuery(new TransactionTypeQuery(pageable, id, asPage, remittanceType));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 }

@@ -46,7 +46,7 @@ public class ExportLCController {
   public ResponseEntity<?> getLc(@PathVariable("id") long id) {
     QueryResult<?> queryResult = queryManager.executeQuery(new ExportCByIdQuery(id));
 
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

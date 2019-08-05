@@ -61,7 +61,7 @@ public class NostroReconcileController {
         queryManager.executeQuery(
             new NostroReconcileQuery(
                 pageable, asPage, id, advBranch, accountNo, selected, valueDate));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 
   @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -47,14 +47,14 @@ public class ChargeConfigurationController {
         queryManager.executeQuery(
             new ChargeConfigurationQuery(
                 pageable, chargeName, chargeAccountType, vatAccountType, status, asPage));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 
   @GetMapping(path = "/{id}")
   public ResponseEntity<?> getChargeById(@PathVariable("id") long id) {
 
     QueryResult<?> queryResult = queryManager.executeQuery(new ChargeConfigurationIdQuery(id));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
