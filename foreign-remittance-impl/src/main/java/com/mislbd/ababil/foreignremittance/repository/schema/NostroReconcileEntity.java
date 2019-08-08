@@ -61,6 +61,9 @@ public class NostroReconcileEntity extends BaseEntity {
   @Column(name = "MESSAGE_TYPE")
   private String messageType;
 
+  @Column(name = "ORDER_INSTITUTE")
+  private String orderInstitute;
+
   public long getId() {
     return id;
   }
@@ -211,6 +214,15 @@ public class NostroReconcileEntity extends BaseEntity {
 
   public NostroReconcileEntity setMessageType(String messageType) {
     this.messageType = messageType;
+    return this;
+  }
+
+  public String getOrderInstitute() {
+    return orderInstitute;
+  }
+
+  public NostroReconcileEntity setOrderInstitute(String orderInstitute) {
+    this.orderInstitute = orderInstitute;
     return this;
   }
 }

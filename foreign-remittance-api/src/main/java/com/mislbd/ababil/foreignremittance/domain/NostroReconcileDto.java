@@ -27,6 +27,7 @@ public class NostroReconcileDto {
   private String dcMark;
   private long id;
   private String messageType;
+  private String orderInstitute;
 
   public String getAccountNo() {
     return accountNo;
@@ -178,6 +179,15 @@ public class NostroReconcileDto {
 
   public NostroReconcileDto setMessageType(String messageType) {
     this.messageType = messageType;
+    return this;
+  }
+
+  public String getOrderInstitute() {
+    return orderInstitute;
+  }
+
+  public NostroReconcileDto setOrderInstitute(String orderInstitute) {
+    this.orderInstitute = orderInstitute;
     return this;
   }
 }
