@@ -43,7 +43,7 @@ public class ChargeMappingController {
         queryManager.executeQuery(
             new ChargeMappingQuery(
                 pageable, asPage, remittanceType, typeId, chargeId, chargeModifiable));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

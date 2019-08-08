@@ -30,6 +30,6 @@ public class PaymentPurposeController {
       @RequestParam(value = "description", required = false) final String description) {
     QueryResult<?> queryResult =
         queryManager.executeQuery(new PaymentPurposeQuery(asPage, pageable, id, code, description));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 }

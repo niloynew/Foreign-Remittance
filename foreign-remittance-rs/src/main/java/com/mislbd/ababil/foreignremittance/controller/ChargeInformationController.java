@@ -30,6 +30,6 @@ public class ChargeInformationController {
     QueryResult<?> queryResult =
         queryManager.executeQuery(
             new ChargeInformationQuery(remittanceType, typeId, accountNumber, amount));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 }

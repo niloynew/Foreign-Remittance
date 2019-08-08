@@ -39,13 +39,13 @@ public class IDProductController {
       @RequestParam(value = "currency", required = false) final String currency) {
     QueryResult<?> queryResult =
         queryManager.executeQuery(new IDProductQuery(asPage, pageable, name, code, currency));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 
   @GetMapping(path = "/{productId}")
   public ResponseEntity<?> getIDProduct(@PathVariable("productId") Long productId) {
     QueryResult<?> queryResult = queryManager.executeQuery(new IDProductByIdQuery(productId));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

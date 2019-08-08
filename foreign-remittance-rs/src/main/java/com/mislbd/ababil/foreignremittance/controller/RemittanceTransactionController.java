@@ -69,14 +69,14 @@ public class RemittanceTransactionController {
                 fromDate,
                 toDate));
 
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 
   @GetMapping(path = "/remittance-transaction/{transactionId}")
   public ResponseEntity<?> getTransaction(@PathVariable("transactionId") Long transactionId) {
     QueryResult<?> queryResult =
         queryManager.executeQuery(new RemittanceTransactionIdQuery(transactionId));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 
   @PostMapping(path = "/inward-remittance-transaction", consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -24,6 +24,6 @@ public class ShadowAccountNumberProviderController {
       @PathVariable("productId") long productId, @RequestParam(name = "branchId") long branchId) {
     QueryResult<?> queryResult =
         queryManager.executeQuery(new ShadowAccountNumberQuery(productId, branchId));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 }

@@ -28,6 +28,6 @@ public class CBFundSourceController {
       @RequestParam(name = "asPage") final boolean asPage) {
     QueryResult<?> queryResult =
         queryManager.executeQuery(new CBFundSourceQuery(pageable, id, asPage));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 }
