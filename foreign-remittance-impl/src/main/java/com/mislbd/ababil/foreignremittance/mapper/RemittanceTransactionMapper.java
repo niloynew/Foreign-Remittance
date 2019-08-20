@@ -125,29 +125,27 @@ public class RemittanceTransactionMapper {
     } else {
       narration = "Payment from A/C " + request.getCreditAccountNumber() + " : shadow account";
     }
-    IDTransactionRequest transactionRequest = new IDTransactionRequest();
-
-    transactionRequest
-        .setActivityId(activityId)
-        .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
-        .setAmountLcy(hoAmountLcy)
-        .setCurrencyCode(request.getCurrencyCode())
-        .setExchangeRate(request.getHoRate())
-        .setRateType(request.getHoRateTypeId())
-        .setDebitTransaction(isDebit)
-        .setBatchNo(request.getBatchNumber())
-        .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setEntryUser(auditInformation.getEntryUser())
-        .setEntryTerminal(auditInformation.getEntryTerminal())
-        .setEntryTime(auditInformation.getEntryDate())
-        .setVerifyUser(auditInformation.getVerifyUser())
-        .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration(narration)
-        .setApprovalFlowInstanceId(auditInformation.getProcessId())
-        .setInitiatorModule("ID")
-        .setInitiatorBranch(auditInformation.getUserBranch())
-        .setAccNumber(isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber());
-    return transactionRequest;
+    return IDTransactionRequest.builder()
+        .activityId(activityId)
+        .amountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
+        .amountLcy(hoAmountLcy)
+        .currencyCode(request.getCurrencyCode())
+        .exchangeRate(request.getHoRate())
+        .rateType(request.getHoRateTypeId())
+        .isDebitTransaction(isDebit)
+        .batchNo(request.getBatchNumber())
+        .globalTxnNo(request.getGlobalTransactionNo())
+        .entryUser(auditInformation.getEntryUser())
+        .entryTerminal(auditInformation.getEntryTerminal())
+        .entryTime(auditInformation.getEntryDate())
+        .verifyUser(auditInformation.getVerifyUser())
+        .verifyTerminal(auditInformation.getVerifyTerminal())
+        .narration(narration)
+        .approvalFlowInstanceId(auditInformation.getProcessId())
+        .initiatorModule("ID")
+        .initiatorBranch(auditInformation.getUserBranch())
+        .accNumber(isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber())
+        .build();
   }
 
   public GlTransactionRequest getNetPayableClientGL(
@@ -162,28 +160,27 @@ public class RemittanceTransactionMapper {
     } else {
       narration = "Disburse from A/C " + request.getDebitAccountNumber() + " for GL ";
     }
-    GlTransactionRequest glRequest = new GlTransactionRequest();
-    glRequest
-        .setActivityId(activityId)
-        .setAmountLcy(clientAmount == null ? BigDecimal.ZERO : clientAmount)
-        .setCurrencyCode(request.getCurrencyCode())
-        .setExchangeRate(request.getClientRate())
-        .setRateType(request.getExchangeRateType())
-        .setDebitTransaction(isDebit)
-        .setBatchNo(request.getBatchNumber())
-        .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setOwnerBranch(auditInformation.getUserBranch())
-        .setEntryUser(auditInformation.getEntryUser())
-        .setEntryTerminal(auditInformation.getEntryTerminal())
-        .setEntryTime(auditInformation.getEntryDate())
-        .setVerifyUser(auditInformation.getVerifyUser())
-        .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration(narration)
-        .setApprovalFlowInstanceId(auditInformation.getProcessId())
-        .setInitiatorModule("ID")
-        .setInitiatorBranch(auditInformation.getUserBranch())
-        .setGlCode(isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber());
-    return glRequest;
+    return GlTransactionRequest.builder()
+        .activityId(activityId)
+        .amountLcy(clientAmount == null ? BigDecimal.ZERO : clientAmount)
+        .currencyCode(request.getCurrencyCode())
+        .exchangeRate(request.getClientRate())
+        .rateType(request.getExchangeRateType())
+        .isDebitTransaction(isDebit)
+        .batchNo(request.getBatchNumber())
+        .globalTxnNo(request.getGlobalTransactionNo())
+        .ownerBranch(auditInformation.getUserBranch())
+        .entryUser(auditInformation.getEntryUser())
+        .entryTerminal(auditInformation.getEntryTerminal())
+        .entryTime(auditInformation.getEntryDate())
+        .verifyUser(auditInformation.getVerifyUser())
+        .verifyTerminal(auditInformation.getVerifyTerminal())
+        .narration(narration)
+        .approvalFlowInstanceId(auditInformation.getProcessId())
+        .initiatorModule("ID")
+        .initiatorBranch(auditInformation.getUserBranch())
+        .glCode(isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber())
+        .build();
   }
 
   public CasaTransactionRequest getNetPayableCASAClientForForFcy(
@@ -194,29 +191,28 @@ public class RemittanceTransactionMapper {
     } else {
       narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
     }
-    CasaTransactionRequest casaRequest = new CasaTransactionRequest();
-    casaRequest
-        .setInstrumentNo("V-")
-        .setActivityId(activityId)
-        .setAmountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
-        .setAmountLcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
-        .setCurrencyCode(request.getCurrencyCode())
-        .setExchangeRate(request.getClientRate())
-        .setRateType(request.getClientRateTypeId())
-        .setDebitTransaction(isDebit)
-        .setBatchNo(request.getBatchNumber())
-        .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setEntryUser(auditInformation.getEntryUser())
-        .setEntryTerminal(auditInformation.getEntryTerminal())
-        .setEntryTime(auditInformation.getEntryDate())
-        .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration(narration)
-        .setApprovalFlowInstanceId(auditInformation.getProcessId())
-        .setInitiatorBranch(auditInformation.getUserBranch())
-        .setInitiatorModule("ID")
-        .setVerifyUser(auditInformation.getVerifyUser())
-        .setAccNumber(isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber());
-    return casaRequest;
+    return CasaTransactionRequest.builder()
+        .instrumentNo("V-")
+        .activityId(activityId)
+        .amountCcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
+        .amountLcy(request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy())
+        .currencyCode(request.getCurrencyCode())
+        .exchangeRate(request.getClientRate())
+        .rateType(request.getClientRateTypeId())
+        .isDebitTransaction(isDebit)
+        .batchNo(request.getBatchNumber())
+        .globalTxnNo(request.getGlobalTransactionNo())
+        .entryUser(auditInformation.getEntryUser())
+        .entryTerminal(auditInformation.getEntryTerminal())
+        .entryTime(auditInformation.getEntryDate())
+        .verifyTerminal(auditInformation.getVerifyTerminal())
+        .narration(narration)
+        .approvalFlowInstanceId(auditInformation.getProcessId())
+        .initiatorBranch(auditInformation.getUserBranch())
+        .initiatorModule("ID")
+        .verifyUser(auditInformation.getVerifyUser())
+        .accNumber(isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber())
+        .build();
   }
 
   public CasaTransactionRequest getNetPayableCASAClientForForLcy(
@@ -231,30 +227,29 @@ public class RemittanceTransactionMapper {
     } else {
       narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
     }
-    CasaTransactionRequest casaRequest = new CasaTransactionRequest();
-    casaRequest
-        .setInstrumentNo("V-")
-        .setActivityId(activityId)
-        .setAmountCcy(clientAmount)
-        .setAmountLcy(clientAmount)
-        .setCurrencyCode(baseCurrency)
-        .setExchangeRate(BigDecimal.ONE)
-        .setRateType(1)
-        .setRateType(request.getClientRateTypeId())
-        .setDebitTransaction(isDebit)
-        .setBatchNo(request.getBatchNumber())
-        .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setEntryUser(auditInformation.getEntryUser())
-        .setEntryTerminal(auditInformation.getEntryTerminal())
-        .setEntryTime(auditInformation.getEntryDate())
-        .setVerifyUser(auditInformation.getVerifyUser())
-        .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration(narration)
-        .setApprovalFlowInstanceId(auditInformation.getProcessId())
-        .setInitiatorBranch(auditInformation.getUserBranch())
-        .setInitiatorModule("ID")
-        .setAccNumber(isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber());
-    return casaRequest;
+    return CasaTransactionRequest.builder()
+        .instrumentNo("V-")
+        .activityId(activityId)
+        .amountCcy(clientAmount)
+        .amountLcy(clientAmount)
+        .currencyCode(baseCurrency)
+        .exchangeRate(BigDecimal.ONE)
+        .rateType(1)
+        .rateType(request.getClientRateTypeId())
+        .isDebitTransaction(isDebit)
+        .batchNo(request.getBatchNumber())
+        .globalTxnNo(request.getGlobalTransactionNo())
+        .entryUser(auditInformation.getEntryUser())
+        .entryTerminal(auditInformation.getEntryTerminal())
+        .entryTime(auditInformation.getEntryDate())
+        .verifyUser(auditInformation.getVerifyUser())
+        .verifyTerminal(auditInformation.getVerifyTerminal())
+        .narration(narration)
+        .approvalFlowInstanceId(auditInformation.getProcessId())
+        .initiatorBranch(auditInformation.getUserBranch())
+        .initiatorModule("ID")
+        .accNumber(isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber())
+        .build();
   }
 
   public GlTransactionRequest getExchangeGainGL(
@@ -262,162 +257,155 @@ public class RemittanceTransactionMapper {
       String baseCurrency,
       String exchangeGainGLCode,
       AuditInformation auditInformation) {
-    GlTransactionRequest glRequest = new GlTransactionRequest();
-    glRequest
-        .setActivityId(activityId)
-        .setAmountCcy(
+    return GlTransactionRequest.builder()
+        .activityId(activityId)
+        .amountCcy(
             request.getExchangeGainLoss() == null ? BigDecimal.ZERO : request.getExchangeGainLoss())
-        .setAmountLcy(
+        .amountLcy(
             request.getExchangeGainLoss() == null ? BigDecimal.ZERO : request.getExchangeGainLoss())
-        .setCurrencyCode(baseCurrency)
-        .setExchangeRate(BigDecimal.ONE)
-        .setRateType(1)
-        .setDebitTransaction(false)
-        .setBatchNo(request.getBatchNumber())
-        .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setEntryUser(auditInformation.getEntryUser())
-        .setEntryTerminal(auditInformation.getEntryTerminal())
-        .setEntryTime(auditInformation.getEntryDate())
-        .setVerifyUser(auditInformation.getVerifyUser())
-        .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setOwnerBranch(auditInformation.getUserBranch())
-        .setNarration("Exchange gain")
-        .setApprovalFlowInstanceId(auditInformation.getProcessId())
-        .setInitiatorModule("ID")
-        .setInitiatorBranch(auditInformation.getUserBranch())
-        .setGlCode(exchangeGainGLCode);
-    return glRequest;
+        .currencyCode(baseCurrency)
+        .exchangeRate(BigDecimal.ONE)
+        .rateType(1)
+        .isDebitTransaction(false)
+        .batchNo(request.getBatchNumber())
+        .globalTxnNo(request.getGlobalTransactionNo())
+        .entryUser(auditInformation.getEntryUser())
+        .entryTerminal(auditInformation.getEntryTerminal())
+        .entryTime(auditInformation.getEntryDate())
+        .verifyUser(auditInformation.getVerifyUser())
+        .verifyTerminal(auditInformation.getVerifyTerminal())
+        .ownerBranch(auditInformation.getUserBranch())
+        .narration("Exchange gain")
+        .approvalFlowInstanceId(auditInformation.getProcessId())
+        .initiatorModule("ID")
+        .initiatorBranch(auditInformation.getUserBranch())
+        .glCode(exchangeGainGLCode)
+        .build();
   }
 
   public GlTransactionRequest getChargeableGLCredit(
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
       RemittanceChargeInformation charge) {
-    GlTransactionRequest glRequest = new GlTransactionRequest();
+
     if (charge.getChargeAmountAfterWaived() == null) {
       chargeAmount = charge.getChargeAmount();
     } else {
       chargeAmount = charge.getChargeAmountAfterWaived();
     }
-    glRequest
-        .setActivityId(activityId)
-        .setAmountCcy(chargeAmount)
-        .setAmountLcy(chargeAmount)
-        .setCurrencyCode(charge.getCurrency())
-        .setExchangeRate(charge.getExchangeRate())
-        .setRateType(1)
-        .setDebitTransaction(false)
-        .setOwnerBranch(auditInformation.getUserBranch())
-        .setBatchNo(request.getBatchNumber())
-        .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setEntryUser(auditInformation.getEntryUser())
-        .setEntryTerminal(auditInformation.getEntryTerminal())
-        .setEntryTime(auditInformation.getEntryDate())
-        .setVerifyUser(auditInformation.getVerifyUser())
-        .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration(charge.getChargeName() + " from A/C " + request.getChargeAccountNumber())
-        .setApprovalFlowInstanceId(auditInformation.getProcessId())
-        .setInitiatorModule("ID")
-        .setInitiatorBranch(auditInformation.getUserBranch())
-        .setGlCode(charge.getChargeAccountCode());
-    return glRequest;
+    return GlTransactionRequest.builder()
+        .activityId(activityId)
+        .amountCcy(chargeAmount)
+        .amountLcy(chargeAmount)
+        .currencyCode(charge.getCurrency())
+        .exchangeRate(charge.getExchangeRate())
+        .rateType(1)
+        .isDebitTransaction(false)
+        .ownerBranch(auditInformation.getUserBranch())
+        .batchNo(request.getBatchNumber())
+        .globalTxnNo(request.getGlobalTransactionNo())
+        .entryUser(auditInformation.getEntryUser())
+        .entryTerminal(auditInformation.getEntryTerminal())
+        .entryTime(auditInformation.getEntryDate())
+        .verifyUser(auditInformation.getVerifyUser())
+        .verifyTerminal(auditInformation.getVerifyTerminal())
+        .narration(charge.getChargeName() + " from A/C " + request.getChargeAccountNumber())
+        .approvalFlowInstanceId(auditInformation.getProcessId())
+        .initiatorModule("ID")
+        .initiatorBranch(auditInformation.getUserBranch())
+        .glCode(charge.getChargeAccountCode())
+        .build();
   }
 
   public SubGlTransactionRequest getChargeableSubGLCredit(
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
       RemittanceChargeInformation charge) {
-    SubGlTransactionRequest subGLRequest = new SubGlTransactionRequest();
+
     if (charge.getChargeAmountAfterWaived() == null) {
       chargeAmount = charge.getChargeAmount();
     } else {
       chargeAmount = charge.getChargeAmountAfterWaived();
     }
-    subGLRequest
-        .setActivityId(activityId)
-        .setAmountCcy(chargeAmount)
-        .setAmountLcy(chargeAmount)
-        .setCurrencyCode(charge.getCurrency())
-        .setExchangeRate(charge.getExchangeRate())
+    return SubGlTransactionRequest.builder()
+        .activityId(activityId)
+        .amountCcy(chargeAmount)
+        .amountLcy(chargeAmount)
+        .currencyCode(charge.getCurrency())
+        .exchangeRate(charge.getExchangeRate())
         //                .setRateType(charge.getR)
-        .setCurrencyCode(charge.getCurrency())
-        .setDebitTransaction(false)
-        .setBatchNo(request.getBatchNumber())
-        .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setEntryUser(auditInformation.getEntryUser())
-        .setEntryTerminal(auditInformation.getEntryTerminal())
-        .setEntryTime(auditInformation.getEntryDate())
-        .setVerifyUser(auditInformation.getVerifyUser())
-        .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration(charge.getChargeName() + " from A/C " + request.getChargeAccountNumber())
-        .setApprovalFlowInstanceId(auditInformation.getProcessId())
-        .setInitiatorBranch(auditInformation.getUserBranch())
-        .setInitiatorModule("ID")
-        .setAccNumber(charge.getChargeAccountCode());
-
-    return subGLRequest;
+        .currencyCode(charge.getCurrency())
+        .isDebitTransaction(false)
+        .batchNo(request.getBatchNumber())
+        .globalTxnNo(request.getGlobalTransactionNo())
+        .entryUser(auditInformation.getEntryUser())
+        .entryTerminal(auditInformation.getEntryTerminal())
+        .entryTime(auditInformation.getEntryDate())
+        .verifyUser(auditInformation.getVerifyUser())
+        .verifyTerminal(auditInformation.getVerifyTerminal())
+        .narration(charge.getChargeName() + " from A/C " + request.getChargeAccountNumber())
+        .approvalFlowInstanceId(auditInformation.getProcessId())
+        .initiatorBranch(auditInformation.getUserBranch())
+        .initiatorModule("ID")
+        .accNumber(charge.getChargeAccountCode())
+        .build();
   }
 
   public GlTransactionRequest getVATGLCredit(
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
       RemittanceChargeInformation charge) {
-    GlTransactionRequest glRequest = new GlTransactionRequest();
-
-    glRequest
-        .setActivityId(activityId)
-        .setAmountCcy(charge.getVatAmount())
-        .setAmountLcy(charge.getVatAmount())
-        .setCurrencyCode(charge.getCurrency())
-        .setExchangeRate(charge.getExchangeRate())
-        .setRateType(1)
-        .setCurrencyCode(charge.getCurrency())
-        .setDebitTransaction(false)
-        .setBatchNo(request.getBatchNumber())
-        .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setEntryUser(auditInformation.getEntryUser())
-        .setEntryTerminal(auditInformation.getEntryTerminal())
-        .setEntryTime(auditInformation.getEntryDate())
-        .setVerifyUser(auditInformation.getVerifyUser())
-        .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration("VAT on charge from A/C " + request.getChargeAccountNumber())
-        .setApprovalFlowInstanceId(auditInformation.getProcessId())
-        .setInitiatorBranch(auditInformation.getUserBranch())
-        .setOwnerBranch(auditInformation.getUserBranch())
-        .setInitiatorModule("ID")
-        .setGlCode(charge.getVatAccountCode());
-
-    return glRequest;
+    return GlTransactionRequest.builder()
+        .activityId(activityId)
+        .amountCcy(charge.getVatAmount())
+        .amountLcy(charge.getVatAmount())
+        .currencyCode(charge.getCurrency())
+        .exchangeRate(charge.getExchangeRate())
+        .rateType(1)
+        .currencyCode(charge.getCurrency())
+        .isDebitTransaction(false)
+        .batchNo(request.getBatchNumber())
+        .globalTxnNo(request.getGlobalTransactionNo())
+        .entryUser(auditInformation.getEntryUser())
+        .entryTerminal(auditInformation.getEntryTerminal())
+        .entryTime(auditInformation.getEntryDate())
+        .verifyUser(auditInformation.getVerifyUser())
+        .verifyTerminal(auditInformation.getVerifyTerminal())
+        .narration("VAT on charge from A/C " + request.getChargeAccountNumber())
+        .approvalFlowInstanceId(auditInformation.getProcessId())
+        .initiatorBranch(auditInformation.getUserBranch())
+        .ownerBranch(auditInformation.getUserBranch())
+        .initiatorModule("ID")
+        .glCode(charge.getVatAccountCode())
+        .build();
   }
 
   public SubGlTransactionRequest getVALSubGLCredit(
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
       RemittanceChargeInformation charge) {
-    SubGlTransactionRequest subGLRequest = new SubGlTransactionRequest();
-    subGLRequest
-        .setActivityId(activityId)
-        .setAmountCcy(charge.getVatAmount())
-        .setAmountLcy(charge.getVatAmount())
-        .setCurrencyCode(charge.getCurrency())
-        .setExchangeRate(charge.getExchangeRate())
+    return SubGlTransactionRequest.builder()
+        .activityId(activityId)
+        .amountCcy(charge.getVatAmount())
+        .amountLcy(charge.getVatAmount())
+        .currencyCode(charge.getCurrency())
+        .exchangeRate(charge.getExchangeRate())
         //                .setRateType()
-        .setCurrencyCode(charge.getCurrency())
-        .setDebitTransaction(false)
-        .setBatchNo(request.getBatchNumber())
-        .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setEntryUser(auditInformation.getEntryUser())
-        .setEntryTerminal(auditInformation.getEntryTerminal())
-        .setEntryTime(auditInformation.getEntryDate())
-        .setVerifyUser(auditInformation.getVerifyUser())
-        .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration("VAT on charge from A/C " + request.getChargeAccountNumber())
-        .setApprovalFlowInstanceId(auditInformation.getProcessId())
-        .setInitiatorBranch(auditInformation.getUserBranch())
-        .setInitiatorModule("ID")
-        .setAccNumber(charge.getVatAccountCode());
-
-    return subGLRequest;
+        .currencyCode(charge.getCurrency())
+        .isDebitTransaction(false)
+        .batchNo(request.getBatchNumber())
+        .globalTxnNo(request.getGlobalTransactionNo())
+        .entryUser(auditInformation.getEntryUser())
+        .entryTerminal(auditInformation.getEntryTerminal())
+        .entryTime(auditInformation.getEntryDate())
+        .verifyUser(auditInformation.getVerifyUser())
+        .verifyTerminal(auditInformation.getVerifyTerminal())
+        .narration("VAT on charge from A/C " + request.getChargeAccountNumber())
+        .approvalFlowInstanceId(auditInformation.getProcessId())
+        .initiatorBranch(auditInformation.getUserBranch())
+        .initiatorModule("ID")
+        .accNumber(charge.getVatAccountCode())
+        .build();
   }
 
   public CasaTransactionRequest getChargeableCASADebit(
@@ -425,29 +413,29 @@ public class RemittanceTransactionMapper {
       AuditInformation auditInformation,
       BigDecimal totalCharges,
       String baseCurrency) {
-    CasaTransactionRequest casaRequest = new CasaTransactionRequest();
-    casaRequest
-        .setInstrumentNo("V-")
-        .setActivityId(activityId)
-        .setAmountCcy(totalCharges)
-        .setAmountLcy(totalCharges)
-        .setCurrencyCode(baseCurrency)
-        .setExchangeRate(request.getExchangeRate())
-        .setRateType(request.getExchangeRateType())
-        .setDebitTransaction(true)
-        .setBatchNo(request.getBatchNumber())
-        .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setEntryUser(auditInformation.getEntryUser())
-        .setEntryTerminal(auditInformation.getEntryTerminal())
-        .setEntryTime(auditInformation.getEntryDate())
-        .setVerifyUser(auditInformation.getVerifyUser())
-        .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration("Charge deducted from A/C " + request.getChargeAccountNumber())
-        .setApprovalFlowInstanceId(auditInformation.getProcessId())
-        .setInitiatorBranch(auditInformation.getUserBranch())
-        .setInitiatorModule("ID")
-        .setAccNumber(request.getChargeAccountNumber());
-    return casaRequest;
+
+    return CasaTransactionRequest.builder()
+        .instrumentNo("V-")
+        .activityId(activityId)
+        .amountCcy(totalCharges)
+        .amountLcy(totalCharges)
+        .currencyCode(baseCurrency)
+        .exchangeRate(request.getExchangeRate())
+        .rateType(request.getExchangeRateType())
+        .isDebitTransaction(true)
+        .batchNo(request.getBatchNumber())
+        .globalTxnNo(request.getGlobalTransactionNo())
+        .entryUser(auditInformation.getEntryUser())
+        .entryTerminal(auditInformation.getEntryTerminal())
+        .entryTime(auditInformation.getEntryDate())
+        .verifyUser(auditInformation.getVerifyUser())
+        .verifyTerminal(auditInformation.getVerifyTerminal())
+        .narration("Charge deducted from A/C " + request.getChargeAccountNumber())
+        .approvalFlowInstanceId(auditInformation.getProcessId())
+        .initiatorBranch(auditInformation.getUserBranch())
+        .initiatorModule("ID")
+        .accNumber(request.getChargeAccountNumber())
+        .build();
   }
 
   public GlTransactionRequest getChargeableGLDebit(
@@ -455,28 +443,27 @@ public class RemittanceTransactionMapper {
       AuditInformation auditInformation,
       BigDecimal totalCharges,
       String baseCurrency) {
-    GlTransactionRequest glRequest = new GlTransactionRequest();
-    glRequest
-        .setActivityId(activityId)
-        .setAmountCcy(totalCharges)
-        .setAmountLcy(totalCharges)
-        .setExchangeRate(BigDecimal.ONE)
-        .setRateType(1)
-        .setCurrencyCode(baseCurrency)
-        .setDebitTransaction(true)
-        .setBatchNo(request.getBatchNumber())
-        .setGlobalTxnNo(request.getGlobalTransactionNo())
-        .setEntryUser(auditInformation.getEntryUser())
-        .setEntryTerminal(auditInformation.getEntryTerminal())
-        .setEntryTime(auditInformation.getEntryDate())
-        .setVerifyUser(auditInformation.getVerifyUser())
-        .setVerifyTerminal(auditInformation.getVerifyTerminal())
-        .setNarration("Charge deducted from A/C " + request.getChargeAccountNumber())
-        .setApprovalFlowInstanceId(auditInformation.getProcessId())
-        .setInitiatorBranch(auditInformation.getUserBranch())
-        .setOwnerBranch(auditInformation.getUserBranch())
-        .setInitiatorModule("ID")
-        .setGlCode(request.getChargeAccountNumber());
-    return glRequest;
+    return GlTransactionRequest.builder()
+        .activityId(activityId)
+        .amountCcy(totalCharges)
+        .amountLcy(totalCharges)
+        .exchangeRate(BigDecimal.ONE)
+        .rateType(1)
+        .currencyCode(baseCurrency)
+        .isDebitTransaction(true)
+        .batchNo(request.getBatchNumber())
+        .globalTxnNo(request.getGlobalTransactionNo())
+        .entryUser(auditInformation.getEntryUser())
+        .entryTerminal(auditInformation.getEntryTerminal())
+        .entryTime(auditInformation.getEntryDate())
+        .verifyUser(auditInformation.getVerifyUser())
+        .verifyTerminal(auditInformation.getVerifyTerminal())
+        .narration("Charge deducted from A/C " + request.getChargeAccountNumber())
+        .approvalFlowInstanceId(auditInformation.getProcessId())
+        .initiatorBranch(auditInformation.getUserBranch())
+        .ownerBranch(auditInformation.getUserBranch())
+        .initiatorModule("ID")
+        .glCode(request.getChargeAccountNumber())
+        .build();
   }
 }
