@@ -75,7 +75,7 @@ deploy_dev:
     - docker pull 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:latest
     - docker pull 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:latest
 
-    - docker service update --force --image 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:latest stage-ababil-service_foreign-remittance
+    - docker service update --force --image 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:latest stage-ababil-service_ababil-foreign-remittance
 
 deploy_qa:
   stage: deploy
@@ -90,7 +90,7 @@ deploy_qa:
     - docker pull 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
     - docker tag  172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:qa-latest
     - docker rmi  172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
-    - docker service update --force --image 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:qa-latest qa-ababil-service_foreign-remittance
+    - docker service update --force --image 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:qa-latest qa-ababil-service_ababil-foreign-remittance
 
     
 deploy_sbl:
@@ -106,4 +106,4 @@ deploy_sbl:
     - docker pull 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
     - docker tag  172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:sbl-latest
     - docker rmi  172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
-    - docker service update --force --image 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:sbl-latest sbl-ababil-service_foreign-remittance
+    - docker service update --force --image 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:sbl-latest sbl-ababil-service_ababil-foreign-remittance
