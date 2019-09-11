@@ -39,7 +39,7 @@ public class ExportLCController {
     QueryResult<?> queryResult =
         queryManager.executeQuery(
             new ExportCQuery(asPage, pageable, name, ownerName, address, country, cpName, cpEmail));
-    return ResponseEntity.ok(queryResult);
+    return ResponseEntity.ok(queryResult.getResult());
   }
 
   @GetMapping(path = "/{id}")
