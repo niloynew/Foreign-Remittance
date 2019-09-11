@@ -1,4 +1,5 @@
 variables:
+  DOCKER_FILE: "http://192.168.1.145:8080/artifactory/simple/libs-release-local/com/mislbd/java-dockerfile/0.1.2/java-dockerfile-0.1.2.txt"
   ARTIFACT_NAME: foreign-remittance
   ARTIFACT_BUILD_PATH: foreign-remittance-rs/build
 
@@ -27,6 +28,10 @@ build:
 build_image:
   stage: build_image
   when: on_success
+  before_script:
+    - wget -O Dockerfile $DOCKER_FILE
+    - echo "Dockerfile:-"
+    - echo "$(cat Dockerfile)"
   script:
     - 'export BUILD_NUMBER=$(echo "$CI_PIPELINE_IID + $CI_PIPELINE_IID_OFFSET" | bc)'
     - export ARTIFACT="${ARTIFACT_BUILD_PATH}/libs/$(cat gradle.properties | grep PROJECT_ARTIFACT | cut -d'=' -f2-)-$(cat gradle.properties | grep PROJECT_VERSION | cut -d'=' -f2-).jar"
@@ -68,7 +73,9 @@ deploy_dev:
   script:
     - 'export BUILD_NUMBER=$(echo "$CI_PIPELINE_IID + $CI_PIPELINE_IID_OFFSET" | bc)'
     - docker pull 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:latest
-    - bash  ~/.bin/ababil_dev_auto deploy_service
+    - docker pull 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:latest
+
+    - docker service update --force --image 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:latest stage-ababil-service_foreign-remittance
 
 deploy_qa:
   stage: deploy
@@ -83,7 +90,8 @@ deploy_qa:
     - docker pull 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
     - docker tag  172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:qa-latest
     - docker rmi  172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
-    - bash  ~/.bin/ababil_qa_auto deploy_service
+    - docker service update --force --image 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:qa-latest qa-ababil-service_foreign-remittance
+
     
 deploy_sbl:
   stage: deploy
@@ -98,4 +106,4 @@ deploy_sbl:
     - docker pull 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
     - docker tag  172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:sbl-latest
     - docker rmi  172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:${VERSION}-B$BUILD_NUMBER
-    - docker service update --force --image 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:sbl-latest sbl-ababil-service_ababil-remittance
+    - docker service update --force --image 172.16.190.13:5000/mislbd/${ARTIFACT_NAME}-service:sbl-latest sbl-ababil-service_foreign-remittance
