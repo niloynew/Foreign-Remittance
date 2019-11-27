@@ -34,7 +34,7 @@ configure(allprojects) { project ->
     }
 
     ext {
-        mislVersion = '0.0.65'
+        mislVersion = '0.0.82'
         ojdbcVersion = '12.2.0.1'
         googleJavaFormatVersion = '1.6'
     }
@@ -123,7 +123,7 @@ configure(subprojects) { project ->
                 "com.mislbd.asset:command-api",
                 "com.mislbd.asset:command-impl",
                 "com.mislbd.ababil:ababil-asset",
-                "com.mislbd.ababil:ababil-approvalflow-impl",
+                "com.mislbd.ababil:ababil-approvalflow-client",
                 "com.mislbd.ababil:ababil-contacts-api",
                 "com.mislbd.ababil:ababil-contacts-impl",
                 "com.mislbd.ababil:ababil-currency-api",
