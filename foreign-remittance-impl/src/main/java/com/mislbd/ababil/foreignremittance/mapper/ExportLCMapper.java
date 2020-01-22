@@ -85,7 +85,9 @@ public class ExportLCMapper {
             .setState(entity.getState())
             .setCountry(entity.getCountry())
             .setContactInformation(
-                contactInformationEntityToDomain().map(entity.getContactInformationEntity()))
+                entity.getContactInformationEntity() != null
+                    ? contactInformationEntityToDomain().map(entity.getContactInformationEntity())
+                    : null)
             .setCpName(entity.getCpName())
             .setCpEmail(entity.getCpEmail());
   }
