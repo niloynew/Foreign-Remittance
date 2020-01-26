@@ -3,8 +3,10 @@ package com.mislbd.ababil.foreignremittance.controller;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.ResponseEntity.status;
 
+import com.mislbd.ababil.foreignremittance.command.ProcessNostroReconcileCommand;
 import com.mislbd.ababil.foreignremittance.command.UpdateNostroReconcileCommand;
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDto;
+import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDtoList;
 import com.mislbd.ababil.foreignremittance.query.NostroReconcileQuery;
 import com.mislbd.ababil.foreignremittance.service.NostroReconcileService;
 import com.mislbd.asset.command.api.CommandProcessor;
@@ -69,5 +71,14 @@ public class NostroReconcileController {
       @PathVariable("id") Long id, @Valid @RequestBody NostroReconcileDto nostroReconcileDto) {
     commandProcessor.executeUpdate(new UpdateNostroReconcileCommand(id, nostroReconcileDto));
     return status(ACCEPTED).build();
+  }
+
+  @PutMapping(path = "/process", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Integer> processMultipleMessage(
+      @Valid @RequestBody NostroReconcileDtoList nostroReconcileDtoList) {
+    return ResponseEntity.ok((Integer)
+            commandProcessor
+                    .executeResult(new ProcessNostroReconcileCommand(nostroReconcileDtoList))
+                    .getContent());
   }
 }
