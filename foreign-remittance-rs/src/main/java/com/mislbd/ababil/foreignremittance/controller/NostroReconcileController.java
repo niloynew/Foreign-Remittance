@@ -76,9 +76,10 @@ public class NostroReconcileController {
   @PutMapping(path = "/process", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Integer> processMultipleMessage(
       @Valid @RequestBody NostroReconcileDtoList nostroReconcileDtoList) {
-    return ResponseEntity.ok((Integer)
+    return ResponseEntity.ok(
+        (Integer)
             commandProcessor
-                    .executeResult(new ProcessNostroReconcileCommand(nostroReconcileDtoList))
-                    .getContent());
+                .executeResult(new ProcessNostroReconcileCommand(nostroReconcileDtoList))
+                .getContent());
   }
 }
