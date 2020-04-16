@@ -116,6 +116,7 @@ configure(subprojects) { project ->
                 "org.springframework.boot:spring-boot-starter-actuator",
                 "org.springframework.cloud:spring-cloud-stream",
                 "org.springframework.cloud:spring-cloud-starter-stream-kafka",
+                "com.google.code.gson:gson",
         )
 
         implementation(
