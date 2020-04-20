@@ -22,7 +22,7 @@ public class KafkaConsumerConfig {
 
   @Bean
   public KafkaConsumer kafkaConsumer() {
-    return new KafkaConsumer();
+    return new KafkaConsumer(commandProcessor);
   }
 
   @Bean

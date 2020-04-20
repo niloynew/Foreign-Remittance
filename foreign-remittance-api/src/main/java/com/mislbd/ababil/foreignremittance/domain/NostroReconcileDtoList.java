@@ -9,6 +9,5 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 public class NostroReconcileDtoList {
-
   private List<NostroReconcileDto> nostroReconcileDtoList;
 }
