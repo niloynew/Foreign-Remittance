@@ -4,8 +4,7 @@ import com.google.gson.Gson;
 
 public class JsonConverter {
 
-  public static Object jsonDeserializer(Class clz, String data)
-      throws ClassNotFoundException {
+  public static Object jsonDeserializer(Class clz, String data) throws ClassNotFoundException {
     Gson gson = new Gson();
     return gson.fromJson(data, clz);
   }

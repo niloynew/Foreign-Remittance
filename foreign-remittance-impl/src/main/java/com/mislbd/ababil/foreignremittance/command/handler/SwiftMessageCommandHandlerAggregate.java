@@ -20,51 +20,52 @@ import org.springframework.transaction.annotation.Transactional;
 @Aggregate
 public class SwiftMessageCommandHandlerAggregate {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SwiftMessageCommandHandlerAggregate.class);
-    private final NostroReconcileRepository nostroReconcileRepository;
-    private final ModelMapper modelMapper;
-    private final Auditor auditor;
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(SwiftMessageCommandHandlerAggregate.class);
+  private final NostroReconcileRepository nostroReconcileRepository;
+  private final ModelMapper modelMapper;
+  private final Auditor auditor;
 
-    public SwiftMessageCommandHandlerAggregate(
-            NostroReconcileRepository nostroReconcileRepository,
-            ModelMapper modelMapper,
-            Auditor auditor) {
-        this.nostroReconcileRepository = nostroReconcileRepository;
-        this.modelMapper = modelMapper;
-        this.auditor = auditor;
-    }
+  public SwiftMessageCommandHandlerAggregate(
+      NostroReconcileRepository nostroReconcileRepository,
+      ModelMapper modelMapper,
+      Auditor auditor) {
+    this.nostroReconcileRepository = nostroReconcileRepository;
+    this.modelMapper = modelMapper;
+    this.auditor = auditor;
+  }
 
-    @CommandListener(
-            commandClasses = {UpdateNostroReconcileCommand.class, ProcessNostroReconcileCommand.class})
-    public void auditNostroReconcile(CommandEvent e) {
-        auditor.audit(e.getCommand().getPayload(), e.getCommand());
-    }
+  @CommandListener(
+      commandClasses = {UpdateNostroReconcileCommand.class, ProcessNostroReconcileCommand.class})
+  public void auditNostroReconcile(CommandEvent e) {
+    auditor.audit(e.getCommand().getPayload(), e.getCommand());
+  }
 
-    @Transactional
-    @CommandHandler
-    public CommandResponse<Void> updateMessage(UpdateNostroReconcileCommand command) {
-        nostroReconcileRepository.save(
-                modelMapper.map(command.getPayload(), NostroReconcileEntity.class));
-        return CommandResponse.asVoid();
-    }
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Void> updateMessage(UpdateNostroReconcileCommand command) {
+    nostroReconcileRepository.save(
+        modelMapper.map(command.getPayload(), NostroReconcileEntity.class));
+    return CommandResponse.asVoid();
+  }
 
-    @Transactional
-    @CommandHandler
-    public CommandResponse<Integer> processMessage(ProcessNostroReconcileCommand command) {
-        NostroReconcileDtoList dtoList = command.getPayload();
-        int success = 0;
-        if (dtoList.getNostroReconcileDtoList() != null
-                && !dtoList.getNostroReconcileDtoList().isEmpty()) {
-            for (NostroReconcileDto dto : dtoList.getNostroReconcileDtoList()) {
-                try {
-                    nostroReconcileRepository.save(modelMapper.map(dto, NostroReconcileEntity.class));
-                    success++;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            LOGGER.info(success + " nostro reconcile messages saved.");
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Integer> processMessage(ProcessNostroReconcileCommand command) {
+    NostroReconcileDtoList dtoList = command.getPayload();
+    int success = 0;
+    if (dtoList.getNostroReconcileDtoList() != null
+        && !dtoList.getNostroReconcileDtoList().isEmpty()) {
+      for (NostroReconcileDto dto : dtoList.getNostroReconcileDtoList()) {
+        try {
+          nostroReconcileRepository.save(modelMapper.map(dto, NostroReconcileEntity.class));
+          success++;
+        } catch (Exception e) {
+          e.printStackTrace();
         }
-        return CommandResponse.of(success);
+      }
+      LOGGER.info(success + " nostro reconcile messages saved.");
     }
+    return CommandResponse.of(success);
+  }
 }
