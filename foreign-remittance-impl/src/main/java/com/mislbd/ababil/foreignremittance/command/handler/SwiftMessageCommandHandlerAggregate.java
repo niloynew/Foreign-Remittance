@@ -52,18 +52,17 @@ public class SwiftMessageCommandHandlerAggregate {
   @Transactional
   @CommandHandler
   public CommandResponse<Integer> processMessage(ProcessNostroReconcileCommand command) {
-    NostroReconcileDtoList dtoList = command.getPayload();
+    NostroReconcileDto dto = command.getPayload();
     int success = 0;
-    if (dtoList.getNostroReconcileDtoList() != null
-        && !dtoList.getNostroReconcileDtoList().isEmpty()) {
-      for (NostroReconcileDto dto : dtoList.getNostroReconcileDtoList()) {
+    if (dto != null) {
+
         try {
           nostroReconcileRepository.save(modelMapper.map(dto, NostroReconcileEntity.class));
           success++;
         } catch (Exception e) {
           e.printStackTrace();
         }
-      }
+
       LOGGER.info(success + " nostro reconcile messages saved.");
     }
     return CommandResponse.of(success);

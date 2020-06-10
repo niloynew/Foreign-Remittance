@@ -1,8 +1,8 @@
 package com.mislbd.ababil.foreignremittance.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mislbd.ababil.foreignremittance.command.ProcessNostroReconcileCommand;
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDto;
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDtoList;
 import com.mislbd.asset.command.api.CommandProcessor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 @Service
 public class KafkaConsumer {
@@ -25,16 +28,36 @@ public class KafkaConsumer {
   public void receiveMessage(ConsumerRecord<String, Object> consumerRecord) {
     LOGGER.info("received message='{}'", consumerRecord.key() + consumerRecord.value().toString());
     try {
-      NostroReconcileDtoList reconcileDtoList =
-          (NostroReconcileDtoList)
-              JsonConverter.jsonDeserializer(
-                  NostroReconcileDtoList.class, consumerRecord.value().toString());
-      if (reconcileDtoList != null && !reconcileDtoList.getNostroReconcileDtoList().isEmpty()) {
-        commandProcessor.execute(new ProcessNostroReconcileCommand(reconcileDtoList));
+      ObjectMapper objectMapper = new ObjectMapper();
+      DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+      objectMapper.setDateFormat(df);
+
+
+      NostroReconcileDto reconcileDto =
+          objectMapper.convertValue(consumerRecord.value(), NostroReconcileDto.class);
+      if (reconcileDto != null) {
+        commandProcessor.execute(new ProcessNostroReconcileCommand(reconcileDto));
+      }
+    } catch (Exception e) {
+      LOGGER.warn(NostroReconcileDto.class.getName() + " not found.");
+      e.printStackTrace();
+    }
+
+    /*JSONParser parser = new JSONParser();
+      JSONObject json = (JSONObject) parser.parse(stringToParse);
+
+
+
+
+      NostroReconcileDto reconcileDto =
+          (NostroReconcileDto)
+              JsonConverter.jsonDeserializer(NostroReconcileDto.class, consumerRecord.value().toString());
+      if (reconcileDto != null) {
+        commandProcessor.execute(new ProcessNostroReconcileCommand(reconcileDto));
       }
     } catch (ClassNotFoundException e) {
       LOGGER.warn(NostroReconcileDto.class.getName() + " not found.");
       e.printStackTrace();
-    }
+    }*/
   }
 }

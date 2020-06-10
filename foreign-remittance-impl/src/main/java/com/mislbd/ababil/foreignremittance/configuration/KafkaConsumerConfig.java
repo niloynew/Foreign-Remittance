@@ -29,7 +29,7 @@ public class KafkaConsumerConfig {
   public ConsumerFactory<String, Object> consumerFactory() {
     final JsonDeserializer<Object> jsonDeserializer = new JsonDeserializer<>();
     jsonDeserializer.addTrustedPackages("*");
-    Map<String, Object> props = new HashMap<>(kafkaProperties.buildProducerProperties());
+    Map<String, Object> props = new HashMap<>(kafkaProperties.buildConsumerProperties());
     props.put(ConsumerConfig.GROUP_ID_CONFIG, "tpd-loggers");
     return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), jsonDeserializer);
   }
