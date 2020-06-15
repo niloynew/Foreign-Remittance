@@ -34,7 +34,7 @@ configure(allprojects) { project ->
     }
 
     ext {
-        mislVersion = '0.0.94'
+        mislVersion = '0.1.0'
         ojdbcVersion = '12.2.0.1'
         googleJavaFormatVersion = '1.6'
     }
@@ -165,6 +165,9 @@ configure(subprojects) { project ->
         testImplementation("org.springframework.boot:spring-boot-starter-test")
 
         testAnnotationProcessor("org.projectlombok:lombok")
+
+        compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4")
+
 
     }
 }
