@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NostroReconcileDto {
+public class NostroReconcileDtoBroker {
   private String accountNo;
   private String currency;
   private String refToAccount;

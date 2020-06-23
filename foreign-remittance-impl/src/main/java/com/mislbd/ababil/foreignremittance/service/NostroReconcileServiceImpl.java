@@ -1,6 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDto;
+import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDtoBroker;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroReconcileRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroReconcileEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.NostroReconcileSpecification;
@@ -28,7 +28,7 @@ public class NostroReconcileServiceImpl implements NostroReconcileService {
   }
 
   @Override
-  public PagedResult<NostroReconcileDto> getMessages(
+  public PagedResult<NostroReconcileDtoBroker> getMessages(
       Pageable pageable,
       Long id,
       String accountNo,
@@ -42,27 +42,27 @@ public class NostroReconcileServiceImpl implements NostroReconcileService {
             NostroReconcileSpecification.searchSpecification(
                 id, accountNo, advBranch, selected, valueDate),
             pageable),
-        NostroReconcileDto.class);
+        NostroReconcileDtoBroker.class);
   }
 
   @Override
-  public List<NostroReconcileDto> getMessages(
+  public List<NostroReconcileDtoBroker> getMessages(
       Long id, String accountNo, String advBranch, boolean selected, LocalDate valueDate) {
     return ListResultBuilderFR.build(
         nostroReconcileRepository.findAll(
             NostroReconcileSpecification.searchSpecification(
                 id, accountNo, advBranch, selected, valueDate)),
-        NostroReconcileDto.class);
+        NostroReconcileDtoBroker.class);
   }
 
   @Override
-  public Optional<NostroReconcileDto> getMessageById(long id) {
+  public Optional<NostroReconcileDtoBroker> getMessageById(long id) {
     return Optional.empty();
   }
 
   @Override
   @Transactional
-  public void save(NostroReconcileDto dto) {
+  public void save(NostroReconcileDtoBroker dto) {
     nostroReconcileRepository.save(modelMapper.map(dto, NostroReconcileEntity.class));
   }
 }
