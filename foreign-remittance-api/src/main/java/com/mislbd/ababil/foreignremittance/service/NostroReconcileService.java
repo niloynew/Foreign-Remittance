@@ -1,6 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDto;
+import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDtoBroker;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.time.LocalDate;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface NostroReconcileService {
 
-  PagedResult<NostroReconcileDto> getMessages(
+  PagedResult<NostroReconcileDtoBroker> getMessages(
       Pageable pageable,
       Long id,
       String accountNo,
@@ -20,7 +20,7 @@ public interface NostroReconcileService {
   List getMessages(
       Long id, String accountNo, String advBranch, boolean selected, LocalDate valueDate);
 
-  Optional<NostroReconcileDto> getMessageById(long id);
+  Optional<NostroReconcileDtoBroker> getMessageById(long id);
 
-  void save(NostroReconcileDto dto);
+  void save(NostroReconcileDtoBroker dto);
 }
