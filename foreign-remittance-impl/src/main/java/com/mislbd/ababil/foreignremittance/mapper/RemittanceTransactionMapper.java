@@ -121,9 +121,9 @@ public class RemittanceTransactionMapper {
       AuditInformation auditInformation) {
     String narration;
     if (isDebit) {
-      narration = "Disburse from A/C " + request.getDebitAccountNumber() + " : shadow account";
+      narration = "Disburse from";
     } else {
-      narration = "Payment from A/C " + request.getCreditAccountNumber() + " : shadow account";
+      narration = "Payment from";
     }
     IDTransactionRequest transactionRequest = new IDTransactionRequest();
 
@@ -159,9 +159,9 @@ public class RemittanceTransactionMapper {
       AuditInformation auditInformation) {
     String narration;
     if (isDebit) {
-      narration = "Payment from A/C " + request.getCreditAccountNumber() + " for GL ";
+      narration = "Payment from";
     } else {
-      narration = "Disburse from A/C " + request.getDebitAccountNumber() + " for GL ";
+      narration = "Disburse from";
     }
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest.setActivityId(activityId);
@@ -191,9 +191,9 @@ public class RemittanceTransactionMapper {
       RemittanceTransactionEntity request, boolean isDebit, AuditInformation auditInformation) {
     String narration;
     if (isDebit) {
-      narration = "Payment from A/C " + request.getCreditAccountNumber() + " for CASA ";
+      narration = "Payment from";
     } else {
-      narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
+      narration = "Disburse from";
     }
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest.setInstrumentNo("V-");
@@ -230,9 +230,9 @@ public class RemittanceTransactionMapper {
       AuditInformation auditInformation) {
     String narration;
     if (isDebit) {
-      narration = "Payment from A/C " + request.getCreditAccountNumber() + " for CASA ";
+      narration = "Payment from";
     } else {
-      narration = "Disburse from A/C " + request.getCreditAccountNumber() + " for CASA ";
+      narration = "Disburse from";
     }
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest.setInstrumentNo("V-");
@@ -442,7 +442,7 @@ public class RemittanceTransactionMapper {
     casaRequest.setEntryTime(auditInformation.getEntryDate());
     casaRequest.setVerifyUser(auditInformation.getVerifyUser());
     casaRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
-    casaRequest.setNarration("Charge deducted from A/C " + request.getChargeAccountNumber());
+    casaRequest.setNarration("Charge deducted from");
     casaRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     casaRequest.setInitiatorBranch(auditInformation.getUserBranch());
     casaRequest.setInitiatorModule("ID");
@@ -470,7 +470,7 @@ public class RemittanceTransactionMapper {
     glRequest.setEntryTime(auditInformation.getEntryDate());
     glRequest.setVerifyUser(auditInformation.getVerifyUser());
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
-    glRequest.setNarration("Charge deducted from A/C " + request.getChargeAccountNumber());
+    glRequest.setNarration("Charge deducted from");
     glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     glRequest.setInitiatorBranch(auditInformation.getUserBranch());
     glRequest.setOwnerBranch(auditInformation.getUserBranch());
