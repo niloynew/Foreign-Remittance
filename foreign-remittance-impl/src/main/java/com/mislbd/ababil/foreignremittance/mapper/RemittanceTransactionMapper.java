@@ -15,6 +15,7 @@ import com.mislbd.asset.commons.data.domain.ResultMapper;
 import java.math.BigDecimal;
 import org.springframework.stereotype.Component;
 
+@SuppressWarnings("Duplicates")
 @Component
 public class RemittanceTransactionMapper {
 
@@ -304,7 +305,7 @@ public class RemittanceTransactionMapper {
     glRequest.setAmountCcy(chargeAmount);
     glRequest.setAmountLcy(chargeAmount);
     glRequest.setCurrencyCode(charge.getCurrency());
-    glRequest.setExchangeRate(charge.getExchangeRate());
+    glRequest.setExchangeRate(BigDecimal.ONE);
     glRequest.setRateType(1);
     glRequest.setDebitTransaction(false);
     glRequest.setOwnerBranch(auditInformation.getUserBranch());
@@ -338,8 +339,8 @@ public class RemittanceTransactionMapper {
     subGLRequest.setAmountCcy(chargeAmount);
     subGLRequest.setAmountLcy(chargeAmount);
     subGLRequest.setCurrencyCode(charge.getCurrency());
-    subGLRequest.setExchangeRate(charge.getExchangeRate());
-    //                .setRateType(charge.getR)
+    subGLRequest.setExchangeRate(BigDecimal.ONE);
+    subGLRequest.setRateType(1);
     subGLRequest.setCurrencyCode(charge.getCurrency());
     subGLRequest.setDebitTransaction(false);
     subGLRequest.setBatchNo(request.getBatchNumber());
@@ -431,8 +432,8 @@ public class RemittanceTransactionMapper {
     casaRequest.setAmountCcy(totalCharges);
     casaRequest.setAmountLcy(totalCharges);
     casaRequest.setCurrencyCode(baseCurrency);
-    casaRequest.setExchangeRate(request.getExchangeRate());
-    casaRequest.setRateType(request.getExchangeRateType());
+    casaRequest.setExchangeRate(BigDecimal.ONE);
+    casaRequest.setRateType(1);
     casaRequest.setDebitTransaction(true);
     casaRequest.setBatchNo(request.getBatchNumber());
     casaRequest.setGlobalTxnNo(request.getGlobalTransactionNo());
