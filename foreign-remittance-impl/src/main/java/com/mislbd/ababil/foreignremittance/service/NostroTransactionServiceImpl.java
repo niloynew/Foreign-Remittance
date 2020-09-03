@@ -1,12 +1,12 @@
 package com.mislbd.ababil.foreignremittance.service;
 
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDtoBroker;
-import com.mislbd.ababil.foreignremittance.repository.jpa.NostroReconcileRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.NostroReconcileEntity;
+import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.NostroReconcileSpecification;
 import com.mislbd.ababil.foreignremittance.utils.ListResultBuilderFR;
 import com.mislbd.ababil.foreignremittance.utils.PagedResultBuilderFR;
 import com.mislbd.asset.commons.data.domain.PagedResult;
+import com.mislbd.swift.broker.model.raw.NostroTransaction;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -16,19 +16,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class NostroReconcileServiceImpl implements NostroReconcileService {
+public class NostroTransactionServiceImpl implements NostroTransactionService {
 
-  private final NostroReconcileRepository nostroReconcileRepository;
+  private final NostroTransactionRepository nostroTransactionRepository;
   private final ModelMapper modelMapper;
 
-  public NostroReconcileServiceImpl(
-      NostroReconcileRepository nostroReconcileRepository, ModelMapper modelMapper) {
-    this.nostroReconcileRepository = nostroReconcileRepository;
+  public NostroTransactionServiceImpl(
+      NostroTransactionRepository nostroTransactionRepository, ModelMapper modelMapper) {
+    this.nostroTransactionRepository = nostroTransactionRepository;
     this.modelMapper = modelMapper;
   }
 
   @Override
-  public PagedResult<NostroReconcileDtoBroker> getMessages(
+  public PagedResult<NostroTransaction> getMessages(
       Pageable pageable,
       Long id,
       String accountNo,
@@ -36,33 +36,33 @@ public class NostroReconcileServiceImpl implements NostroReconcileService {
       boolean selected,
       LocalDate valueDate) {
 
-    // Page<NostroReconcileEntity> messages =
+    // Page<NostroTransactionEntity> messages =
     return PagedResultBuilderFR.build(
-        nostroReconcileRepository.findAll(
+        nostroTransactionRepository.findAll(
             NostroReconcileSpecification.searchSpecification(
                 id, accountNo, advBranch, selected, valueDate),
             pageable),
-        NostroReconcileDtoBroker.class);
+        NostroTransaction.class);
   }
 
   @Override
-  public List<NostroReconcileDtoBroker> getMessages(
+  public List<NostroTransaction> getMessages(
       Long id, String accountNo, String advBranch, boolean selected, LocalDate valueDate) {
     return ListResultBuilderFR.build(
-        nostroReconcileRepository.findAll(
+        nostroTransactionRepository.findAll(
             NostroReconcileSpecification.searchSpecification(
                 id, accountNo, advBranch, selected, valueDate)),
-        NostroReconcileDtoBroker.class);
+        NostroTransaction.class);
   }
 
   @Override
-  public Optional<NostroReconcileDtoBroker> getMessageById(long id) {
+  public Optional<NostroTransaction> getMessageById(long id) {
     return Optional.empty();
   }
 
   @Override
   @Transactional
-  public void save(NostroReconcileDtoBroker dto) {
-    nostroReconcileRepository.save(modelMapper.map(dto, NostroReconcileEntity.class));
+  public void save(NostroTransaction dto) {
+    nostroTransactionRepository.save(modelMapper.map(dto, NostroTransactionEntity.class));
   }
 }

@@ -6,8 +6,8 @@ import java.time.LocalDate;
 import javax.persistence.*;
 
 @Entity
-@Table(name = SchemaConstant.NOSTRO_RECONCILE)
-public class NostroReconcileEntity extends BaseEntity {
+@Table(name = SchemaConstant.NOSTRO_TRANSACTION)
+public class NostroTransactionEntity extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,16 +35,16 @@ public class NostroReconcileEntity extends BaseEntity {
   private String advBranch;
 
   @Column(name = "BENEF_CUSTOMER")
-  private String benefCustomer;
+  private String beneficiaryCustomer;
 
   @Column(name = "BENEF_INSTITUTE")
-  private String benefInstitute;
+  private String beneficiaryInstitute;
 
   @Column(name = "BENE_NAME_AND_ADDRESS")
-  private String beneNameAndAddress;
+  private String beneficiaryNameAndAddress;
 
   @Column(name = "SUPP_DETAILS")
-  private String suppDetails;
+  private String supplementaryDetails;
 
   @Column(name = "VALUE_DATE")
   private LocalDate valueDate;
@@ -64,165 +64,159 @@ public class NostroReconcileEntity extends BaseEntity {
   @Column(name = "ORDER_INSTITUTE")
   private String orderInstitute;
 
+  @Lob
+  @Column(name = "MSG")
+  private String messageText;
+
   public long getId() {
     return id;
   }
 
-  public NostroReconcileEntity setId(long id) {
+  public void setId(long id) {
     this.id = id;
-    return this;
   }
 
   public String getAccountNo() {
     return accountNo;
   }
 
-  public NostroReconcileEntity setAccountNo(String accountNo) {
+  public void setAccountNo(String accountNo) {
     this.accountNo = accountNo;
-    return this;
   }
 
   public String getCurrency() {
     return currency;
   }
 
-  public NostroReconcileEntity setCurrency(String currency) {
+  public void setCurrency(String currency) {
     this.currency = currency;
-    return this;
   }
 
   public String getRefToAccount() {
     return refToAccount;
   }
 
-  public NostroReconcileEntity setRefToAccount(String refToAccount) {
+  public void setRefToAccount(String refToAccount) {
     this.refToAccount = refToAccount;
-    return this;
   }
 
   public String getRefOfServicingAccount() {
     return refOfServicingAccount;
   }
 
-  public NostroReconcileEntity setRefOfServicingAccount(String refOfServicingAccount) {
+  public void setRefOfServicingAccount(String refOfServicingAccount) {
     this.refOfServicingAccount = refOfServicingAccount;
-    return this;
   }
 
   public String getTxnType() {
     return txnType;
   }
 
-  public NostroReconcileEntity setTxnType(String txnType) {
+  public void setTxnType(String txnType) {
     this.txnType = txnType;
-    return this;
   }
 
   public BigDecimal getAmount() {
     return amount;
   }
 
-  public NostroReconcileEntity setAmount(BigDecimal amount) {
+  public void setAmount(BigDecimal amount) {
     this.amount = amount;
-    return this;
   }
 
   public String getAdvBranch() {
     return advBranch;
   }
 
-  public NostroReconcileEntity setAdvBranch(String advBranch) {
+  public void setAdvBranch(String advBranch) {
     this.advBranch = advBranch;
-    return this;
   }
 
-  public String getBenefCustomer() {
-    return benefCustomer;
+  public String getBeneficiaryCustomer() {
+    return beneficiaryCustomer;
   }
 
-  public NostroReconcileEntity setBenefCustomer(String benefCustomer) {
-    this.benefCustomer = benefCustomer;
-    return this;
+  public void setBeneficiaryCustomer(String beneficiaryCustomer) {
+    this.beneficiaryCustomer = beneficiaryCustomer;
   }
 
-  public String getBenefInstitute() {
-    return benefInstitute;
+  public String getBeneficiaryInstitute() {
+    return beneficiaryInstitute;
   }
 
-  public NostroReconcileEntity setBenefInstitute(String benefInstitute) {
-    this.benefInstitute = benefInstitute;
-    return this;
+  public void setBeneficiaryInstitute(String beneficiaryInstitute) {
+    this.beneficiaryInstitute = beneficiaryInstitute;
   }
 
-  public String getBeneNameAndAddress() {
-    return beneNameAndAddress;
+  public String getBeneficiaryNameAndAddress() {
+    return beneficiaryNameAndAddress;
   }
 
-  public NostroReconcileEntity setBeneNameAndAddress(String beneNameAndAddress) {
-    this.beneNameAndAddress = beneNameAndAddress;
-    return this;
+  public void setBeneficiaryNameAndAddress(String beneficiaryNameAndAddress) {
+    this.beneficiaryNameAndAddress = beneficiaryNameAndAddress;
   }
 
-  public String getSuppDetails() {
-    return suppDetails;
+  public String getSupplementaryDetails() {
+    return supplementaryDetails;
   }
 
-  public NostroReconcileEntity setSuppDetails(String suppDetails) {
-    this.suppDetails = suppDetails;
-    return this;
+  public void setSupplementaryDetails(String supplementaryDetails) {
+    this.supplementaryDetails = supplementaryDetails;
   }
 
   public LocalDate getValueDate() {
     return valueDate;
   }
 
-  public NostroReconcileEntity setValueDate(LocalDate valueDate) {
+  public void setValueDate(LocalDate valueDate) {
     this.valueDate = valueDate;
-    return this;
   }
 
   public String getRemark() {
     return remark;
   }
 
-  public NostroReconcileEntity setRemark(String remark) {
+  public void setRemark(String remark) {
     this.remark = remark;
-    return this;
   }
 
   public boolean isSelected() {
     return selected;
   }
 
-  public NostroReconcileEntity setSelected(boolean selected) {
+  public void setSelected(boolean selected) {
     this.selected = selected;
-    return this;
   }
 
   public String getDcMark() {
     return dcMark;
   }
 
-  public NostroReconcileEntity setDcMark(String dcMark) {
+  public void setDcMark(String dcMark) {
     this.dcMark = dcMark;
-    return this;
   }
 
   public String getMessageType() {
     return messageType;
   }
 
-  public NostroReconcileEntity setMessageType(String messageType) {
+  public void setMessageType(String messageType) {
     this.messageType = messageType;
-    return this;
   }
 
   public String getOrderInstitute() {
     return orderInstitute;
   }
 
-  public NostroReconcileEntity setOrderInstitute(String orderInstitute) {
+  public void setOrderInstitute(String orderInstitute) {
     this.orderInstitute = orderInstitute;
-    return this;
+  }
+
+  public String getMessageText() {
+    return messageText;
+  }
+
+  public void setMessageText(String messageText) {
+    this.messageText = messageText;
   }
 }

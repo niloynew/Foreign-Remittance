@@ -1,10 +1,9 @@
 package com.mislbd.ababil.foreignremittance.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mislbd.ababil.foreignremittance.command.ProcessNostroReconcileCommand;
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDtoBroker;
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDtoBrokerList;
+import com.mislbd.ababil.foreignremittance.command.ProcessNostroTransactionCommand;
 import com.mislbd.asset.command.api.CommandProcessor;
+import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,23 +19,17 @@ public class KafkaConsumer {
   @Autowired private CommandProcessor commandProcessor;
   @Autowired private ObjectMapper objectMapper;
 
-  @KafkaListener(
-      topics = "swift-nostro-msg",
-      clientIdPrefix = "json",
-      containerFactory = "kafkaListenerContainerFactory")
+  @KafkaListener(topics = "swift-nostro-txn")
   public void receiveMessage(ConsumerRecord<String, Object> consumerRecord) {
-    LOGGER.info("received message='{}'", consumerRecord.key() + consumerRecord.value().toString());
+    LOGGER.info("received message='{}'", consumerRecord.key());
     try {
-
-      NostroReconcileDtoBrokerList reconcileDtoList =
-          objectMapper.convertValue(consumerRecord.value(), NostroReconcileDtoBrokerList.class);
-      if (reconcileDtoList != null
-          && !reconcileDtoList.getNostroReconcileDtoBrokerList().isEmpty()) {
-
-        commandProcessor.execute(new ProcessNostroReconcileCommand(reconcileDtoList));
+      NostroAccountTransactionsDto dtoResponse =
+          objectMapper.convertValue(consumerRecord.value(), NostroAccountTransactionsDto.class);
+      if (dtoResponse != null && !dtoResponse.getNostroAccountTransactionList().isEmpty()) {
+        commandProcessor.execute(new ProcessNostroTransactionCommand(dtoResponse));
       }
     } catch (Exception e) {
-      LOGGER.warn(NostroReconcileDtoBroker.class.getName() + " not found.");
+      LOGGER.warn(NostroAccountTransactionsDto.class.getName() + " not found.");
       e.printStackTrace();
     }
   }
