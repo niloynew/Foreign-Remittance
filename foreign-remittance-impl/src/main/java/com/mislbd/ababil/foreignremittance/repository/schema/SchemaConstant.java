@@ -35,7 +35,7 @@ public class SchemaConstant {
   public static final String BANK_TYPE_TABLE_NAME = "ID_BANK_TYPE";
   public static final String BANK_TYPE_SEQUENCE_NAME = "S_ID_BANK_TYPE";
   public static final String NOSTRO_TXN_RECORD_SEQUENCE_NAME = "S_ID_PRODUCT";
-  public static final String NOSTRO_RECONCILE = "ID_NOSTRO_TXN_RECORD";
+  public static final String NOSTRO_TRANSACTION = "ID_NOSTRO_TXN_RECORD";
   public static final String NOSTRO_TRANSACTION_RECORD = "NOSTRO_TRANSACTION_RECORD";
   public static final String SHADOW_TRANSACTION_RECORD = "ID_SHADOW_TXN";
 }

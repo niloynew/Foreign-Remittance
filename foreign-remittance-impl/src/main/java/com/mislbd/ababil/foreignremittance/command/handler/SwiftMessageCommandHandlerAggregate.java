@@ -3,17 +3,19 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.foreignremittance.command.CreatePublishSingleCustomerCreditTransferMessageCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateValidateSingleCustomerCreditTransferMessageCommand;
-import com.mislbd.ababil.foreignremittance.command.ProcessNostroReconcileCommand;
-import com.mislbd.ababil.foreignremittance.command.UpdateNostroReconcileCommand;
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDtoBroker;
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDtoBrokerList;
-import com.mislbd.ababil.foreignremittance.repository.jpa.NostroReconcileRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.NostroReconcileEntity;
+import com.mislbd.ababil.foreignremittance.command.ProcessNostroTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.UpdateNostroTransactionCommand;
+import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionEntity;
 import com.mislbd.asset.command.api.CommandEvent;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
+import com.mislbd.swift.broker.service.SwiftMTMessageService;
+import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
+import com.mislbd.swift.broker.model.raw.NostroTransaction;
+import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -25,47 +27,51 @@ public class SwiftMessageCommandHandlerAggregate {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(SwiftMessageCommandHandlerAggregate.class);
-  private final NostroReconcileRepository nostroReconcileRepository;
+  private final NostroTransactionRepository nostroTransactionRepository;
   private final ModelMapper modelMapper;
   private final Auditor auditor;
   private final SwiftMTMessageService swiftMTMessageService;
   private String serviceURL = "192.168.1.104:8087/swift-service";
 
   public SwiftMessageCommandHandlerAggregate(
-      NostroReconcileRepository nostroReconcileRepository,
+      NostroTransactionRepository nostroTransactionRepository,
       ModelMapper modelMapper,
       Auditor auditor,
       SwiftMTMessageService swiftMTMessageService) {
-    this.nostroReconcileRepository = nostroReconcileRepository;
+
+    this.nostroTransactionRepository = nostroTransactionRepository;
     this.modelMapper = modelMapper;
     this.auditor = auditor;
     this.swiftMTMessageService = swiftMTMessageService;
   }
 
   @CommandListener(
-      commandClasses = {UpdateNostroReconcileCommand.class, ProcessNostroReconcileCommand.class})
+      commandClasses = {
+        UpdateNostroTransactionCommand.class,
+        ProcessNostroTransactionCommand.class
+      })
   public void auditNostroReconcile(CommandEvent e) {
     auditor.audit(e.getCommand().getPayload(), e.getCommand());
   }
 
   @Transactional
   @CommandHandler
-  public CommandResponse<Void> updateMessage(UpdateNostroReconcileCommand command) {
-    nostroReconcileRepository.save(
-        modelMapper.map(command.getPayload(), NostroReconcileEntity.class));
+  public CommandResponse<Void> updateMessage(UpdateNostroTransactionCommand command) {
+    nostroTransactionRepository.save(
+        modelMapper.map(command.getPayload(), NostroTransactionEntity.class));
     return CommandResponse.asVoid();
   }
 
   @Transactional
   @CommandHandler
-  public CommandResponse<Integer> processMessage(ProcessNostroReconcileCommand command) {
-    NostroReconcileDtoBrokerList dtoList = command.getPayload();
+  public CommandResponse<Integer> processMessage(ProcessNostroTransactionCommand command) {
+    NostroAccountTransactionsDto dtoList = command.getPayload();
     int success = 0;
-    if (dtoList.getNostroReconcileDtoBrokerList() != null
-        && !dtoList.getNostroReconcileDtoBrokerList().isEmpty()) {
-      for (NostroReconcileDtoBroker dto : dtoList.getNostroReconcileDtoBrokerList()) {
+    if (dtoList.getNostroAccountTransactionList() != null
+        && !dtoList.getNostroAccountTransactionList().isEmpty()) {
+      for (NostroTransaction dto : dtoList.getNostroAccountTransactionList()) {
         try {
-          nostroReconcileRepository.save(modelMapper.map(dto, NostroReconcileEntity.class));
+          nostroTransactionRepository.save(modelMapper.map(dto, NostroTransactionEntity.class));
           success++;
         } catch (Exception e) {
           e.printStackTrace();

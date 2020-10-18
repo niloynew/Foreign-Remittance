@@ -3,14 +3,14 @@ package com.mislbd.ababil.foreignremittance.controller;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.ResponseEntity.status;
 
-import com.mislbd.ababil.foreignremittance.command.ProcessNostroReconcileCommand;
-import com.mislbd.ababil.foreignremittance.command.UpdateNostroReconcileCommand;
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDtoBroker;
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileDtoBrokerList;
+import com.mislbd.ababil.foreignremittance.command.ProcessNostroTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.UpdateNostroTransactionCommand;
 import com.mislbd.ababil.foreignremittance.query.NostroReconcileQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
+import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
+import com.mislbd.swift.broker.model.raw.NostroTransaction;
 import java.time.LocalDate;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -49,19 +49,18 @@ public class NostroReconcileController {
 
   @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Void> updateMessage(
-      @PathVariable("id") Long id,
-      @Valid @RequestBody NostroReconcileDtoBroker nostroReconcileDto) {
-    commandProcessor.executeUpdate(new UpdateNostroReconcileCommand(id, nostroReconcileDto));
+      @PathVariable("id") Long id, @Valid @RequestBody NostroTransaction nostroTransaction) {
+    commandProcessor.executeUpdate(new UpdateNostroTransactionCommand(id, nostroTransaction));
     return status(ACCEPTED).build();
   }
 
   @PutMapping(path = "/process", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Integer> processMultipleMessage(
-      @Valid @RequestBody NostroReconcileDtoBrokerList nostroReconcileDtoList) {
+      @Valid @RequestBody NostroAccountTransactionsDto nostroReconcileDtoList) {
     return ResponseEntity.ok(
         (Integer)
             commandProcessor
-                .executeResult(new ProcessNostroReconcileCommand(nostroReconcileDtoList))
+                .executeResult(new ProcessNostroTransactionCommand(nostroReconcileDtoList))
                 .getContent());
   }
 }
