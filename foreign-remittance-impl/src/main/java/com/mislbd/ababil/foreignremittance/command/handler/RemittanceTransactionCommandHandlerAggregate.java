@@ -220,7 +220,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private MT103MessageRequest mapTransactionToMessageRequest(RemittanceTransaction remittanceTransaction){
 
        MT103MessageRequest mt103MessageRequest = new MT103MessageRequest();
-
+       //TODO mapping from remittance transaction to mt103MessageRequest
        return mt103MessageRequest;
 
   }
