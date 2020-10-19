@@ -220,7 +220,11 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private MT103MessageRequest mapTransactionToMessageRequest(RemittanceTransaction remittanceTransaction){
 
        MT103MessageRequest mt103MessageRequest = new MT103MessageRequest();
-       //TODO mapping from remittance transaction to mt103MessageRequest
+       mt103MessageRequest.setSendersReference(remittanceTransaction.getTransactionReferenceNumber());
+       //mt103MessageRequest.setTimeIndications(remittanceTransaction.getT)
+      //mt103MessageRequest.setBan(remittanceTransaction.getBankInformation())
+      //mt103MessageRequest.setInterbankSettlementValueDate(remittanceTransaction.getValueDate());
+      //mt103MessageRequest.setAccountWithInstitutionIdentifierCode(remittanceTransaction.getAccount)
        return mt103MessageRequest;
 
   }
