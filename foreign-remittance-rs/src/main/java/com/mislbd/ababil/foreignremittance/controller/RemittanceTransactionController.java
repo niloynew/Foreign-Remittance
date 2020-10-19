@@ -113,11 +113,11 @@ public class RemittanceTransactionController {
                       commandProcessor.executeResult(
                               new CreateViewMT103FromRemittanceTransactionCommand(queryResult.getResult())));
 
-
-      //return ResponseEntity.ok(queryResult.getResult());
   }
-
-
-
-
 }
+
+
+
+
+
+//return ResponseEntity.ok(queryResult.getResult());

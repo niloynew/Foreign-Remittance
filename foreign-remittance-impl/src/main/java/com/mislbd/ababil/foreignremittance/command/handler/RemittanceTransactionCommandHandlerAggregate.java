@@ -4,7 +4,6 @@ import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
-import com.mislbd.ababil.foreignremittance.command.CreateValidateSingleCustomerCreditTransferMessageCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateViewMT103FromRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.BankInformation;
@@ -13,7 +12,6 @@ import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.mapper.BankInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceChargeInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
-import com.mislbd.ababil.foreignremittance.mapper.TransactionToMt103MessageMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.BankInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
@@ -33,10 +31,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.mislbd.swift.broker.model.MessageResponse;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
-import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 @Aggregate
@@ -59,7 +55,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final Auditor auditor;
   private final SwiftMTMessageService swiftMTMessageService;
   private String serviceURL = "192.168.1.104:8087/swift-service";
-  private TransactionToMt103MessageMapper mapper;
+
     //  CalendarConfigurationService calendarConfigurationService;
 
   public RemittanceTransactionCommandHandlerAggregate(
@@ -70,7 +66,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
           RemittanceChargeInformationRepository chargeInformationRepository,
           RemittanceChargeInformationMapper chargeInformationMapper,
           NgSession ngSession,
-          TransactionToMt103MessageMapper mapper,
           DisbursementService disbursementService,
           TransactionService transactionService,
           ConfigurationService configurationService,
@@ -83,7 +78,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
     this.chargeInformationRepository = chargeInformationRepository;
     this.chargeInformationMapper = chargeInformationMapper;
     this.ngSession = ngSession;
-    this.mapper = mapper;
     this.disbursementService = disbursementService;
     this.transactionService = transactionService;
     this.configurationService = configurationService;
@@ -215,11 +209,28 @@ public class RemittanceTransactionCommandHandlerAggregate {
     return entity;
   }
 
-  /*@Transactional
+  @Transactional
   @CommandHandler
   public CommandResponse<MT103MessageRequest> view103MessagefromRemittanceTransaction(
           CreateViewMT103FromRemittanceTransactionCommand command) {
-      MT103MessageRequest mt103MessageRequest=  mapper.map(command.getPayload(), MT103MessageRequest.class);
+      MT103MessageRequest mt103MessageRequest=  mapTransactionToMessageRequest(command.getPayload());
     return CommandResponse.of(mt103MessageRequest);
-  }*/
+  }
+
+  private MT103MessageRequest mapTransactionToMessageRequest(RemittanceTransaction remittanceTransaction){
+
+       MT103MessageRequest mt103MessageRequest = new MT103MessageRequest();
+
+       return mt103MessageRequest;
+
+  }
+
+
+
+
+
+
+
+
+
 }
