@@ -1,6 +1,8 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.Auditor;
+import com.mislbd.ababil.foreignremittance.command.CreatePublishSingleCustomerCreditTransferMessageCommand;
+import com.mislbd.ababil.foreignremittance.command.CreateValidateSingleCustomerCreditTransferMessageCommand;
 import com.mislbd.ababil.foreignremittance.command.ProcessNostroTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.UpdateNostroTransactionCommand;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
@@ -12,7 +14,6 @@ import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
 import com.mislbd.swift.broker.model.raw.NostroTransaction;
-import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -28,12 +29,14 @@ public class SwiftMessageCommandHandlerAggregate {
   private final ModelMapper modelMapper;
   private final Auditor auditor;
   private final SwiftMTMessageService swiftMTMessageService;
+  private String serviceURL = "192.168.1.104:8087/swift-service";
 
   public SwiftMessageCommandHandlerAggregate(
       NostroTransactionRepository nostroTransactionRepository,
       ModelMapper modelMapper,
       Auditor auditor,
       SwiftMTMessageService swiftMTMessageService) {
+
     this.nostroTransactionRepository = nostroTransactionRepository;
     this.modelMapper = modelMapper;
     this.auditor = auditor;
@@ -79,7 +82,17 @@ public class SwiftMessageCommandHandlerAggregate {
 
   @Transactional
   @CommandHandler
-  public void generateMT103Message(MT103MessageRequest messageRequest) {
-    swiftMTMessageService.generate103message("", messageRequest);
+  public CommandResponse<Void> publish103Message(
+      CreatePublishSingleCustomerCreditTransferMessageCommand command) {
+    swiftMTMessageService.publish103message(serviceURL, command.getPayload());
+    return CommandResponse.asVoid();
+  }
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Void> save103Message(
+      CreateValidateSingleCustomerCreditTransferMessageCommand command) {
+    swiftMTMessageService.save103message(serviceURL, command.getPayload());
+    return CommandResponse.asVoid();
   }
 }
