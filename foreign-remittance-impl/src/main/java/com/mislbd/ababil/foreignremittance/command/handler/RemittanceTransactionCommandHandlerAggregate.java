@@ -28,12 +28,17 @@ import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.security.core.NgSession;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.mislbd.swift.broker.model.BankOperationCode;
+import com.mislbd.swift.broker.model.DetailsOfCharges;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import org.springframework.transaction.annotation.Transactional;
+
+
 
 @Aggregate
 public class RemittanceTransactionCommandHandlerAggregate {
@@ -219,13 +224,29 @@ public class RemittanceTransactionCommandHandlerAggregate {
 
   private MT103MessageRequest mapTransactionToMessageRequest(RemittanceTransaction remittanceTransaction){
 
-       MT103MessageRequest mt103MessageRequest = new MT103MessageRequest();
-       mt103MessageRequest.setSendersReference(remittanceTransaction.getTransactionReferenceNumber());
-       //mt103MessageRequest.setTimeIndications(remittanceTransaction.getT)
-      //mt103MessageRequest.setBan(remittanceTransaction.getBankInformation())
-      //mt103MessageRequest.setInterbankSettlementValueDate(remittanceTransaction.getValueDate());
-      //mt103MessageRequest.setAccountWithInstitutionIdentifierCode(remittanceTransaction.getAccount)
-       return mt103MessageRequest;
+      MT103MessageRequest mt103MessageRequest = new MT103MessageRequest();
+      mt103MessageRequest.setSendersReference(remittanceTransaction.getTransactionReferenceNumber());
+      mt103MessageRequest.setBankOperationCode(String.valueOf(BankOperationCode.CRED));
+      mt103MessageRequest.setExchangeRate(remittanceTransaction.getClientRate());
+      mt103MessageRequest.setInterbankSettlementAmount(remittanceTransaction.getAmountLcy());
+      mt103MessageRequest.setInterbankSettlementCurrency(remittanceTransaction.getCurrencyCode());
+      mt103MessageRequest.setInterbankSettlementValueDate(Date.valueOf(remittanceTransaction.getValueDate()));
+      mt103MessageRequest.setOrderingCustomerAccount(remittanceTransaction.getApplicantAccountNumber());
+      mt103MessageRequest.setOrderingCustomerNameAndAddress(remittanceTransaction.getApplicant().concat(remittanceTransaction.getApplicantAddress()));
+      mt103MessageRequest.setSelectedBeneficiaryCustomerOption(null);
+      mt103MessageRequest.setBeneficiaryCustomerAccount(remittanceTransaction.getBeneficiaryAccountNumber());
+      mt103MessageRequest.setBeneficiaryCustomerOptionFModel(null);
+      mt103MessageRequest.setBeneficiaryCustomerNameAndAddress(remittanceTransaction.getBeneficiaryName().concat(remittanceTransaction.getBeneficiaryAddress()));
+      mt103MessageRequest.setDetailsOfCharges(String.valueOf(DetailsOfCharges.OUR));
+
+      mt103MessageRequest.setSendersChargeAmount(remittanceTransaction.getTotalChargeAmount());
+      mt103MessageRequest.setReceiversChargeAmount(BigDecimal.ZERO);
+
+      mt103MessageRequest.setSendersChargeCurrency(remittanceTransaction.getCurrencyCode());
+      mt103MessageRequest.setReceiversChargeCurrency(remittanceTransaction.getCurrencyCode());
+      mt103MessageRequest.setInstructedCurrency(remittanceTransaction.getCurrencyCode());
+
+      return mt103MessageRequest;
 
   }
 
