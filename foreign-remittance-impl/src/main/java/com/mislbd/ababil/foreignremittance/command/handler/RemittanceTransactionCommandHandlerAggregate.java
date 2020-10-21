@@ -4,6 +4,7 @@ import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.CreateViewMT103FromRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.BankInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
@@ -27,9 +28,17 @@ import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.security.core.NgSession;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.mislbd.swift.broker.model.BankOperationCode;
+import com.mislbd.swift.broker.model.DetailsOfCharges;
+import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
+import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import org.springframework.transaction.annotation.Transactional;
+
+
 
 @Aggregate
 public class RemittanceTransactionCommandHandlerAggregate {
@@ -49,20 +58,23 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final ConfigurationService configurationService;
   private BigDecimal totalChargeAmount = null;
   private final Auditor auditor;
-  //  CalendarConfigurationService calendarConfigurationService;
+  private final SwiftMTMessageService swiftMTMessageService;
+  private String serviceURL = "192.168.1.104:8087/swift-service";
+
+    //  CalendarConfigurationService calendarConfigurationService;
 
   public RemittanceTransactionCommandHandlerAggregate(
-      RemittanceTransactionRepository transactionRepository,
-      RemittanceTransactionMapper transactionMapper,
-      BankInformationRepository bankInformationRepository,
-      BankInformationMapper bankInformationMapper,
-      RemittanceChargeInformationRepository chargeInformationRepository,
-      RemittanceChargeInformationMapper chargeInformationMapper,
-      NgSession ngSession,
-      DisbursementService disbursementService,
-      TransactionService transactionService,
-      ConfigurationService configurationService,
-      Auditor auditor) {
+          RemittanceTransactionRepository transactionRepository,
+          RemittanceTransactionMapper transactionMapper,
+          BankInformationRepository bankInformationRepository,
+          BankInformationMapper bankInformationMapper,
+          RemittanceChargeInformationRepository chargeInformationRepository,
+          RemittanceChargeInformationMapper chargeInformationMapper,
+          NgSession ngSession,
+          DisbursementService disbursementService,
+          TransactionService transactionService,
+          ConfigurationService configurationService,
+          Auditor auditor, SwiftMTMessageService swiftMTMessageService) {
 
     this.transactionRepository = transactionRepository;
     this.transactionMapper = transactionMapper;
@@ -75,6 +87,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
     this.transactionService = transactionService;
     this.configurationService = configurationService;
     this.auditor = auditor;
+    this.swiftMTMessageService = swiftMTMessageService;
   }
 
   @CommandListener(
@@ -200,4 +213,49 @@ public class RemittanceTransactionCommandHandlerAggregate {
 
     return entity;
   }
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<MT103MessageRequest> view103MessagefromRemittanceTransaction(
+          CreateViewMT103FromRemittanceTransactionCommand command) {
+      MT103MessageRequest mt103MessageRequest=  mapTransactionToMessageRequest(command.getPayload());
+    return CommandResponse.of(mt103MessageRequest);
+  }
+
+  private MT103MessageRequest mapTransactionToMessageRequest(RemittanceTransaction remittanceTransaction){
+
+      MT103MessageRequest mt103MessageRequest = new MT103MessageRequest();
+      mt103MessageRequest.setSendersReference(remittanceTransaction.getTransactionReferenceNumber());
+      mt103MessageRequest.setBankOperationCode(String.valueOf(BankOperationCode.CRED));
+      mt103MessageRequest.setExchangeRate(remittanceTransaction.getClientRate());
+      mt103MessageRequest.setInterbankSettlementAmount(remittanceTransaction.getAmountLcy());
+      mt103MessageRequest.setInterbankSettlementCurrency(remittanceTransaction.getCurrencyCode());
+      mt103MessageRequest.setInterbankSettlementValueDate(Date.valueOf(remittanceTransaction.getValueDate()));
+      mt103MessageRequest.setOrderingCustomerAccount(remittanceTransaction.getApplicantAccountNumber());
+      mt103MessageRequest.setOrderingCustomerNameAndAddress(remittanceTransaction.getApplicant().concat(remittanceTransaction.getApplicantAddress()));
+      mt103MessageRequest.setSelectedBeneficiaryCustomerOption(null);
+      mt103MessageRequest.setBeneficiaryCustomerAccount(remittanceTransaction.getBeneficiaryAccountNumber());
+      mt103MessageRequest.setBeneficiaryCustomerOptionFModel(null);
+      mt103MessageRequest.setBeneficiaryCustomerNameAndAddress(remittanceTransaction.getBeneficiaryName().concat(remittanceTransaction.getBeneficiaryAddress()));
+      mt103MessageRequest.setDetailsOfCharges(String.valueOf(DetailsOfCharges.OUR));
+
+      mt103MessageRequest.setSendersChargeAmount(remittanceTransaction.getTotalChargeAmount());
+      mt103MessageRequest.setReceiversChargeAmount(BigDecimal.ZERO);
+
+      mt103MessageRequest.setSendersChargeCurrency(remittanceTransaction.getCurrencyCode());
+      mt103MessageRequest.setReceiversChargeCurrency(remittanceTransaction.getCurrencyCode());
+      mt103MessageRequest.setInstructedCurrency(remittanceTransaction.getCurrencyCode());
+
+      return mt103MessageRequest;
+
+  }
+
+
+
+
+
+
+
+
+
 }

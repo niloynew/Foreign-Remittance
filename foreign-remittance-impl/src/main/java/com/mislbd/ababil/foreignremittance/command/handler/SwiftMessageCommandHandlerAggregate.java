@@ -12,8 +12,11 @@ import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
+import com.mislbd.swift.broker.model.MessageResponse;
+import com.mislbd.swift.broker.model.ProcessResult;
 import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
 import com.mislbd.swift.broker.model.raw.NostroTransaction;
+import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -90,9 +93,23 @@ public class SwiftMessageCommandHandlerAggregate {
 
   @Transactional
   @CommandHandler
-  public CommandResponse<Void> save103Message(
+  public CommandResponse<ProcessResult> validate103Message(
       CreateValidateSingleCustomerCreditTransferMessageCommand command) {
-    swiftMTMessageService.save103message(serviceURL, command.getPayload());
-    return CommandResponse.asVoid();
+    ProcessResult processResult= swiftMTMessageService.save103message(serviceURL, command.getPayload());
+    return CommandResponse.of(processResult);
   }
+
+    @Transactional
+    @CommandHandler
+    public CommandResponse<MessageResponse> generate103Message(
+            CreateValidateSingleCustomerCreditTransferMessageCommand command) {
+        MessageResponse messageResponse= swiftMTMessageService.generate103message(serviceURL, command.getPayload());
+        return CommandResponse.of(messageResponse);
+    }
+
+
+
+    //modelMapper.map(command.getPayload(), MT103MessageRequest .class)
+
+
 }

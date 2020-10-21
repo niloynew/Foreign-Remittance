@@ -5,6 +5,7 @@ import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.CreateViewMT103FromRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
@@ -15,6 +16,8 @@ import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
 import java.time.LocalDate;
 import javax.validation.Valid;
+
+import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -98,4 +101,23 @@ public class RemittanceTransactionController {
             commandProcessor.executeResult(
                 new CreateOutwardRemittanceTransactionCommand(remittanceTransaction)));
   }
+
+  @GetMapping(path = "/mt-103-view-from-remittance-transaction/{transactionId}")
+  public ResponseEntity<CommandResponse<MT103MessageRequest>> getMt103FromRemittanceTransaction(@PathVariable("transactionId") Long transactionId) {
+    QueryResult<RemittanceTransaction> queryResult =
+            queryManager.executeQuery(new RemittanceTransactionIdQuery(transactionId));
+
+
+    return status(CREATED)
+              .body(
+                      commandProcessor.executeResult(
+                              new CreateViewMT103FromRemittanceTransactionCommand(queryResult.getResult())));
+
+  }
 }
+
+
+
+
+
+//return ResponseEntity.ok(queryResult.getResult());
