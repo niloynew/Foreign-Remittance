@@ -1,10 +1,7 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.Auditor;
-import com.mislbd.ababil.foreignremittance.command.CreatePublishSingleCustomerCreditTransferMessageCommand;
-import com.mislbd.ababil.foreignremittance.command.CreateValidateSingleCustomerCreditTransferMessageCommand;
-import com.mislbd.ababil.foreignremittance.command.ProcessNostroTransactionCommand;
-import com.mislbd.ababil.foreignremittance.command.UpdateNostroTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.*;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionEntity;
 import com.mislbd.asset.command.api.CommandEvent;
@@ -16,7 +13,6 @@ import com.mislbd.swift.broker.model.MessageResponse;
 import com.mislbd.swift.broker.model.ProcessResult;
 import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
 import com.mislbd.swift.broker.model.raw.NostroTransaction;
-import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -95,21 +91,20 @@ public class SwiftMessageCommandHandlerAggregate {
   @CommandHandler
   public CommandResponse<ProcessResult> validate103Message(
       CreateValidateSingleCustomerCreditTransferMessageCommand command) {
-    ProcessResult processResult= swiftMTMessageService.save103message(serviceURL, command.getPayload());
+    ProcessResult processResult =
+        swiftMTMessageService.save103message(serviceURL, command.getPayload());
     return CommandResponse.of(processResult);
   }
 
-    @Transactional
-    @CommandHandler
-    public CommandResponse<MessageResponse> generate103Message(
-            CreateValidateSingleCustomerCreditTransferMessageCommand command) {
-        MessageResponse messageResponse= swiftMTMessageService.generate103message(serviceURL, command.getPayload());
-        return CommandResponse.of(messageResponse);
-    }
+  @Transactional
+  @CommandHandler
+  public CommandResponse<MessageResponse> generate103Message(
+      CreateGenerateSingleCustomerCreditTransferMessageCommand command) {
+    MessageResponse messageResponse =
+        swiftMTMessageService.generate103message(serviceURL, command.getPayload());
+    return CommandResponse.of(messageResponse);
+  }
 
-
-
-    //modelMapper.map(command.getPayload(), MT103MessageRequest .class)
-
+  // modelMapper.map(command.getPayload(), MT103MessageRequest .class)
 
 }
