@@ -46,15 +46,13 @@ public class SwiftMessageController {
                 new CreateValidateSingleCustomerCreditTransferMessageCommand(mt103MessageRequest)));
   }
 
-    @PostMapping(path = "/generate-mt103-message", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommandResponse<MessageResponse>> generateSingleCustomerCreditTransferMessage(
-            @RequestBody @Valid MT103MessageRequest mt103MessageRequest) {
-        return status(CREATED)
-                .body(
-                        commandProcessor.executeResult(
-                                new CreateGenerateSingleCustomerCreditTransferMessageCommand(mt103MessageRequest)));
-    }
-
-
-
+  @PostMapping(path = "/generate-mt103-message", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<CommandResponse<MessageResponse>>
+      generateSingleCustomerCreditTransferMessage(
+          @RequestBody @Valid MT103MessageRequest mt103MessageRequest) {
+    return status(CREATED)
+        .body(
+            commandProcessor.executeResult(
+                new CreateGenerateSingleCustomerCreditTransferMessageCommand(mt103MessageRequest)));
+  }
 }
