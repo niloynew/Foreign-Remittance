@@ -34,6 +34,7 @@ import java.util.List;
 
 import com.mislbd.swift.broker.model.BankOperationCode;
 import com.mislbd.swift.broker.model.DetailsOfCharges;
+import com.mislbd.swift.broker.model.OrderingCustomerOption;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import org.springframework.transaction.annotation.Transactional;
@@ -232,6 +233,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
       mt103MessageRequest.setInterbankSettlementCurrency(remittanceTransaction.getCurrencyCode());
       mt103MessageRequest.setInterbankSettlementValueDate(Date.valueOf(remittanceTransaction.getValueDate()));
       mt103MessageRequest.setOrderingCustomerAccount(remittanceTransaction.getApplicantAccountNumber());
+      mt103MessageRequest.setOrderingCustomerPartyIdentifier(String.valueOf(OrderingCustomerOption.OptionA));
       mt103MessageRequest.setOrderingCustomerNameAndAddress(remittanceTransaction.getApplicant().concat(remittanceTransaction.getApplicantAddress()));
       mt103MessageRequest.setSelectedBeneficiaryCustomerOption(null);
       mt103MessageRequest.setBeneficiaryCustomerAccount(remittanceTransaction.getBeneficiaryAccountNumber());
