@@ -28,7 +28,7 @@ public class SwiftMessageCommandHandlerAggregate {
   private final ModelMapper modelMapper;
   private final Auditor auditor;
   private final SwiftMTMessageService swiftMTMessageService;
-  private String serviceURL = "192.168.1.104:8087/swift-service";
+  private String serviceURL = "https://192.168.1.104:8087/swift-service";
 
   public SwiftMessageCommandHandlerAggregate(
       NostroTransactionRepository nostroTransactionRepository,
