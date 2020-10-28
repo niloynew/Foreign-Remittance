@@ -2,9 +2,11 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.foreignremittance.command.*;
+import com.mislbd.ababil.foreignremittance.domain.SwiftRegister;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionEntity;
 import com.mislbd.asset.command.api.CommandEvent;
+import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
@@ -27,18 +29,20 @@ public class SwiftMessageCommandHandlerAggregate {
   private final NostroTransactionRepository nostroTransactionRepository;
   private final ModelMapper modelMapper;
   private final Auditor auditor;
+  private final CommandProcessor commandProcessor;
   private final SwiftMTMessageService swiftMTMessageService;
   private String serviceURL = "https://192.168.1.104:8087/swift-service";
 
   public SwiftMessageCommandHandlerAggregate(
-      NostroTransactionRepository nostroTransactionRepository,
-      ModelMapper modelMapper,
-      Auditor auditor,
-      SwiftMTMessageService swiftMTMessageService) {
+          NostroTransactionRepository nostroTransactionRepository,
+          ModelMapper modelMapper,
+          Auditor auditor,
+          CommandProcessor commandProcessor, SwiftMTMessageService swiftMTMessageService) {
 
     this.nostroTransactionRepository = nostroTransactionRepository;
     this.modelMapper = modelMapper;
     this.auditor = auditor;
+    this.commandProcessor = commandProcessor;
     this.swiftMTMessageService = swiftMTMessageService;
   }
 
@@ -93,6 +97,10 @@ public class SwiftMessageCommandHandlerAggregate {
       CreateValidateSingleCustomerCreditTransferMessageCommand command) {
     ProcessResult processResult =
         swiftMTMessageService.save103message(serviceURL, command.getPayload());
+      SwiftRegister swiftRegister = new SwiftRegister();
+    if (processResult.getErrorCode() == 0){
+        commandProcessor.executeResult(new SaveSwiftRegisterCommand(swiftRegister));
+    }
     return CommandResponse.of(processResult);
   }
 
