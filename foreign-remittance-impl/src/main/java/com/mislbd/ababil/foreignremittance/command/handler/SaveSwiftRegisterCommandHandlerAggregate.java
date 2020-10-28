@@ -6,10 +6,12 @@ import com.mislbd.ababil.foreignremittance.mapper.SwiftRegisterMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.SwiftRegisterRepository;
 import com.mislbd.asset.command.api.CommandEvent;
 import com.mislbd.asset.command.api.CommandResponse;
+import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
 import org.springframework.transaction.annotation.Transactional;
 
+@Aggregate
 public class SaveSwiftRegisterCommandHandlerAggregate {
   private SwiftRegisterRepository swiftRegisterRepository;
   private SwiftRegisterMapper swiftRegisterMapper;

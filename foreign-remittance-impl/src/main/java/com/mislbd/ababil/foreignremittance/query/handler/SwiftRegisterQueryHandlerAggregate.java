@@ -4,10 +4,12 @@ import com.mislbd.ababil.foreignremittance.domain.SwiftRegister;
 import com.mislbd.ababil.foreignremittance.query.SwiftRegisterQuery;
 import com.mislbd.ababil.foreignremittance.service.SwiftRegisterService;
 import com.mislbd.asset.commons.data.domain.PagedResult;
+import com.mislbd.asset.query.annotation.QueryAggregate;
 import com.mislbd.asset.query.annotation.QueryHandler;
 import com.mislbd.asset.query.api.QueryResult;
 import java.util.List;
 
+@QueryAggregate
 public class SwiftRegisterQueryHandlerAggregate {
   private SwiftRegisterService swiftRegisterService;
 

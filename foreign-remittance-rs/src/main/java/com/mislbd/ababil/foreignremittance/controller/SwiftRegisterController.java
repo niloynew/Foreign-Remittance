@@ -37,12 +37,11 @@ public class SwiftRegisterController {
       @RequestParam(value = "receiverAddress", required = false) final String receiverAddress,
       @RequestParam(value = "status", required = false) final RoutingStatus status,
       @RequestParam(value = "messageRoutingDateTimeFrom", required = false)
-      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           final Date messageRoutingDateTimeFrom,
       @RequestParam(value = "messageRoutingDateTimeTo", required = false)
-      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-          final Date messageRoutingDateTimeTo
-  ) {
+          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          final Date messageRoutingDateTimeTo) {
 
     QueryResult<?> queryResult =
         queryManager.executeQuery(

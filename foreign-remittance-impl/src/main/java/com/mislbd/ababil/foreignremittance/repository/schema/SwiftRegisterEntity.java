@@ -14,7 +14,14 @@ import lombok.experimental.Accessors;
 @Entity
 @Table(name = SchemaConstant.SWIFT_REGISTER)
 public class SwiftRegisterEntity extends BaseEntity {
-  @Id @GeneratedValue private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "SWIFT_REGISTER_ID_GEN")
+  @SequenceGenerator(
+      name = "SWIFT_REGISTER_ID_GEN",
+      allocationSize = 1,
+      sequenceName = SchemaConstant.SWIFT_REGISTER_SEQUENCE_NAME)
+  @Column(name = "ID")
+  private long id;
 
   @Column(name = "REFERENCE_NUMBER")
   private String referenceNo;
