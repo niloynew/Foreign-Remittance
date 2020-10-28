@@ -11,30 +11,28 @@ import com.mislbd.asset.command.api.annotation.CommandListener;
 import org.springframework.transaction.annotation.Transactional;
 
 public class SaveSwiftRegisterCommandHandlerAggregate {
-    private SwiftRegisterRepository swiftRegisterRepository;
-    private SwiftRegisterMapper swiftRegisterMapper;
-    private final Auditor auditor;
+  private SwiftRegisterRepository swiftRegisterRepository;
+  private SwiftRegisterMapper swiftRegisterMapper;
+  private final Auditor auditor;
 
-    public SaveSwiftRegisterCommandHandlerAggregate(SwiftRegisterRepository swiftRegisterRepository, SwiftRegisterMapper swiftRegisterMapper, Auditor auditor) {
-        this.swiftRegisterRepository = swiftRegisterRepository;
-        this.swiftRegisterMapper = swiftRegisterMapper;
-        this.auditor = auditor;
-    }
+  public SaveSwiftRegisterCommandHandlerAggregate(
+      SwiftRegisterRepository swiftRegisterRepository,
+      SwiftRegisterMapper swiftRegisterMapper,
+      Auditor auditor) {
+    this.swiftRegisterRepository = swiftRegisterRepository;
+    this.swiftRegisterMapper = swiftRegisterMapper;
+    this.auditor = auditor;
+  }
 
-    @CommandListener(
-            commandClasses = {
-                    SaveSwiftRegisterCommand.class
-            })
+  @CommandListener(commandClasses = {SaveSwiftRegisterCommand.class})
+  public void auditSwiftRegister(CommandEvent e) {
+    auditor.audit(e.getCommand().getPayload(), e.getCommand());
+  }
 
-   public void auditSwiftRegister(CommandEvent e) {
-        auditor.audit(e.getCommand().getPayload(), e.getCommand());
-    }
-
-
-    @Transactional
-    @CommandHandler
-    public CommandResponse<Void> saveSwiftRegister(SaveSwiftRegisterCommand command) {
-        swiftRegisterRepository.save(swiftRegisterMapper.domainToEntity().map(command.getPayload()));
-        return CommandResponse.asVoid();
-    }
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Void> saveSwiftRegister(SaveSwiftRegisterCommand command) {
+    swiftRegisterRepository.save(swiftRegisterMapper.domainToEntity().map(command.getPayload()));
+    return CommandResponse.asVoid();
+  }
 }

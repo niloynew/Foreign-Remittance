@@ -1,43 +1,49 @@
 package com.mislbd.ababil.foreignremittance.repository.specification;
 
-import com.mislbd.ababil.foreignremittance.domain.AccountStatement;
-import com.mislbd.ababil.foreignremittance.repository.schema.IDProductEntity;
-import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.SwiftRegisterEntity;
+import com.mislbd.swift.broker.model.RoutingStatus;
+import java.util.Date;
+import javax.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import java.time.LocalDate;
-import java.util.Date;
-
 public class SwiftRegisterSpecification {
-    public static Specification<SwiftRegisterEntity> searchSwiftRegisters(
-             String referenceNo, String senderAddress, String receiverAddress, String status, Date messageRoutingDateTime) {
-        return (root, query, cb) -> {
-            Predicate predicate = cb.conjunction();
+  public static Specification<SwiftRegisterEntity> searchSwiftRegisters(
+      String referenceNo,
+      String senderAddress,
+      String receiverAddress,
+      RoutingStatus status,
+      Date messageRoutingDateTimeFrom,
+      Date messageRoutingDateTimeTo) {
+    return (root, query, cb) -> {
+      Predicate predicate = cb.conjunction();
 
-            if (referenceNo != null) {
-                predicate = cb.and(predicate, cb.equal(root.get("referenceNo"), referenceNo));
-            }
+      if (referenceNo != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("referenceNo"), referenceNo));
+      }
 
-            if (senderAddress != null) {
-                predicate = cb.and(predicate, cb.equal(root.get("senderAddress"), senderAddress));
-            }
+      if (senderAddress != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("senderAddress"), senderAddress));
+      }
 
-            if (receiverAddress != null) {
-                predicate = cb.and(predicate, cb.equal(root.get("receiverAddress"), receiverAddress));
-            }
+      if (receiverAddress != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("receiverAddress"), receiverAddress));
+      }
 
-            if (status != null) {
-                predicate = cb.and(predicate, cb.equal(root.get("status"), status));
-            }
+      if (status != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("status"), status));
+      }
 
-            if (messageRoutingDateTime != null) {
-                predicate = cb.and(predicate, cb.equal(root.get("messageRoutingDateTime"), messageRoutingDateTime));
-            }
+      if (messageRoutingDateTimeFrom != null && messageRoutingDateTimeTo != null) {
+        predicate =
+            cb.and(
+                predicate,
+                cb.between(
+                    root.get("messageRoutingDateTime"),
+                    messageRoutingDateTimeFrom,
+                    messageRoutingDateTimeTo));
+      }
 
-            return predicate;
-        };
-    }
+      return predicate;
+    };
+  }
 }

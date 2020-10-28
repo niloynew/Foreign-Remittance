@@ -248,7 +248,8 @@ public enum Error {
 
     @Override
     public String getMessages(LocaleMessages localeMessages) {
-      message = localeMessages.get(this.getModule() + this.getCode()).orElse("Swift Register not found");
+      message =
+          localeMessages.get(this.getModule() + this.getCode()).orElse("Swift Register not found");
       return message;
     }
   },
