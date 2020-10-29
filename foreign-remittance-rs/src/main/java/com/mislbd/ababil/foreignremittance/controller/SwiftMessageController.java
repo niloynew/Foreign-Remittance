@@ -3,9 +3,9 @@ package com.mislbd.ababil.foreignremittance.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
+import com.mislbd.ababil.foreignremittance.command.CreateSingleCustomerCreditTransferMessageCommand;
 import com.mislbd.ababil.foreignremittance.command.GenerateSingleCustomerCreditTransferMessageCommand;
 import com.mislbd.ababil.foreignremittance.command.PublishSingleCustomerCreditTransferMessageCommand;
-import com.mislbd.ababil.foreignremittance.command.CreateSingleCustomerCreditTransferMessageCommand;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.query.api.QueryManager;

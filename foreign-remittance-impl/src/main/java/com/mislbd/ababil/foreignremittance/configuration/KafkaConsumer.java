@@ -2,12 +2,9 @@ package com.mislbd.ababil.foreignremittance.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mislbd.ababil.foreignremittance.command.ProcessNostroTransactionCommand;
-import com.mislbd.ababil.foreignremittance.command.SaveSwiftRegisterCommand;
 import com.mislbd.ababil.foreignremittance.command.UpdateSwiftRegisterCommand;
 import com.mislbd.ababil.foreignremittance.domain.SwiftRegister;
 import com.mislbd.ababil.foreignremittance.mapper.SwiftRegisterMapper;
-import com.mislbd.ababil.foreignremittance.repository.jpa.SwiftRegisterRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.SwiftRegisterEntity;
 import com.mislbd.ababil.foreignremittance.service.SwiftRegisterService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.swift.broker.model.RouteResponse;
@@ -18,8 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class KafkaConsumer {
@@ -51,11 +46,12 @@ public class KafkaConsumer {
     LOGGER.info("received message='{}'", consumerRecord.key());
     try {
       RouteResponse routeResponse =
-              objectMapper.convertValue(consumerRecord.value(), RouteResponse.class);
+          objectMapper.convertValue(consumerRecord.value(), RouteResponse.class);
       if (routeResponse != null) {
-          SwiftRegister swiftRegister = swiftRegisterService.findByReferenceNumber(routeResponse.getReferenceNumber());
-          swiftRegister.setStatus(routeResponse.getStatus());
-          commandProcessor.executeResult(new UpdateSwiftRegisterCommand(swiftRegister));
+        SwiftRegister swiftRegister =
+            swiftRegisterService.findByReferenceNumber(routeResponse.getReferenceNumber());
+        swiftRegister.setStatus(routeResponse.getStatus());
+        commandProcessor.executeResult(new UpdateSwiftRegisterCommand(swiftRegister));
       }
     } catch (Exception e) {
       LOGGER.warn(RouteResponse.class.getName() + " not found.");

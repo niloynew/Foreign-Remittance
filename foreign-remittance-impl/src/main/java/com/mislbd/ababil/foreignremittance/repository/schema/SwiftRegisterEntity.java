@@ -26,10 +26,6 @@ public class SwiftRegisterEntity extends BaseEntity {
   @Column(name = "REFERENCE_NUMBER")
   private String referenceNo;
 
-  @Lob
-  @Column(name = "MESSAGE")
-  private String msg; // whole swift message
-
   @Column(name = "SENDERS_ADDRESS")
   private String senderAddress;
 
