@@ -5,13 +5,13 @@ import com.mislbd.asset.command.api.annotation.CommandAttribute;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 
 @CommandAttribute(
-    name = "Validate SingleCustomerCreditTransfer Message",
+    name = "Generate SingleCustomerCreditTransfer Message",
     group = "FOREIGN REMITTANCE")
-public class CreateValidateSingleCustomerCreditTransferMessageCommand
+public class GenerateSingleCustomerCreditTransferMessageCommand
     extends Command<MT103MessageRequest> {
-  public CreateValidateSingleCustomerCreditTransferMessageCommand() {}
+  public GenerateSingleCustomerCreditTransferMessageCommand() {}
 
-  public CreateValidateSingleCustomerCreditTransferMessageCommand(MT103MessageRequest payload) {
+  public GenerateSingleCustomerCreditTransferMessageCommand(MT103MessageRequest payload) {
     super(payload);
   }
 }

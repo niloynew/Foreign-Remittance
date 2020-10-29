@@ -3,9 +3,9 @@ package com.mislbd.ababil.foreignremittance.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
-import com.mislbd.ababil.foreignremittance.command.CreateGenerateSingleCustomerCreditTransferMessageCommand;
-import com.mislbd.ababil.foreignremittance.command.CreatePublishSingleCustomerCreditTransferMessageCommand;
-import com.mislbd.ababil.foreignremittance.command.CreateValidateSingleCustomerCreditTransferMessageCommand;
+import com.mislbd.ababil.foreignremittance.command.GenerateSingleCustomerCreditTransferMessageCommand;
+import com.mislbd.ababil.foreignremittance.command.PublishSingleCustomerCreditTransferMessageCommand;
+import com.mislbd.ababil.foreignremittance.command.CreateSingleCustomerCreditTransferMessageCommand;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.query.api.QueryManager;
@@ -34,16 +34,16 @@ public class SwiftMessageController {
     return status(CREATED)
         .body(
             commandProcessor.executeResult(
-                new CreatePublishSingleCustomerCreditTransferMessageCommand(mt103MessageRequest)));
+                new PublishSingleCustomerCreditTransferMessageCommand(mt103MessageRequest)));
   }
 
-  @PostMapping(path = "/validate-mt103-message", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<CommandResponse<ProcessResult>> validateSingleCustomerCreditTransferMessage(
+  @PostMapping(path = "/save-mt103-message", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<CommandResponse<ProcessResult>> saveSingleCustomerCreditTransferMessage(
       @RequestBody @Valid MT103MessageRequest mt103MessageRequest) {
     return status(CREATED)
         .body(
             commandProcessor.executeResult(
-                new CreateValidateSingleCustomerCreditTransferMessageCommand(mt103MessageRequest)));
+                new CreateSingleCustomerCreditTransferMessageCommand(mt103MessageRequest)));
   }
 
   @PostMapping(path = "/generate-mt103-message", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -53,6 +53,6 @@ public class SwiftMessageController {
     return status(CREATED)
         .body(
             commandProcessor.executeResult(
-                new CreateGenerateSingleCustomerCreditTransferMessageCommand(mt103MessageRequest)));
+                new GenerateSingleCustomerCreditTransferMessageCommand(mt103MessageRequest)));
   }
 }
