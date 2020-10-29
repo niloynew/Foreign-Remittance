@@ -99,10 +99,22 @@ public class SwiftMessageCommandHandlerAggregate {
 
   @Transactional
   @CommandHandler
-  public CommandResponse<ProcessResult> validate103Message(
+  public CommandResponse<ProcessResult> save103Message(
       CreateSingleCustomerCreditTransferMessageCommand command) {
     ProcessResult processResult =
         swiftMTMessageService.save103message(serviceURL, command.getPayload());
+    MT103MessageRequest request = command.getPayload();
+    if (processResult.getErrorCode() == 0) {
+      MessageResponse messageResponse =
+          swiftMTMessageService.generate103message(serviceURL, command.getPayload());
+      SwiftRegister swiftRegister =
+          swiftRegisterMapper.prepareSwiftRegister(
+              request.getSendersReference(),
+              request.getSenderAddress(),
+              request.getReceiverAddress(),
+              messageResponse.getMessage());
+      commandProcessor.executeResult(new SaveSwiftRegisterCommand(swiftRegister));
+    }
     return CommandResponse.of(processResult);
   }
 
@@ -112,16 +124,6 @@ public class SwiftMessageCommandHandlerAggregate {
       GenerateSingleCustomerCreditTransferMessageCommand command) {
     MessageResponse messageResponse =
         swiftMTMessageService.generate103message(serviceURL, command.getPayload());
-    MT103MessageRequest request = command.getPayload();
-    if (messageResponse.getMessage() != null) {
-      SwiftRegister swiftRegister =
-          swiftRegisterMapper.prepareSwiftRegister(
-              request.getSendersReference(),
-              request.getSenderAddress(),
-              request.getReceiverAddress(),
-              messageResponse.getMessage());
-      commandProcessor.executeResult(new SaveSwiftRegisterCommand(swiftRegister));
-    }
     return CommandResponse.of(messageResponse);
   }
 }
