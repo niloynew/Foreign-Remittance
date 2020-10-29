@@ -34,7 +34,7 @@ public class SwiftMessageCommandHandlerAggregate {
   private final CommandProcessor commandProcessor;
   private final SwiftMTMessageService swiftMTMessageService;
   private final SwiftRegisterMapper swiftRegisterMapper;
-  private String serviceURL = "https://192.168.1.104:8087/swift-service";
+  private String serviceURL = "http://192.168.1.104:8087/swift-service";
 
   public SwiftMessageCommandHandlerAggregate(
       NostroTransactionRepository nostroTransactionRepository,
@@ -99,10 +99,22 @@ public class SwiftMessageCommandHandlerAggregate {
 
   @Transactional
   @CommandHandler
-  public CommandResponse<ProcessResult> validate103Message(
+  public CommandResponse<ProcessResult> save103Message(
       CreateSingleCustomerCreditTransferMessageCommand command) {
     ProcessResult processResult =
         swiftMTMessageService.save103message(serviceURL, command.getPayload());
+    MT103MessageRequest request = command.getPayload();
+    if (processResult.getErrorCode() == 0) {
+      MessageResponse messageResponse =
+          swiftMTMessageService.generate103message(serviceURL, command.getPayload());
+      SwiftRegister swiftRegister =
+          swiftRegisterMapper.prepareSwiftRegister(
+              request.getSendersReference(),
+              request.getSenderAddress(),
+              request.getReceiverAddress(),
+              messageResponse.getMessage());
+      commandProcessor.executeResult(new SaveSwiftRegisterCommand(swiftRegister));
+    }
     return CommandResponse.of(processResult);
   }
 
@@ -112,16 +124,6 @@ public class SwiftMessageCommandHandlerAggregate {
       GenerateSingleCustomerCreditTransferMessageCommand command) {
     MessageResponse messageResponse =
         swiftMTMessageService.generate103message(serviceURL, command.getPayload());
-    MT103MessageRequest request = command.getPayload();
-    if (messageResponse.getMessage() != null) {
-      SwiftRegister swiftRegister =
-          swiftRegisterMapper.prepareSwiftRegister(
-              request.getSendersReference(),
-              request.getSenderAddress(),
-              request.getReceiverAddress(),
-              messageResponse.getMessage());
-      commandProcessor.executeResult(new SaveSwiftRegisterCommand(swiftRegister));
-    }
     return CommandResponse.of(messageResponse);
   }
 }

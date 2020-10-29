@@ -32,6 +32,7 @@ public class SwiftRegisterEntity extends BaseEntity {
   @Column(name = "RECEIVER_ADDRESS")
   private String receiverAddress;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "ROUTING_STATUS")
   private RoutingStatus status;
 
