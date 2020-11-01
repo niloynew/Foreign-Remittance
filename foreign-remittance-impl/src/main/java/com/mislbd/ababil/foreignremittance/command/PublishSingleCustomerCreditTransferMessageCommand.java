@@ -7,12 +7,12 @@ import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 @CommandAttribute(
     name = "Create SingleCustomerCreditTransfer Message",
     group = "FOREIGN REMITTANCE")
-public class CreatePublishSingleCustomerCreditTransferMessageCommand
+public class PublishSingleCustomerCreditTransferMessageCommand
     extends Command<MT103MessageRequest> {
 
-  public CreatePublishSingleCustomerCreditTransferMessageCommand() {}
+  public PublishSingleCustomerCreditTransferMessageCommand() {}
 
-  public CreatePublishSingleCustomerCreditTransferMessageCommand(MT103MessageRequest payload) {
+  public PublishSingleCustomerCreditTransferMessageCommand(MT103MessageRequest payload) {
     super(payload);
   }
 }

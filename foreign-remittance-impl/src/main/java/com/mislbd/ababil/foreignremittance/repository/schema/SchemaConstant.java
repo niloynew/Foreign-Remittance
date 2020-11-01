@@ -6,6 +6,7 @@ public class SchemaConstant {
   public static final String NOSTRO_ACCOUNT_SEQUENCE_NAME = "S_ID_NOSTRO_ACCOUNT";
   public static final String SHADOW_ACCOUNT_TABLE_NAME = "ID_SHADOW_ACCOUNT";
   public static final String SHADOW_ACCOUNT_SEQUENCE_NAME = "S_ID_SHADOW_ACCOUNT";
+  public static final String SWIFT_REGISTER_SEQUENCE_NAME = "SWIFT_REGISTER_ID";
 
   public static final String ID_PRODUCT_TABLE_NAME = "ID_PRODUCT";
   public static final String ID_PRODUCT_SEQUENCE_NAME = "S_ID_PRODUCT";
@@ -38,4 +39,5 @@ public class SchemaConstant {
   public static final String NOSTRO_TRANSACTION = "ID_NOSTRO_TXN_RECORD";
   public static final String NOSTRO_TRANSACTION_RECORD = "NOSTRO_TRANSACTION_RECORD";
   public static final String SHADOW_TRANSACTION_RECORD = "ID_SHADOW_TXN";
+  public static final String SWIFT_REGISTER = "ID_SWIFT_REGISTER";
 }

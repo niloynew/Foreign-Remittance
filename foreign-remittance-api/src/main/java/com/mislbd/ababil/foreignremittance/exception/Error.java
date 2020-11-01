@@ -238,6 +238,21 @@ public enum Error {
       return message;
     }
   },
+  SWIFT_REGISTER_NOT_FOUND_EXCEPTION("230", "0011") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages.get(this.getModule() + this.getCode()).orElse("Swift Register not found");
+      return message;
+    }
+  },
   ;
 
   // region <R>
