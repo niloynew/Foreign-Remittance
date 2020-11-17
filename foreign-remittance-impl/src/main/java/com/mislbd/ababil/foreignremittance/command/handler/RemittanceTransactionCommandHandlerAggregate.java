@@ -279,7 +279,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
     request.setInterbankSettlementAmount(remittanceTransaction.getAmountFcy());
     request.setInstructedCurrency(null);
     request.setInstructedAmount(null);
-    request.setExchangeRate(remittanceTransaction.getClientRate());
     request.setSelectedOrderingCustomerOption(SelectOptions.OptionK);
     request.setOrderingCustomerAccount(remittanceTransaction.getApplicantAccountNumber());
     request.setOrderingCustomerNameAndAddress(
@@ -295,8 +294,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
             .concat(System.lineSeparator())
             .concat(remittanceTransaction.getBeneficiaryAddress()));
     request.setDetailsOfCharges(String.valueOf(DetailsOfCharges.OUR));
-    request.setSendersChargeCurrency("BDT");
-    request.setSendersChargeAmount(remittanceTransaction.getTotalChargeAmount());
+    request.setSenderToReceiverInformation("");
     return request;
   }
 }
