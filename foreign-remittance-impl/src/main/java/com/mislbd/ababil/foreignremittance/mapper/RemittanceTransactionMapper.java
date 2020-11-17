@@ -13,6 +13,7 @@ import com.mislbd.ababil.transaction.domain.IDTransactionRequest;
 import com.mislbd.ababil.transaction.domain.SubGlTransactionRequest;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import java.math.BigDecimal;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @SuppressWarnings("Duplicates")
@@ -25,14 +26,17 @@ public class RemittanceTransactionMapper {
   private final ShadowAccountRepository shadowAccountRepository;
   private BigDecimal chargeAmount = null;
   private BigDecimal totalChargeAmount = null;
+  private final BankInformationMapper bankInformationMapper;
 
   public RemittanceTransactionMapper(
       RemittanceTransactionRepository remittanceTransactionRepository,
       TransactionTypeRepository transactionTypeRepository,
-      ShadowAccountRepository shadowAccountRepository) {
+      ShadowAccountRepository shadowAccountRepository,
+      BankInformationMapper bankInformationMapper) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.transactionTypeRepository = transactionTypeRepository;
     this.shadowAccountRepository = shadowAccountRepository;
+    this.bankInformationMapper = bankInformationMapper;
   }
 
   public ResultMapper<RemittanceTransactionEntity, RemittanceTransaction> entityToDomain() {
@@ -70,7 +74,13 @@ public class RemittanceTransactionMapper {
             .setExchangeGainLoss(entity.getExchangeGainLoss())
             .setGlobalTransactionNo(entity.getGlobalTransactionNo())
             .setTotalChargeAmount(entity.getTotalChargeAmount())
-            .setTotalChargeAmountAfterWaived(entity.getTotalChargeAmountAfterWaived());
+            .setTotalChargeAmountAfterWaived(entity.getTotalChargeAmountAfterWaived())
+            .setBankInformation(
+                entity
+                    .getBankInformationEntity()
+                    .stream()
+                    .map(bankEntity -> bankInformationMapper.entityToDomain().map(bankEntity))
+                    .collect(Collectors.toList()));
   }
 
   public ResultMapper<RemittanceTransaction, RemittanceTransactionEntity> domainToEntity() {

@@ -14,4 +14,11 @@ public class BankInformationMapper {
             .setSwiftCode(domain.getSwiftCode())
             .setBankTypeId(domain.getBankTypeId());
   }
+
+  public ResultMapper<BankInformationEntity, BankInformation> entityToDomain() {
+    return entity ->
+        new BankInformation()
+            .setSwiftCode(entity.getSwiftCode())
+            .setBankTypeId(entity.getBankTypeId());
+  }
 }
