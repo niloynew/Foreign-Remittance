@@ -5,10 +5,8 @@ import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateViewMT103FromRemittanceTransactionCommand;
-import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
-import com.mislbd.ababil.foreignremittance.domain.BankInformation;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
+import com.mislbd.ababil.foreignremittance.domain.*;
+import com.mislbd.ababil.foreignremittance.exception.BankTypeNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.BankInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceChargeInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
@@ -18,7 +16,9 @@ import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionR
 import com.mislbd.ababil.foreignremittance.repository.schema.BankInformationEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeInformationEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
+import com.mislbd.ababil.foreignremittance.service.BankTypeService;
 import com.mislbd.ababil.foreignremittance.service.salient.DisbursementService;
+import com.mislbd.ababil.organization.service.BranchService;
 import com.mislbd.ababil.transaction.service.TransactionService;
 import com.mislbd.asset.command.api.Command;
 import com.mislbd.asset.command.api.CommandEvent;
@@ -29,7 +29,7 @@ import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.security.core.NgSession;
 import com.mislbd.swift.broker.model.BankOperationCode;
 import com.mislbd.swift.broker.model.DetailsOfCharges;
-import com.mislbd.swift.broker.model.OrderingCustomerOption;
+import com.mislbd.swift.broker.model.raw.SelectOptions;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import java.math.BigDecimal;
@@ -56,7 +56,9 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final ConfigurationService configurationService;
   private BigDecimal totalChargeAmount = null;
   private final Auditor auditor;
+  private final BranchService branchService;
   private final SwiftMTMessageService swiftMTMessageService;
+  private final BankTypeService bankTypeService;
   private String serviceURL = "192.168.1.104:8087/swift-service";
 
   //  CalendarConfigurationService calendarConfigurationService;
@@ -73,7 +75,9 @@ public class RemittanceTransactionCommandHandlerAggregate {
       TransactionService transactionService,
       ConfigurationService configurationService,
       Auditor auditor,
-      SwiftMTMessageService swiftMTMessageService) {
+      BranchService branchService,
+      SwiftMTMessageService swiftMTMessageService,
+      BankTypeService bankTypeService) {
 
     this.transactionRepository = transactionRepository;
     this.transactionMapper = transactionMapper;
@@ -86,7 +90,9 @@ public class RemittanceTransactionCommandHandlerAggregate {
     this.transactionService = transactionService;
     this.configurationService = configurationService;
     this.auditor = auditor;
+    this.branchService = branchService;
     this.swiftMTMessageService = swiftMTMessageService;
+    this.bankTypeService = bankTypeService;
   }
 
   @CommandListener(
@@ -223,38 +229,74 @@ public class RemittanceTransactionCommandHandlerAggregate {
 
   private MT103MessageRequest mapTransactionToMessageRequest(
       RemittanceTransaction remittanceTransaction) {
+    MT103MessageRequest request = new MT103MessageRequest();
+    request.setSenderAddress(
+        branchService.findBranch(ngSession.getUserBranch()).get().getSwiftCode());
+    List<BankInformation> bankInformationList = remittanceTransaction.getBankInformation();
+    for (BankInformation bankInformation : bankInformationList) {
+      BankType bankType =
+          bankTypeService
+              .getBankType(bankInformation.getBankTypeId())
+              .orElseThrow(BankTypeNotFoundException::new);
+      switch (bankType.getCode()) {
+        case "00":
+          request.setReceiverAddress(bankInformation.getSwiftCode());
+          break;
+        case "51":
+          request.setSendingInstituteIdentifierCode(bankInformation.getSwiftCode());
+          break;
+        case "52":
+          request.setSelectedOrderingInstitutionOption(SelectOptions.OptionA);
+          request.setOrderingInstitutionIdentifierCode(bankInformation.getSwiftCode());
+          break;
+        case "53":
+          request.setSelectedSendersCorrespondentOption(SelectOptions.OptionA);
+          request.setSendersCorrespondentIdentifierCode(bankInformation.getSwiftCode());
+          break;
+        case "54":
+          request.setSelectedReceiversCorrespondentOption(SelectOptions.OptionA);
+          request.setReceiversCorrespondentIdentifierCode(bankInformation.getSwiftCode());
+          break;
+        case "55":
+          request.setSelectedThirdReimbursementInstitutionOption(SelectOptions.OptionA);
+          request.setThirdReimbursementInstitutionIdentifierCode(bankInformation.getSwiftCode());
+          break;
+        case "56":
+          request.setSelectedIntermediaryInstitutionOption(SelectOptions.OptionA);
+          request.setIntermediaryInstitutionIdentifierCode(bankInformation.getSwiftCode());
+          break;
+        case "57":
+          request.setSelectedAccountWithInstitutionOption(SelectOptions.OptionA);
+          request.setAccountWithInstitutionIdentifierCode(bankInformation.getSwiftCode());
+          break;
+      }
+    }
 
-    MT103MessageRequest mt103MessageRequest = new MT103MessageRequest();
-    mt103MessageRequest.setSendersReference(remittanceTransaction.getTransactionReferenceNumber());
-    mt103MessageRequest.setBankOperationCode(String.valueOf(BankOperationCode.CRED));
-    mt103MessageRequest.setExchangeRate(remittanceTransaction.getClientRate());
-    mt103MessageRequest.setInterbankSettlementAmount(remittanceTransaction.getAmountLcy());
-    mt103MessageRequest.setInterbankSettlementCurrency(remittanceTransaction.getCurrencyCode());
-    mt103MessageRequest.setInterbankSettlementValueDate(
-        Date.valueOf(remittanceTransaction.getValueDate()));
-    mt103MessageRequest.setOrderingCustomerAccount(
-        remittanceTransaction.getApplicantAccountNumber());
-    mt103MessageRequest.setOrderingCustomerPartyIdentifier(
-        String.valueOf(OrderingCustomerOption.OptionA));
-    mt103MessageRequest.setOrderingCustomerNameAndAddress(
-        remittanceTransaction.getApplicant().concat(remittanceTransaction.getApplicantAddress()));
-    mt103MessageRequest.setSelectedBeneficiaryCustomerOption(null);
-    mt103MessageRequest.setBeneficiaryCustomerAccount(
-        remittanceTransaction.getBeneficiaryAccountNumber());
-    mt103MessageRequest.setBeneficiaryCustomerOptionFModel(null);
-    mt103MessageRequest.setBeneficiaryCustomerNameAndAddress(
+    request.setSendersReference(remittanceTransaction.getTransactionReferenceNumber());
+    request.setBankOperationCode(String.valueOf(BankOperationCode.CRED));
+    request.setInterbankSettlementValueDate(Date.valueOf(remittanceTransaction.getValueDate()));
+    request.setInterbankSettlementCurrency(remittanceTransaction.getCurrencyCode());
+    request.setInterbankSettlementAmount(remittanceTransaction.getAmountLcy());
+    request.setInstructedCurrency(null);
+    request.setInstructedAmount(null);
+    request.setExchangeRate(remittanceTransaction.getClientRate());
+    request.setSelectedOrderingCustomerOption(SelectOptions.NoLetterOption);
+    request.setOrderingCustomerAccount(remittanceTransaction.getApplicantAccountNumber());
+    request.setOrderingCustomerNameAndAddress(
+        remittanceTransaction
+            .getApplicant()
+            .concat(System.lineSeparator())
+            .concat(remittanceTransaction.getApplicantAddress()));
+    request.setSelectedBeneficiaryCustomerOption(SelectOptions.NoLetterOption);
+    request.setBeneficiaryCustomerAccount(remittanceTransaction.getBeneficiaryAccountNumber());
+    request.setBeneficiaryCustomerNameAndAddress(
         remittanceTransaction
             .getBeneficiaryName()
+            .concat(System.lineSeparator())
             .concat(remittanceTransaction.getBeneficiaryAddress()));
-    mt103MessageRequest.setDetailsOfCharges(String.valueOf(DetailsOfCharges.OUR));
-
-    mt103MessageRequest.setSendersChargeAmount(remittanceTransaction.getTotalChargeAmount());
-    mt103MessageRequest.setReceiversChargeAmount(BigDecimal.ZERO);
-
-    mt103MessageRequest.setSendersChargeCurrency(remittanceTransaction.getCurrencyCode());
-    mt103MessageRequest.setReceiversChargeCurrency(remittanceTransaction.getCurrencyCode());
-    mt103MessageRequest.setInstructedCurrency(remittanceTransaction.getCurrencyCode());
-
-    return mt103MessageRequest;
+    request.setDetailsOfCharges(String.valueOf(DetailsOfCharges.OUR));
+    request.setSendersChargeCurrency("BDT");
+    request.setSendersChargeAmount(remittanceTransaction.getTotalChargeAmount());
+    return request;
   }
 }

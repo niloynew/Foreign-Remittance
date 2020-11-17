@@ -253,6 +253,22 @@ public enum Error {
       return message;
     }
   },
+
+  BANK_TYPE_NOT_FOUND_EXCEPTION("231", "0011") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages.get(this.getModule() + this.getCode()).orElse("Swift Register not found");
+      return message;
+    }
+  },
   ;
 
   // region <R>
