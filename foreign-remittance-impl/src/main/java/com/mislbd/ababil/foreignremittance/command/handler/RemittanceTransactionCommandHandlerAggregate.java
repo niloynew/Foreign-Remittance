@@ -276,11 +276,11 @@ public class RemittanceTransactionCommandHandlerAggregate {
     request.setBankOperationCode(String.valueOf(BankOperationCode.CRED));
     request.setInterbankSettlementValueDate(Date.valueOf(remittanceTransaction.getValueDate()));
     request.setInterbankSettlementCurrency(remittanceTransaction.getCurrencyCode());
-    request.setInterbankSettlementAmount(remittanceTransaction.getAmountLcy());
+    request.setInterbankSettlementAmount(remittanceTransaction.getAmountFcy());
     request.setInstructedCurrency(null);
     request.setInstructedAmount(null);
     request.setExchangeRate(remittanceTransaction.getClientRate());
-    request.setSelectedOrderingCustomerOption(SelectOptions.NoLetterOption);
+    request.setSelectedOrderingCustomerOption(SelectOptions.OptionK);
     request.setOrderingCustomerAccount(remittanceTransaction.getApplicantAccountNumber());
     request.setOrderingCustomerNameAndAddress(
         remittanceTransaction
