@@ -93,7 +93,22 @@ public class SwiftMessageCommandHandlerAggregate {
   @CommandHandler
   public CommandResponse<Void> publish103Message(
       PublishSingleCustomerCreditTransferMessageCommand command) {
-    swiftMTMessageService.publish103message(serviceURL, command.getPayload());
+//    swiftMTMessageService.publish103message(serviceURL, command.getPayload());
+    // ToDo change when kafka integration complete
+    ProcessResult processResult =
+            swiftMTMessageService.save103message(serviceURL, command.getPayload());
+    MT103MessageRequest request = command.getPayload();
+    if (processResult.getErrorCode() == 0) {
+      MessageResponse messageResponse =
+              swiftMTMessageService.generate103message(serviceURL, command.getPayload());
+      SwiftRegister swiftRegister =
+              swiftRegisterMapper.prepareSwiftRegister(
+                      request.getSendersReference(),
+                      request.getSenderAddress(),
+                      request.getReceiverAddress(),
+                      messageResponse.getMessage());
+      commandProcessor.executeResult(new SaveSwiftRegisterCommand(swiftRegister));
+    }
     return CommandResponse.asVoid();
   }
 
