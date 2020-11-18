@@ -294,7 +294,10 @@ public class RemittanceTransactionCommandHandlerAggregate {
             .concat(System.lineSeparator())
             .concat(remittanceTransaction.getBeneficiaryAddress()));
     request.setDetailsOfCharges(String.valueOf(DetailsOfCharges.OUR));
-    request.setSenderToReceiverInformation(remittanceTransaction.getCommodityDescription() != null ? remittanceTransaction.getCommodityDescription() : "");
+    request.setSenderToReceiverInformation(
+        remittanceTransaction.getCommodityDescription() != null
+            ? remittanceTransaction.getCommodityDescription()
+            : "");
     return request;
   }
 }
