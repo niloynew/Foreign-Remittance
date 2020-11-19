@@ -2,10 +2,10 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.foreignremittance.command.*;
-import com.mislbd.ababil.foreignremittance.domain.SwiftRegister;
 import com.mislbd.ababil.foreignremittance.mapper.SwiftRegisterMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionEntity;
+import com.mislbd.ababil.foreignremittance.service.SwiftRegisterService;
 import com.mislbd.asset.command.api.CommandEvent;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
@@ -33,7 +33,7 @@ public class SwiftMessageCommandHandlerAggregate {
   private final Auditor auditor;
   private final CommandProcessor commandProcessor;
   private final SwiftMTMessageService swiftMTMessageService;
-  private final SwiftRegisterMapper swiftRegisterMapper;
+  private final SwiftRegisterService swiftRegisterService;
   private String serviceURL = "http://192.168.1.104:8087/swift-service";
 
   public SwiftMessageCommandHandlerAggregate(
@@ -42,14 +42,15 @@ public class SwiftMessageCommandHandlerAggregate {
       Auditor auditor,
       CommandProcessor commandProcessor,
       SwiftMTMessageService swiftMTMessageService,
-      SwiftRegisterMapper swiftRegisterMapper) {
+      SwiftRegisterMapper swiftRegisterMapper,
+      SwiftRegisterService swiftRegisterService) {
 
     this.nostroTransactionRepository = nostroTransactionRepository;
     this.modelMapper = modelMapper;
     this.auditor = auditor;
     this.commandProcessor = commandProcessor;
     this.swiftMTMessageService = swiftMTMessageService;
-    this.swiftRegisterMapper = swiftRegisterMapper;
+    this.swiftRegisterService = swiftRegisterService;
   }
 
   @CommandListener(
@@ -101,13 +102,11 @@ public class SwiftMessageCommandHandlerAggregate {
     if (processResult.getErrorCode() == 0) {
       MessageResponse messageResponse =
           swiftMTMessageService.generate103message(serviceURL, command.getPayload());
-      SwiftRegister swiftRegister =
-          swiftRegisterMapper.prepareSwiftRegister(
-              request.getSendersReference(),
-              request.getSenderAddress(),
-              request.getReceiverAddress(),
-              messageResponse.getMessage());
-      commandProcessor.executeResult(new SaveSwiftRegisterCommand(swiftRegister));
+      swiftRegisterService.registerMessage(
+          request.getSendersReference(),
+          request.getSenderAddress(),
+          request.getReceiverAddress(),
+          messageResponse.getMessage());
     }
     return CommandResponse.asVoid();
   }
@@ -122,13 +121,11 @@ public class SwiftMessageCommandHandlerAggregate {
     if (processResult.getErrorCode() == 0) {
       MessageResponse messageResponse =
           swiftMTMessageService.generate103message(serviceURL, command.getPayload());
-      SwiftRegister swiftRegister =
-          swiftRegisterMapper.prepareSwiftRegister(
-              request.getSendersReference(),
-              request.getSenderAddress(),
-              request.getReceiverAddress(),
-              messageResponse.getMessage());
-      commandProcessor.executeResult(new SaveSwiftRegisterCommand(swiftRegister));
+      swiftRegisterService.registerMessage(
+          request.getSendersReference(),
+          request.getSenderAddress(),
+          request.getReceiverAddress(),
+          messageResponse.getMessage());
     }
     return CommandResponse.of(processResult);
   }

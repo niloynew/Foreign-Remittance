@@ -120,5 +120,3 @@ public class RemittanceTransactionController {
                 new CreateViewMT103FromRemittanceTransactionCommand(remittanceTransaction)));
   }
 }
-
-// return ResponseEntity.ok(queryResult.getResult());

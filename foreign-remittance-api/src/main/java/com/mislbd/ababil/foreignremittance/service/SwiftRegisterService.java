@@ -26,4 +26,11 @@ public interface SwiftRegisterService {
       Date messageRoutingDateTimeTo);
 
   SwiftRegister findByReferenceNumber(String referenceNumber);
+
+  void saveRegister(SwiftRegister swiftRegister);
+
+  void updateRegister(SwiftRegister swiftRegister);
+
+  void registerMessage(
+      String sendersReference, String senderAddress, String receiverAddress, String message);
 }

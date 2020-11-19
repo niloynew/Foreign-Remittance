@@ -2,7 +2,7 @@ package com.mislbd.ababil.foreignremittance.controller;
 
 import static org.springframework.http.HttpStatus.ACCEPTED;
 
-import com.mislbd.ababil.foreignremittance.command.SaveSwiftRegisterCommand;
+import com.mislbd.ababil.foreignremittance.command.UpdateSwiftRegisterCommand;
 import com.mislbd.ababil.foreignremittance.domain.SwiftRegister;
 import com.mislbd.ababil.foreignremittance.query.SwiftRegisterQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
@@ -62,8 +62,8 @@ public class SwiftRegisterController {
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(ACCEPTED)
-  public ResponseEntity<?> saveRegister(@RequestBody SwiftRegister register) {
-    commandProcessor.executeResult(new SaveSwiftRegisterCommand(register));
+  public ResponseEntity<?> updateRegister(@RequestBody SwiftRegister register) {
+    commandProcessor.executeResult(new UpdateSwiftRegisterCommand(register));
     return ResponseEntity.accepted().build();
   }
 }
