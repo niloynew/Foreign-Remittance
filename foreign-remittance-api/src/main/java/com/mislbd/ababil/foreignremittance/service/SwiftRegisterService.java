@@ -5,6 +5,8 @@ import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.swift.broker.model.RoutingStatus;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Pageable;
 
 public interface SwiftRegisterService {
@@ -33,4 +35,6 @@ public interface SwiftRegisterService {
 
   void registerMessage(
       String sendersReference, String senderAddress, String receiverAddress, String message);
+
+  Optional<SwiftRegister> findRegisterById(Long id);
 }

@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
+import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.SwiftRegister;
 import com.mislbd.ababil.foreignremittance.exception.SwiftRegisterNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.SwiftRegisterMapper;
@@ -105,5 +106,12 @@ public class SwiftRegisterServiceImpl implements SwiftRegisterService {
             .setReceiverAddress(receiverAddress)
             .setMsg(message);
     swiftRegisterRepository.save(swiftRegisterMapper.domainToEntity().map(register));
+  }
+
+  @Override
+  public Optional<SwiftRegister> findRegisterById(Long id) {
+    return swiftRegisterRepository
+            .findById(id)
+            .map(swiftRegisterMapper.entityToDomain()::map);
   }
 }
