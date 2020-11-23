@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import org.springframework.data.domain.Pageable;
 
 public interface SwiftRegisterService {
@@ -37,4 +38,6 @@ public interface SwiftRegisterService {
       String sendersReference, String senderAddress, String receiverAddress, String message);
 
   Optional<SwiftRegister> findRegisterById(Long id);
+
+  MT103MessageRequest getMessageRequestByRegisterId(Long id);
 }

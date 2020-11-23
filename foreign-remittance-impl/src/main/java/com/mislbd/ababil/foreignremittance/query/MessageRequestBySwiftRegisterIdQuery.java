@@ -10,6 +10,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SwiftRegisterIdQuery extends QueryRequest {
-  private Long id;
+public class MessageRequestBySwiftRegisterIdQuery extends QueryRequest {
+    private Long id;
 }

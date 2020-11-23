@@ -5,6 +5,7 @@ import com.mislbd.ababil.foreignremittance.domain.BankType;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.exception.BankTypeNotFoundException;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
+import com.mislbd.ababil.foreignremittance.mapper.TransactionToRequestMapper;
 import com.mislbd.ababil.foreignremittance.query.Mt103RequestRemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionQuery;
@@ -30,13 +31,18 @@ public class RemittanceTransactionQueryHandlerAggregate {
     private final NgSession ngSession;
     private final BranchService branchService;
     private final BankTypeService bankTypeService;
+    private final TransactionToRequestMapper transactionToRequestMapper;
 
     public RemittanceTransactionQueryHandlerAggregate(
-            RemittanceTransactionService remittanceTransactionService, NgSession ngSession, BranchService branchService, BankTypeService bankTypeService) {
+            RemittanceTransactionService remittanceTransactionService,
+            NgSession ngSession,
+            BranchService branchService,
+            BankTypeService bankTypeService, TransactionToRequestMapper transactionToRequestMapper) {
         this.remittanceTransactionService = remittanceTransactionService;
         this.ngSession = ngSession;
         this.branchService = branchService;
         this.bankTypeService = bankTypeService;
+        this.transactionToRequestMapper = transactionToRequestMapper;
     }
 
     @QueryHandler
@@ -80,81 +86,10 @@ public class RemittanceTransactionQueryHandlerAggregate {
     public QueryResult<?> getMt103RequestByRemittanceTransactionId(
             Mt103RequestRemittanceTransactionIdQuery mt103RequestRemittanceTransactionIdQuery) {
         return QueryResult.of(
-                mapTransactionToMessageRequest(remittanceTransactionService.findTransaction(mt103RequestRemittanceTransactionIdQuery.getId()).orElseThrow(RemittanceTransactionNotFoundException::new)));
-    }
-
-    private MT103MessageRequest mapTransactionToMessageRequest(
-            RemittanceTransaction remittanceTransaction) {
-        MT103MessageRequest request = new MT103MessageRequest();
-        request.setSenderAddress(
-                branchService.findBranch(ngSession.getUserBranch()).get().getSwiftCode());
-        List<BankInformation> bankInformationList = remittanceTransaction.getBankInformation();
-        for (BankInformation bankInformation : bankInformationList) {
-            BankType bankType =
-                    bankTypeService
-                            .getBankType(bankInformation.getBankTypeId())
-                            .orElseThrow(BankTypeNotFoundException::new);
-            switch (bankType.getCode()) {
-                case "00":
-                    request.setReceiverAddress(bankInformation.getSwiftCode());
-                    break;
-                case "51":
-                    request.setSendingInstituteIdentifierCode(bankInformation.getSwiftCode());
-                    break;
-                case "52":
-                    request.setSelectedOrderingInstitutionOption(SelectOptions.OptionA);
-                    request.setOrderingInstitutionIdentifierCode(bankInformation.getSwiftCode());
-                    break;
-                case "53":
-                    request.setSelectedSendersCorrespondentOption(SelectOptions.OptionA);
-                    request.setSendersCorrespondentIdentifierCode(bankInformation.getSwiftCode());
-                    break;
-                case "54":
-                    request.setSelectedReceiversCorrespondentOption(SelectOptions.OptionA);
-                    request.setReceiversCorrespondentIdentifierCode(bankInformation.getSwiftCode());
-                    break;
-                case "55":
-                    request.setSelectedThirdReimbursementInstitutionOption(SelectOptions.OptionA);
-                    request.setThirdReimbursementInstitutionIdentifierCode(bankInformation.getSwiftCode());
-                    break;
-                case "56":
-                    request.setSelectedIntermediaryInstitutionOption(SelectOptions.OptionA);
-                    request.setIntermediaryInstitutionIdentifierCode(bankInformation.getSwiftCode());
-                    break;
-                case "57":
-                    request.setSelectedAccountWithInstitutionOption(SelectOptions.OptionA);
-                    request.setAccountWithInstitutionIdentifierCode(bankInformation.getSwiftCode());
-                    break;
-            }
-        }
-
-        request.setSendersReference(remittanceTransaction.getTransactionReferenceNumber());
-        request.setBankOperationCode(String.valueOf(BankOperationCode.CRED));
-        request.setInterbankSettlementValueDate(Date.valueOf(remittanceTransaction.getValueDate()));
-        request.setInterbankSettlementCurrency(remittanceTransaction.getCurrencyCode());
-        request.setInterbankSettlementAmount(remittanceTransaction.getAmountFcy());
-        request.setInstructedCurrency(null);
-        request.setInstructedAmount(null);
-        request.setSelectedOrderingCustomerOption(SelectOptions.OptionK);
-        request.setOrderingCustomerAccount(remittanceTransaction.getApplicantAccountNumber());
-        request.setOrderingCustomerNameAndAddress(
-                remittanceTransaction
-                        .getApplicant()
-                        .concat(System.lineSeparator())
-                        .concat(remittanceTransaction.getApplicantAddress()));
-        request.setSelectedBeneficiaryCustomerOption(SelectOptions.NoLetterOption);
-        request.setBeneficiaryCustomerAccount(remittanceTransaction.getBeneficiaryAccountNumber());
-        request.setBeneficiaryCustomerNameAndAddress(
-                remittanceTransaction
-                        .getBeneficiaryName()
-                        .concat(System.lineSeparator())
-                        .concat(remittanceTransaction.getBeneficiaryAddress()));
-        request.setDetailsOfCharges(String.valueOf(DetailsOfCharges.OUR));
-        request.setSenderToReceiverInformation(
-                remittanceTransaction.getCommodityDescription() != null
-                        ? remittanceTransaction.getCommodityDescription()
-                        : "");
-        return request;
+                transactionToRequestMapper.mapTransactionToMessageRequest(
+                        remittanceTransactionService
+                                .findTransaction(mt103RequestRemittanceTransactionIdQuery.getId())
+                                .orElseThrow(RemittanceTransactionNotFoundException::new)));
     }
 
 

@@ -11,5 +11,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Mt103RequestRemittanceTransactionIdQuery extends QueryRequest {
-    private Long id;
+  private Long id;
 }

@@ -4,7 +4,7 @@ import static org.springframework.http.HttpStatus.ACCEPTED;
 
 import com.mislbd.ababil.foreignremittance.command.UpdateSwiftRegisterCommand;
 import com.mislbd.ababil.foreignremittance.domain.SwiftRegister;
-import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
+import com.mislbd.ababil.foreignremittance.query.MessageRequestBySwiftRegisterIdQuery;
 import com.mislbd.ababil.foreignremittance.query.SwiftRegisterIdQuery;
 import com.mislbd.ababil.foreignremittance.query.SwiftRegisterQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/swift-registers", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class SwiftRegisterController {
 
     private final CommandProcessor commandProcessor;
@@ -32,7 +32,7 @@ public class SwiftRegisterController {
         this.queryManager = queryManager;
     }
 
-    @GetMapping
+    @GetMapping(path = "/swift-registers")
     public ResponseEntity<?> getSwiftRegisters(
             Pageable pageable,
             @RequestParam(value = "asPage", required = false) final boolean asPage,
@@ -62,7 +62,7 @@ public class SwiftRegisterController {
         return ResponseEntity.ok(queryResult.getResult());
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/update-swift-register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(ACCEPTED)
     public ResponseEntity<?> updateRegister(@RequestBody SwiftRegister register) {
         commandProcessor.executeResult(new UpdateSwiftRegisterCommand(register));
@@ -71,11 +71,15 @@ public class SwiftRegisterController {
 
     @GetMapping(path = "/swift-register/{registerId}")
     public ResponseEntity<?> getRegister(@PathVariable("registerId") Long registerId) {
-        QueryResult<?> queryResult =
-                queryManager.executeQuery(new SwiftRegisterIdQuery(registerId));
+        QueryResult<?> queryResult = queryManager.executeQuery(new SwiftRegisterIdQuery(registerId));
         return ResponseEntity.ok(queryResult.getResult());
     }
 
+    @GetMapping(path = "/message-request/{registerId}")
+    public ResponseEntity<?> getMt103MessageRequestByRegisterId(@PathVariable("registerId") Long registerId) {
+        QueryResult<?> queryResult = queryManager.executeQuery(new MessageRequestBySwiftRegisterIdQuery(registerId));
+        return ResponseEntity.ok(queryResult.getResult());
+    }
 
 
 }
