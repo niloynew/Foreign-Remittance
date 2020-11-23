@@ -15,11 +15,10 @@ import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
 import com.mislbd.swift.broker.model.RoutingStatus;
+import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -32,14 +31,17 @@ public class SwiftRegisterServiceImpl implements SwiftRegisterService {
   private final RemittanceTransactionMapper remittanceTransactionMapper;
   private final TransactionToRequestMapper transactionToRequestMapper;
 
-
   public SwiftRegisterServiceImpl(
-          SwiftRegisterRepository swiftRegisterRepository, SwiftRegisterMapper swiftRegisterMapper, RemittanceTransactionRepository remittanceTransactionRepository, RemittanceTransactionMapper remittanceTransactionMapper, TransactionToRequestMapper transactionToRequestMapper) {
+      SwiftRegisterRepository swiftRegisterRepository,
+      SwiftRegisterMapper swiftRegisterMapper,
+      RemittanceTransactionRepository remittanceTransactionRepository,
+      RemittanceTransactionMapper remittanceTransactionMapper,
+      TransactionToRequestMapper transactionToRequestMapper) {
     this.swiftRegisterRepository = swiftRegisterRepository;
     this.swiftRegisterMapper = swiftRegisterMapper;
-      this.remittanceTransactionRepository = remittanceTransactionRepository;
-      this.remittanceTransactionMapper = remittanceTransactionMapper;
-      this.transactionToRequestMapper = transactionToRequestMapper;
+    this.remittanceTransactionRepository = remittanceTransactionRepository;
+    this.remittanceTransactionMapper = remittanceTransactionMapper;
+    this.transactionToRequestMapper = transactionToRequestMapper;
   }
 
   @Override
@@ -62,7 +64,6 @@ public class SwiftRegisterServiceImpl implements SwiftRegisterService {
                 messageRoutingDateTimeTo),
             pageable),
         swiftRegisterMapper.entityToDomain());
-
   }
 
   @Override
@@ -119,13 +120,14 @@ public class SwiftRegisterServiceImpl implements SwiftRegisterService {
             .setSenderAddress(senderAddress)
             .setReceiverAddress(receiverAddress)
             .setMsg(message);
-    if (swiftRegisterRepository.findByReferenceNo(sendersReference) != null){
-      register.setId(swiftRegisterRepository
+    if (swiftRegisterRepository.findByReferenceNo(sendersReference) != null) {
+      register.setId(
+          swiftRegisterRepository
               .findByReferenceNo(sendersReference)
-              .orElseThrow(SwiftRegisterNotFoundException::new).getId());
+              .orElseThrow(SwiftRegisterNotFoundException::new)
+              .getId());
     }
     swiftRegisterRepository.save(swiftRegisterMapper.domainToEntity().map(register));
-
   }
 
   @Override
@@ -134,18 +136,21 @@ public class SwiftRegisterServiceImpl implements SwiftRegisterService {
   }
 
   @Override
-  public MT103MessageRequest getMessageRequestByRegisterId(Long id){
-     SwiftRegister swiftRegister = swiftRegisterMapper
-             .entityToDomain()
-             .map(swiftRegisterRepository
-                             .findById(id)
-                             .orElseThrow(SwiftRegisterNotFoundException::new));
+  public MT103MessageRequest getMessageRequestByRegisterId(Long id) {
+    SwiftRegister swiftRegister =
+        swiftRegisterMapper
+            .entityToDomain()
+            .map(
+                swiftRegisterRepository
+                    .findById(id)
+                    .orElseThrow(SwiftRegisterNotFoundException::new));
 
-     RemittanceTransaction remittanceTransaction = remittanceTransactionRepository.findByTransactionReferenceNumber(swiftRegister.getReferenceNo()).map(remittanceTransactionMapper.entityToDomain()::map).orElseThrow(RemittanceTransactionNotFoundException::new);
+    RemittanceTransaction remittanceTransaction =
+        remittanceTransactionRepository
+            .findByTransactionReferenceNumber(swiftRegister.getReferenceNo())
+            .map(remittanceTransactionMapper.entityToDomain()::map)
+            .orElseThrow(RemittanceTransactionNotFoundException::new);
 
-     return transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
+    return transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
   }
-
-
-
 }

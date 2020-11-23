@@ -1,9 +1,5 @@
 package com.mislbd.ababil.foreignremittance.query.handler;
 
-import com.mislbd.ababil.foreignremittance.domain.BankInformation;
-import com.mislbd.ababil.foreignremittance.domain.BankType;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
-import com.mislbd.ababil.foreignremittance.exception.BankTypeNotFoundException;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.TransactionToRequestMapper;
 import com.mislbd.ababil.foreignremittance.query.Mt103RequestRemittanceTransactionIdQuery;
@@ -17,80 +13,73 @@ import com.mislbd.asset.query.annotation.QueryAggregate;
 import com.mislbd.asset.query.annotation.QueryHandler;
 import com.mislbd.asset.query.api.QueryResult;
 import com.mislbd.security.core.NgSession;
-import com.mislbd.swift.broker.model.BankOperationCode;
-import com.mislbd.swift.broker.model.DetailsOfCharges;
-import com.mislbd.swift.broker.model.raw.SelectOptions;
-import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
-
-import java.sql.Date;
 import java.util.List;
 
 @QueryAggregate
 public class RemittanceTransactionQueryHandlerAggregate {
-    private final RemittanceTransactionService remittanceTransactionService;
-    private final NgSession ngSession;
-    private final BranchService branchService;
-    private final BankTypeService bankTypeService;
-    private final TransactionToRequestMapper transactionToRequestMapper;
+  private final RemittanceTransactionService remittanceTransactionService;
+  private final NgSession ngSession;
+  private final BranchService branchService;
+  private final BankTypeService bankTypeService;
+  private final TransactionToRequestMapper transactionToRequestMapper;
 
-    public RemittanceTransactionQueryHandlerAggregate(
-            RemittanceTransactionService remittanceTransactionService,
-            NgSession ngSession,
-            BranchService branchService,
-            BankTypeService bankTypeService, TransactionToRequestMapper transactionToRequestMapper) {
-        this.remittanceTransactionService = remittanceTransactionService;
-        this.ngSession = ngSession;
-        this.branchService = branchService;
-        this.bankTypeService = bankTypeService;
-        this.transactionToRequestMapper = transactionToRequestMapper;
+  public RemittanceTransactionQueryHandlerAggregate(
+      RemittanceTransactionService remittanceTransactionService,
+      NgSession ngSession,
+      BranchService branchService,
+      BankTypeService bankTypeService,
+      TransactionToRequestMapper transactionToRequestMapper) {
+    this.remittanceTransactionService = remittanceTransactionService;
+    this.ngSession = ngSession;
+    this.branchService = branchService;
+    this.bankTypeService = bankTypeService;
+    this.transactionToRequestMapper = transactionToRequestMapper;
+  }
+
+  @QueryHandler
+  public QueryResult<?> remittanceTransactionSearch(
+      RemittanceTransactionQuery remittanceTransactionQuery) {
+    if (remittanceTransactionQuery.isAsPage()) {
+      PagedResult<?> pagedResult =
+          remittanceTransactionService.getTransactions(
+              remittanceTransactionQuery.getPageable(),
+              remittanceTransactionQuery.getGlobalTransactionNo(),
+              remittanceTransactionQuery.getRemittanceType(),
+              remittanceTransactionQuery.getTransactionReferenceNumber(),
+              remittanceTransactionQuery.getApplicantName(),
+              remittanceTransactionQuery.getBeneficiaryName(),
+              remittanceTransactionQuery.getFromDate(),
+              remittanceTransactionQuery.getToDate());
+      return QueryResult.of(pagedResult);
+    } else {
+
+      List<?> listResult =
+          remittanceTransactionService.getTransactions(
+              remittanceTransactionQuery.getGlobalTransactionNo(),
+              remittanceTransactionQuery.getRemittanceType(),
+              remittanceTransactionQuery.getTransactionReferenceNumber(),
+              remittanceTransactionQuery.getApplicantName(),
+              remittanceTransactionQuery.getBeneficiaryName(),
+              remittanceTransactionQuery.getFromDate(),
+              remittanceTransactionQuery.getToDate());
+      return QueryResult.of(listResult);
     }
+  }
 
-    @QueryHandler
-    public QueryResult<?> remittanceTransactionSearch(
-            RemittanceTransactionQuery remittanceTransactionQuery) {
-        if (remittanceTransactionQuery.isAsPage()) {
-            PagedResult<?> pagedResult =
-                    remittanceTransactionService.getTransactions(
-                            remittanceTransactionQuery.getPageable(),
-                            remittanceTransactionQuery.getGlobalTransactionNo(),
-                            remittanceTransactionQuery.getRemittanceType(),
-                            remittanceTransactionQuery.getTransactionReferenceNumber(),
-                            remittanceTransactionQuery.getApplicantName(),
-                            remittanceTransactionQuery.getBeneficiaryName(),
-                            remittanceTransactionQuery.getFromDate(),
-                            remittanceTransactionQuery.getToDate());
-            return QueryResult.of(pagedResult);
-        } else {
+  @QueryHandler
+  public QueryResult<?> remittanceTransactionSearchById(
+      RemittanceTransactionIdQuery remittanceTransactionIdQuery) {
+    return QueryResult.of(
+        remittanceTransactionService.findTransaction(remittanceTransactionIdQuery.getId()));
+  }
 
-            List<?> listResult =
-                    remittanceTransactionService.getTransactions(
-                            remittanceTransactionQuery.getGlobalTransactionNo(),
-                            remittanceTransactionQuery.getRemittanceType(),
-                            remittanceTransactionQuery.getTransactionReferenceNumber(),
-                            remittanceTransactionQuery.getApplicantName(),
-                            remittanceTransactionQuery.getBeneficiaryName(),
-                            remittanceTransactionQuery.getFromDate(),
-                            remittanceTransactionQuery.getToDate());
-            return QueryResult.of(listResult);
-        }
-    }
-
-    @QueryHandler
-    public QueryResult<?> remittanceTransactionSearchById(
-            RemittanceTransactionIdQuery remittanceTransactionIdQuery) {
-        return QueryResult.of(
-                remittanceTransactionService.findTransaction(remittanceTransactionIdQuery.getId()));
-    }
-
-    @QueryHandler
-    public QueryResult<?> getMt103RequestByRemittanceTransactionId(
-            Mt103RequestRemittanceTransactionIdQuery mt103RequestRemittanceTransactionIdQuery) {
-        return QueryResult.of(
-                transactionToRequestMapper.mapTransactionToMessageRequest(
-                        remittanceTransactionService
-                                .findTransaction(mt103RequestRemittanceTransactionIdQuery.getId())
-                                .orElseThrow(RemittanceTransactionNotFoundException::new)));
-    }
-
-
+  @QueryHandler
+  public QueryResult<?> getMt103RequestByRemittanceTransactionId(
+      Mt103RequestRemittanceTransactionIdQuery mt103RequestRemittanceTransactionIdQuery) {
+    return QueryResult.of(
+        transactionToRequestMapper.mapTransactionToMessageRequest(
+            remittanceTransactionService
+                .findTransaction(mt103RequestRemittanceTransactionIdQuery.getId())
+                .orElseThrow(RemittanceTransactionNotFoundException::new)));
+  }
 }
