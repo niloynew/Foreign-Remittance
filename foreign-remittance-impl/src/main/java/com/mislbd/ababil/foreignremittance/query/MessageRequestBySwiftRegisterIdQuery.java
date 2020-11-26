@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MessageRequestBySwiftRegisterIdQuery extends QueryRequest {
-    private Long id;
+  private Long id;
 }
