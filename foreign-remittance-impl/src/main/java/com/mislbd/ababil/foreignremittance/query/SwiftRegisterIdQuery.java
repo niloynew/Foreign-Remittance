@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-public class Mt103RequestRemittanceTransactionIdQuery extends QueryRequest {
+public class SwiftRegisterIdQuery extends QueryRequest {
   private Long id;
 }

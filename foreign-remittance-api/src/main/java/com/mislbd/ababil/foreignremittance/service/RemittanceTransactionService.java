@@ -29,4 +29,6 @@ public interface RemittanceTransactionService {
       LocalDate toDate);
 
   Optional<RemittanceTransaction> findTransaction(Long id);
+
+  Optional<RemittanceTransaction> findTransaction(String referenceNumber);
 }

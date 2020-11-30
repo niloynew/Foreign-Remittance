@@ -95,4 +95,11 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
         .findById(id)
         .map(remittanceTransactionMapper.entityToDomain()::map);
   }
+
+  @Override
+  public Optional<RemittanceTransaction> findTransaction(String referenceNumber) {
+    return remittanceTransactionRepository
+        .findByTransactionReferenceNumber(referenceNumber)
+        .map(remittanceTransactionMapper.entityToDomain()::map);
+  }
 }

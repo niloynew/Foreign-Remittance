@@ -5,7 +5,6 @@ import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.*;
-import com.mislbd.ababil.foreignremittance.exception.BankTypeNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.BankInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceChargeInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
@@ -26,13 +25,8 @@ import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.security.core.NgSession;
-import com.mislbd.swift.broker.model.BankOperationCode;
-import com.mislbd.swift.broker.model.DetailsOfCharges;
-import com.mislbd.swift.broker.model.raw.SelectOptions;
-import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
@@ -214,9 +208,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
             chargeInformationEntity.setRemittanceTransaction(entity);
             chargeInformationRepository.save(chargeInformationEntity);
           });
-
     return entity;
   }
-
-
 }
