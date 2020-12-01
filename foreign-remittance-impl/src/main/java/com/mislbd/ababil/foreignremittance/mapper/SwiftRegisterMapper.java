@@ -21,7 +21,7 @@ public class SwiftRegisterMapper {
         new SwiftRegister()
             .setId(entity.getId())
             .setReferenceNo(entity.getReferenceNo())
-            .setSenderAddress(entity.getReceiverAddress())
+            .setSenderAddress(entity.getSenderAddress())
             .setReceiverAddress(entity.getReceiverAddress())
             .setStatus(entity.getStatus())
             .setMessageRoutingDateTime(entity.getMessageRoutingDateTime())
