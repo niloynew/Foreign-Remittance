@@ -2,7 +2,6 @@ package com.mislbd.ababil.foreignremittance.query.handler;
 
 import com.mislbd.ababil.foreignremittance.domain.SwiftRegister;
 import com.mislbd.ababil.foreignremittance.query.MessageRequestBySwiftRegisterIdQuery;
-import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.SwiftRegisterIdQuery;
 import com.mislbd.ababil.foreignremittance.query.SwiftRegisterQuery;
 import com.mislbd.ababil.foreignremittance.service.SwiftRegisterService;
@@ -48,10 +47,8 @@ public class SwiftRegisterQueryHandlerAggregate {
   }
 
   @QueryHandler
-  public QueryResult<?> swiftRegisterSearchById(
-          SwiftRegisterIdQuery swiftRegisterIdQuery) {
-    return QueryResult.of(
-        swiftRegisterService.findRegisterById(swiftRegisterIdQuery.getId()));
+  public QueryResult<?> swiftRegisterSearchById(SwiftRegisterIdQuery swiftRegisterIdQuery) {
+    return QueryResult.of(swiftRegisterService.findRegisterById(swiftRegisterIdQuery.getId()));
   }
 
   @QueryHandler

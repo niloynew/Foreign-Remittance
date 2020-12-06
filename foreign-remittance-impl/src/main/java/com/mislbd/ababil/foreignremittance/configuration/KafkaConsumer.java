@@ -41,7 +41,7 @@ public class KafkaConsumer {
     }
   }
 
-  @KafkaListener(topics = "swift-routing", groupId = "swift-group")
+  @KafkaListener(topics = "swift-routing-status", groupId = "swift-group")
   public void receiveRoutingMessage(ConsumerRecord<String, Object> consumerRecord) {
     LOGGER.info("received message='{}'", consumerRecord.key());
     try {

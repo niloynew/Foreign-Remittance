@@ -119,8 +119,10 @@ public class SwiftRegisterServiceImpl implements SwiftRegisterService {
             .setReferenceNo(sendersReference)
             .setSenderAddress(senderAddress)
             .setReceiverAddress(receiverAddress)
-            .setMsg(message);
-    if (swiftRegisterRepository.findByReferenceNo(sendersReference) != null) {
+            .setTextBlock(message)
+            .setMessageRoutingDateTime(new Date())
+            .setStatus(RoutingStatus.Queued);
+    if (swiftRegisterRepository.findByReferenceNo(sendersReference).isPresent()) {
       register.setId(
           swiftRegisterRepository
               .findByReferenceNo(sendersReference)
