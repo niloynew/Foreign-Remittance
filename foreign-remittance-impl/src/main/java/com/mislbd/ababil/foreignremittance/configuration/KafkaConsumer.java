@@ -26,7 +26,7 @@ public class KafkaConsumer {
   @Autowired private SwiftRegisterService swiftRegisterService;
   @Autowired private SwiftRegisterMapper swiftRegisterMapper;
 
-  @KafkaListener(topics = "swift-nostro-msg", groupId = "swift-group")
+  @KafkaListener(topics = "swift-nostro-txn", groupId = "swift-group")
   public void receiveMessage(ConsumerRecord<String, Object> consumerRecord) {
     LOGGER.info("received message='{}'", consumerRecord.key());
     try {
