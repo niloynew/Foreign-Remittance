@@ -18,6 +18,9 @@ import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
 import com.mislbd.swift.broker.model.raw.NostroTransaction;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,8 +68,12 @@ public class SwiftMessageCommandHandlerAggregate {
   @Transactional
   @CommandHandler
   public CommandResponse<Void> updateMessage(UpdateNostroTransactionCommand command) {
-    nostroTransactionRepository.save(
-        modelMapper.map(command.getPayload(), NostroTransactionEntity.class));
+
+    NostroTransactionEntity nostroTransactionEntity =
+        modelMapper.map(command.getPayload(), NostroTransactionEntity.class);
+    LocalDate valueDate = convertToLocalDateViaInstant(command.getPayload().getValueDate());
+    nostroTransactionEntity.setValueDate(valueDate);
+    nostroTransactionRepository.save(nostroTransactionEntity);
     return CommandResponse.asVoid();
   }
 
@@ -79,7 +86,10 @@ public class SwiftMessageCommandHandlerAggregate {
         && !dtoList.getNostroAccountTransactionList().isEmpty()) {
       for (NostroTransaction dto : dtoList.getNostroAccountTransactionList()) {
         try {
-          nostroTransactionRepository.save(modelMapper.map(dto, NostroTransactionEntity.class));
+          NostroTransactionEntity nostroTransactionEntity =
+              modelMapper.map(dto, NostroTransactionEntity.class);
+          nostroTransactionEntity.setSelected(true);
+          nostroTransactionRepository.save(nostroTransactionEntity);
           success++;
         } catch (Exception e) {
           e.printStackTrace();
@@ -137,5 +147,9 @@ public class SwiftMessageCommandHandlerAggregate {
     MessageResponse messageResponse =
         swiftMTMessageService.generate103message(serviceURL, command.getPayload());
     return CommandResponse.of(messageResponse);
+  }
+
+  public LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+    return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
   }
 }
