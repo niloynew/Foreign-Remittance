@@ -34,7 +34,7 @@ configure(allprojects) { project ->
     }
 
     ext {
-        mislVersion = '0.1.12'
+        mislVersion = '0.1.14'
         ojdbcVersion = '12.2.0.1'
         googleJavaFormatVersion = '1.6'
     }
@@ -133,8 +133,8 @@ configure(subprojects) { project ->
                 "com.mislbd.ababil:ababil-transaction-impl",
                 "com.mislbd.ababil:ababil-organization-api",
                 "com.mislbd.ababil:ababil-organization-impl",
-                "com.mislbd:swift-broker-api:1.15.7-SNAPSHOT",
-                "com.mislbd:swift-broker-impl:1.15.7-SNAPSHOT"
+                "com.mislbd:swift-broker-api:1.15.8-SNAPSHOT",
+                "com.mislbd:swift-broker-impl:1.15.8-SNAPSHOT"
         )
 
         implementation('com.mislbd.document:document-ng') {
