@@ -150,5 +150,5 @@ public class SwiftMessageCommandHandlerAggregate {
         return CommandResponse.of(messageResponse);
     }
 
-   
+
 }
