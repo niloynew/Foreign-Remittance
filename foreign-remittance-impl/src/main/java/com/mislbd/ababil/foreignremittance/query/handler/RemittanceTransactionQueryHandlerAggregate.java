@@ -80,6 +80,8 @@ public class RemittanceTransactionQueryHandlerAggregate {
         transactionToRequestMapper.mapTransactionToMessageRequest(
             remittanceTransactionService
                 .findTransaction(mt103RequestRemittanceTransactionIdQuery.getId())
-                .orElseThrow(RemittanceTransactionNotFoundException::new)));
+                .orElseThrow(RemittanceTransactionNotFoundException::new),
+            null,
+            null));
   }
 }
