@@ -3,7 +3,10 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import javax.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = SchemaConstant.NOSTRO_TRANSACTION)
@@ -40,8 +43,11 @@ public class NostroTransactionEntity extends BaseEntity {
   @Column(name = "BENEF_INSTITUTE")
   private String beneficiaryInstitute;
 
-  @Column(name = "BENE_NAME_AND_ADDRESS")
-  private String beneficiaryNameAndAddress;
+  @Column(name = "BENEF_NAME")
+  private String beneficiaryName;
+
+  @Column(name = "BENEF_ADDRESS")
+  private String beneficiaryAddress;
 
   @Column(name = "SUPP_DETAILS")
   private String supplementaryDetails;
@@ -61,12 +67,22 @@ public class NostroTransactionEntity extends BaseEntity {
   @Column(name = "MESSAGE_TYPE")
   private String messageType;
 
-  @Column(name = "ORDER_INSTITUTE")
-  private String orderInstitute;
-
   @Lob
   @Column(name = "MSG")
   private String messageText;
+
+  @Column(name = "APPLICANT")
+  private String applicantName;
+
+  @Column(name = "APPLICANT_ADDRESS")
+  private String applicantAddress;
+
+  @Column(name = "APPLICANT_ACCOUNT")
+  private String applicantAccount;
+
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "nostroTransaction")
+  @Fetch(FetchMode.SUBSELECT)
+  private List<BankConfiguration> bankInformation;
 
   public long getId() {
     return id;
@@ -148,12 +164,20 @@ public class NostroTransactionEntity extends BaseEntity {
     this.beneficiaryInstitute = beneficiaryInstitute;
   }
 
-  public String getBeneficiaryNameAndAddress() {
-    return beneficiaryNameAndAddress;
+  public String getBeneficiaryName() {
+    return beneficiaryName;
   }
 
-  public void setBeneficiaryNameAndAddress(String beneficiaryNameAndAddress) {
-    this.beneficiaryNameAndAddress = beneficiaryNameAndAddress;
+  public void setBeneficiaryName(String beneficiaryName) {
+    this.beneficiaryName = beneficiaryName;
+  }
+
+  public String getBeneficiaryAddress() {
+    return beneficiaryAddress;
+  }
+
+  public void setBeneficiaryAddress(String beneficiaryAddress) {
+    this.beneficiaryAddress = beneficiaryAddress;
   }
 
   public String getSupplementaryDetails() {
@@ -204,19 +228,43 @@ public class NostroTransactionEntity extends BaseEntity {
     this.messageType = messageType;
   }
 
-  public String getOrderInstitute() {
-    return orderInstitute;
-  }
-
-  public void setOrderInstitute(String orderInstitute) {
-    this.orderInstitute = orderInstitute;
-  }
-
   public String getMessageText() {
     return messageText;
   }
 
   public void setMessageText(String messageText) {
     this.messageText = messageText;
+  }
+
+  public String getApplicantName() {
+    return applicantName;
+  }
+
+  public void setApplicantName(String applicantName) {
+    this.applicantName = applicantName;
+  }
+
+  public String getApplicantAddress() {
+    return applicantAddress;
+  }
+
+  public void setApplicantAddress(String applicantAddress) {
+    this.applicantAddress = applicantAddress;
+  }
+
+  public String getApplicantAccount() {
+    return applicantAccount;
+  }
+
+  public void setApplicantAccount(String applicantAccount) {
+    this.applicantAccount = applicantAccount;
+  }
+
+  public List<BankConfiguration> getBankInformation() {
+    return bankInformation;
+  }
+
+  public void setBankInformation(List<BankConfiguration> bankInformation) {
+    this.bankInformation = bankInformation;
   }
 }

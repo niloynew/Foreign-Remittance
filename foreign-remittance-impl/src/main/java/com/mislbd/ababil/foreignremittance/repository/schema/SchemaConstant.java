@@ -40,4 +40,5 @@ public class SchemaConstant {
   public static final String NOSTRO_TRANSACTION_RECORD = "NOSTRO_TRANSACTION_RECORD";
   public static final String SHADOW_TRANSACTION_RECORD = "ID_SHADOW_TXN";
   public static final String SWIFT_REGISTER = "ID_SWIFT_REGISTER";
+  public static final String BANK_CONFIGURATION = "ID_BANK_CONFIGURATION";
 }
