@@ -2,7 +2,6 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.foreignremittance.command.*;
-import com.mislbd.ababil.foreignremittance.mapper.SwiftRegisterMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.SwiftRegisterService;
@@ -42,7 +41,6 @@ public class SwiftMessageCommandHandlerAggregate {
       Auditor auditor,
       CommandProcessor commandProcessor,
       SwiftMTMessageService swiftMTMessageService,
-      SwiftRegisterMapper swiftRegisterMapper,
       SwiftRegisterService swiftRegisterService) {
 
     this.nostroTransactionRepository = nostroTransactionRepository;
