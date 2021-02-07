@@ -24,24 +24,25 @@ public class TransactionToRequestMapper {
     private final NgSession ngSession;
     private final BranchService branchService;
     private final BankTypeService bankTypeService;
-    private final SwiftRegisterService swiftRegisterService;
+
 
     public TransactionToRequestMapper(
-            NgSession ngSession, BranchService branchService, BankTypeService bankTypeService, SwiftRegisterService swiftRegisterService) {
+            NgSession ngSession,
+            BranchService branchService,
+            BankTypeService bankTypeService
+            ) {
         this.ngSession = ngSession;
         this.branchService = branchService;
         this.bankTypeService = bankTypeService;
-        this.swiftRegisterService = swiftRegisterService;
+
     }
 
     public MT103MessageRequest mapTransactionToMessageRequest(
-            RemittanceTransaction remittanceTransaction) {
+            RemittanceTransaction remittanceTransaction, String senderAddress, String receiverAddress) {
 
         MT103MessageRequest request = new MT103MessageRequest();
-        request.setSenderAddress(
-                swiftRegisterService.findByReferenceNumber(remittanceTransaction.getTransactionReferenceNumber()).getSenderAddress());
-        request.setReceiverAddress(
-                swiftRegisterService.findByReferenceNumber(remittanceTransaction.getTransactionReferenceNumber()).getReceiverAddress());
+        request.setSenderAddress(senderAddress);
+        request.setReceiverAddress(receiverAddress);
         List<BankInformation> bankInformationList = remittanceTransaction.getBankInformation();
         for (BankInformation bankInformation : bankInformationList) {
             BankType bankType =
