@@ -153,6 +153,9 @@ public class SwiftRegisterServiceImpl implements SwiftRegisterService {
             .map(remittanceTransactionMapper.entityToDomain()::map)
             .orElseThrow(RemittanceTransactionNotFoundException::new);
 
-    return transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
+    return transactionToRequestMapper.mapTransactionToMessageRequest(
+        remittanceTransaction,
+        swiftRegister.getSenderAddress(),
+        swiftRegister.getReceiverAddress());
   }
 }
