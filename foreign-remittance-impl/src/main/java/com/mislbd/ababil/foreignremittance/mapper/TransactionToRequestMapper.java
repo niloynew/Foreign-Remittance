@@ -30,11 +30,10 @@ public class TransactionToRequestMapper {
   }
 
   public MT103MessageRequest mapTransactionToMessageRequest(
-      RemittanceTransaction remittanceTransaction, String senderAddress, String receiverAddress) {
-
+      RemittanceTransaction remittanceTransaction) {
     MT103MessageRequest request = new MT103MessageRequest();
-    request.setSenderAddress(senderAddress);
-    request.setReceiverAddress(receiverAddress);
+    request.setSenderAddress(
+        branchService.findBranch(ngSession.getUserBranch()).get().getSwiftCode());
     List<BankInformation> bankInformationList = remittanceTransaction.getBankInformation();
     for (BankInformation bankInformation : bankInformationList) {
       BankType bankType =
