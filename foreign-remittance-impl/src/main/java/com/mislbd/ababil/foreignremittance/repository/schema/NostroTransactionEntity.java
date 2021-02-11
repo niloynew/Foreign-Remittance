@@ -37,8 +37,8 @@ public class NostroTransactionEntity extends BaseEntity {
   @Column(name = "ADV_BRANCH")
   private String advBranch;
 
-  @Column(name = "BENEF_CUSTOMER")
-  private String beneficiaryCustomer;
+  @Column(name = "BENEF_ACCOUNT")
+  private String beneficiaryAccount;
 
   @Column(name = "BENEF_INSTITUTE")
   private String beneficiaryInstitute;
@@ -148,12 +148,12 @@ public class NostroTransactionEntity extends BaseEntity {
     this.advBranch = advBranch;
   }
 
-  public String getBeneficiaryCustomer() {
-    return beneficiaryCustomer;
+  public String getBeneficiaryAccount() {
+    return beneficiaryAccount;
   }
 
-  public void setBeneficiaryCustomer(String beneficiaryCustomer) {
-    this.beneficiaryCustomer = beneficiaryCustomer;
+  public void setBeneficiaryAccount(String beneficiaryAccount) {
+    this.beneficiaryAccount = beneficiaryAccount;
   }
 
   public String getBeneficiaryInstitute() {
