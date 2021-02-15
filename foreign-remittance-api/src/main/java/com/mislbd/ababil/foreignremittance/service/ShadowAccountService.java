@@ -17,7 +17,8 @@ public interface ShadowAccountService {
       String branch,
       LocalDate accountOpenDate,
       String currency,
-      String product);
+      String product,
+      Boolean isActive);
 
   List<Account> findActiveAccounts(
       String shadowAccountNumber,
@@ -27,7 +28,8 @@ public interface ShadowAccountService {
       String branch,
       LocalDate accountOpenDate,
       String currency,
-      String product);
+      String product,
+      Boolean isActive);
 
   Account findById(Long id);
 }

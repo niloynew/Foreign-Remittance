@@ -17,7 +17,8 @@ public class ShadowAccountSpecification {
       String branch,
       LocalDate accountOpenDate,
       String currency,
-      String product) {
+      String product,
+      Boolean isActive) {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
       Path<IDProductEntity> productRoot = root.get("product");
@@ -56,7 +57,7 @@ public class ShadowAccountSpecification {
         predicate = cb.and(predicate, cb.equal(productRoot.get("id"), product));
       }
 
-      return cb.and(predicate, cb.equal(root.get("isActive"), true));
+      return cb.and(predicate, cb.equal(root.get("isActive"), isActive));
     };
   }
 }

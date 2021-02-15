@@ -24,4 +24,5 @@ public class AccountQuery extends QueryRequest {
   private LocalDate accountOpenDate;
   private String currency;
   private String product;
+  private Boolean isActive;
 }

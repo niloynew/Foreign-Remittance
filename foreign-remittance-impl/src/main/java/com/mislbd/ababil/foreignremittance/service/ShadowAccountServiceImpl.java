@@ -35,7 +35,8 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
       String branch,
       LocalDate accountOpenDate,
       String currency,
-      String product) {
+      String product,
+      Boolean isActive) {
     return PagedResultBuilder.build(
         shadowAccountRepository.findAll(
             ShadowAccountSpecification.searchSpecification(
@@ -46,7 +47,8 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
                 branch,
                 accountOpenDate,
                 currency,
-                product),
+                product,
+                isActive),
             pageable),
         shadowAccountMapper.entityToDomain());
   }
@@ -60,7 +62,8 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
       String branch,
       LocalDate accountOpenDate,
       String currency,
-      String product) {
+      String product,
+      Boolean isActive) {
     return ListResultBuilder.build(
         shadowAccountRepository.findAll(
             ShadowAccountSpecification.searchSpecification(
@@ -71,7 +74,8 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
                 branch,
                 accountOpenDate,
                 currency,
-                product)),
+                product,
+                isActive)),
         shadowAccountMapper.entityToDomain());
   }
 
