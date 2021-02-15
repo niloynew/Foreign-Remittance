@@ -10,6 +10,7 @@ public class IDProductSpecification {
       String name, String code, String currency) {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
+      query.orderBy(cb.desc(root.get("id")));
 
       if (name != null) {
         predicate =
