@@ -29,7 +29,8 @@ public class AccountServiceImpl implements AccountService {
       String branch,
       LocalDate accountOpenDate,
       String currency,
-      String product) {
+      String product,
+      Boolean isActive) {
     return shadowAccountService.findActiveAccounts(
         pageable,
         number,
@@ -39,7 +40,8 @@ public class AccountServiceImpl implements AccountService {
         branch,
         accountOpenDate,
         currency,
-        product);
+        product,
+        isActive);
   }
 
   @Override
@@ -51,9 +53,18 @@ public class AccountServiceImpl implements AccountService {
       String branch,
       LocalDate accountOpenDate,
       String currency,
-      String product) {
+      String product,
+      Boolean isActive) {
     return shadowAccountService.findActiveAccounts(
-        number, name, nostroAccountNumber, bank, branch, accountOpenDate, currency, product);
+        number,
+        name,
+        nostroAccountNumber,
+        bank,
+        branch,
+        accountOpenDate,
+        currency,
+        product,
+        isActive);
   }
 
   @Override

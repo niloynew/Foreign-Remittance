@@ -42,7 +42,8 @@ public class AccountController {
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           final LocalDate accountOpenDate,
       @RequestParam(value = "currencyCode", required = false) final String currency,
-      @RequestParam(value = "productId", required = false) final String product) {
+      @RequestParam(value = "productId", required = false) final String product,
+      @RequestParam(value = "isActive", required = false) final Boolean isActive) {
 
     QueryResult<?> queryResult =
         queryManager.executeQuery(
@@ -56,7 +57,8 @@ public class AccountController {
                 branch,
                 accountOpenDate,
                 currency,
-                product));
+                product,
+                isActive));
     if (queryResult.isEmpty()) {
       return ResponseEntity.noContent().build();
     }

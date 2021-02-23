@@ -31,7 +31,8 @@ public class AccountQueryHandlerAggregate {
               accountQuery.getBranch(),
               accountQuery.getAccountOpenDate(),
               accountQuery.getCurrency(),
-              accountQuery.getProduct());
+              accountQuery.getProduct(),
+              accountQuery.getIsActive());
 
       return QueryResult.of(accountPage);
 
@@ -45,7 +46,8 @@ public class AccountQueryHandlerAggregate {
               accountQuery.getBranch(),
               accountQuery.getAccountOpenDate(),
               accountQuery.getCurrency(),
-              accountQuery.getProduct());
+              accountQuery.getProduct(),
+              accountQuery.getIsActive());
       return QueryResult.of(accounts);
     }
   }

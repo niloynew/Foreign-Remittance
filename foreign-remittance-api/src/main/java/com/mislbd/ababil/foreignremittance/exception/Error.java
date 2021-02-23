@@ -269,6 +269,21 @@ public enum Error {
       return message;
     }
   },
+  ID_BASE_EXCEPTION("260", "0012") {
+    private String message;
+
+    @Override
+    public String getMessages() {
+      return message;
+    }
+
+    @Override
+    public String getMessages(LocaleMessages localeMessages) {
+      message =
+          localeMessages.get(this.getModule() + this.getCode()).orElse("Currencies is required");
+      return message;
+    }
+  },
   ;
 
   // region <R>
