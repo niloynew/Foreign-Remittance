@@ -57,7 +57,11 @@ public class ShadowAccountSpecification {
         predicate = cb.and(predicate, cb.equal(productRoot.get("id"), product));
       }
 
-      return cb.and(predicate, cb.equal(root.get("isActive"), isActive));
+      if (isActive != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("isActive"), isActive));
+      }
+
+      return predicate;
     };
   }
 }
