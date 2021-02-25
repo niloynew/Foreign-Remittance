@@ -24,7 +24,7 @@ public class ShadowAccountSpecification {
       Path<IDProductEntity> productRoot = root.get("product");
 
       if (number != null) {
-        predicate = cb.and(predicate, cb.like(root.get("number"), number));
+        predicate = cb.and(predicate, cb.like(root.get("number"), "%" + number + "%"));
       }
 
       if (name != null) {
@@ -34,7 +34,9 @@ public class ShadowAccountSpecification {
 
       if (nostroAccountNumber != null) {
         predicate =
-            cb.and(predicate, cb.like(root.get("nostroAccountNumber"), nostroAccountNumber));
+            cb.and(
+                predicate,
+                cb.like(root.get("nostroAccountNumber"), "%" + nostroAccountNumber + "%"));
       }
 
       if (bank != null) {
@@ -64,4 +66,7 @@ public class ShadowAccountSpecification {
       return predicate;
     };
   }
+
+  /*criteria.add(cb.like(emp.get(Employee_.name), p));
+  criteria.add(cb.like(emp.<String>get("name"), p));*/
 }
