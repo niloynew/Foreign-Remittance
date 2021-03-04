@@ -20,4 +20,5 @@ public class ChargeMappingQuery extends QueryRequest {
   private Long typeId;
   private Long chargeId;
   private Boolean chargeModifiable;
+  private Boolean vatModifiable;
 }

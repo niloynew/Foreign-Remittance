@@ -8,10 +8,12 @@ public class RemittanceChargeInformation {
   private String chargeName;
   private Boolean canModifyCharge;
   private boolean chargeModifiable;
+  private boolean vatModifiable;
   private ChargeAccountType chargeAccountType;
   private String chargeAccountCode;
   private BigDecimal chargeAmount;
   private BigDecimal chargeAmountAfterWaived;
+  private BigDecimal vatAmountAfterWaived;
   private ChargeAccountType vatAccountType;
   private String vatAccountCode;
   private BigDecimal vatAmount;
@@ -54,6 +56,15 @@ public class RemittanceChargeInformation {
     return this;
   }
 
+  public boolean isVatModifiable() {
+    return vatModifiable;
+  }
+
+  public RemittanceChargeInformation setVatModifiable(boolean vatModifiable) {
+    this.vatModifiable = vatModifiable;
+    return this;
+  }
+
   public ChargeAccountType getChargeAccountType() {
     return chargeAccountType;
   }
@@ -88,6 +99,15 @@ public class RemittanceChargeInformation {
   public RemittanceChargeInformation setChargeAmountAfterWaived(
       BigDecimal chargeAmountAfterWaived) {
     this.chargeAmountAfterWaived = chargeAmountAfterWaived;
+    return this;
+  }
+
+  public BigDecimal getVatAmountAfterWaived() {
+    return vatAmountAfterWaived;
+  }
+
+  public RemittanceChargeInformation setVatAmountAfterWaived(BigDecimal vatAmountAfterWaived) {
+    this.vatAmountAfterWaived = vatAmountAfterWaived;
     return this;
   }
 

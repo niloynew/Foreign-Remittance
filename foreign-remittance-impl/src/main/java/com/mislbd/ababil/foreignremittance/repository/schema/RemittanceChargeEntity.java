@@ -40,6 +40,9 @@ public class RemittanceChargeEntity extends BaseEntity {
   @Column(name = "IS_CHARGE_MODIFIABLE")
   private boolean chargeModifiable;
 
+  @Column(name = "IS_VAT_MODIFIABLE")
+  private boolean vatModifiable;
+
   @Column(name = "IS_SLAB_BASED")
   private boolean slabBased;
 
@@ -147,6 +150,15 @@ public class RemittanceChargeEntity extends BaseEntity {
 
   public RemittanceChargeEntity setChargeModifiable(boolean chargeModifiable) {
     this.chargeModifiable = chargeModifiable;
+    return this;
+  }
+
+  public boolean isVatModifiable() {
+    return vatModifiable;
+  }
+
+  public RemittanceChargeEntity setVatModifiable(boolean vatModifiable) {
+    this.vatModifiable = vatModifiable;
     return this;
   }
 

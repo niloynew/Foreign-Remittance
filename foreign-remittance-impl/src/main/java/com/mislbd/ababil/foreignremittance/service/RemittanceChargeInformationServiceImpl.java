@@ -38,7 +38,7 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
     List<RemittanceChargeMappingEntity> chargeMappingList =
         remittanceChargeMappingRepository.findAll(
             RemittanceChargeMappingSpecification.findSpecificChargeMappings(
-                remittanceType, transactionTypeId, null, null));
+                remittanceType, transactionTypeId, null, null, null));
     List<RemittanceChargeEntity> chargeList = getChargeList(chargeMappingList, accountNumber);
     List<RemittanceChargeInformation> remittanceChargeInformationList = new ArrayList<>();
     if (chargeList.isEmpty()) return remittanceChargeInformationList;

@@ -31,11 +31,12 @@ public class ChargeMappingServiceImpl implements ChargeMappingService {
       RemittanceType remittanceType,
       Long typeId,
       Long remittanceChargeId,
-      Boolean chargeModifiable) {
+      Boolean chargeModifiable,
+      Boolean vatModifiable) {
     return PagedResultBuilder.build(
         remittanceChargeMappingRepository.findAll(
             RemittanceChargeMappingSpecification.findSpecificChargeMappings(
-                remittanceType, typeId, remittanceChargeId, chargeModifiable),
+                remittanceType, typeId, remittanceChargeId, chargeModifiable, vatModifiable),
             pageable),
         remittanceChargeMappingMapper.entityToDomain());
   }
@@ -45,11 +46,12 @@ public class ChargeMappingServiceImpl implements ChargeMappingService {
       RemittanceType remittanceType,
       Long typeId,
       Long remittanceChargeId,
-      Boolean chargeModifiable) {
+      Boolean chargeModifiable,
+      Boolean vatModifiable) {
     return ListResultBuilder.build(
         remittanceChargeMappingRepository.findAll(
             RemittanceChargeMappingSpecification.findSpecificChargeMappings(
-                remittanceType, typeId, remittanceChargeId, chargeModifiable)),
+                remittanceType, typeId, remittanceChargeId, chargeModifiable, vatModifiable)),
         remittanceChargeMappingMapper.entityToDomain());
   }
 }

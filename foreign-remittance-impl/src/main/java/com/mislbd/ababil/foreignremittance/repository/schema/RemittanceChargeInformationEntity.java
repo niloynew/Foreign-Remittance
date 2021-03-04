@@ -31,8 +31,14 @@ public class RemittanceChargeInformationEntity {
   @Column(name = "IS_CHARGE_MODIFIABLE")
   private boolean chargeModifiable;
 
+  @Column(name = "IS_VAT_MODIFIABLE")
+  private boolean vatModifiable;
+
   @Column(name = "CHARGE_AMOUNT_AFTER_WAIVED")
   private BigDecimal chargeAmountAfterWaived;
+
+  @Column(name = "VAT_AMOUNT_AFTER_WAIVED")
+  private BigDecimal vatAmountAfterWaived;
 
   @Column(name = "VAT_AMOUNT")
   private BigDecimal vatAmount;
@@ -98,6 +104,15 @@ public class RemittanceChargeInformationEntity {
     return this;
   }
 
+  public boolean isVatModifiable() {
+    return vatModifiable;
+  }
+
+  public RemittanceChargeInformationEntity setVatModifiable(boolean vatModifiable) {
+    this.vatModifiable = vatModifiable;
+    return this;
+  }
+
   public BigDecimal getChargeAmountAfterWaived() {
     return chargeAmountAfterWaived;
   }
@@ -105,6 +120,16 @@ public class RemittanceChargeInformationEntity {
   public RemittanceChargeInformationEntity setChargeAmountAfterWaived(
       BigDecimal chargeAmountAfterWaived) {
     this.chargeAmountAfterWaived = chargeAmountAfterWaived;
+    return this;
+  }
+
+  public BigDecimal getVatAmountAfterWaived() {
+    return vatAmountAfterWaived;
+  }
+
+  public RemittanceChargeInformationEntity setVatAmountAfterWaived(
+      BigDecimal vatAmountAfterWaived) {
+    this.vatAmountAfterWaived = vatAmountAfterWaived;
     return this;
   }
 

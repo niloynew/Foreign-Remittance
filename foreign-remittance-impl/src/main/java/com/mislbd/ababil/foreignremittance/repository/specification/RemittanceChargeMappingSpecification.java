@@ -14,7 +14,8 @@ public class RemittanceChargeMappingSpecification {
       RemittanceType remittanceType,
       Long transactionType,
       Long chargeId,
-      Boolean chargeModifiable) {
+      Boolean chargeModifiable,
+      Boolean vatModifiable) {
 
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
@@ -35,6 +36,10 @@ public class RemittanceChargeMappingSpecification {
 
       if (chargeModifiable != null) {
         predicate = cb.and(predicate, cb.equal(root.get("chargeModifiable"), chargeModifiable));
+      }
+
+      if (vatModifiable != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("vatModifiable"), vatModifiable));
       }
 
       return predicate;
