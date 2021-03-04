@@ -48,6 +48,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final TransactionService transactionService;
   private final ConfigurationService configurationService;
   private BigDecimal totalChargeAmount = null;
+  private BigDecimal totalVatAmount = null;
   private final Auditor auditor;
   private final BranchService branchService;
   private final SwiftMTMessageService swiftMTMessageService;
@@ -142,7 +143,14 @@ public class RemittanceTransactionCommandHandlerAggregate {
     } else {
       totalChargeAmount = transaction.getTotalChargeAmountAfterWaived();
     }
-    BigDecimal totalChargeAndVat = totalChargeAmount.add(transaction.getTotalVatAmount());
+
+    if (transaction.getTotalVatAmountAfterWaived() == null) {
+      totalVatAmount = transaction.getTotalVatAmount();
+    } else {
+      totalVatAmount = transaction.getTotalVatAmountAfterWaived();
+    }
+
+    BigDecimal totalChargeAndVat = totalChargeAmount.add(totalVatAmount);
     return CommandResponse.of(
         disbursementService.doOutwardTransaction(
             remittanceTransactionEntity,

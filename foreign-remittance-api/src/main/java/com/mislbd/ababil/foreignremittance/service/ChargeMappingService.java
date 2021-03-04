@@ -13,8 +13,13 @@ public interface ChargeMappingService {
       RemittanceType remittanceType,
       Long typeId,
       Long chargeId,
-      Boolean chargeModifiable);
+      Boolean chargeModifiable,
+      Boolean vatModifiable);
 
   List<RemittanceChargeMapping> findAll(
-      RemittanceType remittanceType, Long typeId, Long chargeId, Boolean chargeModifiable);
+      RemittanceType remittanceType,
+      Long typeId,
+      Long chargeId,
+      Boolean chargeModifiable,
+      Boolean vatModifiable);
 }

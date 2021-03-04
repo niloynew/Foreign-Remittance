@@ -38,11 +38,18 @@ public class ChargeMappingController {
       @RequestParam(value = "remittanceType", required = false) final RemittanceType remittanceType,
       @RequestParam(value = "typeId", required = false) final Long typeId,
       @RequestParam(value = "chargeId", required = false) final Long chargeId,
-      @RequestParam(value = "chargeModifiable", required = false) final Boolean chargeModifiable) {
+      @RequestParam(value = "chargeModifiable", required = false) final Boolean chargeModifiable,
+      @RequestParam(value = "chargeModifiable", required = false) final Boolean vatModifiable) {
     QueryResult<?> queryResult =
         queryManager.executeQuery(
             new ChargeMappingQuery(
-                pageable, asPage, remittanceType, typeId, chargeId, chargeModifiable));
+                pageable,
+                asPage,
+                remittanceType,
+                typeId,
+                chargeId,
+                chargeModifiable,
+                vatModifiable));
     return ResponseEntity.ok(queryResult.getResult());
   }
 

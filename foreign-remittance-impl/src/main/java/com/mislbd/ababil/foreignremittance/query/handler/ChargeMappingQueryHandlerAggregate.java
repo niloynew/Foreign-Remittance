@@ -25,7 +25,8 @@ public class ChargeMappingQueryHandlerAggregate {
               chargeMappingQuery.getRemittanceType(),
               chargeMappingQuery.getTypeId(),
               chargeMappingQuery.getChargeId(),
-              chargeMappingQuery.getChargeModifiable()));
+              chargeMappingQuery.getChargeModifiable(),
+              chargeMappingQuery.getVatModifiable()));
 
     } else {
       return QueryResult.of(
@@ -33,7 +34,8 @@ public class ChargeMappingQueryHandlerAggregate {
               chargeMappingQuery.getRemittanceType(),
               chargeMappingQuery.getTypeId(),
               chargeMappingQuery.getChargeId(),
-              chargeMappingQuery.getChargeModifiable()));
+              chargeMappingQuery.getChargeModifiable(),
+              chargeMappingQuery.getVatModifiable()));
     }
   }
 }

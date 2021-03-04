@@ -21,6 +21,8 @@ public class RemittanceChargeMapping {
 
   private Boolean chargeModifiable;
 
+  private Boolean vatModifiable;
+
   public long getId() {
     return id;
   }
@@ -81,6 +83,15 @@ public class RemittanceChargeMapping {
 
   public RemittanceChargeMapping setChargeModifiable(Boolean chargeModifiable) {
     this.chargeModifiable = chargeModifiable;
+    return this;
+  }
+
+  public Boolean getVatModifiable() {
+    return vatModifiable;
+  }
+
+  public RemittanceChargeMapping setVatModifiable(Boolean vatModifiable) {
+    this.vatModifiable = vatModifiable;
     return this;
   }
 }

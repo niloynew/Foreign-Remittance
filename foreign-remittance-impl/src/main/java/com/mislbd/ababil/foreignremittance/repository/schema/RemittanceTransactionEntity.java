@@ -134,6 +134,12 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "CHARGE_AFTER_WAIVED")
   private BigDecimal totalChargeAmountAfterWaived;
 
+  @Column(name = "TOTAL_VAT_AMOUNT")
+  private BigDecimal totalVatAmount;
+
+  @Column(name = "VAT_AFTER_WAIVED")
+  private BigDecimal totalVatAmountAfterWaived;
+
   @Column(name = "BATCH_NUMBER")
   private String batchNumber;
 
@@ -464,6 +470,25 @@ public class RemittanceTransactionEntity extends BaseEntity {
   public RemittanceTransactionEntity setTotalChargeAmountAfterWaived(
       BigDecimal totalChargeAmountAfterWaived) {
     this.totalChargeAmountAfterWaived = totalChargeAmountAfterWaived;
+    return this;
+  }
+
+  public BigDecimal getTotalVatAmount() {
+    return totalVatAmount;
+  }
+
+  public RemittanceTransactionEntity setTotalVatAmount(BigDecimal totalVatAmount) {
+    this.totalVatAmount = totalVatAmount;
+    return this;
+  }
+
+  public BigDecimal getTotalVatAmountAfterWaived() {
+    return totalVatAmountAfterWaived;
+  }
+
+  public RemittanceTransactionEntity setTotalVatAmountAfterWaived(
+      BigDecimal totalVatAmountAfterWaived) {
+    this.totalVatAmountAfterWaived = totalVatAmountAfterWaived;
     return this;
   }
 

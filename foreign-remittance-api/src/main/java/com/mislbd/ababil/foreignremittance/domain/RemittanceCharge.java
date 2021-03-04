@@ -23,6 +23,8 @@ public class RemittanceCharge {
 
   private boolean chargeModifiable;
 
+  private boolean vatModifiable;
+
   private boolean slabBased;
 
   private boolean fixedCharge;
@@ -134,6 +136,15 @@ public class RemittanceCharge {
 
   public RemittanceCharge setChargeModifiable(boolean chargeModifiable) {
     this.chargeModifiable = chargeModifiable;
+    return this;
+  }
+
+  public boolean isVatModifiable() {
+    return vatModifiable;
+  }
+
+  public RemittanceCharge setVatModifiable(boolean vatModifiable) {
+    this.vatModifiable = vatModifiable;
     return this;
   }
 
