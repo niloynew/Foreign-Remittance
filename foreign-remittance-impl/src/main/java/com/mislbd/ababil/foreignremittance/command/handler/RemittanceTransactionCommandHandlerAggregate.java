@@ -162,7 +162,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private AuditInformation getAuditInformation(Command<RemittanceTransaction> command) {
     AuditInformation auditInformation = new AuditInformation();
     auditInformation
-        .setEntryUser(command.getExecutedBy())
+        .setEntryUser(command.getInitiator())
         .setVerifyUser(ngSession.getUsername())
         .setVerifyTerminal(ngSession.getTerminal())
         .setUserBranch(ngSession.getUserBranch().intValue())
