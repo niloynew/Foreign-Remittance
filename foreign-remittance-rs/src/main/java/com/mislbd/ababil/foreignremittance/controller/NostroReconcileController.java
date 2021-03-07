@@ -5,7 +5,9 @@ import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.ProcessNostroTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.UpdateNostroTransactionCommand;
+import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
 import com.mislbd.ababil.foreignremittance.query.NostroReconcileQuery;
+import com.mislbd.ababil.foreignremittance.query.UnreconciledTransactionQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
@@ -62,5 +64,18 @@ public class NostroReconcileController {
             commandProcessor
                 .executeResult(new ProcessNostroTransactionCommand(nostroReconcileDtoList))
                 .getContent());
+  }
+
+  @GetMapping(path = "/reconcile/txns")
+  public ResponseEntity<?> getUnreconciledTransactions(
+      Pageable pageable,
+      @RequestParam(value = "accountNumber", required = false) String accountNumber,
+      @RequestParam(value = "fromDate", required = false) LocalDate fromDate,
+      @RequestParam(value = "toDate", required = false) LocalDate toDate,
+      @RequestParam(value = "reconcileStatus", required = false) NostroReconcileStatus status) {
+    QueryResult<?> queryResult =
+        queryManager.executeQuery(
+            new UnreconciledTransactionQuery(pageable, accountNumber, fromDate, toDate, status));
+    return ResponseEntity.ok(queryResult.getResult());
   }
 }

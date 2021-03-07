@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.AccountStatement;
+import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
 import com.mislbd.ababil.foreignremittance.exception.AccountNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.AccountStatementMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.AccountStatementRepository;
@@ -38,7 +39,7 @@ public class AccountStatementServiceImpl implements AccountStatementService {
       Pageable pageable, Long accountId, LocalDate fromDate, LocalDate toDate) {
     Page<AccountStatementEntity> accountStatement =
         accountStatementRepository.findAll(
-            AccountStatementSpecification.searchSpecification(accountId, fromDate, toDate),
+            AccountStatementSpecification.searchSpecification(accountId, fromDate, toDate, null),
             pageable);
     return PagedResultBuilder.build(accountStatement, accountStatementMapper.entityToDomain());
   }
@@ -48,7 +49,7 @@ public class AccountStatementServiceImpl implements AccountStatementService {
       Long accountId, LocalDate fromDate, LocalDate toDate) {
     List<AccountStatementEntity> accountStatement =
         accountStatementRepository.findAll(
-            AccountStatementSpecification.searchSpecification(accountId, fromDate, toDate));
+            AccountStatementSpecification.searchSpecification(accountId, fromDate, toDate, null));
     return ListResultBuilder.build(accountStatement, accountStatementMapper.entityToDomain());
   }
 
@@ -59,18 +60,38 @@ public class AccountStatementServiceImpl implements AccountStatementService {
         shadowAccountRepository
             .findByNumber(shadowAccountNumber)
             .orElseThrow(AccountNotFoundException::new);
-
-    //    Page<AccountStatementEntity> accountStatement =
-    //        accountStatementRepository.findAll(
-    //            AccountStatementSpecification.searchSpecification(
-    //                accountEntity.getId(), fromDate, toDate),
-    //            pageable);
-    //    return PagedResultBuilder.build(accountStatement,
-    // accountStatementMapper.entityToDomain());
     return PagedResultBuilder.build(
         accountStatementRepository.findAll(
             AccountStatementSpecification.searchSpecification(
-                accountEntity.getId(), fromDate, toDate),
+                accountEntity.getId(), fromDate, toDate, null),
+            pageable),
+        accountStatementMapper.entityToDomain());
+  }
+
+  @Override
+  public PagedResult<AccountStatement> getUnreconciledTransactionData(
+      Pageable pageable,
+      String accountNumber,
+      LocalDate fromDate,
+      LocalDate toDate,
+      NostroReconcileStatus reconcileStatus) {
+    ShadowAccountEntity accountEntity = null;
+    if (accountNumber != null) {
+      accountEntity =
+          shadowAccountRepository
+              .findByNumber(accountNumber)
+              .orElseThrow(AccountNotFoundException::new);
+    }
+    if (reconcileStatus == null) {
+      reconcileStatus = NostroReconcileStatus.Unreconciled;
+    }
+    return PagedResultBuilder.build(
+        accountStatementRepository.findAll(
+            AccountStatementSpecification.searchSpecification(
+                (accountEntity != null ? accountEntity.getId() : null),
+                fromDate,
+                toDate,
+                reconcileStatus),
             pageable),
         accountStatementMapper.entityToDomain());
   }

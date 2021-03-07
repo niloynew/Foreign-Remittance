@@ -26,11 +26,9 @@ import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.security.core.NgSession;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-
 import org.springframework.transaction.annotation.Transactional;
 
 @Aggregate
@@ -166,17 +164,17 @@ public class RemittanceTransactionCommandHandlerAggregate {
                         totalChargeAndVat));
     }
 
-    private AuditInformation getAuditInformation(Command<RemittanceTransaction> command) {
-        AuditInformation auditInformation = new AuditInformation();
-        auditInformation
-                .setEntryUser(command.getExecutedBy())
-                .setVerifyUser(ngSession.getUsername())
-                .setVerifyTerminal(ngSession.getTerminal())
-                .setUserBranch(ngSession.getUserBranch().intValue())
-                .setProcessId(command.getProcessId())
-                .setEntryDate(LocalDate.now());
-        return auditInformation;
-    }
+  private AuditInformation getAuditInformation(Command<RemittanceTransaction> command) {
+    AuditInformation auditInformation = new AuditInformation();
+    auditInformation
+        .setEntryUser(command.getInitiator())
+        .setVerifyUser(ngSession.getUsername())
+        .setVerifyTerminal(ngSession.getTerminal())
+        .setUserBranch(ngSession.getUserBranch().intValue())
+        .setProcessId(command.getProcessId())
+        .setEntryDate(LocalDate.now());
+    return auditInformation;
+  }
 
     private RemittanceTransactionEntity saveTransactionEntity(
             RemittanceTransaction domain, Long activityId, AuditInformation auditInformation) {
