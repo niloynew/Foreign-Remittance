@@ -1,13 +1,15 @@
 package com.mislbd.ababil.foreignremittance.repository.specification;
 
-import com.mislbd.ababil.foreignremittance.domain.AccountStatement;
 import java.time.LocalDate;
 import javax.persistence.criteria.Predicate;
+
+import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
+import com.mislbd.ababil.foreignremittance.repository.schema.AccountStatementEntity;
 import org.springframework.data.jpa.domain.Specification;
 
 public class AccountStatementSpecification {
-  public static Specification<AccountStatement> searchSpecification(
-      Long accountId, LocalDate fromDate, LocalDate toDate) {
+  public static Specification<AccountStatementEntity> searchSpecification(
+          Long accountId, LocalDate fromDate, LocalDate toDate, NostroReconcileStatus reconcileStatus) {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
 
@@ -21,6 +23,10 @@ public class AccountStatementSpecification {
 
       if (toDate != null) {
         predicate = cb.and(predicate, cb.lessThanOrEqualTo(root.get("txnDate"), toDate));
+      }
+
+      if (reconcileStatus != null) {
+        predicate = cb.and(predicate, cb.lessThanOrEqualTo(root.get("reconcileStatus"), reconcileStatus));
       }
 
       return predicate;
