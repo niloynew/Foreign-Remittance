@@ -16,6 +16,10 @@ public interface AccountStatementService {
   PagedResult<AccountStatement> getAccountStatement(
       Pageable pageable, String shadowAccountNumber, LocalDate fromDate, LocalDate toDate);
 
-  PagedResult<AccountStatement> getUnreconciledTransactionData(Pageable pageable, String accountNumber, LocalDate fromDate,
-                                                               LocalDate toDate, NostroReconcileStatus reconcileStatus);
+  PagedResult<AccountStatement> getUnreconciledTransactionData(
+      Pageable pageable,
+      String accountNumber,
+      LocalDate fromDate,
+      LocalDate toDate,
+      NostroReconcileStatus reconcileStatus);
 }

@@ -16,7 +16,9 @@ public class NostroReconcileQueryHandlerAggregate {
   private final NostroTransactionService nostroTransactionService;
   private final AccountStatementService accountStatementService;
 
-  public NostroReconcileQueryHandlerAggregate(NostroTransactionService nostroTransactionService, AccountStatementService accountStatementService) {
+  public NostroReconcileQueryHandlerAggregate(
+      NostroTransactionService nostroTransactionService,
+      AccountStatementService accountStatementService) {
     this.nostroTransactionService = nostroTransactionService;
     this.accountStatementService = accountStatementService;
   }
@@ -46,13 +48,15 @@ public class NostroReconcileQueryHandlerAggregate {
   }
 
   @QueryHandler
-  public QueryResult<?> unreconciledTransactionSearch(UnreconciledTransactionQuery transactionQuery) {
+  public QueryResult<?> unreconciledTransactionSearch(
+      UnreconciledTransactionQuery transactionQuery) {
     PagedResult<?> pagedResult =
-            accountStatementService.getUnreconciledTransactionData(transactionQuery.getPageable(),
-                    transactionQuery.getAccountNumber(),
-                    transactionQuery.getFromDate(),
-                    transactionQuery.getToDate(),
-                    transactionQuery.getStatus());
+        accountStatementService.getUnreconciledTransactionData(
+            transactionQuery.getPageable(),
+            transactionQuery.getAccountNumber(),
+            transactionQuery.getFromDate(),
+            transactionQuery.getToDate(),
+            transactionQuery.getStatus());
     return QueryResult.of(pagedResult);
   }
 }

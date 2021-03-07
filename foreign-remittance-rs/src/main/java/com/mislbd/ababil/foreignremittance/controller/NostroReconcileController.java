@@ -68,15 +68,14 @@ public class NostroReconcileController {
 
   @GetMapping(path = "/reconcile/txns")
   public ResponseEntity<?> getUnreconciledTransactions(
-          Pageable pageable,
-          @RequestParam(value = "accountNumber", required = false) String accountNumber,
-          @RequestParam(value = "fromDate", required = false) LocalDate fromDate,
-          @RequestParam(value = "toDate", required = false) LocalDate toDate,
-          @RequestParam(value = "reconcileStatus", required = false) NostroReconcileStatus status){
+      Pageable pageable,
+      @RequestParam(value = "accountNumber", required = false) String accountNumber,
+      @RequestParam(value = "fromDate", required = false) LocalDate fromDate,
+      @RequestParam(value = "toDate", required = false) LocalDate toDate,
+      @RequestParam(value = "reconcileStatus", required = false) NostroReconcileStatus status) {
     QueryResult<?> queryResult =
-            queryManager.executeQuery(
-                    new UnreconciledTransactionQuery(
-                            pageable, accountNumber, fromDate, toDate, status));
+        queryManager.executeQuery(
+            new UnreconciledTransactionQuery(pageable, accountNumber, fromDate, toDate, status));
     return ResponseEntity.ok(queryResult.getResult());
   }
 }
