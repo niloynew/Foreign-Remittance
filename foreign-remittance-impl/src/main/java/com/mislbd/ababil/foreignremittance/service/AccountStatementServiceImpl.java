@@ -82,6 +82,9 @@ public class AccountStatementServiceImpl implements AccountStatementService {
               .findByNumber(accountNumber)
               .orElseThrow(AccountNotFoundException::new);
     }
+    if (reconcileStatus == null) {
+      reconcileStatus = NostroReconcileStatus.Unreconciled;
+    }
     return PagedResultBuilder.build(
         accountStatementRepository.findAll(
             AccountStatementSpecification.searchSpecification(
