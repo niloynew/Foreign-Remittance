@@ -9,10 +9,11 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class AccountStatement {
+public class ShadowTransactionRecord {
 
   private long id;
   private Long accountId;
+  private String accountNumber;
   private BigDecimal debit;
   private BigDecimal credit;
   private BigDecimal debitLcy;

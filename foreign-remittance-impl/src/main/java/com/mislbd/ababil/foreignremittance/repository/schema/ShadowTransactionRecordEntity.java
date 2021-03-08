@@ -3,10 +3,8 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -15,11 +13,15 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Entity
-@Table(name = SchemaConstant.SHADOW_TRANSACTION_RECORD)
-public class AccountStatementEntity {
+@Table(name = SchemaConstant.SHADOW_TRANSACTION_RECORD_TABLE_NAME)
+public class ShadowTransactionRecordEntity {
 
   @Id
-  @Column(name = "ID")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "SHADOW_TRANSACTION_RECORD_ID_GEN")
+  @SequenceGenerator(
+          name = "SHADOW_TRANSACTION_RECORD_ID_GEN",
+          allocationSize = 1,
+          sequenceName = SchemaConstant.SHADOW_TRANSACTION_RECORD_SEQUENCE_NAME)
   private long id;
 
   @Column(name = "ACCOUNT_ID")

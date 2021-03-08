@@ -1,17 +1,26 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
-import com.mislbd.ababil.foreignremittance.domain.AccountStatement;
-import com.mislbd.ababil.foreignremittance.repository.schema.AccountStatementEntity;
+import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecord;
+import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
+import com.mislbd.ababil.foreignremittance.repository.schema.ShadowTransactionRecordEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AccountStatementMapper {
-  public ResultMapper<AccountStatementEntity, AccountStatement> entityToDomain() {
+public class ShadowTransactionRecordMapper {
+
+  private final ShadowAccountRepository shadowAccountRepository;
+
+  public ShadowTransactionRecordMapper(ShadowAccountRepository shadowAccountRepository) {
+    this.shadowAccountRepository = shadowAccountRepository;
+  }
+
+  public ResultMapper<ShadowTransactionRecordEntity, ShadowTransactionRecord> entityToDomain() {
     return entity ->
-        new AccountStatement()
+        new ShadowTransactionRecord()
             .setId(entity.getId())
             .setAccountId(entity.getAccountId())
+            .setAccountNumber(shadowAccountRepository.findById(entity.getId()).get().getNumber())
             .setDebit(entity.getDebit())
             .setCredit(entity.getCredit())
             .setDebitLcy(entity.getDebitLcy())

@@ -1,11 +1,13 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
 import static org.springframework.http.HttpStatus.ACCEPTED;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.ProcessNostroTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.UpdateNostroTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
+import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecordList;
 import com.mislbd.ababil.foreignremittance.query.NostroReconcileQuery;
 import com.mislbd.ababil.foreignremittance.query.UnreconciledTransactionQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
@@ -77,5 +79,15 @@ public class NostroReconcileController {
         queryManager.executeQuery(
             new UnreconciledTransactionQuery(pageable, accountNumber, fromDate, toDate, status));
     return ResponseEntity.ok(queryResult.getResult());
+  }
+
+  @PostMapping(path = "/reconcile/txns", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Integer> reconcileMultipleTransaction(
+          @Valid @RequestBody ShadowTransactionRecordList shadowTransactionRecordList) {
+
+    int numberOfSuccessReconcile = 0;
+
+
+    return status(CREATED).body(Integer.valueOf(numberOfSuccessReconcile));
   }
 }

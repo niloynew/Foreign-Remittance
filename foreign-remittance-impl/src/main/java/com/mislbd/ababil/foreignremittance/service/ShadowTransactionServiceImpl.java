@@ -1,6 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
-import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.NostroReconcileSpecification;
 import com.mislbd.ababil.foreignremittance.utils.ListResultBuilderFR;
@@ -16,14 +16,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class NostroTransactionServiceImpl implements NostroTransactionService {
+public class ShadowTransactionServiceImpl implements ShadowTransactionService {
 
-  private final NostroTransactionRepository nostroTransactionRepository;
+  private final ShadowTransactionRepository shadowTransactionRepository;
   private final ModelMapper modelMapper;
 
-  public NostroTransactionServiceImpl(
-      NostroTransactionRepository nostroTransactionRepository, ModelMapper modelMapper) {
-    this.nostroTransactionRepository = nostroTransactionRepository;
+  public ShadowTransactionServiceImpl(
+          ShadowTransactionRepository shadowTransactionRepository, ModelMapper modelMapper) {
+    this.shadowTransactionRepository = shadowTransactionRepository;
     this.modelMapper = modelMapper;
   }
 
@@ -38,7 +38,7 @@ public class NostroTransactionServiceImpl implements NostroTransactionService {
 
     // Page<NostroTransactionEntity> messages =
     return PagedResultBuilderFR.build(
-        nostroTransactionRepository.findAll(
+        shadowTransactionRepository.findAll(
             NostroReconcileSpecification.searchSpecification(
                 id, accountNo, advBranch, selected, valueDate),
             pageable),
@@ -49,7 +49,7 @@ public class NostroTransactionServiceImpl implements NostroTransactionService {
   public List<NostroTransaction> getMessages(
       Long id, String accountNo, String advBranch, boolean selected, LocalDate valueDate) {
     return ListResultBuilderFR.build(
-        nostroTransactionRepository.findAll(
+        shadowTransactionRepository.findAll(
             NostroReconcileSpecification.searchSpecification(
                 id, accountNo, advBranch, selected, valueDate)),
         NostroTransaction.class);
@@ -63,6 +63,6 @@ public class NostroTransactionServiceImpl implements NostroTransactionService {
   @Override
   @Transactional
   public void save(NostroTransaction dto) {
-    nostroTransactionRepository.save(modelMapper.map(dto, NostroTransactionEntity.class));
+    shadowTransactionRepository.save(modelMapper.map(dto, NostroTransactionEntity.class));
   }
 }

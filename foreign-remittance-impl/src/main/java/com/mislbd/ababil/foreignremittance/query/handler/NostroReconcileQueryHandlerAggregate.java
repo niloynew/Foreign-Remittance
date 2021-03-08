@@ -2,8 +2,8 @@ package com.mislbd.ababil.foreignremittance.query.handler;
 
 import com.mislbd.ababil.foreignremittance.query.NostroReconcileQuery;
 import com.mislbd.ababil.foreignremittance.query.UnreconciledTransactionQuery;
-import com.mislbd.ababil.foreignremittance.service.AccountStatementService;
-import com.mislbd.ababil.foreignremittance.service.NostroTransactionService;
+import com.mislbd.ababil.foreignremittance.service.NostroTransactionRecordService;
+import com.mislbd.ababil.foreignremittance.service.ShadowTransactionService;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.query.annotation.QueryAggregate;
 import com.mislbd.asset.query.annotation.QueryHandler;
@@ -13,21 +13,21 @@ import java.util.List;
 @QueryAggregate
 public class NostroReconcileQueryHandlerAggregate {
 
-  private final NostroTransactionService nostroTransactionService;
-  private final AccountStatementService accountStatementService;
+  private final ShadowTransactionService shadowTransactionService;
+  private final NostroTransactionRecordService nostroTransactionRecordService;
 
   public NostroReconcileQueryHandlerAggregate(
-      NostroTransactionService nostroTransactionService,
-      AccountStatementService accountStatementService) {
-    this.nostroTransactionService = nostroTransactionService;
-    this.accountStatementService = accountStatementService;
+      ShadowTransactionService shadowTransactionService,
+      NostroTransactionRecordService nostroTransactionRecordService) {
+    this.shadowTransactionService = shadowTransactionService;
+    this.nostroTransactionRecordService = nostroTransactionRecordService;
   }
 
   @QueryHandler
   public QueryResult<?> nostroReconcileSearch(NostroReconcileQuery nostroReconcileQuery) {
     if (nostroReconcileQuery.isAsPage()) {
       PagedResult<?> pagedResult =
-          nostroTransactionService.getMessages(
+          shadowTransactionService.getMessages(
               nostroReconcileQuery.getPageable(),
               nostroReconcileQuery.getId(),
               nostroReconcileQuery.getAccountNo(),
@@ -37,7 +37,7 @@ public class NostroReconcileQueryHandlerAggregate {
       return QueryResult.of(pagedResult);
     } else {
       List<?> listResult =
-          nostroTransactionService.getMessages(
+          shadowTransactionService.getMessages(
               nostroReconcileQuery.getId(),
               nostroReconcileQuery.getAccountNo(),
               nostroReconcileQuery.getAdvBranch(),
@@ -51,7 +51,7 @@ public class NostroReconcileQueryHandlerAggregate {
   public QueryResult<?> unreconciledTransactionSearch(
       UnreconciledTransactionQuery transactionQuery) {
     PagedResult<?> pagedResult =
-        accountStatementService.getUnreconciledTransactionData(
+        nostroTransactionRecordService.getUnreconciledTransactionData(
             transactionQuery.getPageable(),
             transactionQuery.getAccountNumber(),
             transactionQuery.getFromDate(),

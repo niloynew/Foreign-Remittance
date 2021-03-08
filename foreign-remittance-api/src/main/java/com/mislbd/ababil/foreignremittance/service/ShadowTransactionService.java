@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 
-public interface NostroTransactionService {
+public interface ShadowTransactionService {
 
   PagedResult<NostroTransaction> getMessages(
       Pageable pageable,

@@ -1,13 +1,13 @@
 package com.mislbd.ababil.foreignremittance.repository.specification;
 
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
-import com.mislbd.ababil.foreignremittance.repository.schema.AccountStatementEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.ShadowTransactionRecordEntity;
 import java.time.LocalDate;
 import javax.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
-public class AccountStatementSpecification {
-  public static Specification<AccountStatementEntity> searchSpecification(
+public class NostroTransactionRecordSpecification {
+  public static Specification<ShadowTransactionRecordEntity> searchSpecification(
       Long accountId, LocalDate fromDate, LocalDate toDate, NostroReconcileStatus reconcileStatus) {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();

@@ -134,7 +134,8 @@ configure(subprojects) { project ->
                 "com.mislbd.ababil:ababil-organization-api",
                 "com.mislbd.ababil:ababil-organization-impl",
                 "com.mislbd:swift-broker-api:1.15.14-SNAPSHOT",
-                "com.mislbd:swift-broker-impl:1.15.14-SNAPSHOT"
+                "com.mislbd:swift-broker-impl:1.15.14-SNAPSHOT",
+                "com.mislbd:the-city-bank-gateway-api:0.0.3-SNAPSHOT"
         )
 
         implementation('com.mislbd.document:document-ng') {
