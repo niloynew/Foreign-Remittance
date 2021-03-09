@@ -1,9 +1,16 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import java.math.BigDecimal;
 import javax.persistence.*;
 
+@Getter
+@Setter
+@Accessors(chain = true)
 @Entity
 @Table(name = SchemaConstant.ID_CHARGE_INFO_TABLE_NAME)
 public class RemittanceChargeInformationEntity {
@@ -50,114 +57,4 @@ public class RemittanceChargeInformationEntity {
   @JoinColumn(name = "Remittance_Tnx_Id")
   private RemittanceTransactionEntity remittanceTransaction;
 
-  public long getId() {
-    return id;
-  }
-
-  public RemittanceChargeInformationEntity setId(long id) {
-    this.id = id;
-    return this;
-  }
-
-  public long getChargeId() {
-    return chargeId;
-  }
-
-  public RemittanceChargeInformationEntity setChargeId(long chargeId) {
-    this.chargeId = chargeId;
-    return this;
-  }
-
-  public String getChargeName() {
-    return chargeName;
-  }
-
-  public RemittanceChargeInformationEntity setChargeName(String chargeName) {
-    this.chargeName = chargeName;
-    return this;
-  }
-
-  public BigDecimal getChargeAmount() {
-    return chargeAmount;
-  }
-
-  public RemittanceChargeInformationEntity setChargeAmount(BigDecimal chargeAmount) {
-    this.chargeAmount = chargeAmount;
-    return this;
-  }
-
-  public RemittanceType getRemittanceType() {
-    return remittanceType;
-  }
-
-  public RemittanceChargeInformationEntity setRemittanceType(RemittanceType remittanceType) {
-    this.remittanceType = remittanceType;
-    return this;
-  }
-
-  public boolean isChargeModifiable() {
-    return chargeModifiable;
-  }
-
-  public RemittanceChargeInformationEntity setChargeModifiable(boolean chargeModifiable) {
-    this.chargeModifiable = chargeModifiable;
-    return this;
-  }
-
-  public boolean isVatModifiable() {
-    return vatModifiable;
-  }
-
-  public RemittanceChargeInformationEntity setVatModifiable(boolean vatModifiable) {
-    this.vatModifiable = vatModifiable;
-    return this;
-  }
-
-  public BigDecimal getChargeAmountAfterWaived() {
-    return chargeAmountAfterWaived;
-  }
-
-  public RemittanceChargeInformationEntity setChargeAmountAfterWaived(
-      BigDecimal chargeAmountAfterWaived) {
-    this.chargeAmountAfterWaived = chargeAmountAfterWaived;
-    return this;
-  }
-
-  public BigDecimal getVatAmountAfterWaived() {
-    return vatAmountAfterWaived;
-  }
-
-  public RemittanceChargeInformationEntity setVatAmountAfterWaived(
-      BigDecimal vatAmountAfterWaived) {
-    this.vatAmountAfterWaived = vatAmountAfterWaived;
-    return this;
-  }
-
-  public BigDecimal getVatAmount() {
-    return vatAmount;
-  }
-
-  public RemittanceChargeInformationEntity setVatAmount(BigDecimal vatAmount) {
-    this.vatAmount = vatAmount;
-    return this;
-  }
-
-  public String getCurrency() {
-    return currency;
-  }
-
-  public RemittanceChargeInformationEntity setCurrency(String currency) {
-    this.currency = currency;
-    return this;
-  }
-
-  public RemittanceTransactionEntity getRemittanceTransaction() {
-    return remittanceTransaction;
-  }
-
-  public RemittanceChargeInformationEntity setRemittanceTransaction(
-      RemittanceTransactionEntity remittanceTransaction) {
-    this.remittanceTransaction = remittanceTransaction;
-    return this;
-  }
 }

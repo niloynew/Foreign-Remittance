@@ -1,11 +1,17 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
-import com.mislbd.ababil.asset.repository.schema.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import javax.persistence.*;
 
+@Getter
+@Setter
+@Accessors(chain = true)
 @Entity
 @Table(name = SchemaConstant.ID_CB_FUND_SOURCE_TABLE_NAME)
-public class CBFundSourceEntity extends BaseEntity {
+public class CBFundSourceEntity{
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "CB_FUND_SOURCE_ID_GEN")
@@ -22,34 +28,4 @@ public class CBFundSourceEntity extends BaseEntity {
   @Column(name = "DESCRIPTION")
   private String description;
 
-  // region <Getter and Setter>
-
-  public long getId() {
-    return id;
-  }
-
-  public CBFundSourceEntity setId(long id) {
-    this.id = id;
-    return this;
-  }
-
-  public String getCode() {
-    return code;
-  }
-
-  public CBFundSourceEntity setCode(String code) {
-    this.code = code;
-    return this;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public CBFundSourceEntity setDescription(String description) {
-    this.description = description;
-    return this;
-  }
-
-  // <end region>
 }

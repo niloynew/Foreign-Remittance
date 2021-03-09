@@ -5,9 +5,16 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.*;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+@Getter
+@Setter
+@Accessors(chain = true)
 @Entity
 @Table(name = SchemaConstant.NOSTRO_TRANSACTION_RECORD_TABLE_NAME)
 public class NostroTransactionEntity extends BaseEntity {
@@ -15,9 +22,9 @@ public class NostroTransactionEntity extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "NOSTRO_TRANSACTION_RECORD_ID_GEN")
   @SequenceGenerator(
-          name = "NOSTRO_ACCOUNT_ID_GEN",
-          allocationSize = 1,
-          sequenceName = SchemaConstant.NOSTRO_TRANSACTION_RECORD_SEQUENCE_NAME)
+      name = "NOSTRO_TRANSACTION_RECORD_ID_GEN",
+      allocationSize = 1,
+      sequenceName = SchemaConstant.NOSTRO_TRANSACTION_RECORD_SEQUENCE_NAME)
   private long id;
 
   @Column(name = "ACCOUNT_NO")
@@ -88,187 +95,4 @@ public class NostroTransactionEntity extends BaseEntity {
   @Fetch(FetchMode.SUBSELECT)
   private List<SwiftBankConfigurationEntity> bankInformation;
 
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public String getAccountNo() {
-    return accountNo;
-  }
-
-  public void setAccountNo(String accountNo) {
-    this.accountNo = accountNo;
-  }
-
-  public String getCurrency() {
-    return currency;
-  }
-
-  public void setCurrency(String currency) {
-    this.currency = currency;
-  }
-
-  public String getRefToAccount() {
-    return refToAccount;
-  }
-
-  public void setRefToAccount(String refToAccount) {
-    this.refToAccount = refToAccount;
-  }
-
-  public String getRefOfServicingAccount() {
-    return refOfServicingAccount;
-  }
-
-  public void setRefOfServicingAccount(String refOfServicingAccount) {
-    this.refOfServicingAccount = refOfServicingAccount;
-  }
-
-  public String getTxnType() {
-    return txnType;
-  }
-
-  public void setTxnType(String txnType) {
-    this.txnType = txnType;
-  }
-
-  public BigDecimal getAmount() {
-    return amount;
-  }
-
-  public void setAmount(BigDecimal amount) {
-    this.amount = amount;
-  }
-
-  public String getAdvBranch() {
-    return advBranch;
-  }
-
-  public void setAdvBranch(String advBranch) {
-    this.advBranch = advBranch;
-  }
-
-  public String getBeneficiaryAccount() {
-    return beneficiaryAccount;
-  }
-
-  public void setBeneficiaryAccount(String beneficiaryAccount) {
-    this.beneficiaryAccount = beneficiaryAccount;
-  }
-
-  public String getBeneficiaryInstitute() {
-    return beneficiaryInstitute;
-  }
-
-  public void setBeneficiaryInstitute(String beneficiaryInstitute) {
-    this.beneficiaryInstitute = beneficiaryInstitute;
-  }
-
-  public String getBeneficiaryName() {
-    return beneficiaryName;
-  }
-
-  public void setBeneficiaryName(String beneficiaryName) {
-    this.beneficiaryName = beneficiaryName;
-  }
-
-  public String getBeneficiaryAddress() {
-    return beneficiaryAddress;
-  }
-
-  public void setBeneficiaryAddress(String beneficiaryAddress) {
-    this.beneficiaryAddress = beneficiaryAddress;
-  }
-
-  public String getSupplementaryDetails() {
-    return supplementaryDetails;
-  }
-
-  public void setSupplementaryDetails(String supplementaryDetails) {
-    this.supplementaryDetails = supplementaryDetails;
-  }
-
-  public LocalDate getValueDate() {
-    return valueDate;
-  }
-
-  public void setValueDate(LocalDate valueDate) {
-    this.valueDate = valueDate;
-  }
-
-  public String getRemark() {
-    return remark;
-  }
-
-  public void setRemark(String remark) {
-    this.remark = remark;
-  }
-
-  public boolean isSelected() {
-    return selected;
-  }
-
-  public void setSelected(boolean selected) {
-    this.selected = selected;
-  }
-
-  public String getDcMark() {
-    return dcMark;
-  }
-
-  public void setDcMark(String dcMark) {
-    this.dcMark = dcMark;
-  }
-
-  public String getMessageType() {
-    return messageType;
-  }
-
-  public void setMessageType(String messageType) {
-    this.messageType = messageType;
-  }
-
-  public String getMessageText() {
-    return messageText;
-  }
-
-  public void setMessageText(String messageText) {
-    this.messageText = messageText;
-  }
-
-  public String getApplicantName() {
-    return applicantName;
-  }
-
-  public void setApplicantName(String applicantName) {
-    this.applicantName = applicantName;
-  }
-
-  public String getApplicantAddress() {
-    return applicantAddress;
-  }
-
-  public void setApplicantAddress(String applicantAddress) {
-    this.applicantAddress = applicantAddress;
-  }
-
-  public String getApplicantAccount() {
-    return applicantAccount;
-  }
-
-  public void setApplicantAccount(String applicantAccount) {
-    this.applicantAccount = applicantAccount;
-  }
-
-  public List<SwiftBankConfigurationEntity> getBankInformation() {
-    return bankInformation;
-  }
-
-  public void setBankInformation(List<SwiftBankConfigurationEntity> bankInformation) {
-    this.bankInformation = bankInformation;
-  }
 }

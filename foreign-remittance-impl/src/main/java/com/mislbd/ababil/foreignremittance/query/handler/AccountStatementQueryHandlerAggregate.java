@@ -12,7 +12,8 @@ import com.mislbd.asset.query.api.QueryResult;
 public class AccountStatementQueryHandlerAggregate {
   private NostroTransactionRecordService nostroTransactionRecordService;
 
-  public AccountStatementQueryHandlerAggregate(NostroTransactionRecordService nostroTransactionRecordService) {
+  public AccountStatementQueryHandlerAggregate(
+      NostroTransactionRecordService nostroTransactionRecordService) {
     this.nostroTransactionRecordService = nostroTransactionRecordService;
   }
 

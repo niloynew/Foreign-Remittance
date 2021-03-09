@@ -6,14 +6,14 @@ import java.time.LocalDate;
 import javax.persistence.*;
 
 @Entity
-@Table(name = SchemaConstant.NOSTRO_TRANSACTION_RECORD)
+@Table(name = SchemaConstant.NOSTRO_TRANSACTION_RECORD_TABLE_NAME)
 public class NostroTransactionRecordEntity extends BaseEntity {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "NOSTRO_TXN_GEN")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "NOSTRO_TRANSACTION_RECORD_ID_GEN")
   @SequenceGenerator(
-      name = "NOSTRO_TXN_GEN",
+      name = "NOSTRO_TRANSACTION_RECORD_ID_GEN",
       allocationSize = 1,
-      sequenceName = SchemaConstant.NOSTRO_TXN_RECORD_SEQUENCE_NAME)
+      sequenceName = SchemaConstant.NOSTRO_TRANSACTION_RECORD_SEQUENCE_NAME)
   private Long id;
 
   @Column(name = "NOSTRO_TXNID")

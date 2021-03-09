@@ -1,8 +1,15 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import java.math.BigDecimal;
 import javax.persistence.*;
 
+@Getter
+@Setter
+@Accessors(chain = true)
 @Entity
 @Table(name = SchemaConstant.ID_CHARGE_SLAB_INFO_TABLE_NAME)
 public class RemittanceChargeSlabEntity {
@@ -40,84 +47,4 @@ public class RemittanceChargeSlabEntity {
   @JoinColumn(name = "CHARGE_ID")
   private RemittanceChargeEntity remittanceCharge;
 
-  public long getId() {
-    return id;
-  }
-
-  public RemittanceChargeSlabEntity setId(long id) {
-    this.id = id;
-    return this;
-  }
-
-  public BigDecimal getFromAmount() {
-    return fromAmount;
-  }
-
-  public RemittanceChargeSlabEntity setFromAmount(BigDecimal fromAmount) {
-    this.fromAmount = fromAmount;
-    return this;
-  }
-
-  public BigDecimal getToAmount() {
-    return toAmount;
-  }
-
-  public RemittanceChargeSlabEntity setToAmount(BigDecimal toAmount) {
-    this.toAmount = toAmount;
-    return this;
-  }
-
-  public boolean isFixedCharge() {
-    return fixedCharge;
-  }
-
-  public RemittanceChargeSlabEntity setFixedCharge(boolean fixedCharge) {
-    this.fixedCharge = fixedCharge;
-    return this;
-  }
-
-  public BigDecimal getChargeAmount() {
-    return chargeAmount;
-  }
-
-  public RemittanceChargeSlabEntity setChargeAmount(BigDecimal chargeAmount) {
-    this.chargeAmount = chargeAmount;
-    return this;
-  }
-
-  public BigDecimal getPercentage() {
-    return percentage;
-  }
-
-  public RemittanceChargeSlabEntity setPercentage(BigDecimal percentage) {
-    this.percentage = percentage;
-    return this;
-  }
-
-  public BigDecimal getMinimumChargeAmount() {
-    return minimumChargeAmount;
-  }
-
-  public RemittanceChargeSlabEntity setMinimumChargeAmount(BigDecimal minimumChargeAmount) {
-    this.minimumChargeAmount = minimumChargeAmount;
-    return this;
-  }
-
-  public BigDecimal getMaximumChargeAmount() {
-    return maximumChargeAmount;
-  }
-
-  public RemittanceChargeSlabEntity setMaximumChargeAmount(BigDecimal maximumChargeAmount) {
-    this.maximumChargeAmount = maximumChargeAmount;
-    return this;
-  }
-
-  public RemittanceChargeEntity getRemittanceCharge() {
-    return remittanceCharge;
-  }
-
-  public RemittanceChargeSlabEntity setRemittanceCharge(RemittanceChargeEntity remittanceCharge) {
-    this.remittanceCharge = remittanceCharge;
-    return this;
-  }
 }

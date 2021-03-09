@@ -1,10 +1,9 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import javax.persistence.*;
 
 @Getter
 @Setter

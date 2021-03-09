@@ -83,10 +83,9 @@ public class NostroReconcileController {
 
   @PostMapping(path = "/reconcile/txns", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Integer> reconcileMultipleTransaction(
-          @Valid @RequestBody ShadowTransactionRecordList shadowTransactionRecordList) {
+      @Valid @RequestBody ShadowTransactionRecordList shadowTransactionRecordList) {
 
     int numberOfSuccessReconcile = 0;
-
 
     return status(CREATED).body(Integer.valueOf(numberOfSuccessReconcile));
   }

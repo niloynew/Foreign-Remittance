@@ -1,10 +1,17 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.persistence.*;
 
+@Getter
+@Setter
+@Accessors(chain = true)
 @Entity
 @Table(name = SchemaConstant.SHADOW_ACCOUNT_TABLE_NAME)
 public class ShadowAccountEntity extends BaseEntity {
@@ -55,120 +62,4 @@ public class ShadowAccountEntity extends BaseEntity {
   @JoinColumn(name = "PRODUCT_ID")
   private IDProductEntity product;
 
-  public long getId() {
-    return id;
-  }
-
-  public ShadowAccountEntity setId(long id) {
-    this.id = id;
-    return this;
-  }
-
-  public String getNumber() {
-    return number;
-  }
-
-  public ShadowAccountEntity setNumber(String number) {
-    this.number = number;
-    return this;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public ShadowAccountEntity setName(String name) {
-    this.name = name;
-    return this;
-  }
-
-  public String getNostroAccountNumber() {
-    return nostroAccountNumber;
-  }
-
-  public ShadowAccountEntity setNostroAccountNumber(String nostroAccountNumber) {
-    this.nostroAccountNumber = nostroAccountNumber;
-    return this;
-  }
-
-  public Long getBankId() {
-    return bankId;
-  }
-
-  public ShadowAccountEntity setBankId(Long bankId) {
-    this.bankId = bankId;
-    return this;
-  }
-
-  public Long getBranchId() {
-    return branchId;
-  }
-
-  public ShadowAccountEntity setBranchId(Long branchId) {
-    this.branchId = branchId;
-    return this;
-  }
-
-  public Long getOwnerBranchId() {
-    return ownerBranchId;
-  }
-
-  public ShadowAccountEntity setOwnerBranchId(Long ownerBranchId) {
-    this.ownerBranchId = ownerBranchId;
-    return this;
-  }
-
-  public LocalDate getAccountOpenDate() {
-    return accountOpenDate;
-  }
-
-  public ShadowAccountEntity setAccountOpenDate(LocalDate accountOpenDate) {
-    this.accountOpenDate = accountOpenDate;
-    return this;
-  }
-
-  public String getCurrencyCode() {
-    return currencyCode;
-  }
-
-  public ShadowAccountEntity setCurrencyCode(String currencyCode) {
-    this.currencyCode = currencyCode;
-    return this;
-  }
-
-  public BigDecimal getBalance() {
-    return balance;
-  }
-
-  public ShadowAccountEntity setBalance(BigDecimal balance) {
-    this.balance = balance;
-    return this;
-  }
-
-  public BigDecimal getBlockAmount() {
-    return blockAmount;
-  }
-
-  public ShadowAccountEntity setBlockAmount(BigDecimal blockAmount) {
-    this.blockAmount = blockAmount;
-    return this;
-  }
-
-  public boolean isActive() {
-    return isActive;
-  }
-
-  public ShadowAccountEntity setActive(boolean active) {
-    isActive = active;
-    return this;
-  }
-
-  public IDProductEntity getProduct() {
-    return product;
-  }
-
-  public ShadowAccountEntity setProduct(IDProductEntity product) {
-    this.product = product;
-    return this;
-  }
 }

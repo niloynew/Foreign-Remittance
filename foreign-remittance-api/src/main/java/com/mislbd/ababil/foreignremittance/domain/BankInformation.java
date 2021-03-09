@@ -11,5 +11,4 @@ public class BankInformation {
 
   private Long bankTypeId;
   private String swiftCode;
-
 }

@@ -1,15 +1,14 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
@@ -17,8 +16,10 @@ import javax.validation.constraints.NotNull;
 public class RemittanceTransaction {
 
   private long id;
+
   @Enumerated(EnumType.STRING)
   private RemittanceType remittanceType;
+
   @NotNull private Long transactionTypeId;
   @NotNull private String ppCode;
   private String commodityDescription;
@@ -37,17 +38,23 @@ public class RemittanceTransaction {
   private String beneficiaryAccountNumber;
   private String b2bInformation;
   private List<BankInformation> bankInformation;
+
   @Enumerated(EnumType.STRING)
   @NotNull
   private AccountType debitAccountType;
+
   @NotNull private String debitAccountNumber;
+
   @Enumerated(EnumType.STRING)
   @NotNull
   private AccountType creditAccountType;
+
   @NotNull private String creditAccountNumber;
+
   @Enumerated(EnumType.STRING)
   @NotNull
   private AccountType chargeAccountType;
+
   @NotNull private String chargeAccountNumber;
   @NotNull private String currencyCode;
   private Long clientRateTypeId;
@@ -65,5 +72,4 @@ public class RemittanceTransaction {
   private BigDecimal totalVatAmountAfterWaived;
   private BigDecimal totalVatAmount;
   private String batchNumber;
-
 }

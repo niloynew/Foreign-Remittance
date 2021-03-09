@@ -12,5 +12,4 @@ public class CBFundSource {
   private long id;
   private String code;
   private String description;
-
 }

@@ -1,10 +1,9 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import javax.persistence.*;
 
 @Getter
 @Setter
@@ -15,9 +14,9 @@ public class SwiftBankConfigurationEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "ID_SWIFT_BANK_CONFIGURATION_ID_GEN")
   @SequenceGenerator(
-          name = "ID_SWIFT_BANK_CONFIGURATION_ID_GEN",
-          allocationSize = 1,
-          sequenceName = SchemaConstant.ID_SWIFT_BANK_CONFIGURATION_SEQUENCE_NAME)
+      name = "ID_SWIFT_BANK_CONFIGURATION_ID_GEN",
+      allocationSize = 1,
+      sequenceName = SchemaConstant.ID_SWIFT_BANK_CONFIGURATION_SEQUENCE_NAME)
   private long id;
 
   @Column(name = "BANKTYPE_ID")

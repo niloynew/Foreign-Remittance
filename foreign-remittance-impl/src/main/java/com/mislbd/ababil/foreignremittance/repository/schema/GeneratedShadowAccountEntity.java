@@ -1,10 +1,17 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@Getter
+@Setter
+@Accessors(chain = true)
 @Entity
 @Table(name = SchemaConstant.SHADOW_ACCOUNT_NUMBER)
 public class GeneratedShadowAccountEntity {
@@ -15,60 +22,4 @@ public class GeneratedShadowAccountEntity {
   private boolean reserved;
   private LocalDateTime reservationEndsOn;
   private String reservedBy;
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public long getBranchId() {
-    return branchId;
-  }
-
-  public void setBranchId(long branchId) {
-    this.branchId = branchId;
-  }
-
-  public long getProductId() {
-    return productId;
-  }
-
-  public void setProductId(long productId) {
-    this.productId = productId;
-  }
-
-  public String getAccountNumber() {
-    return accountNumber;
-  }
-
-  public void setAccountNumber(String accountNumber) {
-    this.accountNumber = accountNumber;
-  }
-
-  public boolean isReserved() {
-    return reserved;
-  }
-
-  public void setReserved(boolean reserved) {
-    this.reserved = reserved;
-  }
-
-  public LocalDateTime getReservationEndsOn() {
-    return reservationEndsOn;
-  }
-
-  public void setReservationEndsOn(LocalDateTime reservationEndsOn) {
-    this.reservationEndsOn = reservationEndsOn;
-  }
-
-  public String getReservedBy() {
-    return reservedBy;
-  }
-
-  public void setReservedBy(String reservedBy) {
-    this.reservedBy = reservedBy;
-  }
 }

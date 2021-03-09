@@ -1,10 +1,9 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -26,5 +25,4 @@ public class RemittanceChargeInformation {
   private BigDecimal vatAmount;
   private String currency;
   private BigDecimal exchangeRate;
-
 }

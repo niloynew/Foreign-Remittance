@@ -11,8 +11,8 @@ import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.BankInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionBankMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeInformationEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionBankMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.BankTypeService;
 import com.mislbd.ababil.foreignremittance.service.salient.DisbursementService;
@@ -94,8 +94,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
         CreateInwardRemittanceTransactionCommand.class,
         CreateOutwardRemittanceTransactionCommand.class
       })
-  public void auditCreateInwardRemittanceTransaction(
-      CommandEvent e) {
+  public void auditCreateInwardRemittanceTransaction(CommandEvent e) {
 
     auditor.audit(e.getCommand().getPayload(), e.getCommand());
   }

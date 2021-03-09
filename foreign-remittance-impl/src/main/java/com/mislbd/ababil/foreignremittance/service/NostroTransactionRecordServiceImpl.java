@@ -1,95 +1,67 @@
 package com.mislbd.ababil.foreignremittance.service;
 
-import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecord;
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
-import com.mislbd.ababil.foreignremittance.exception.AccountNotFoundException;
-import com.mislbd.ababil.foreignremittance.mapper.ShadowTransactionRecordMapper;
-import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowTransactionRecordRepository;
-import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.ShadowTransactionRecordEntity;
-import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
-import com.mislbd.ababil.foreignremittance.repository.specification.NostroTransactionRecordSpecification;
-import com.mislbd.asset.commons.data.domain.ListResultBuilder;
+import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionEntity;
+import com.mislbd.ababil.foreignremittance.repository.specification.NostroReconcileSpecification;
+import com.mislbd.ababil.foreignremittance.utils.ListResultBuilderFR;
+import com.mislbd.ababil.foreignremittance.utils.PagedResultBuilderFR;
 import com.mislbd.asset.commons.data.domain.PagedResult;
-import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
+import com.mislbd.swift.broker.model.raw.NostroTransaction;
 import java.time.LocalDate;
 import java.util.List;
-import org.springframework.data.domain.Page;
+import java.util.Optional;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class NostroTransactionRecordServiceImpl implements NostroTransactionRecordService {
 
-  private final ShadowTransactionRecordRepository shadowTransactionRecordRepository;
-  private final ShadowAccountRepository shadowAccountRepository;
-  private final ShadowTransactionRecordMapper shadowTransactionRecordMapper;
+  private final ShadowTransactionRepository shadowTransactionRepository;
+  private final ModelMapper modelMapper;
 
   public NostroTransactionRecordServiceImpl(
-          ShadowTransactionRecordRepository shadowTransactionRecordRepository,
-          ShadowAccountRepository shadowAccountRepository,
-          ShadowTransactionRecordMapper shadowTransactionRecordMapper) {
-    this.shadowTransactionRecordRepository = shadowTransactionRecordRepository;
-    this.shadowAccountRepository = shadowAccountRepository;
-    this.shadowTransactionRecordMapper = shadowTransactionRecordMapper;
+      ShadowTransactionRepository shadowTransactionRepository, ModelMapper modelMapper) {
+    this.shadowTransactionRepository = shadowTransactionRepository;
+    this.modelMapper = modelMapper;
   }
 
   @Override
-  public PagedResult<ShadowTransactionRecord> getAccountStatements(
-      Pageable pageable, Long accountId, LocalDate fromDate, LocalDate toDate) {
-    Page<ShadowTransactionRecordEntity> accountStatement =
-        shadowTransactionRecordRepository.findAll(
-            NostroTransactionRecordSpecification.searchSpecification(accountId, fromDate, toDate, null),
-            pageable);
-    return PagedResultBuilder.build(accountStatement, shadowTransactionRecordMapper.entityToDomain());
-  }
-
-  @Override
-  public List<ShadowTransactionRecord> getAccountStatements(
-      Long accountId, LocalDate fromDate, LocalDate toDate) {
-    List<ShadowTransactionRecordEntity> accountStatement =
-        shadowTransactionRecordRepository.findAll(
-            NostroTransactionRecordSpecification.searchSpecification(accountId, fromDate, toDate, null));
-    return ListResultBuilder.build(accountStatement, shadowTransactionRecordMapper.entityToDomain());
-  }
-
-  @Override
-  public PagedResult<ShadowTransactionRecord> getAccountStatement(
-      Pageable pageable, String shadowAccountNumber, LocalDate fromDate, LocalDate toDate) {
-    ShadowAccountEntity accountEntity =
-        shadowAccountRepository
-            .findByNumber(shadowAccountNumber)
-            .orElseThrow(AccountNotFoundException::new);
-    return PagedResultBuilder.build(
-        shadowTransactionRecordRepository.findAll(
-            NostroTransactionRecordSpecification.searchSpecification(
-                accountEntity.getId(), fromDate, toDate, null),
-            pageable),
-        shadowTransactionRecordMapper.entityToDomain());
-  }
-
-  @Override
-  public PagedResult<ShadowTransactionRecord> getUnreconciledTransactionData(
+  public PagedResult<NostroTransaction> getMessages(
       Pageable pageable,
-      String accountNumber,
-      LocalDate fromDate,
-      LocalDate toDate,
-      NostroReconcileStatus reconcileStatus) {
-    ShadowAccountEntity accountEntity = null;
-    if (accountNumber != null) {
-      accountEntity =
-          shadowAccountRepository
-              .findByNumber(accountNumber)
-              .orElseThrow(AccountNotFoundException::new);
-    }
-    return PagedResultBuilder.build(
-        shadowTransactionRecordRepository.findAll(
-            NostroTransactionRecordSpecification.searchSpecification(
-                (accountEntity != null ? accountEntity.getId() : null),
-                fromDate,
-                toDate,
-                reconcileStatus),
+      Long id,
+      String accountNo,
+      String advBranch,
+      boolean selected,
+      LocalDate valueDate) {
+
+    return PagedResultBuilderFR.build(
+        shadowTransactionRepository.findAll(
+            NostroReconcileSpecification.searchSpecification(
+                id, accountNo, advBranch, selected, valueDate),
             pageable),
-        shadowTransactionRecordMapper.entityToDomain());
+        NostroTransaction.class);
+  }
+
+  @Override
+  public List<NostroTransaction> getMessages(
+      Long id, String accountNo, String advBranch, boolean selected, LocalDate valueDate) {
+    return ListResultBuilderFR.build(
+        shadowTransactionRepository.findAll(
+            NostroReconcileSpecification.searchSpecification(
+                id, accountNo, advBranch, selected, valueDate)),
+        NostroTransaction.class);
+  }
+
+  @Override
+  public Optional<NostroTransaction> getMessageById(long id) {
+    return Optional.empty();
+  }
+
+  @Override
+  @Transactional
+  public void save(NostroTransaction dto) {
+    shadowTransactionRepository.save(modelMapper.map(dto, NostroTransactionEntity.class));
   }
 }

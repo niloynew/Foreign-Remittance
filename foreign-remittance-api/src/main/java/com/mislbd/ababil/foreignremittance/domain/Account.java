@@ -1,11 +1,10 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -25,5 +24,4 @@ public class Account {
   private BigDecimal balance;
   private BigDecimal blockAmount;
   private boolean active;
-
 }

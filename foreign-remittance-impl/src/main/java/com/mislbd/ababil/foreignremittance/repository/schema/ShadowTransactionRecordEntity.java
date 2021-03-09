@@ -4,7 +4,6 @@ import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -19,9 +18,9 @@ public class ShadowTransactionRecordEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SHADOW_TRANSACTION_RECORD_ID_GEN")
   @SequenceGenerator(
-          name = "SHADOW_TRANSACTION_RECORD_ID_GEN",
-          allocationSize = 1,
-          sequenceName = SchemaConstant.SHADOW_TRANSACTION_RECORD_SEQUENCE_NAME)
+      name = "SHADOW_TRANSACTION_RECORD_ID_GEN",
+      allocationSize = 1,
+      sequenceName = SchemaConstant.SHADOW_TRANSACTION_RECORD_SEQUENCE_NAME)
   private long id;
 
   @Column(name = "ACCOUNT_ID")

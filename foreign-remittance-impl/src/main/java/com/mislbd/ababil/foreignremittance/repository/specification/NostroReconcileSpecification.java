@@ -21,9 +21,7 @@ public class NostroReconcileSpecification {
       if (advBranch != null) {
         predicate = cb.and(predicate, cb.equal(root.get("advBranch"), advBranch));
       }
-      if (selected == true || selected == false) {
-        predicate = cb.and(predicate, cb.equal(root.get("selected"), selected));
-      }
+      predicate = cb.and(predicate, cb.equal(root.get("selected"), selected));
       if (valueDate != null) {
         predicate = cb.and(predicate, cb.equal(root.get("valueDate"), valueDate));
       }

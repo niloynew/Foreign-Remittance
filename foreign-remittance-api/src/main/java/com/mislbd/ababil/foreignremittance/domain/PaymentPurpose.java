@@ -13,5 +13,4 @@ public class PaymentPurpose {
   private String level;
   private String code;
   private String description;
-
 }
