@@ -1,7 +1,14 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import java.math.BigDecimal;
 
+@Getter
+@Setter
+@Accessors(chain = true)
 public class RemittanceChargeInformation {
 
   private long chargeId;
@@ -20,139 +27,4 @@ public class RemittanceChargeInformation {
   private String currency;
   private BigDecimal exchangeRate;
 
-  public long getChargeId() {
-    return chargeId;
-  }
-
-  public RemittanceChargeInformation setChargeId(long chargeId) {
-    this.chargeId = chargeId;
-    return this;
-  }
-
-  public String getChargeName() {
-    return chargeName;
-  }
-
-  public RemittanceChargeInformation setChargeName(String chargeName) {
-    this.chargeName = chargeName;
-    return this;
-  }
-
-  public Boolean getCanModifyCharge() {
-    return canModifyCharge;
-  }
-
-  public RemittanceChargeInformation setCanModifyCharge(Boolean canModifyCharge) {
-    this.canModifyCharge = canModifyCharge;
-    return this;
-  }
-
-  public boolean isChargeModifiable() {
-    return chargeModifiable;
-  }
-
-  public RemittanceChargeInformation setChargeModifiable(boolean chargeModifiable) {
-    this.chargeModifiable = chargeModifiable;
-    return this;
-  }
-
-  public boolean isVatModifiable() {
-    return vatModifiable;
-  }
-
-  public RemittanceChargeInformation setVatModifiable(boolean vatModifiable) {
-    this.vatModifiable = vatModifiable;
-    return this;
-  }
-
-  public ChargeAccountType getChargeAccountType() {
-    return chargeAccountType;
-  }
-
-  public RemittanceChargeInformation setChargeAccountType(ChargeAccountType chargeAccountType) {
-    this.chargeAccountType = chargeAccountType;
-    return this;
-  }
-
-  public String getChargeAccountCode() {
-    return chargeAccountCode;
-  }
-
-  public RemittanceChargeInformation setChargeAccountCode(String chargeAccountCode) {
-    this.chargeAccountCode = chargeAccountCode;
-    return this;
-  }
-
-  public BigDecimal getChargeAmount() {
-    return chargeAmount;
-  }
-
-  public RemittanceChargeInformation setChargeAmount(BigDecimal chargeAmount) {
-    this.chargeAmount = chargeAmount;
-    return this;
-  }
-
-  public BigDecimal getChargeAmountAfterWaived() {
-    return chargeAmountAfterWaived;
-  }
-
-  public RemittanceChargeInformation setChargeAmountAfterWaived(
-      BigDecimal chargeAmountAfterWaived) {
-    this.chargeAmountAfterWaived = chargeAmountAfterWaived;
-    return this;
-  }
-
-  public BigDecimal getVatAmountAfterWaived() {
-    return vatAmountAfterWaived;
-  }
-
-  public RemittanceChargeInformation setVatAmountAfterWaived(BigDecimal vatAmountAfterWaived) {
-    this.vatAmountAfterWaived = vatAmountAfterWaived;
-    return this;
-  }
-
-  public ChargeAccountType getVatAccountType() {
-    return vatAccountType;
-  }
-
-  public RemittanceChargeInformation setVatAccountType(ChargeAccountType vatAccountType) {
-    this.vatAccountType = vatAccountType;
-    return this;
-  }
-
-  public String getVatAccountCode() {
-    return vatAccountCode;
-  }
-
-  public RemittanceChargeInformation setVatAccountCode(String vatAccountCode) {
-    this.vatAccountCode = vatAccountCode;
-    return this;
-  }
-
-  public BigDecimal getVatAmount() {
-    return vatAmount;
-  }
-
-  public RemittanceChargeInformation setVatAmount(BigDecimal vatAmount) {
-    this.vatAmount = vatAmount;
-    return this;
-  }
-
-  public String getCurrency() {
-    return currency;
-  }
-
-  public RemittanceChargeInformation setCurrency(String currency) {
-    this.currency = currency;
-    return this;
-  }
-
-  public BigDecimal getExchangeRate() {
-    return exchangeRate;
-  }
-
-  public RemittanceChargeInformation setExchangeRate(BigDecimal exchangeRate) {
-    this.exchangeRate = exchangeRate;
-    return this;
-  }
 }

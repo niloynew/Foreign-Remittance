@@ -5,7 +5,7 @@ import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import javax.persistence.*;
 
 @Entity
-@Table(name = SchemaConstant.REMITTANCE_CHARGE_MAPPING_TABLE)
+@Table(name = SchemaConstant.ID_CHARGE_MAPPING_TABLE)
 public class RemittanceChargeMappingEntity extends BaseEntity {
 
   @Id
@@ -13,7 +13,7 @@ public class RemittanceChargeMappingEntity extends BaseEntity {
   @SequenceGenerator(
       name = "REMITTANCE_CHARGE_MAPPING_ID_GEN",
       allocationSize = 1,
-      sequenceName = SchemaConstant.REMITTANCE_CHARGE_MAPPING_SEQUENCE_NAME)
+      sequenceName = SchemaConstant.ID_CHARGE_MAPPING_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
 

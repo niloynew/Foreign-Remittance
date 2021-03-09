@@ -1,6 +1,5 @@
 package com.mislbd.ababil.foreignremittance.service;
 
-import com.mislbd.ababil.foreignremittance.domain.ExportLC;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.util.List;
 import java.util.Optional;

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import javax.persistence.*;
 
 @Entity
-@Table(name = SchemaConstant.REMITTANCE_CHARGE_SLAB_INFO_TABLE_NAME)
+@Table(name = SchemaConstant.ID_CHARGE_SLAB_INFO_TABLE_NAME)
 public class RemittanceChargeSlabEntity {
 
   @Id
@@ -12,7 +12,7 @@ public class RemittanceChargeSlabEntity {
   @SequenceGenerator(
       name = "REMITTANCE_CHARGE_SLAB_INFO_ID_GEN",
       allocationSize = 1,
-      sequenceName = SchemaConstant.REMITTANCE_CHARGE_SLAB_INFO_SEQUENCE_NAME)
+      sequenceName = SchemaConstant.ID_CHARGE_SLAB_INFO_SEQUENCE_NAME)
   private long id;
 
   @Column(name = "AMOUNT_FROM")

@@ -7,7 +7,7 @@ import java.util.List;
 import javax.persistence.*;
 
 @Entity
-@Table(name = SchemaConstant.REMITTANCE_CHARGE_TABLE_NAME)
+@Table(name = SchemaConstant.ID_CHARGE_TABLE_NAME)
 public class RemittanceChargeEntity extends BaseEntity {
 
   @Id
@@ -15,7 +15,7 @@ public class RemittanceChargeEntity extends BaseEntity {
   @SequenceGenerator(
       name = "REMITTANCE_CHARGE_ID_GEN",
       allocationSize = 1,
-      sequenceName = SchemaConstant.REMITTANCE_CHARGE_SEQUENCE_NAME)
+      sequenceName = SchemaConstant.ID_CHARGE_SEQUENCE_NAME)
   private long id;
 
   @Column(name = "CHARGE_NAME", nullable = false, unique = true)

@@ -9,11 +9,15 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity
-@Table(name = SchemaConstant.NOSTRO_TRANSACTION)
+@Table(name = SchemaConstant.NOSTRO_TRANSACTION_RECORD_TABLE_NAME)
 public class NostroTransactionEntity extends BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "NOSTRO_TRANSACTION_RECORD_ID_GEN")
+  @SequenceGenerator(
+          name = "NOSTRO_ACCOUNT_ID_GEN",
+          allocationSize = 1,
+          sequenceName = SchemaConstant.NOSTRO_TRANSACTION_RECORD_SEQUENCE_NAME)
   private long id;
 
   @Column(name = "ACCOUNT_NO")
@@ -82,7 +86,7 @@ public class NostroTransactionEntity extends BaseEntity {
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "nostroTransaction")
   @Fetch(FetchMode.SUBSELECT)
-  private List<BankConfiguration> bankInformation;
+  private List<SwiftBankConfigurationEntity> bankInformation;
 
   public long getId() {
     return id;
@@ -260,11 +264,11 @@ public class NostroTransactionEntity extends BaseEntity {
     this.applicantAccount = applicantAccount;
   }
 
-  public List<BankConfiguration> getBankInformation() {
+  public List<SwiftBankConfigurationEntity> getBankInformation() {
     return bankInformation;
   }
 
-  public void setBankInformation(List<BankConfiguration> bankInformation) {
+  public void setBankInformation(List<SwiftBankConfigurationEntity> bankInformation) {
     this.bankInformation = bankInformation;
   }
 }

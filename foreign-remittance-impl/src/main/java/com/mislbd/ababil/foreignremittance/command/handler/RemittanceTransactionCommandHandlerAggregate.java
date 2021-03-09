@@ -11,7 +11,7 @@ import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.BankInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.BankInformationEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionBankMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeInformationEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.BankTypeService;
@@ -94,7 +94,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
         CreateInwardRemittanceTransactionCommand.class,
         CreateOutwardRemittanceTransactionCommand.class
       })
-  public void auditCreateInwardRemittanceTransactionAndCreateInwardRemittanceTransaction(
+  public void auditCreateInwardRemittanceTransaction(
       CommandEvent e) {
 
     auditor.audit(e.getCommand().getPayload(), e.getCommand());
@@ -200,10 +200,10 @@ public class RemittanceTransactionCommandHandlerAggregate {
     if (!bankInformationList.isEmpty())
       bankInformationList.forEach(
           bankInformation -> {
-            BankInformationEntity bankInformationEntity =
+            RemittanceTransactionBankMappingEntity remittanceTransactionBankMappingEntity =
                 bankInformationMapper.domainToEntity().map(bankInformation);
-            bankInformationEntity.setRemittanceTransaction(entity);
-            bankInformationRepository.save(bankInformationEntity);
+            remittanceTransactionBankMappingEntity.setRemittanceTransaction(entity);
+            bankInformationRepository.save(remittanceTransactionBankMappingEntity);
           });
 
     List<RemittanceChargeInformation> chargeInformationList =

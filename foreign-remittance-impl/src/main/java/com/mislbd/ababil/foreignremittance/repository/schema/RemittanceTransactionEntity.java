@@ -9,7 +9,7 @@ import java.util.List;
 import javax.persistence.*;
 
 @Entity
-@Table(name = SchemaConstant.REMITTANCE_TRANSACTION_TABLE_NAME)
+@Table(name = SchemaConstant.ID_REMITTANCE_TRANSACTION_TABLE_NAME)
 public class RemittanceTransactionEntity extends BaseEntity {
 
   @Id
@@ -17,7 +17,7 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @SequenceGenerator(
       name = "REMITTANCE_TRANSACTION_SEQUENCE_GEN",
       allocationSize = 1,
-      sequenceName = SchemaConstant.REMITTANCE_TRANSACTION_SEQUENCE_NAME)
+      sequenceName = SchemaConstant.ID_REMITTANCE_TRANSACTION_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
 
@@ -77,7 +77,7 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   // ##### Banks Information #####//
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "remittanceTransaction")
-  private List<BankInformationEntity> bankInformationEntity;
+  private List<RemittanceTransactionBankMappingEntity> remittanceTransactionBankMappingEntity;
 
   // ##### Financial Information #####//
   @Enumerated(EnumType.STRING)
@@ -309,13 +309,13 @@ public class RemittanceTransactionEntity extends BaseEntity {
     return this;
   }
 
-  public List<BankInformationEntity> getBankInformationEntity() {
-    return bankInformationEntity;
+  public List<RemittanceTransactionBankMappingEntity> getRemittanceTransactionBankMappingEntity() {
+    return remittanceTransactionBankMappingEntity;
   }
 
-  public RemittanceTransactionEntity setBankInformationEntity(
-      List<BankInformationEntity> bankInformationEntity) {
-    this.bankInformationEntity = bankInformationEntity;
+  public RemittanceTransactionEntity setRemittanceTransactionBankMappingEntity(
+      List<RemittanceTransactionBankMappingEntity> remittanceTransactionBankMappingEntity) {
+    this.remittanceTransactionBankMappingEntity = remittanceTransactionBankMappingEntity;
     return this;
   }
 

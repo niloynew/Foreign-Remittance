@@ -5,14 +5,14 @@ import java.math.BigDecimal;
 import javax.persistence.*;
 
 @Entity
-@Table(name = SchemaConstant.ID_REMITTANCE_CHARGE_INFO_TABLE_NAME)
+@Table(name = SchemaConstant.ID_CHARGE_INFO_TABLE_NAME)
 public class RemittanceChargeInformationEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "ID_REMITTANCE_CHARGE_INFO_ID_GEN")
   @SequenceGenerator(
       name = "ID_REMITTANCE_CHARGE_INFO_ID_GEN",
       allocationSize = 1,
-      sequenceName = SchemaConstant.ID_REMITTANCE_CHARGE_INFO_SEQUENCE_NAME)
+      sequenceName = SchemaConstant.ID_CHARGE_INFO_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
 

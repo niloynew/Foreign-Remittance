@@ -2,7 +2,7 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.foreignremittance.command.*;
-import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.SwiftRegisterService;
 import com.mislbd.asset.command.api.CommandEvent;
@@ -27,7 +27,7 @@ public class SwiftMessageCommandHandlerAggregate {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(SwiftMessageCommandHandlerAggregate.class);
-  private final NostroTransactionRepository nostroTransactionRepository;
+  private final ShadowTransactionRepository shadowTransactionRepository;
   private final ModelMapper modelMapper;
   private final Auditor auditor;
   private final CommandProcessor commandProcessor;
@@ -36,14 +36,14 @@ public class SwiftMessageCommandHandlerAggregate {
   private String serviceURL = "http://192.168.1.104:8087/swift-service";
 
   public SwiftMessageCommandHandlerAggregate(
-      NostroTransactionRepository nostroTransactionRepository,
+      ShadowTransactionRepository shadowTransactionRepository,
       ModelMapper modelMapper,
       Auditor auditor,
       CommandProcessor commandProcessor,
       SwiftMTMessageService swiftMTMessageService,
       SwiftRegisterService swiftRegisterService) {
 
-    this.nostroTransactionRepository = nostroTransactionRepository;
+    this.shadowTransactionRepository = shadowTransactionRepository;
     this.modelMapper = modelMapper;
     this.auditor = auditor;
     this.commandProcessor = commandProcessor;
@@ -67,7 +67,7 @@ public class SwiftMessageCommandHandlerAggregate {
     NostroTransactionEntity nostroTransactionEntity =
         modelMapper.map(command.getPayload(), NostroTransactionEntity.class);
 
-    nostroTransactionRepository.save(nostroTransactionEntity);
+    shadowTransactionRepository.save(nostroTransactionEntity);
     return CommandResponse.asVoid();
   }
 
@@ -83,7 +83,7 @@ public class SwiftMessageCommandHandlerAggregate {
           NostroTransactionEntity nostroTransactionEntity =
               modelMapper.map(dto, NostroTransactionEntity.class);
           nostroTransactionEntity.setSelected(true);
-          nostroTransactionRepository.save(nostroTransactionEntity);
+          shadowTransactionRepository.save(nostroTransactionEntity);
           success++;
         } catch (Exception e) {
           e.printStackTrace();

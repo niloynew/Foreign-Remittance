@@ -1,11 +1,7 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
 import com.mislbd.ababil.contacts.domain.ContactInformation;
-import com.mislbd.ababil.contacts.repository.jpa.*;
 import com.mislbd.ababil.contacts.repository.schema.ContactInformationEntity;
-import com.mislbd.ababil.foreignremittance.domain.ExportLC;
-import com.mislbd.ababil.foreignremittance.repository.jpa.ExportLCRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.ExportLCEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
 

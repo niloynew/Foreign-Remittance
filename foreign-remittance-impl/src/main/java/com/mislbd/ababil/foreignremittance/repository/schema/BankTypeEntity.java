@@ -4,7 +4,7 @@ import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = SchemaConstant.BANK_TYPE_TABLE_NAME)
+@Table(name = SchemaConstant.ID_BANK_TYPE_TABLE_NAME)
 public class BankTypeEntity extends BaseEntity {
 
   @Id
@@ -12,7 +12,7 @@ public class BankTypeEntity extends BaseEntity {
   @SequenceGenerator(
       name = "BANK_TYPE_ID_GEN",
       allocationSize = 1,
-      sequenceName = SchemaConstant.BANK_TYPE_SEQUENCE_NAME)
+      sequenceName = SchemaConstant.ID_BANK_TYPE_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
 

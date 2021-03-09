@@ -12,14 +12,14 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Entity
-@Table(name = SchemaConstant.SWIFT_REGISTER)
+@Table(name = SchemaConstant.ID_SWIFT_REGISTER)
 public class SwiftRegisterEntity extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SWIFT_REGISTER_ID_GEN")
   @SequenceGenerator(
       name = "SWIFT_REGISTER_ID_GEN",
       allocationSize = 1,
-      sequenceName = SchemaConstant.SWIFT_REGISTER_SEQUENCE_NAME)
+      sequenceName = SchemaConstant.ID_SWIFT_REGISTER_SEQUENCE_NAME)
   @Column(name = "ID")
   private long id;
 

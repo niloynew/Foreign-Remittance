@@ -79,7 +79,7 @@ public class RemittanceTransactionMapper {
             .setTotalVatAmountAfterWaived(entity.getTotalVatAmountAfterWaived())
             .setBankInformation(
                 entity
-                    .getBankInformationEntity()
+                    .getRemittanceTransactionBankMappingEntity()
                     .stream()
                     .map(bankEntity -> bankInformationMapper.entityToDomain().map(bankEntity))
                     .collect(Collectors.toList()));
