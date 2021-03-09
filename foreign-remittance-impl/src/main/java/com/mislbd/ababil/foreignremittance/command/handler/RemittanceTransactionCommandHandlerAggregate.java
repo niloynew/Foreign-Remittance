@@ -121,7 +121,12 @@ public class RemittanceTransactionCommandHandlerAggregate {
     } else {
       totalChargeAmount = transaction.getTotalChargeAmountAfterWaived();
     }
-    BigDecimal totalChargeAndVat = totalChargeAmount.add(transaction.getTotalVatAmount());
+    if (transaction.getTotalVatAmountAfterWaived() == null) {
+      totalVatAmount = transaction.getTotalVatAmount();
+    } else {
+      totalVatAmount = transaction.getTotalVatAmountAfterWaived();
+    }
+    BigDecimal totalChargeAndVat = totalChargeAmount.add(totalVatAmount);
     return CommandResponse.of(
         disbursementService.doInwardTransaction(
             remittanceTransactionEntity,

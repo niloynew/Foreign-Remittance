@@ -37,6 +37,7 @@ public class ShadowTransactionRecordMapper {
             .setEventId(entity.getEventId())
             .setBatchNumber(entity.getBatchNumber())
             .setValueDate(entity.getValueDate())
-            .setPostBalance(entity.getPostBalance());
+            .setPostBalance(entity.getPostBalance())
+            .setReconcileStatus(entity.getReconcileStatus());
   }
 }

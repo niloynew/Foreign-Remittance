@@ -31,4 +31,5 @@ public class ShadowTransactionRecord {
   private String batchNumber;
   private LocalDate valueDate;
   private BigDecimal postBalance;
+  private NostroReconcileStatus reconcileStatus;
 }
