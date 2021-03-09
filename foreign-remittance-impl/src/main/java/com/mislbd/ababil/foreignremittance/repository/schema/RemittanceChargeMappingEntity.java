@@ -2,11 +2,10 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import javax.persistence.*;
 
 @Getter
 @Setter

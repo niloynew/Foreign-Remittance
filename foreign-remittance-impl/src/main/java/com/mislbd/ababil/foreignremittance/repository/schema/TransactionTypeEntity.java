@@ -1,20 +1,18 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
-import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
+import java.util.List;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import java.util.List;
-import javax.persistence.*;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @Entity
 @Table(name = SchemaConstant.ID_TRANSACTION_TYPE_TABLE_NAME)
-public class TransactionTypeEntity extends BaseEntity {
+public class TransactionTypeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "TRANSACTION_TYPE_ID_GEN")
@@ -40,5 +38,4 @@ public class TransactionTypeEntity extends BaseEntity {
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "transactionType", cascade = CascadeType.ALL)
   private List<RemittanceTransactionEntity> remittanceTransactionEntityList;
-
 }

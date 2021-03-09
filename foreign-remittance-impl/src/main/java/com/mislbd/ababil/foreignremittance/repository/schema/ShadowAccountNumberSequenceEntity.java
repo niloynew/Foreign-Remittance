@@ -1,10 +1,9 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import javax.persistence.*;
 
 @Getter
 @Setter
@@ -18,8 +17,8 @@ public class ShadowAccountNumberSequenceEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
+
   private long branchId;
   private long productId;
   private long sequence;
-
 }

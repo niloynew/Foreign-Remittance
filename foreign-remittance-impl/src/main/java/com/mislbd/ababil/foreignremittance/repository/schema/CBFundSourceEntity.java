@@ -1,17 +1,16 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import javax.persistence.*;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @Entity
 @Table(name = SchemaConstant.ID_CB_FUND_SOURCE_TABLE_NAME)
-public class CBFundSourceEntity{
+public class CBFundSourceEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "CB_FUND_SOURCE_ID_GEN")
@@ -27,5 +26,4 @@ public class CBFundSourceEntity{
 
   @Column(name = "DESCRIPTION")
   private String description;
-
 }

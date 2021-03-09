@@ -1,17 +1,16 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import javax.persistence.*;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @Entity
 @Table(name = SchemaConstant.ID_BANK_TYPE_TABLE_NAME)
-public class BankTypeEntity{
+public class BankTypeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "BANK_TYPE_ID_GEN")
@@ -30,5 +29,4 @@ public class BankTypeEntity{
 
   @Column(name = "DESCRIPTION")
   private String description;
-
 }

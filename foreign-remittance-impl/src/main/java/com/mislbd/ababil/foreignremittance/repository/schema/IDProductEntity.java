@@ -1,13 +1,12 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
@@ -54,5 +53,4 @@ public class IDProductEntity extends BaseEntity implements Serializable {
 
   @OneToMany(mappedBy = "product")
   private List<ShadowAccountEntity> shadowAccounts;
-
 }

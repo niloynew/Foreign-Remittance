@@ -1,12 +1,11 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
+import java.math.BigDecimal;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import java.math.BigDecimal;
-import javax.persistence.*;
 
 @Getter
 @Setter
@@ -56,5 +55,4 @@ public class RemittanceChargeInformationEntity {
   @ManyToOne
   @JoinColumn(name = "Remittance_Tnx_Id")
   private RemittanceTransactionEntity remittanceTransaction;
-
 }

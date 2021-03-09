@@ -2,13 +2,12 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import com.mislbd.ababil.foreignremittance.domain.ChargeAccountType;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
@@ -87,5 +86,4 @@ public class RemittanceChargeEntity extends BaseEntity {
   private List<RemittanceChargeMappingEntity> remittanceChargeMappingEntities;
 
   @Transient private Boolean canModifyCharge;
-
 }

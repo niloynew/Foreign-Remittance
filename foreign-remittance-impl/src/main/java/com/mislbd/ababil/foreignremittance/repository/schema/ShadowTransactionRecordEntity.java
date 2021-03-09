@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
+import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Entity
 @Table(name = SchemaConstant.SHADOW_TRANSACTION_RECORD_TABLE_NAME)
-public class ShadowTransactionRecordEntity {
+public class ShadowTransactionRecordEntity extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SHADOW_TRANSACTION_RECORD_ID_GEN")
@@ -77,6 +78,6 @@ public class ShadowTransactionRecordEntity {
   @Column(name = "POST_BALANCE")
   private BigDecimal postBalance;
 
-  @Column(name = "RECONCILED_STATUS", columnDefinition = "default 0")
+  @Column(name = "RECONCILED_STATUS")
   private NostroReconcileStatus reconcileStatus;
 }

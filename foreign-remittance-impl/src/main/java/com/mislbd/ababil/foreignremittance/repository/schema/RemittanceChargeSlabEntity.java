@@ -1,11 +1,10 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
+import java.math.BigDecimal;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import java.math.BigDecimal;
-import javax.persistence.*;
 
 @Getter
 @Setter
@@ -46,5 +45,4 @@ public class RemittanceChargeSlabEntity {
   @ManyToOne
   @JoinColumn(name = "CHARGE_ID")
   private RemittanceChargeEntity remittanceCharge;
-
 }

@@ -18,6 +18,7 @@ public class ShadowTransactionRecord {
   private BigDecimal credit;
   private BigDecimal debitLcy;
   private BigDecimal creditLcy;
+  private String currency;
   private BigDecimal exchangeRate;
   private BigDecimal txnDefinitionId;
   private String txnNarration;

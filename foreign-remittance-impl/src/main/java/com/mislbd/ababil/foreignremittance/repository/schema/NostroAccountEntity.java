@@ -1,13 +1,12 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
@@ -55,5 +54,4 @@ public class NostroAccountEntity extends BaseEntity {
   @ManyToOne
   @JoinColumn(name = "PRODUCT_ID")
   private IDProductEntity product;
-
 }

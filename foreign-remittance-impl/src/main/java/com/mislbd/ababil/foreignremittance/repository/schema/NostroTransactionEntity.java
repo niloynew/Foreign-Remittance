@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -94,5 +93,4 @@ public class NostroTransactionEntity extends BaseEntity {
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "nostroTransaction")
   @Fetch(FetchMode.SUBSELECT)
   private List<SwiftBankConfigurationEntity> bankInformation;
-
 }
