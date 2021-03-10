@@ -34,8 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Aggregate
 public class RemittanceTransactionCommandHandlerAggregate {
 
-  private static final Long DISBURSEMENT_ACTIVITY_ID = 701L;
-  private static final Long PAYMENT_ACTIVITY_ID = 702L;
+  private static final Long ID_DISBURSEMENT_ACTIVITY_ID = 805L;
+  private static final Long ID_PAYMENT_ACTIVITY_ID = 806L;
   private static final String SYSTEM_EXCHANGE_RATE_TYPE = "SYSTEM_EXCHANGE_RATE_TYPE";
   private final RemittanceTransactionRepository transactionRepository;
   private final RemittanceTransactionMapper transactionMapper;
@@ -114,7 +114,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
     AuditInformation auditInformation = getAuditInformation(command);
 
     RemittanceTransactionEntity remittanceTransactionEntity =
-        saveTransactionEntity(transaction, DISBURSEMENT_ACTIVITY_ID, auditInformation);
+        saveTransactionEntity(transaction, ID_DISBURSEMENT_ACTIVITY_ID, auditInformation);
     if (transaction.getTotalChargeAmountAfterWaived() == null) {
       totalChargeAmount = transaction.getTotalChargeAmount();
     } else {
@@ -131,7 +131,8 @@ public class RemittanceTransactionCommandHandlerAggregate {
             remittanceTransactionEntity,
             auditInformation,
             transaction.getRemittanceChargeInformationList(),
-            totalChargeAndVat));
+            totalChargeAndVat,
+            ID_DISBURSEMENT_ACTIVITY_ID));
   }
 
   @Transactional
@@ -141,7 +142,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
     RemittanceTransaction transaction = command.getPayload();
     AuditInformation auditInformation = getAuditInformation(command);
     RemittanceTransactionEntity remittanceTransactionEntity =
-        saveTransactionEntity(transaction, PAYMENT_ACTIVITY_ID, auditInformation);
+        saveTransactionEntity(transaction, ID_PAYMENT_ACTIVITY_ID, auditInformation);
     if (transaction.getTotalChargeAmountAfterWaived() == null) {
       totalChargeAmount = transaction.getTotalChargeAmount();
     } else {
@@ -160,7 +161,8 @@ public class RemittanceTransactionCommandHandlerAggregate {
             remittanceTransactionEntity,
             auditInformation,
             command.getPayload().getRemittanceChargeInformationList(),
-            totalChargeAndVat));
+            totalChargeAndVat,
+            ID_DISBURSEMENT_ACTIVITY_ID));
   }
 
   private AuditInformation getAuditInformation(Command<RemittanceTransaction> command) {

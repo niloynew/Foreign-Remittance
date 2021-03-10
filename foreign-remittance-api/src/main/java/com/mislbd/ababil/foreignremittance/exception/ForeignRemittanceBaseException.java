@@ -16,4 +16,8 @@ public class ForeignRemittanceBaseException extends NotAcceptableException {
   public ForeignRemittanceBaseException(String message) {
     super(ID_BASE_EXCEPTION.getModule(), ID_BASE_EXCEPTION.getCode(), message);
   }
+
+  public ForeignRemittanceBaseException(String errorCode, String message) {
+    super(ID_BASE_EXCEPTION.getModule(), errorCode, message);
+  }
 }

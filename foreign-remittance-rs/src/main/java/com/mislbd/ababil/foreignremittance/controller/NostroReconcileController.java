@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.ProcessNostroTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.ShadowTransactionRecordReconcileCommand;
 import com.mislbd.ababil.foreignremittance.command.UpdateNostroTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
 import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecordList;
@@ -86,7 +87,8 @@ public class NostroReconcileController {
       @Valid @RequestBody ShadowTransactionRecordList shadowTransactionRecordList) {
 
     int numberOfSuccessReconcile = 0;
-
-    return status(CREATED).body(Integer.valueOf(numberOfSuccessReconcile));
+    commandProcessor.executeResult(
+        new ShadowTransactionRecordReconcileCommand(shadowTransactionRecordList));
+    return status(CREATED).body(numberOfSuccessReconcile);
   }
 }

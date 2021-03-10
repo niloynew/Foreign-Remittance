@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class RemittanceTransactionMapper {
 
-  private static final Long activityId = Long.valueOf(601);
   private final RemittanceTransactionRepository remittanceTransactionRepository;
   private final TransactionTypeRepository transactionTypeRepository;
   private final ShadowAccountRepository shadowAccountRepository;
@@ -133,7 +132,8 @@ public class RemittanceTransactionMapper {
       RemittanceTransactionEntity request,
       BigDecimal hoAmountLcy,
       boolean isDebit,
-      AuditInformation auditInformation) {
+      AuditInformation auditInformation,
+      Long activityId) {
     String narration;
     if (isDebit) {
       narration = "Disburse";
@@ -151,6 +151,7 @@ public class RemittanceTransactionMapper {
     transactionRequest.setRateType(request.getHoRateTypeId());
     transactionRequest.setDebitTransaction(isDebit);
     transactionRequest.setBatchNo(request.getBatchNumber());
+    transactionRequest.setActivityId(activityId);
     transactionRequest.setGlobalTxnNo(request.getGlobalTransactionNo());
     transactionRequest.setEntryUser(auditInformation.getEntryUser());
     transactionRequest.setEntryTerminal(auditInformation.getEntryTerminal());
@@ -171,7 +172,8 @@ public class RemittanceTransactionMapper {
       BigDecimal clientAmount,
       String baseCurrency,
       boolean isDebit,
-      AuditInformation auditInformation) {
+      AuditInformation auditInformation,
+      Long activityId) {
     String narration;
     if (isDebit) {
       narration = "Payment";
@@ -203,7 +205,10 @@ public class RemittanceTransactionMapper {
   }
 
   public CasaTransactionRequest getNetPayableCASAClientForForFcy(
-      RemittanceTransactionEntity request, boolean isDebit, AuditInformation auditInformation) {
+      RemittanceTransactionEntity request,
+      boolean isDebit,
+      AuditInformation auditInformation,
+      Long activityId) {
     String narration;
     if (isDebit) {
       narration = "Payment";
@@ -242,7 +247,8 @@ public class RemittanceTransactionMapper {
       String baseCurrency,
       BigDecimal clientAmount,
       boolean isDebit,
-      AuditInformation auditInformation) {
+      AuditInformation auditInformation,
+      Long activityId) {
     String narration;
     if (isDebit) {
       narration = "Payment";
@@ -279,7 +285,8 @@ public class RemittanceTransactionMapper {
       RemittanceTransactionEntity request,
       String baseCurrency,
       String exchangeGainGLCode,
-      AuditInformation auditInformation) {
+      AuditInformation auditInformation,
+      Long activityId) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest.setActivityId(activityId);
     glRequest.setAmountCcy(
@@ -309,7 +316,8 @@ public class RemittanceTransactionMapper {
   public GlTransactionRequest getChargeableGLCredit(
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
-      RemittanceChargeInformation charge) {
+      RemittanceChargeInformation charge,
+      Long activityId) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     if (charge.getChargeAmountAfterWaived() == null) {
       chargeAmount = charge.getChargeAmount();
@@ -343,7 +351,8 @@ public class RemittanceTransactionMapper {
   public SubGlTransactionRequest getChargeableSubGLCredit(
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
-      RemittanceChargeInformation charge) {
+      RemittanceChargeInformation charge,
+      Long activityId) {
     SubGlTransactionRequest subGLRequest = new SubGlTransactionRequest();
     if (charge.getChargeAmountAfterWaived() == null) {
       chargeAmount = charge.getChargeAmount();
@@ -378,7 +387,8 @@ public class RemittanceTransactionMapper {
   public GlTransactionRequest getVATGLCredit(
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
-      RemittanceChargeInformation charge) {
+      RemittanceChargeInformation charge,
+      Long activityId) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     if (charge.getVatAmountAfterWaived() == null) {
       vatAmount = charge.getVatAmount();
@@ -413,7 +423,8 @@ public class RemittanceTransactionMapper {
   public SubGlTransactionRequest getVALSubGLCredit(
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
-      RemittanceChargeInformation charge) {
+      RemittanceChargeInformation charge,
+      Long activityId) {
     SubGlTransactionRequest subGLRequest = new SubGlTransactionRequest();
     if (charge.getVatAmountAfterWaived() == null) {
       vatAmount = charge.getVatAmount();
@@ -477,7 +488,8 @@ public class RemittanceTransactionMapper {
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
       BigDecimal totalCharges,
-      String baseCurrency) {
+      String baseCurrency,
+      Long activityId) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest.setActivityId(activityId);
     glRequest.setAmountCcy(totalCharges);
