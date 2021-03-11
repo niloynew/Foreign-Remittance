@@ -21,10 +21,8 @@ import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.cityservice.gateway.model.TransactionRequest;
 import com.mislbd.cityservice.gateway.service.TheCityBankService;
-
 import java.math.BigDecimal;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,120 +31,120 @@ import org.springframework.transaction.annotation.Transactional;
 @Aggregate
 public class TransactionReconcileCommandHandlerAggregate {
 
-    private static final String EXTERNAL_MODULE_NAME = "FINACLE";
-    private static final Logger LOGGER =
-            LoggerFactory.getLogger(TransactionReconcileCommandHandlerAggregate.class);
-    private final Auditor auditor;
-    private final ExternalModuleSettlementAccountRepository settlementAccountRepository;
-    private final TheCityBankService theCityBankService;
-    private final ShadowAccountRepository shadowAccountRepository;
-    private final ShadowTransactionRecordRepository shadowTransactionRecordRepository;
+  private static final String EXTERNAL_MODULE_NAME = "FINACLE";
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(TransactionReconcileCommandHandlerAggregate.class);
+  private final Auditor auditor;
+  private final ExternalModuleSettlementAccountRepository settlementAccountRepository;
+  private final TheCityBankService theCityBankService;
+  private final ShadowAccountRepository shadowAccountRepository;
+  private final ShadowTransactionRecordRepository shadowTransactionRecordRepository;
 
-    public TransactionReconcileCommandHandlerAggregate(
-            Auditor auditor,
-            ExternalModuleSettlementAccountRepository settlementAccountRepository,
-            TheCityBankService theCityBankService,
-            ShadowAccountRepository shadowAccountRepository,
-            ShadowTransactionRecordRepository shadowTransactionRecordRepository) {
-        this.auditor = auditor;
-        this.settlementAccountRepository = settlementAccountRepository;
-        this.theCityBankService = theCityBankService;
-        this.shadowAccountRepository = shadowAccountRepository;
-        this.shadowTransactionRecordRepository = shadowTransactionRecordRepository;
-    }
+  public TransactionReconcileCommandHandlerAggregate(
+      Auditor auditor,
+      ExternalModuleSettlementAccountRepository settlementAccountRepository,
+      TheCityBankService theCityBankService,
+      ShadowAccountRepository shadowAccountRepository,
+      ShadowTransactionRecordRepository shadowTransactionRecordRepository) {
+    this.auditor = auditor;
+    this.settlementAccountRepository = settlementAccountRepository;
+    this.theCityBankService = theCityBankService;
+    this.shadowAccountRepository = shadowAccountRepository;
+    this.shadowTransactionRecordRepository = shadowTransactionRecordRepository;
+  }
 
-    @CommandListener(
-            commandClasses = {
-                    ReconcileShadowTransactionRecordCommand.class,
-                    RejectShadowTransactionRecordCommand.class
-            })
-    public void auditSwiftRegister(CommandEvent e) {
-        auditor.audit(e.getCommand().getPayload(), e.getCommand());
-    }
+  @CommandListener(
+      commandClasses = {
+        ReconcileShadowTransactionRecordCommand.class,
+        RejectShadowTransactionRecordCommand.class
+      })
+  public void auditSwiftRegister(CommandEvent e) {
+    auditor.audit(e.getCommand().getPayload(), e.getCommand());
+  }
 
-    @Transactional
-    @CommandHandler
-    public CommandResponse<Integer> reconcileTransactionRecords(
-            ReconcileShadowTransactionRecordCommand command) {
-        List<ShadowTransactionRecord> recordList = command.getPayload().getShadowTransactionRecords();
-        int success = 0;
-        if (recordList != null && !recordList.isEmpty()) {
-            for (ShadowTransactionRecord x : recordList) {
-                ShadowAccountEntity shadowAccount =
-                        shadowAccountRepository
-                                .findById(x.getAccountId())
-                                .orElseThrow(AccountNotFoundException::new);
-                ExternalModuleSettlementAccountEntity settlementAccount =
-                        settlementAccountRepository
-                                .findByModuleTypeAndCurrencyCode(
-                                        EXTERNAL_MODULE_NAME, shadowAccount.getCurrencyCode())
-                                .orElseThrow(ExternalModuleSettlementAccountNotFoundException::new);
-                ShadowTransactionRecordEntity transactionRecordEntity =
-                        shadowTransactionRecordRepository
-                                .findById(x.getId())
-                                .orElseThrow(
-                                        () ->
-                                                new ForeignRemittanceBaseException(
-                                                        "Shadow Transaction record not found for id: " + x.getId()));
-                shadowTransactionRecordRepository.save(
-                        transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Reconciled));
-                BigDecimal txnAmount = x.getDebit();
-                String debitAccount = shadowAccount.getNostroAccountNumber();
-                String creditAccount = settlementAccount.getExternalAccount();
-                if (x.getTxnDefinitionId().toString().indexOf(0) == 1) {
-                    txnAmount = x.getCredit();
-                    debitAccount = settlementAccount.getExternalAccount();
-                    creditAccount = shadowAccount.getNostroAccountNumber();
-                }
-                try {
-                    theCityBankService.doTransaction(
-                            TransactionRequest.requestBuilder()
-                                    .debitAccount(debitAccount)
-                                    .creditAccount(creditAccount)
-                                    .currencyCode(shadowAccount.getCurrencyCode())
-                                    .remarks(
-                                            shadowAccount.getNostroAccountNumber()
-                                                    + " : "
-                                                    + x.getGlobalTxnNo()
-                                                    + " ("
-                                                    + EXTERNAL_MODULE_NAME
-                                                    + " RECONCILE)")
-                                    .transactionAmount(txnAmount.doubleValue())
-                                    .reference(String.valueOf(x.getGlobalTxnNo()))
-                                    .requestId(StringUtils.leftPad(String.valueOf(x.getGlobalTxnNo()), 12, "0"))
-                                    .build());
-                    success++;
-                } catch (Exception e) {
-                    shadowTransactionRecordRepository.save(
-                            transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Unreconciled));
-                    LOGGER.error(
-                            "Reconcile failed for txnId: "
-                                    + x.getId()
-                                    + ", voucher no: "
-                                    + x.getGlobalTxnNo()
-                                    + ", amount: "
-                                    + txnAmount
-                                    + ", error : "
-                                    + e.getMessage());
-                }
-            }
-        }
-        return CommandResponse.of(success);
-    }
-
-    @Transactional
-    @CommandHandler
-    public CommandResponse<Void> rejectTransactionRecords(
-            RejectShadowTransactionRecordCommand command) {
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Integer> reconcileTransactionRecords(
+      ReconcileShadowTransactionRecordCommand command) {
+    List<ShadowTransactionRecord> recordList = command.getPayload().getShadowTransactionRecords();
+    int success = 0;
+    if (recordList != null && !recordList.isEmpty()) {
+      for (ShadowTransactionRecord x : recordList) {
+        ShadowAccountEntity shadowAccount =
+            shadowAccountRepository
+                .findById(x.getAccountId())
+                .orElseThrow(AccountNotFoundException::new);
+        ExternalModuleSettlementAccountEntity settlementAccount =
+            settlementAccountRepository
+                .findByModuleTypeAndCurrencyCode(
+                    EXTERNAL_MODULE_NAME, shadowAccount.getCurrencyCode())
+                .orElseThrow(ExternalModuleSettlementAccountNotFoundException::new);
         ShadowTransactionRecordEntity transactionRecordEntity =
-                shadowTransactionRecordRepository
-                        .findById(command.getId())
-                        .orElseThrow(
-                                () ->
-                                        new ForeignRemittanceBaseException(
-                                                "Shadow Transaction record not found for id: " + command.getId()));
+            shadowTransactionRecordRepository
+                .findById(x.getId())
+                .orElseThrow(
+                    () ->
+                        new ForeignRemittanceBaseException(
+                            "Shadow Transaction record not found for id: " + x.getId()));
         shadowTransactionRecordRepository.save(
-                transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Reject));
-        return CommandResponse.asVoid();
+            transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Reconciled));
+        BigDecimal txnAmount = x.getDebit();
+        String debitAccount = shadowAccount.getNostroAccountNumber();
+        String creditAccount = settlementAccount.getExternalAccount();
+        if (x.getTxnDefinitionId().toString().indexOf(0) == 1) {
+          txnAmount = x.getCredit();
+          debitAccount = settlementAccount.getExternalAccount();
+          creditAccount = shadowAccount.getNostroAccountNumber();
+        }
+        try {
+          theCityBankService.doTransaction(
+              TransactionRequest.requestBuilder()
+                  .debitAccount(debitAccount)
+                  .creditAccount(creditAccount)
+                  .currencyCode(shadowAccount.getCurrencyCode())
+                  .remarks(
+                      shadowAccount.getNostroAccountNumber()
+                          + " : "
+                          + x.getGlobalTxnNo()
+                          + " ("
+                          + EXTERNAL_MODULE_NAME
+                          + " RECONCILE)")
+                  .transactionAmount(txnAmount.doubleValue())
+                  .reference(String.valueOf(x.getGlobalTxnNo()))
+                  .requestId(StringUtils.leftPad(String.valueOf(x.getGlobalTxnNo()), 12, "0"))
+                  .build());
+          success++;
+        } catch (Exception e) {
+          shadowTransactionRecordRepository.save(
+              transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Unreconciled));
+          LOGGER.error(
+              "Reconcile failed for txnId: "
+                  + x.getId()
+                  + ", voucher no: "
+                  + x.getGlobalTxnNo()
+                  + ", amount: "
+                  + txnAmount
+                  + ", error : "
+                  + e.getMessage());
+        }
+      }
     }
+    return CommandResponse.of(success);
+  }
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Void> rejectTransactionRecords(
+      RejectShadowTransactionRecordCommand command) {
+    ShadowTransactionRecordEntity transactionRecordEntity =
+        shadowTransactionRecordRepository
+            .findById(command.getId())
+            .orElseThrow(
+                () ->
+                    new ForeignRemittanceBaseException(
+                        "Shadow Transaction record not found for id: " + command.getId()));
+    shadowTransactionRecordRepository.save(
+        transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Reject));
+    return CommandResponse.asVoid();
+  }
 }
