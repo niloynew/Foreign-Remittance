@@ -5,9 +5,11 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.ProcessNostroTransactionCommand;
-import com.mislbd.ababil.foreignremittance.command.ShadowTransactionRecordReconcileCommand;
+import com.mislbd.ababil.foreignremittance.command.ReconcileShadowTransactionRecordCommand;
+import com.mislbd.ababil.foreignremittance.command.RejectShadowTransactionRecordCommand;
 import com.mislbd.ababil.foreignremittance.command.UpdateNostroTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
+import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecord;
 import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecordList;
 import com.mislbd.ababil.foreignremittance.query.NostroReconcileQuery;
 import com.mislbd.ababil.foreignremittance.query.UnreconciledTransactionQuery;
@@ -88,7 +90,16 @@ public class NostroReconcileController {
 
     int numberOfSuccessReconcile = 0;
     commandProcessor.executeResult(
-        new ShadowTransactionRecordReconcileCommand(shadowTransactionRecordList));
+        new ReconcileShadowTransactionRecordCommand(shadowTransactionRecordList));
     return status(CREATED).body(numberOfSuccessReconcile);
+  }
+
+  @PutMapping(path = "/reconcile/txns/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Void> reconcileMultipleTransaction(
+      @Valid @RequestBody ShadowTransactionRecord shadowTransactionRecord,
+      @PathVariable("id") Long txnId) {
+    commandProcessor.executeResult(
+        new RejectShadowTransactionRecordCommand(shadowTransactionRecord, txnId));
+    return ResponseEntity.accepted().build();
   }
 }

@@ -1,12 +1,17 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.Auditor;
-import com.mislbd.ababil.foreignremittance.command.ShadowTransactionRecordReconcileCommand;
+import com.mislbd.ababil.foreignremittance.command.ReconcileShadowTransactionRecordCommand;
+import com.mislbd.ababil.foreignremittance.command.RejectShadowTransactionRecordCommand;
+import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
 import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecord;
 import com.mislbd.ababil.foreignremittance.exception.AccountNotFoundException;
 import com.mislbd.ababil.foreignremittance.exception.ExternalModuleSettlementAccountNotFoundException;
+import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
+import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowTransactionRecordRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.ShadowTransactionRecordEntity;
 import com.mislbd.ababil.transaction.repository.jpa.ExternalModuleSettlementAccountRepository;
 import com.mislbd.ababil.transaction.repository.schema.ExternalModuleSettlementAccountEntity;
 import com.mislbd.asset.command.api.CommandEvent;
@@ -33,19 +38,26 @@ public class TransactionReconcileCommandHandlerAggregate {
   private final ExternalModuleSettlementAccountRepository settlementAccountRepository;
   private final TheCityBankService theCityBankService;
   private final ShadowAccountRepository shadowAccountRepository;
+  private final ShadowTransactionRecordRepository shadowTransactionRecordRepository;
 
   public TransactionReconcileCommandHandlerAggregate(
       Auditor auditor,
       ExternalModuleSettlementAccountRepository settlementAccountRepository,
       TheCityBankService theCityBankService,
-      ShadowAccountRepository shadowAccountRepository) {
+      ShadowAccountRepository shadowAccountRepository,
+      ShadowTransactionRecordRepository shadowTransactionRecordRepository) {
     this.auditor = auditor;
     this.settlementAccountRepository = settlementAccountRepository;
     this.theCityBankService = theCityBankService;
     this.shadowAccountRepository = shadowAccountRepository;
+    this.shadowTransactionRecordRepository = shadowTransactionRecordRepository;
   }
 
-  @CommandListener(commandClasses = {ShadowTransactionRecordReconcileCommand.class})
+  @CommandListener(
+      commandClasses = {
+        ReconcileShadowTransactionRecordCommand.class,
+        RejectShadowTransactionRecordCommand.class
+      })
   public void auditSwiftRegister(CommandEvent e) {
     auditor.audit(e.getCommand().getPayload(), e.getCommand());
   }
@@ -53,7 +65,7 @@ public class TransactionReconcileCommandHandlerAggregate {
   @Transactional
   @CommandHandler
   public CommandResponse<Integer> reconcileTransactionRecords(
-      ShadowTransactionRecordReconcileCommand command) {
+      ReconcileShadowTransactionRecordCommand command) {
     List<ShadowTransactionRecord> recordList = command.getPayload().getShadowTransactionRecords();
     int success = 0;
     if (recordList != null && !recordList.isEmpty()) {
@@ -67,6 +79,15 @@ public class TransactionReconcileCommandHandlerAggregate {
                 .findByModuleTypeAndCurrencyCode(
                     EXTERNAL_MODULE_NAME, shadowAccount.getCurrencyCode())
                 .orElseThrow(ExternalModuleSettlementAccountNotFoundException::new);
+        ShadowTransactionRecordEntity transactionRecordEntity =
+            shadowTransactionRecordRepository
+                .findById(x.getId())
+                .orElseThrow(
+                    () ->
+                        new ForeignRemittanceBaseException(
+                            "Shadow Transaction record not found for id: " + x.getId()));
+        shadowTransactionRecordRepository.save(
+            transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Reconciled));
         BigDecimal txnAmount =
             x.getTxnDefinitionId().toString().indexOf(0) == 1 ? x.getCredit() : x.getDebit();
         try {
@@ -88,6 +109,8 @@ public class TransactionReconcileCommandHandlerAggregate {
                   .build());
           success++;
         } catch (Exception e) {
+          shadowTransactionRecordRepository.save(
+              transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Unreconciled));
           LOGGER.error(
               "Reconcile failed for txnId: "
                   + x.getId()
@@ -101,5 +124,21 @@ public class TransactionReconcileCommandHandlerAggregate {
       }
     }
     return CommandResponse.of(success);
+  }
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Void> rejectTransactionRecords(
+      RejectShadowTransactionRecordCommand command) {
+    ShadowTransactionRecordEntity transactionRecordEntity =
+        shadowTransactionRecordRepository
+            .findById(command.getId())
+            .orElseThrow(
+                () ->
+                    new ForeignRemittanceBaseException(
+                        "Shadow Transaction record not found for id: " + command.getId()));
+    shadowTransactionRecordRepository.save(
+        transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Reject));
+    return CommandResponse.asVoid();
   }
 }
