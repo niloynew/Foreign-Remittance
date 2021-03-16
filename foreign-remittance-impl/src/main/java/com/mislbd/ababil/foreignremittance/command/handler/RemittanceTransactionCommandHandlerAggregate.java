@@ -47,8 +47,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final DisbursementService disbursementService;
   private final TransactionService transactionService;
   private final ConfigurationService configurationService;
-  private BigDecimal totalChargeAmount = null;
-  private BigDecimal totalVatAmount = null;
   private final Auditor auditor;
   private final BranchService branchService;
   private final SwiftMTMessageService swiftMTMessageService;
@@ -115,17 +113,11 @@ public class RemittanceTransactionCommandHandlerAggregate {
 
     RemittanceTransactionEntity remittanceTransactionEntity =
         saveTransactionEntity(transaction, ID_DISBURSEMENT_ACTIVITY_ID, auditInformation);
-    if (transaction.getTotalChargeAmountAfterWaived() == null) {
-      totalChargeAmount = transaction.getTotalChargeAmount();
-    } else {
-      totalChargeAmount = transaction.getTotalChargeAmountAfterWaived();
-    }
-    if (transaction.getTotalVatAmountAfterWaived() == null) {
-      totalVatAmount = transaction.getTotalVatAmount();
-    } else {
-      totalVatAmount = transaction.getTotalVatAmountAfterWaived();
-    }
-    BigDecimal totalChargeAndVat = totalChargeAmount.add(totalVatAmount);
+    BigDecimal totalChargeAndVat =
+        transaction
+            .getTotalChargeAmountAfterWaived()
+            .add(transaction.getTotalVatAmountAfterWaived());
+
     return CommandResponse.of(
         disbursementService.doInwardTransaction(
             remittanceTransactionEntity,
@@ -140,29 +132,23 @@ public class RemittanceTransactionCommandHandlerAggregate {
   public CommandResponse<Long> createOutwardRemittanceTransaction(
       CreateOutwardRemittanceTransactionCommand command) {
     RemittanceTransaction transaction = command.getPayload();
+
     AuditInformation auditInformation = getAuditInformation(command);
+
     RemittanceTransactionEntity remittanceTransactionEntity =
         saveTransactionEntity(transaction, ID_PAYMENT_ACTIVITY_ID, auditInformation);
-    if (transaction.getTotalChargeAmountAfterWaived() == null) {
-      totalChargeAmount = transaction.getTotalChargeAmount();
-    } else {
-      totalChargeAmount = transaction.getTotalChargeAmountAfterWaived();
-    }
 
-    if (transaction.getTotalVatAmountAfterWaived() == null) {
-      totalVatAmount = transaction.getTotalVatAmount();
-    } else {
-      totalVatAmount = transaction.getTotalVatAmountAfterWaived();
-    }
-
-    BigDecimal totalChargeAndVat = totalChargeAmount.add(totalVatAmount);
+    BigDecimal totalChargeAndVat =
+        transaction
+            .getTotalChargeAmountAfterWaived()
+            .add(transaction.getTotalVatAmountAfterWaived());
     return CommandResponse.of(
         disbursementService.doOutwardTransaction(
             remittanceTransactionEntity,
             auditInformation,
-            command.getPayload().getRemittanceChargeInformationList(),
+            transaction.getRemittanceChargeInformationList(),
             totalChargeAndVat,
-            ID_DISBURSEMENT_ACTIVITY_ID));
+            ID_PAYMENT_ACTIVITY_ID));
   }
 
   private AuditInformation getAuditInformation(Command<RemittanceTransaction> command) {
@@ -193,12 +179,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
             remittanceTransactionEntity.getGlobalTransactionNo() == null
                 ? transactionService.getGlobalTransactionNumber(
                     auditInformation.getEntryUser(), activityId)
-                : remittanceTransactionEntity.getGlobalTransactionNo())
-        .setExchangeRate(
-            transactionService.getSystemExchangeRate(remittanceTransactionEntity.getCurrencyCode()))
-        .setExchangeRateType(
-            Long.valueOf(
-                configurationService.getConfiguration(SYSTEM_EXCHANGE_RATE_TYPE).get().getValue()));
+                : remittanceTransactionEntity.getGlobalTransactionNo());
 
     RemittanceTransactionEntity entity = transactionRepository.save(remittanceTransactionEntity);
 

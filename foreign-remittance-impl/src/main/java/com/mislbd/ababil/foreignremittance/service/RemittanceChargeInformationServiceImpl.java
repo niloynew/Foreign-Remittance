@@ -48,13 +48,16 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
             .map(
                 remittanceCharge -> {
                   BigDecimal chargeAmount = chargeCalculation(remittanceCharge, amount);
+                  BigDecimal vatAmount = vatCalculation(remittanceCharge, chargeAmount);
                   RemittanceChargeInformation remittanceChargeInformation =
                       entityToDomain()
                           .map(remittanceCharge)
                           .setCurrency(remittanceCharge.getCurrencyCode())
                           .setChargeAmount(chargeAmount)
+                          .setChargeAmountAfterWaived(chargeAmount)
                           .setCanModifyCharge(remittanceCharge.getCanModifyCharge())
-                          .setVatAmount(vatCalculation(remittanceCharge, chargeAmount));
+                          .setVatAmount(vatAmount)
+                          .setVatAmountAfterWaived(vatAmount);
                   return remittanceChargeInformation;
                 })
             .collect(Collectors.toList());

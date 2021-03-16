@@ -84,18 +84,33 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   // ##### Financial Information #####//
   @Enumerated(EnumType.STRING)
-  @Column(name = "DEBIT_ACC_TYPE")
-  private AccountType debitAccountType;
+  @Column(name = "SHADOW_ACC_TYPE")
+  private AccountType shadowAccountType;
 
-  @Column(name = "DEBIT_ACC_NUMBER")
-  private String debitAccountNumber;
+  @Column(name = "SHADOW_ACC_NUMBER")
+  private String shadowAccountNumber;
+
+  @Column(name = "SHADOW_ACC_CURRENCY")
+  private String shadowAccountCurrency;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "CREDIT_ACC_TYPE")
-  private AccountType creditAccountType;
+  @Column(name = "OPERATING_ACC_TYPE")
+  private AccountType operatingAccountType;
 
-  @Column(name = "CREDIT_ACC_NUMBER")
-  private String creditAccountNumber;
+  @Column(name = "OPERATING_RATE_TYPE")
+  private Long operatingRateTypeId;
+
+  @Column(name = "OPERATING_RATE")
+  private BigDecimal operatingRate;
+
+  @Column(name = "OPERATING_ACC_NUMBER")
+  private String operatingAccountNumber;
+
+  @Column(name = "OPERATING_ACC_CURRENCY")
+  private String operatingAccountCurrency;
+
+  @Column(name = "ADJ_REF_OPERATION")
+  private Long adjustmentRefIdForOperation;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "CHARGE_ACC_TYPE")
@@ -104,8 +119,8 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "CHARGE_ACC_NUMBER")
   private String chargeAccountNumber;
 
-  @Column(name = "CURRENCY_CODE")
-  private String currencyCode;
+  @Column(name = "ADJ_REF_CHARGE")
+  private Long adjustmentRefIdForCharge;
 
   @Column(name = "CLIENT_RATE_TYPE")
   private Long clientRateTypeId;
@@ -113,23 +128,23 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "CLIENT_RATE")
   private BigDecimal clientRate;
 
-  @Column(name = "HO_RATE_TYPE")
-  private Long hoRateTypeId;
-
-  @Column(name = "HO_RATE")
-  private BigDecimal hoRate;
-
   @Column(name = "AMOUNT_FCY")
   private BigDecimal amountFcy;
 
   @Column(name = "AMOUNT_LCY")
   private BigDecimal amountLcy;
 
-  @Column(name = "EXCHANGE_GAIN_LOSS")
-  private BigDecimal exchangeGainLoss;
+  @Column(name = "AMOUNT_RCY")
+  private BigDecimal amountRcy;
+
+  @Column(name = "VALUE_DATE")
+  private LocalDate valueDate;
 
   @Column(name = "GLOBALTXNNO")
   private Long globalTransactionNo;
+
+  @Column(name = "BATCH_NUMBER")
+  private String batchNumber;
 
   @Column(name = "TOTAL_CHARGE_AMOUNT")
   private BigDecimal totalChargeAmount;
@@ -142,18 +157,6 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   @Column(name = "VAT_AFTER_WAIVED")
   private BigDecimal totalVatAmountAfterWaived;
-
-  @Column(name = "BATCH_NUMBER")
-  private String batchNumber;
-
-  @Column(name = "EXCHANGE_RATE_TYPE")
-  private Long exchangeRateType;
-
-  @Column(name = "EXCHANGE_RATE")
-  private BigDecimal exchangeRate;
-
-  @Column(name = "VALUE_DATE")
-  private LocalDate valueDate;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "remittanceTransaction")
   private List<RemittanceChargeInformationEntity> chargeInformationEntities;

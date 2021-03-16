@@ -3,14 +3,12 @@ package com.mislbd.ababil.foreignremittance.service.salient;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
-import com.mislbd.ababil.foreignremittance.external.service.CASAAccountService;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
-import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
-import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
 import com.mislbd.ababil.transaction.domain.TransactionRequestType;
 import com.mislbd.ababil.transaction.service.TransactionService;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -19,21 +17,15 @@ public class DisbursementService {
 
   private final TransactionService transactionService;
   private final RemittanceTransactionMapper remittanceTransactionMapper;
-  private final ShadowAccountRepository shadowAccountRepository;
   private final ConfigurationService configurationService;
-  private final CASAAccountService casaAccountService;
 
   public DisbursementService(
       TransactionService transactionService,
       RemittanceTransactionMapper remittanceTransactionMapper,
-      ShadowAccountRepository shadowAccountRepository,
-      ConfigurationService configurationService,
-      CASAAccountService casaAccountService) {
+      ConfigurationService configurationService) {
     this.transactionService = transactionService;
     this.remittanceTransactionMapper = remittanceTransactionMapper;
-    this.shadowAccountRepository = shadowAccountRepository;
     this.configurationService = configurationService;
-    this.casaAccountService = casaAccountService;
   }
 
   public Long doInwardTransaction(
@@ -57,48 +49,22 @@ public class DisbursementService {
      * */
 
     shadowAccountTransaction(remittanceTransactionEntity, true, auditInformation, activityId);
-    BigDecimal clientAmountLcy =
-        remittanceTransactionEntity
-            .getAmountFcy()
-            .multiply(remittanceTransactionEntity.getClientRate());
-    switch (remittanceTransactionEntity.getCreditAccountType()) {
+    switch (remittanceTransactionEntity.getOperatingAccountType()) {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getNetPayableClientGL(
-                remittanceTransactionEntity,
-                clientAmountLcy,
-                baseCurrency,
-                false,
-                auditInformation,
-                activityId),
+                remittanceTransactionEntity, baseCurrency, false, auditInformation, activityId),
             TransactionRequestType.TRANSFER);
         break;
 
       case CASA:
-        if (casaAccountService
-            .getAccountByNumber(remittanceTransactionEntity.getCreditAccountNumber())
-            .getCurrencyCode()
-            .equalsIgnoreCase(baseCurrency)) {
-          transactionService.doCasaTransaction(
-              remittanceTransactionMapper.getNetPayableCASAClientForForLcy(
-                  remittanceTransactionEntity,
-                  baseCurrency,
-                  clientAmountLcy,
-                  false,
-                  auditInformation,
-                  activityId),
-              TransactionRequestType.TRANSFER);
-        } else {
-          transactionService.doCasaTransaction(
-              remittanceTransactionMapper.getNetPayableCASAClientForForFcy(
-                  remittanceTransactionEntity, false, auditInformation, activityId),
-              TransactionRequestType.TRANSFER);
-        }
+        transactionService.doCasaTransaction(
+            remittanceTransactionMapper.getNetPayableCASAClient(
+                remittanceTransactionEntity, false, auditInformation, activityId),
+            TransactionRequestType.TRANSFER);
         break;
     }
 
-    exchangeGainTransaction(
-        remittanceTransactionEntity, baseCurrency, true, auditInformation, activityId);
     chargeTransaction(
         remittanceTransactionEntity,
         charges,
@@ -128,49 +94,25 @@ public class DisbursementService {
      * Debit the exchange gain to GL account defined in product definition
      * */
     String baseCurrency = configurationService.getBaseCurrencyCode();
+
     // Managing Credit transaction
     shadowAccountTransaction(remittanceTransactionEntity, false, auditInformation, activityId);
-    BigDecimal clientAmountLcy =
-        remittanceTransactionEntity
-            .getAmountFcy()
-            .multiply(remittanceTransactionEntity.getClientRate());
-    switch (remittanceTransactionEntity.getDebitAccountType()) {
+    switch (remittanceTransactionEntity.getOperatingAccountType()) {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getNetPayableClientGL(
-                remittanceTransactionEntity,
-                clientAmountLcy,
-                baseCurrency,
-                true,
-                auditInformation,
-                activityId),
+                remittanceTransactionEntity, baseCurrency, true, auditInformation, activityId),
             TransactionRequestType.TRANSFER);
         break;
 
       case CASA:
-        if (casaAccountService
-            .getAccountByNumber(remittanceTransactionEntity.getDebitAccountNumber())
-            .getCurrencyCode()
-            .equalsIgnoreCase(baseCurrency)) {
-          transactionService.doCasaTransaction(
-              remittanceTransactionMapper.getNetPayableCASAClientForForLcy(
-                  remittanceTransactionEntity,
-                  baseCurrency,
-                  clientAmountLcy,
-                  true,
-                  auditInformation,
-                  activityId),
-              TransactionRequestType.TRANSFER);
-        } else {
-          transactionService.doCasaTransaction(
-              remittanceTransactionMapper.getNetPayableCASAClientForForFcy(
-                  remittanceTransactionEntity, true, auditInformation, activityId),
-              TransactionRequestType.TRANSFER);
-        }
+        transactionService.doCasaTransaction(
+            remittanceTransactionMapper.getNetPayableCASAClient(
+                remittanceTransactionEntity, true, auditInformation, activityId),
+            TransactionRequestType.TRANSFER);
         break;
     }
-    exchangeGainTransaction(
-        remittanceTransactionEntity, baseCurrency, false, auditInformation, activityId);
+
     chargeTransaction(
         remittanceTransactionEntity,
         charges,
@@ -179,30 +121,6 @@ public class DisbursementService {
         baseCurrency,
         activityId);
     return remittanceTransactionEntity.getGlobalTransactionNo();
-  }
-
-  public void exchangeGainTransaction(
-      RemittanceTransactionEntity entity,
-      String baseCurrency,
-      boolean isDebit,
-      AuditInformation auditInformation,
-      Long activityId) {
-    ShadowAccountEntity shadowAccountEntity;
-    if (isDebit) {
-      shadowAccountEntity =
-          shadowAccountRepository.findByNumber(entity.getDebitAccountNumber()).get();
-    } else {
-      shadowAccountEntity =
-          shadowAccountRepository.findByNumber(entity.getCreditAccountNumber()).get();
-    }
-    transactionService.doGlTransaction(
-        remittanceTransactionMapper.getExchangeGainGL(
-            entity,
-            baseCurrency,
-            shadowAccountEntity.getProduct().getExchangeGainGLCode(),
-            auditInformation,
-            activityId),
-        TransactionRequestType.TRANSFER);
   }
 
   public void chargeTransaction(
@@ -263,15 +181,14 @@ public class DisbursementService {
     }
   }
 
-  public void shadowAccountTransaction(
+  private void shadowAccountTransaction(
       RemittanceTransactionEntity entity,
       boolean isDebit,
       AuditInformation auditInformation,
       Long activityId) {
-    BigDecimal hoAmountLcy = entity.getAmountFcy().multiply(entity.getHoRate());
     transactionService.doIDTransaction(
         remittanceTransactionMapper.getNetPayableShadow(
-            entity, hoAmountLcy, isDebit, auditInformation, activityId),
+            entity, isDebit, auditInformation, activityId),
         TransactionRequestType.TRANSFER);
   }
 }

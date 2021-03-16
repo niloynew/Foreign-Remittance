@@ -22,7 +22,7 @@ public class ShadowTransactionRecordMapper {
     return entity -> {
       ShadowAccountEntity shadowAccountEntity =
           shadowAccountRepository
-              .findById(entity.getId())
+              .findById(entity.getAccountId())
               .orElseThrow(AccountNotFoundException::new);
       return new ShadowTransactionRecord()
           .setId(entity.getId())

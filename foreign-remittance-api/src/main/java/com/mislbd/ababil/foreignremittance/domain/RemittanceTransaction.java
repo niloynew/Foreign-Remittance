@@ -31,8 +31,6 @@ public class RemittanceTransaction {
   private String applicant;
   private String applicantAddress;
   private String applicantAccountNumber;
-  private Boolean isBeneficiaryBankCustomer;
-  private String beneficiaryRelationWithApplicant;
   @NotNull private String beneficiaryName;
   @NotNull private String beneficiaryAddress;
   private String beneficiaryAccountNumber;
@@ -41,35 +39,42 @@ public class RemittanceTransaction {
 
   @Enumerated(EnumType.STRING)
   @NotNull
-  private AccountType debitAccountType;
+  private AccountType shadowAccountType;
 
-  @NotNull private String debitAccountNumber;
+  @NotNull private String shadowAccountNumber;
+  @NotNull private String shadowAccountCurrency;
 
   @Enumerated(EnumType.STRING)
   @NotNull
-  private AccountType creditAccountType;
+  private AccountType operatingAccountType;
 
-  @NotNull private String creditAccountNumber;
+  @NotNull private String operatingAccountNumber;
+  @NotNull private String operatingAccountCurrency;
+  private Long adjustmentRefIdForOperation;
+  private Long operatingRateTypeId;
+  private BigDecimal operatingRate;
 
   @Enumerated(EnumType.STRING)
   @NotNull
   private AccountType chargeAccountType;
 
   @NotNull private String chargeAccountNumber;
-  @NotNull private String currencyCode;
+  private Long adjustmentRefIdForCharge;
+
   private Long clientRateTypeId;
   private BigDecimal clientRate;
-  private Long hoRateTypeId;
-  private BigDecimal hoRate;
+
   @NotNull private BigDecimal amountFcy;
   @NotNull private BigDecimal amountLcy;
-  private BigDecimal exchangeGainLoss;
+  @NotNull private BigDecimal amountRcy;
+
   private LocalDate valueDate;
-  private List<RemittanceChargeInformation> remittanceChargeInformationList;
   private Long globalTransactionNo;
-  private BigDecimal totalChargeAmount;
-  private BigDecimal totalChargeAmountAfterWaived;
-  private BigDecimal totalVatAmountAfterWaived;
-  private BigDecimal totalVatAmount;
   private String batchNumber;
+
+  private List<RemittanceChargeInformation> remittanceChargeInformationList;
+  private BigDecimal totalChargeAmount = BigDecimal.ZERO;
+  private BigDecimal totalChargeAmountAfterWaived = BigDecimal.ZERO;
+  private BigDecimal totalVatAmount = BigDecimal.ZERO;
+  private BigDecimal totalVatAmountAfterWaived = BigDecimal.ZERO;
 }

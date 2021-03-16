@@ -4,7 +4,6 @@ import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
-import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionTypeRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.transaction.domain.CasaTransactionRequest;
@@ -22,20 +21,16 @@ public class RemittanceTransactionMapper {
 
   private final RemittanceTransactionRepository remittanceTransactionRepository;
   private final TransactionTypeRepository transactionTypeRepository;
-  private final ShadowAccountRepository shadowAccountRepository;
   private BigDecimal chargeAmount = null;
   private BigDecimal vatAmount = null;
-  private BigDecimal totalChargeAmount = null;
   private final BankInformationMapper bankInformationMapper;
 
   public RemittanceTransactionMapper(
       RemittanceTransactionRepository remittanceTransactionRepository,
       TransactionTypeRepository transactionTypeRepository,
-      ShadowAccountRepository shadowAccountRepository,
       BankInformationMapper bankInformationMapper) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.transactionTypeRepository = transactionTypeRepository;
-    this.shadowAccountRepository = shadowAccountRepository;
     this.bankInformationMapper = bankInformationMapper;
   }
 
@@ -61,17 +56,21 @@ public class RemittanceTransactionMapper {
             .setBeneficiaryAccountNumber(entity.getBeneficiaryAccountNumber())
             .setBeneficiaryAddress(entity.getBeneficiaryAddress())
             .setB2bInformation(entity.getB2bInformation())
-            .setDebitAccountNumber(entity.getDebitAccountNumber())
-            .setCreditAccountNumber(entity.getCreditAccountNumber())
+            .setShadowAccountType(entity.getShadowAccountType())
+            .setShadowAccountNumber(entity.getShadowAccountNumber())
+            .setShadowAccountCurrency(entity.getShadowAccountCurrency())
+            .setOperatingAccountType(entity.getOperatingAccountType())
+            .setOperatingAccountNumber(entity.getOperatingAccountNumber())
+            .setOperatingAccountCurrency(entity.getOperatingAccountCurrency())
+            .setOperatingRateTypeId(entity.getOperatingRateTypeId())
+            .setOperatingRate(entity.getOperatingRate())
+            .setChargeAccountType(entity.getChargeAccountType())
             .setChargeAccountNumber(entity.getChargeAccountNumber())
-            .setCurrencyCode(entity.getCurrencyCode())
             .setClientRateTypeId(entity.getClientRateTypeId())
             .setClientRate(entity.getClientRate())
-            .setHoRateTypeId(entity.getHoRateTypeId())
-            .setHoRate(entity.getHoRate())
             .setAmountFcy(entity.getAmountFcy())
             .setAmountLcy(entity.getAmountLcy())
-            .setExchangeGainLoss(entity.getExchangeGainLoss())
+            .setAmountRcy(entity.getAmountRcy())
             .setGlobalTransactionNo(entity.getGlobalTransactionNo())
             .setTotalChargeAmount(entity.getTotalChargeAmount())
             .setTotalVatAmount(entity.getTotalVatAmount())
@@ -88,11 +87,10 @@ public class RemittanceTransactionMapper {
   public ResultMapper<RemittanceTransaction, RemittanceTransactionEntity> domainToEntity() {
     return domain ->
         remittanceTransactionRepository
-            .findById(Long.valueOf(domain.getId()))
+            .findById(domain.getId())
             .orElseGet(RemittanceTransactionEntity::new)
             .setRemittanceType(domain.getRemittanceType())
             .setTransactionType(transactionTypeRepository.getOne(domain.getTransactionTypeId()))
-            //            .setPaymentPurposeId(domain.getPaymentPurposeId())
             .setPpCode(domain.getPpCode())
             .setCommodityDescription(domain.getCommodityDescription())
             .setTransactionReferenceNumber(domain.getTransactionReferenceNumber())
@@ -107,20 +105,23 @@ public class RemittanceTransactionMapper {
             .setBeneficiaryAddress(domain.getBeneficiaryAddress())
             .setBeneficiaryAccountNumber(domain.getBeneficiaryAccountNumber())
             .setB2bInformation(domain.getB2bInformation())
-            .setDebitAccountType(domain.getDebitAccountType())
-            .setDebitAccountNumber(domain.getDebitAccountNumber())
-            .setCreditAccountType(domain.getCreditAccountType())
-            .setCreditAccountNumber(domain.getCreditAccountNumber())
+            .setShadowAccountType(domain.getShadowAccountType())
+            .setShadowAccountNumber(domain.getShadowAccountNumber())
+            .setShadowAccountCurrency(domain.getShadowAccountCurrency())
+            .setOperatingAccountType(domain.getOperatingAccountType())
+            .setOperatingAccountNumber(domain.getOperatingAccountNumber())
+            .setOperatingAccountCurrency(domain.getOperatingAccountCurrency())
+            .setOperatingRateTypeId(domain.getOperatingRateTypeId())
+            .setOperatingRate(domain.getOperatingRate())
+            .setAdjustmentRefIdForOperation(domain.getAdjustmentRefIdForOperation())
             .setChargeAccountType(domain.getChargeAccountType())
             .setChargeAccountNumber(domain.getChargeAccountNumber())
-            .setCurrencyCode(domain.getCurrencyCode())
+            .setAdjustmentRefIdForCharge(domain.getAdjustmentRefIdForCharge())
             .setClientRateTypeId(domain.getClientRateTypeId())
             .setClientRate(domain.getClientRate())
-            .setHoRateTypeId(domain.getHoRateTypeId())
-            .setHoRate(domain.getHoRate())
             .setAmountFcy(domain.getAmountFcy())
             .setAmountLcy(domain.getAmountLcy())
-            .setExchangeGainLoss(domain.getExchangeGainLoss())
+            .setAmountRcy(domain.getAmountRcy())
             .setValueDate(domain.getValueDate())
             .setTotalChargeAmount(domain.getTotalChargeAmount())
             .setTotalChargeAmountAfterWaived(domain.getTotalChargeAmountAfterWaived())
@@ -130,7 +131,6 @@ public class RemittanceTransactionMapper {
 
   public IDTransactionRequest getNetPayableShadow(
       RemittanceTransactionEntity request,
-      BigDecimal hoAmountLcy,
       boolean isDebit,
       AuditInformation auditInformation,
       Long activityId) {
@@ -141,14 +141,12 @@ public class RemittanceTransactionMapper {
       narration = "Payment";
     }
     IDTransactionRequest transactionRequest = new IDTransactionRequest();
-
     transactionRequest.setActivityId(activityId);
-    transactionRequest.setAmountCcy(
-        request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy());
-    transactionRequest.setAmountLcy(hoAmountLcy);
-    transactionRequest.setCurrencyCode(request.getCurrencyCode());
-    transactionRequest.setExchangeRate(request.getHoRate());
-    transactionRequest.setRateType(request.getHoRateTypeId());
+    transactionRequest.setAmountCcy(request.getAmountFcy());
+    transactionRequest.setReferenceAmount(request.getAmountFcy());
+    transactionRequest.setRefCurrencyCode(request.getShadowAccountCurrency());
+    transactionRequest.setExchangeRate(BigDecimal.ONE);
+    transactionRequest.setRateType(1L);
     transactionRequest.setDebitTransaction(isDebit);
     transactionRequest.setBatchNo(request.getBatchNumber());
     transactionRequest.setActivityId(activityId);
@@ -162,15 +160,13 @@ public class RemittanceTransactionMapper {
     transactionRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     transactionRequest.setInitiatorModule("ID");
     transactionRequest.setInitiatorBranch(auditInformation.getUserBranch());
-    transactionRequest.setAccNumber(
-        isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber());
+    transactionRequest.setAccNumber(request.getShadowAccountNumber());
     return transactionRequest;
   }
 
   public GlTransactionRequest getNetPayableClientGL(
       RemittanceTransactionEntity request,
-      BigDecimal clientAmount,
-      String baseCurrency,
+      String currency,
       boolean isDebit,
       AuditInformation auditInformation,
       Long activityId) {
@@ -182,10 +178,10 @@ public class RemittanceTransactionMapper {
     }
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest.setActivityId(activityId);
-    glRequest.setAmountLcy(clientAmount == null ? BigDecimal.ZERO : clientAmount);
-    glRequest.setCurrencyCode(request.getCurrencyCode());
+    glRequest.setAmountCcy(request.getAmountLcy());
+    glRequest.setAccountCurrencyCode(currency);
     glRequest.setExchangeRate(request.getClientRate());
-    glRequest.setRateType(request.getExchangeRateType());
+    glRequest.setRateType(request.getClientRateTypeId());
     glRequest.setDebitTransaction(isDebit);
     glRequest.setBatchNo(request.getBatchNumber());
     glRequest.setGlobalTxnNo(request.getGlobalTransactionNo());
@@ -195,16 +191,19 @@ public class RemittanceTransactionMapper {
     glRequest.setEntryTime(auditInformation.getEntryDate());
     glRequest.setVerifyUser(auditInformation.getVerifyUser());
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
+    glRequest.setValueDate(request.getValueDate());
     glRequest.setNarration(narration);
     glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
+    glRequest.setAdjustmentRefId(request.getAdjustmentRefIdForOperation());
     glRequest.setInitiatorModule("ID");
     glRequest.setInitiatorBranch(auditInformation.getUserBranch());
-    glRequest.setGlCode(
-        isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber());
+    glRequest.setGlCode(request.getOperatingAccountNumber());
+    glRequest.setRefCurrencyCode(request.getOperatingAccountNumber());
+    glRequest.setReferenceAmount(request.getAmountLcy());
     return glRequest;
   }
 
-  public CasaTransactionRequest getNetPayableCASAClientForForFcy(
+  public CasaTransactionRequest getNetPayableCASAClient(
       RemittanceTransactionEntity request,
       boolean isDebit,
       AuditInformation auditInformation,
@@ -218,52 +217,11 @@ public class RemittanceTransactionMapper {
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest.setInstrumentNo("V-");
     casaRequest.setActivityId(activityId);
-    casaRequest.setAmountCcy(
-        request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy());
-    casaRequest.setAmountLcy(
-        request.getAmountFcy() == null ? BigDecimal.ZERO : request.getAmountFcy());
-    casaRequest.setCurrencyCode(request.getCurrencyCode());
-    casaRequest.setExchangeRate(request.getClientRate());
-    casaRequest.setRateType(request.getClientRateTypeId());
-    casaRequest.setDebitTransaction(isDebit);
-    casaRequest.setBatchNo(request.getBatchNumber());
-    casaRequest.setGlobalTxnNo(request.getGlobalTransactionNo());
-    casaRequest.setEntryUser(auditInformation.getEntryUser());
-    casaRequest.setEntryTerminal(auditInformation.getEntryTerminal());
-    casaRequest.setEntryTime(auditInformation.getEntryDate());
-    casaRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
-    casaRequest.setNarration(narration);
-    casaRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
-    casaRequest.setInitiatorBranch(auditInformation.getUserBranch());
-    casaRequest.setInitiatorModule("ID");
-    casaRequest.setVerifyUser(auditInformation.getVerifyUser());
-    casaRequest.setAccNumber(
-        isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber());
-    return casaRequest;
-  }
-
-  public CasaTransactionRequest getNetPayableCASAClientForForLcy(
-      RemittanceTransactionEntity request,
-      String baseCurrency,
-      BigDecimal clientAmount,
-      boolean isDebit,
-      AuditInformation auditInformation,
-      Long activityId) {
-    String narration;
-    if (isDebit) {
-      narration = "Payment";
-    } else {
-      narration = "Disburse";
-    }
-    CasaTransactionRequest casaRequest = new CasaTransactionRequest();
-    casaRequest.setInstrumentNo("V-");
-    casaRequest.setActivityId(activityId);
-    casaRequest.setAmountCcy(clientAmount);
-    casaRequest.setAmountLcy(clientAmount);
-    casaRequest.setCurrencyCode(baseCurrency);
-    casaRequest.setExchangeRate(BigDecimal.ONE);
-    casaRequest.setRateType(1);
-    casaRequest.setRateType(request.getClientRateTypeId());
+    casaRequest.setAmountCcy(request.getAmountRcy());
+    casaRequest.setReferenceAmount(request.getAmountFcy());
+    casaRequest.setRefCurrencyCode(request.getShadowAccountCurrency());
+    casaRequest.setExchangeRate(request.getOperatingRate());
+    casaRequest.setRateType(request.getOperatingRateTypeId());
     casaRequest.setDebitTransaction(isDebit);
     casaRequest.setBatchNo(request.getBatchNumber());
     casaRequest.setGlobalTxnNo(request.getGlobalTransactionNo());
@@ -276,41 +234,9 @@ public class RemittanceTransactionMapper {
     casaRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     casaRequest.setInitiatorBranch(auditInformation.getUserBranch());
     casaRequest.setInitiatorModule("ID");
-    casaRequest.setAccNumber(
-        isDebit ? request.getDebitAccountNumber() : request.getCreditAccountNumber());
+    casaRequest.setAccNumber(request.getOperatingAccountNumber());
+    casaRequest.setValueDate(request.getValueDate());
     return casaRequest;
-  }
-
-  public GlTransactionRequest getExchangeGainGL(
-      RemittanceTransactionEntity request,
-      String baseCurrency,
-      String exchangeGainGLCode,
-      AuditInformation auditInformation,
-      Long activityId) {
-    GlTransactionRequest glRequest = new GlTransactionRequest();
-    glRequest.setActivityId(activityId);
-    glRequest.setAmountCcy(
-        request.getExchangeGainLoss() == null ? BigDecimal.ZERO : request.getExchangeGainLoss());
-    glRequest.setAmountLcy(
-        request.getExchangeGainLoss() == null ? BigDecimal.ZERO : request.getExchangeGainLoss());
-    glRequest.setCurrencyCode(baseCurrency);
-    glRequest.setExchangeRate(BigDecimal.ONE);
-    glRequest.setRateType(1);
-    glRequest.setDebitTransaction(false);
-    glRequest.setBatchNo(request.getBatchNumber());
-    glRequest.setGlobalTxnNo(request.getGlobalTransactionNo());
-    glRequest.setEntryUser(auditInformation.getEntryUser());
-    glRequest.setEntryTerminal(auditInformation.getEntryTerminal());
-    glRequest.setEntryTime(auditInformation.getEntryDate());
-    glRequest.setVerifyUser(auditInformation.getVerifyUser());
-    glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
-    glRequest.setOwnerBranch(auditInformation.getUserBranch());
-    glRequest.setNarration("Exchange gain");
-    glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
-    glRequest.setInitiatorModule("ID");
-    glRequest.setInitiatorBranch(auditInformation.getUserBranch());
-    glRequest.setGlCode(exchangeGainGLCode);
-    return glRequest;
   }
 
   public GlTransactionRequest getChargeableGLCredit(
@@ -326,8 +252,9 @@ public class RemittanceTransactionMapper {
     }
     glRequest.setActivityId(activityId);
     glRequest.setAmountCcy(chargeAmount);
-    glRequest.setAmountLcy(chargeAmount);
-    glRequest.setCurrencyCode(charge.getCurrency());
+    glRequest.setReferenceAmount(chargeAmount);
+    glRequest.setRefCurrencyCode(charge.getCurrency());
+    glRequest.setAccountCurrencyCode(charge.getCurrency());
     glRequest.setExchangeRate(BigDecimal.ONE);
     glRequest.setRateType(1);
     glRequest.setDebitTransaction(false);
@@ -339,12 +266,13 @@ public class RemittanceTransactionMapper {
     glRequest.setEntryTime(auditInformation.getEntryDate());
     glRequest.setVerifyUser(auditInformation.getVerifyUser());
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
-    glRequest.setNarration(
-        charge.getChargeName() + " from A/C " + request.getChargeAccountNumber());
+    glRequest.setNarration("Charge : " + charge.getChargeAccountCode());
     glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     glRequest.setInitiatorModule("ID");
     glRequest.setInitiatorBranch(auditInformation.getUserBranch());
     glRequest.setGlCode(charge.getChargeAccountCode());
+    glRequest.setAdjustmentRefId(request.getAdjustmentRefIdForCharge());
+    glRequest.setValueDate(request.getValueDate());
     return glRequest;
   }
 
@@ -361,11 +289,10 @@ public class RemittanceTransactionMapper {
     }
     subGLRequest.setActivityId(activityId);
     subGLRequest.setAmountCcy(chargeAmount);
-    subGLRequest.setAmountLcy(chargeAmount);
-    subGLRequest.setCurrencyCode(charge.getCurrency());
+    subGLRequest.setReferenceAmount(chargeAmount);
+    subGLRequest.setRefCurrencyCode(charge.getCurrency());
     subGLRequest.setExchangeRate(BigDecimal.ONE);
     subGLRequest.setRateType(1);
-    subGLRequest.setCurrencyCode(charge.getCurrency());
     subGLRequest.setDebitTransaction(false);
     subGLRequest.setBatchNo(request.getBatchNumber());
     subGLRequest.setGlobalTxnNo(request.getGlobalTransactionNo());
@@ -380,7 +307,7 @@ public class RemittanceTransactionMapper {
     subGLRequest.setInitiatorBranch(auditInformation.getUserBranch());
     subGLRequest.setInitiatorModule("ID");
     subGLRequest.setAccNumber(charge.getChargeAccountCode());
-
+    subGLRequest.setValueDate(request.getValueDate());
     return subGLRequest;
   }
 
@@ -390,18 +317,13 @@ public class RemittanceTransactionMapper {
       RemittanceChargeInformation charge,
       Long activityId) {
     GlTransactionRequest glRequest = new GlTransactionRequest();
-    if (charge.getVatAmountAfterWaived() == null) {
-      vatAmount = charge.getVatAmount();
-    } else {
-      vatAmount = charge.getVatAmountAfterWaived();
-    }
     glRequest.setActivityId(activityId);
-    glRequest.setAmountCcy(vatAmount);
-    glRequest.setAmountLcy(vatAmount);
-    glRequest.setCurrencyCode(charge.getCurrency());
-    glRequest.setExchangeRate(charge.getExchangeRate());
+    glRequest.setAmountCcy(charge.getVatAmountAfterWaived());
+    glRequest.setReferenceAmount(charge.getVatAmountAfterWaived());
+    glRequest.setAccountCurrencyCode(charge.getCurrency());
+    glRequest.setRefCurrencyCode(charge.getCurrency());
+    glRequest.setExchangeRate(BigDecimal.ONE);
     glRequest.setRateType(1);
-    glRequest.setCurrencyCode(charge.getCurrency());
     glRequest.setDebitTransaction(false);
     glRequest.setBatchNo(request.getBatchNumber());
     glRequest.setGlobalTxnNo(request.getGlobalTransactionNo());
@@ -416,7 +338,7 @@ public class RemittanceTransactionMapper {
     glRequest.setOwnerBranch(auditInformation.getUserBranch());
     glRequest.setInitiatorModule("ID");
     glRequest.setGlCode(charge.getVatAccountCode());
-
+    glRequest.setValueDate(request.getValueDate());
     return glRequest;
   }
 
@@ -433,11 +355,10 @@ public class RemittanceTransactionMapper {
     }
     subGLRequest.setActivityId(activityId);
     subGLRequest.setAmountCcy(vatAmount);
-    subGLRequest.setAmountLcy(vatAmount);
-    subGLRequest.setCurrencyCode(charge.getCurrency());
-    subGLRequest.setExchangeRate(charge.getExchangeRate());
-    //                .setRateType()
-    subGLRequest.setCurrencyCode(charge.getCurrency());
+    subGLRequest.setReferenceAmount(vatAmount);
+    subGLRequest.setRefCurrencyCode(charge.getCurrency());
+    subGLRequest.setExchangeRate(BigDecimal.ONE);
+    subGLRequest.setRateType(1L);
     subGLRequest.setDebitTransaction(false);
     subGLRequest.setBatchNo(request.getBatchNumber());
     subGLRequest.setGlobalTxnNo(request.getGlobalTransactionNo());
@@ -451,7 +372,7 @@ public class RemittanceTransactionMapper {
     subGLRequest.setInitiatorBranch(auditInformation.getUserBranch());
     subGLRequest.setInitiatorModule("ID");
     subGLRequest.setAccNumber(charge.getVatAccountCode());
-
+    subGLRequest.setValueDate(request.getValueDate());
     return subGLRequest;
   }
 
@@ -464,8 +385,8 @@ public class RemittanceTransactionMapper {
 
     casaRequest.setInstrumentNo("V-");
     casaRequest.setAmountCcy(totalCharges);
-    casaRequest.setAmountLcy(totalCharges);
-    casaRequest.setCurrencyCode(baseCurrency);
+    casaRequest.setReferenceAmount(totalCharges);
+    casaRequest.setRefCurrencyCode(baseCurrency);
     casaRequest.setExchangeRate(BigDecimal.ONE);
     casaRequest.setRateType(1);
     casaRequest.setDebitTransaction(true);
@@ -481,6 +402,7 @@ public class RemittanceTransactionMapper {
     casaRequest.setInitiatorBranch(auditInformation.getUserBranch());
     casaRequest.setInitiatorModule("ID");
     casaRequest.setAccNumber(request.getChargeAccountNumber());
+    casaRequest.setValueDate(request.getValueDate());
     return casaRequest;
   }
 
@@ -493,10 +415,10 @@ public class RemittanceTransactionMapper {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest.setActivityId(activityId);
     glRequest.setAmountCcy(totalCharges);
-    glRequest.setAmountLcy(totalCharges);
+    glRequest.setReferenceAmount(totalCharges);
     glRequest.setExchangeRate(BigDecimal.ONE);
     glRequest.setRateType(1);
-    glRequest.setCurrencyCode(baseCurrency);
+    glRequest.setRefCurrencyCode(baseCurrency);
     glRequest.setDebitTransaction(true);
     glRequest.setBatchNo(request.getBatchNumber());
     glRequest.setGlobalTxnNo(request.getGlobalTransactionNo());
@@ -511,6 +433,8 @@ public class RemittanceTransactionMapper {
     glRequest.setOwnerBranch(auditInformation.getUserBranch());
     glRequest.setInitiatorModule("ID");
     glRequest.setGlCode(request.getChargeAccountNumber());
+    glRequest.setAdjustmentRefId(request.getAdjustmentRefIdForCharge());
+    glRequest.setValueDate(request.getValueDate());
     return glRequest;
   }
 }
