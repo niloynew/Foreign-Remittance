@@ -113,7 +113,7 @@ public class TransactionReconcileCommandHandlerAggregate {
                   .reference(String.valueOf(x.getGlobalTxnNo()))
                   .requestId(StringUtils.leftPad(String.valueOf(x.getGlobalTxnNo()), 12, "0"))
                   .build());
-          success++;
+          success += 1;
         } catch (Exception e) {
           shadowTransactionRecordRepository.save(
               transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Unreconciled));
