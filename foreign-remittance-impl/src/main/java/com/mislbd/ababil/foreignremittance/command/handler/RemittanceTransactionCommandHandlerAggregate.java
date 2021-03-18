@@ -36,7 +36,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
 
   private static final Long ID_DISBURSEMENT_ACTIVITY_ID = 805L;
   private static final Long ID_PAYMENT_ACTIVITY_ID = 806L;
-  private static final String SYSTEM_EXCHANGE_RATE_TYPE = "SYSTEM_EXCHANGE_RATE_TYPE";
   private final RemittanceTransactionRepository transactionRepository;
   private final RemittanceTransactionMapper transactionMapper;
   private final BankInformationRepository bankInformationRepository;

@@ -8,7 +8,6 @@ import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransacti
 import com.mislbd.ababil.transaction.domain.TransactionRequestType;
 import com.mislbd.ababil.transaction.service.TransactionService;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
