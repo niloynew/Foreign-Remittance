@@ -28,6 +28,8 @@ public class NostroTransactionRecordSpecification {
         predicate = cb.and(predicate, cb.equal(root.get("reconcileStatus"), reconcileStatus));
       }
 
+      predicate.in(query.orderBy(cb.desc(root.get("id"))));
+
       return predicate;
     };
   }
