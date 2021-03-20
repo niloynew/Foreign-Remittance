@@ -92,7 +92,7 @@ public class TransactionReconcileCommandHandlerAggregate {
         BigDecimal txnAmount = x.getDebit();
         String debitAccount = shadowAccount.getNostroAccountNumber();
         String creditAccount = settlementAccount.getExternalAccount();
-        if (x.getTxnDefinitionId().toString().charAt(0) == 1) {
+        if (Integer.valueOf(x.getTxnDefinitionId().toString().substring(0, 1)) == 1) {
           txnAmount = x.getCredit();
           debitAccount = settlementAccount.getExternalAccount();
           creditAccount = shadowAccount.getNostroAccountNumber();
