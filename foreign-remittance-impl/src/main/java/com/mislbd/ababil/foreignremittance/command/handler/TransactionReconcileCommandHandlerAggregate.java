@@ -70,6 +70,7 @@ public class TransactionReconcileCommandHandlerAggregate {
     int success = 0;
     if (recordList != null && !recordList.isEmpty()) {
       for (ShadowTransactionRecord x : recordList) {
+        if (x.getReconcileStatus() == NostroReconcileStatus.Reconciled) continue;
         ShadowAccountEntity shadowAccount =
             shadowAccountRepository
                 .findById(x.getAccountId())
@@ -91,7 +92,7 @@ public class TransactionReconcileCommandHandlerAggregate {
         BigDecimal txnAmount = x.getDebit();
         String debitAccount = shadowAccount.getNostroAccountNumber();
         String creditAccount = settlementAccount.getExternalAccount();
-        if (x.getTxnDefinitionId().toString().indexOf(0) == 1) {
+        if (x.getTxnDefinitionId().toString().charAt(0) == 1) {
           txnAmount = x.getCredit();
           debitAccount = settlementAccount.getExternalAccount();
           creditAccount = shadowAccount.getNostroAccountNumber();
