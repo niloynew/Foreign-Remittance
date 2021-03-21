@@ -20,19 +20,23 @@ public class RemittanceTransaction {
   @Enumerated(EnumType.STRING)
   private RemittanceType remittanceType;
 
-  @NotNull private Long transactionTypeId;
-  @NotNull private String ppCode;
+  @NotNull(message = "Transaction type can't be null")
+  private Long transactionTypeId;
+  private String ppCode;
   private String commodityDescription;
   private String transactionReferenceNumber;
   private String instrumentNumber;
   private Long cbFundSourceId;
   private String deliveryTerm;
-  @NotNull private Long applicantId;
+  @NotNull(message = "Applicant can't be null")
+  private Long applicantId;
   private String applicant;
   private String applicantAddress;
   private String applicantAccountNumber;
-  @NotNull private String beneficiaryName;
-  @NotNull private String beneficiaryAddress;
+  @NotNull(message = "Beneficiary can't be null")
+  private String beneficiaryName;
+  @NotNull(message = "Beneficiary address can't be null")
+  private String beneficiaryAddress;
   private String beneficiaryAccountNumber;
   private String b2bInformation;
   private List<BankInformation> bankInformation;
