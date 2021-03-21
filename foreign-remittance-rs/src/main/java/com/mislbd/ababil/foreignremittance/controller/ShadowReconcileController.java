@@ -10,6 +10,7 @@ import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecord;
 import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecordList;
 import com.mislbd.ababil.foreignremittance.query.UnreconciledTransactionQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
+import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
 import java.time.LocalDate;
@@ -47,11 +48,10 @@ public class ShadowReconcileController {
   @PostMapping(path = "/reconcile/txns", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Integer> reconcileMultipleTransaction(
       @Valid @RequestBody ShadowTransactionRecordList shadowTransactionRecordList) {
-
-    int numberOfSuccessReconcile = 0;
-    commandProcessor.executeResult(
-        new ReconcileShadowTransactionRecordCommand(shadowTransactionRecordList));
-    return status(CREATED).body(numberOfSuccessReconcile);
+    CommandResponse<Integer> numberOfSuccessReconcile =
+        commandProcessor.executeResult(
+            new ReconcileShadowTransactionRecordCommand(shadowTransactionRecordList));
+    return status(CREATED).body(numberOfSuccessReconcile.getContent());
   }
 
   @PutMapping(path = "/reconcile/txns/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
