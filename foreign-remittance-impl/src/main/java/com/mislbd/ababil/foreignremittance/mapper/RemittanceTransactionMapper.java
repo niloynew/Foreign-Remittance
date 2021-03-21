@@ -166,7 +166,6 @@ public class RemittanceTransactionMapper {
 
   public GlTransactionRequest getNetPayableClientGL(
       RemittanceTransactionEntity request,
-      String currency,
       boolean isDebit,
       AuditInformation auditInformation,
       Long activityId) {
@@ -179,9 +178,9 @@ public class RemittanceTransactionMapper {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest.setActivityId(activityId);
     glRequest.setAmountCcy(request.getAmountLcy());
-    glRequest.setAccountCurrencyCode(currency);
-    glRequest.setExchangeRate(request.getClientRate());
-    glRequest.setRateType(request.getClientRateTypeId());
+    glRequest.setAccountCurrencyCode(request.getOperatingAccountCurrency());
+    glRequest.setExchangeRate(request.getOperatingRate());
+    glRequest.setRateType(request.getOperatingRateTypeId());
     glRequest.setDebitTransaction(isDebit);
     glRequest.setBatchNo(request.getBatchNumber());
     glRequest.setGlobalTxnNo(request.getGlobalTransactionNo());
@@ -198,8 +197,8 @@ public class RemittanceTransactionMapper {
     glRequest.setInitiatorModule("ID");
     glRequest.setInitiatorBranch(auditInformation.getUserBranch());
     glRequest.setGlCode(request.getOperatingAccountNumber());
-    glRequest.setRefCurrencyCode(request.getOperatingAccountNumber());
-    glRequest.setReferenceAmount(request.getAmountLcy());
+    glRequest.setRefCurrencyCode(request.getShadowAccountCurrency());
+    glRequest.setReferenceAmount(request.getAmountRcy());
     return glRequest;
   }
 

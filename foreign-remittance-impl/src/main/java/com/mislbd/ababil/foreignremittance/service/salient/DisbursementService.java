@@ -52,7 +52,7 @@ public class DisbursementService {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getNetPayableClientGL(
-                remittanceTransactionEntity, baseCurrency, false, auditInformation, activityId),
+                remittanceTransactionEntity, false, auditInformation, activityId),
             TransactionRequestType.TRANSFER);
         break;
 
@@ -100,7 +100,7 @@ public class DisbursementService {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getNetPayableClientGL(
-                remittanceTransactionEntity, baseCurrency, true, auditInformation, activityId),
+                remittanceTransactionEntity, true, auditInformation, activityId),
             TransactionRequestType.TRANSFER);
         break;
 
