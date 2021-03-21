@@ -144,7 +144,7 @@ public class TransactionReconcileCommandHandlerAggregate {
                 () ->
                     new ForeignRemittanceBaseException(
                         "Shadow Transaction record not found for id: " + command.getId()));
-    if(transactionRecordEntity.getReconcileStatus() == NostroReconcileStatus.Reconciled){
+    if (transactionRecordEntity.getReconcileStatus() == NostroReconcileStatus.Reconciled) {
       throw new ForeignRemittanceBaseException("Transaction already reconciled");
     }
     shadowTransactionRecordRepository.save(

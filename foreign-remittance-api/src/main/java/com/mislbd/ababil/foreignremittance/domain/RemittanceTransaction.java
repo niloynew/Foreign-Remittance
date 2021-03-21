@@ -22,21 +22,27 @@ public class RemittanceTransaction {
 
   @NotNull(message = "Transaction type can't be null")
   private Long transactionTypeId;
+
   private String ppCode;
   private String commodityDescription;
   private String transactionReferenceNumber;
   private String instrumentNumber;
   private Long cbFundSourceId;
   private String deliveryTerm;
+
   @NotNull(message = "Applicant can't be null")
   private Long applicantId;
+
   private String applicant;
   private String applicantAddress;
   private String applicantAccountNumber;
+
   @NotNull(message = "Beneficiary can't be null")
   private String beneficiaryName;
+
   @NotNull(message = "Beneficiary address can't be null")
   private String beneficiaryAddress;
+
   private String beneficiaryAccountNumber;
   private String b2bInformation;
   private List<BankInformation> bankInformation;
