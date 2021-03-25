@@ -1,6 +1,6 @@
 package com.mislbd.ababil.foreignremittance.query;
 
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
+import com.mislbd.ababil.foreignremittance.domain.OtherCbsSystemSettlementStatus;
 import com.mislbd.asset.query.api.QueryRequest;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -13,10 +13,10 @@ import org.springframework.data.domain.Pageable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UnreconciledTransactionQuery extends QueryRequest {
+public class AbabilShadowTransactionQuery extends QueryRequest {
   private Pageable pageable;
   private String accountNumber;
   private LocalDate fromDate;
   private LocalDate toDate;
-  private NostroReconcileStatus status;
+  private OtherCbsSystemSettlementStatus status;
 }

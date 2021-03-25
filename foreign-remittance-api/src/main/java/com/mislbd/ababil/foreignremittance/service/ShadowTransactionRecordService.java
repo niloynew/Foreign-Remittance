@@ -1,6 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
+import com.mislbd.ababil.foreignremittance.domain.OtherCbsSystemSettlementStatus;
 import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecord;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.time.LocalDate;
@@ -23,5 +23,5 @@ public interface ShadowTransactionRecordService {
       String accountNumber,
       LocalDate fromDate,
       LocalDate toDate,
-      NostroReconcileStatus reconcileStatus);
+      OtherCbsSystemSettlementStatus reconcileStatus);
 }

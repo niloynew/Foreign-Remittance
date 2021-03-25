@@ -1,9 +1,9 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.Auditor;
-import com.mislbd.ababil.foreignremittance.command.ReconcileShadowTransactionRecordCommand;
 import com.mislbd.ababil.foreignremittance.command.RejectShadowTransactionRecordCommand;
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
+import com.mislbd.ababil.foreignremittance.command.SettleShadowTransactionRecordCommand;
+import com.mislbd.ababil.foreignremittance.domain.OtherCbsSystemSettlementStatus;
 import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecord;
 import com.mislbd.ababil.foreignremittance.exception.AccountNotFoundException;
 import com.mislbd.ababil.foreignremittance.exception.ExternalModuleSettlementAccountNotFoundException;
@@ -55,7 +55,7 @@ public class TransactionReconcileCommandHandlerAggregate {
 
   @CommandListener(
       commandClasses = {
-        ReconcileShadowTransactionRecordCommand.class,
+        SettleShadowTransactionRecordCommand.class,
         RejectShadowTransactionRecordCommand.class
       })
   public void auditSwiftRegister(CommandEvent e) {
@@ -65,12 +65,12 @@ public class TransactionReconcileCommandHandlerAggregate {
   @Transactional
   @CommandHandler
   public CommandResponse<Integer> reconcileTransactionRecords(
-      ReconcileShadowTransactionRecordCommand command) {
+      SettleShadowTransactionRecordCommand command) {
     List<ShadowTransactionRecord> recordList = command.getPayload().getShadowTransactionRecords();
     int success = 0;
     if (recordList != null && !recordList.isEmpty()) {
       for (ShadowTransactionRecord x : recordList) {
-        if (x.getReconcileStatus() == NostroReconcileStatus.Reconciled) continue;
+        if (x.getReconcileStatus() == OtherCbsSystemSettlementStatus.Settled) continue;
         ShadowAccountEntity shadowAccount =
             shadowAccountRepository
                 .findById(x.getAccountId())
@@ -88,7 +88,7 @@ public class TransactionReconcileCommandHandlerAggregate {
                         new ForeignRemittanceBaseException(
                             "Shadow Transaction record not found for id: " + x.getId()));
         shadowTransactionRecordRepository.save(
-            transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Reconciled));
+            transactionRecordEntity.setReconcileStatus(OtherCbsSystemSettlementStatus.Settled));
         BigDecimal txnAmount = x.getDebit();
         String debitAccount = shadowAccount.getNostroAccountNumber();
         String creditAccount = settlementAccount.getExternalAccount();
@@ -117,9 +117,9 @@ public class TransactionReconcileCommandHandlerAggregate {
           success += 1;
         } catch (Exception e) {
           shadowTransactionRecordRepository.save(
-              transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Unreconciled));
+              transactionRecordEntity.setReconcileStatus(OtherCbsSystemSettlementStatus.Pending));
           LOGGER.error(
-              "Reconcile failed for txnId: "
+              "Settlement failed for txnId: "
                   + x.getId()
                   + ", voucher no: "
                   + x.getGlobalTxnNo()
@@ -144,11 +144,11 @@ public class TransactionReconcileCommandHandlerAggregate {
                 () ->
                     new ForeignRemittanceBaseException(
                         "Shadow Transaction record not found for id: " + command.getId()));
-    if (transactionRecordEntity.getReconcileStatus() == NostroReconcileStatus.Reconciled) {
-      throw new ForeignRemittanceBaseException("Transaction already reconciled");
+    if (transactionRecordEntity.getReconcileStatus() == OtherCbsSystemSettlementStatus.Settled) {
+      throw new ForeignRemittanceBaseException("Transaction already settled");
     }
     shadowTransactionRecordRepository.save(
-        transactionRecordEntity.setReconcileStatus(NostroReconcileStatus.Reject));
+        transactionRecordEntity.setReconcileStatus(OtherCbsSystemSettlementStatus.Reject));
     return CommandResponse.asVoid();
   }
 }

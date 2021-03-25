@@ -1,6 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
+import com.mislbd.ababil.foreignremittance.domain.OtherCbsSystemSettlementStatus;
 import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecord;
 import com.mislbd.ababil.foreignremittance.exception.AccountNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.ShadowTransactionRecordMapper;
@@ -78,7 +78,7 @@ public class ShadowTransactionRecordServiceImpl implements ShadowTransactionReco
       String accountNumber,
       LocalDate fromDate,
       LocalDate toDate,
-      NostroReconcileStatus reconcileStatus) {
+      OtherCbsSystemSettlementStatus reconcileStatus) {
     ShadowAccountEntity accountEntity = null;
     if (accountNumber != null) {
       accountEntity =

@@ -3,12 +3,12 @@ package com.mislbd.ababil.foreignremittance.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
-import com.mislbd.ababil.foreignremittance.command.ReconcileShadowTransactionRecordCommand;
 import com.mislbd.ababil.foreignremittance.command.RejectShadowTransactionRecordCommand;
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
+import com.mislbd.ababil.foreignremittance.command.SettleShadowTransactionRecordCommand;
+import com.mislbd.ababil.foreignremittance.domain.OtherCbsSystemSettlementStatus;
 import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecord;
 import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecordList;
-import com.mislbd.ababil.foreignremittance.query.UnreconciledTransactionQuery;
+import com.mislbd.ababil.foreignremittance.query.AbabilShadowTransactionQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.query.api.QueryManager;
@@ -38,10 +38,11 @@ public class ShadowReconcileController {
       @RequestParam(value = "accountNumber", required = false) String accountNumber,
       @RequestParam(value = "fromDate", required = false) LocalDate fromDate,
       @RequestParam(value = "toDate", required = false) LocalDate toDate,
-      @RequestParam(value = "reconcileStatus", required = false) NostroReconcileStatus status) {
+      @RequestParam(value = "reconcileStatus", required = false)
+          OtherCbsSystemSettlementStatus status) {
     QueryResult<?> queryResult =
         queryManager.executeQuery(
-            new UnreconciledTransactionQuery(pageable, accountNumber, fromDate, toDate, status));
+            new AbabilShadowTransactionQuery(pageable, accountNumber, fromDate, toDate, status));
     return ResponseEntity.ok(queryResult.getResult());
   }
 
@@ -50,7 +51,7 @@ public class ShadowReconcileController {
       @Valid @RequestBody ShadowTransactionRecordList shadowTransactionRecordList) {
     CommandResponse<Integer> numberOfSuccessReconcile =
         commandProcessor.executeResult(
-            new ReconcileShadowTransactionRecordCommand(shadowTransactionRecordList));
+            new SettleShadowTransactionRecordCommand(shadowTransactionRecordList));
     return status(CREATED).body(numberOfSuccessReconcile.getContent());
   }
 

@@ -1,6 +1,6 @@
 package com.mislbd.ababil.foreignremittance.query.handler;
 
-import com.mislbd.ababil.foreignremittance.query.UnreconciledTransactionQuery;
+import com.mislbd.ababil.foreignremittance.query.AbabilShadowTransactionQuery;
 import com.mislbd.ababil.foreignremittance.service.ShadowTransactionRecordService;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.query.annotation.QueryAggregate;
@@ -19,7 +19,7 @@ public class ShadowReconcileQueryHandlerAggregate {
 
   @QueryHandler
   public QueryResult<?> unreconciledTransactionSearch(
-      UnreconciledTransactionQuery transactionQuery) {
+      AbabilShadowTransactionQuery transactionQuery) {
     PagedResult<?> pagedResult =
         shadowTransactionRecordService.getUnreconciledTransactionData(
             transactionQuery.getPageable(),

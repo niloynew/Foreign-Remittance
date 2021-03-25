@@ -1,7 +1,7 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
-import com.mislbd.ababil.foreignremittance.domain.NostroReconcileStatus;
+import com.mislbd.ababil.foreignremittance.domain.OtherCbsSystemSettlementStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.persistence.*;
@@ -79,5 +79,5 @@ public class ShadowTransactionRecordEntity extends BaseEntity {
   private BigDecimal postBalance;
 
   @Column(name = "RECONCILED_STATUS")
-  private NostroReconcileStatus reconcileStatus;
+  private OtherCbsSystemSettlementStatus reconcileStatus;
 }
