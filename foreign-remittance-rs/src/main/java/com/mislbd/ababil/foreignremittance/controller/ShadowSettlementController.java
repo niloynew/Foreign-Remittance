@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/shadow-txns", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ShadowReconcileController {
+public class ShadowSettlementController {
 
   private final CommandProcessor commandProcessor;
   private final QueryManager queryManager;
 
-  public ShadowReconcileController(CommandProcessor commandProcessor, QueryManager queryManager) {
+  public ShadowSettlementController(CommandProcessor commandProcessor, QueryManager queryManager) {
     this.commandProcessor = commandProcessor;
     this.queryManager = queryManager;
   }

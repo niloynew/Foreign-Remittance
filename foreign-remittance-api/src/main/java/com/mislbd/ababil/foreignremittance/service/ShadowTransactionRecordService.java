@@ -18,7 +18,7 @@ public interface ShadowTransactionRecordService {
   PagedResult<ShadowTransactionRecord> getAccountStatement(
       Pageable pageable, String shadowAccountNumber, LocalDate fromDate, LocalDate toDate);
 
-  PagedResult<ShadowTransactionRecord> getUnreconciledTransactionData(
+  PagedResult<ShadowTransactionRecord> getPendingTransactionData(
       Pageable pageable,
       String accountNumber,
       LocalDate fromDate,

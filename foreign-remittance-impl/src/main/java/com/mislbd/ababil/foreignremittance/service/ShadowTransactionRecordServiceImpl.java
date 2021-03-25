@@ -73,7 +73,7 @@ public class ShadowTransactionRecordServiceImpl implements ShadowTransactionReco
   }
 
   @Override
-  public PagedResult<ShadowTransactionRecord> getUnreconciledTransactionData(
+  public PagedResult<ShadowTransactionRecord> getPendingTransactionData(
       Pageable pageable,
       String accountNumber,
       LocalDate fromDate,

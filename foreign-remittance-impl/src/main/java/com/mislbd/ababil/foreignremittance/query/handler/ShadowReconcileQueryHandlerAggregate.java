@@ -21,7 +21,7 @@ public class ShadowReconcileQueryHandlerAggregate {
   public QueryResult<?> unreconciledTransactionSearch(
       AbabilShadowTransactionQuery transactionQuery) {
     PagedResult<?> pagedResult =
-        shadowTransactionRecordService.getUnreconciledTransactionData(
+        shadowTransactionRecordService.getPendingTransactionData(
             transactionQuery.getPageable(),
             transactionQuery.getAccountNumber(),
             transactionQuery.getFromDate(),
