@@ -132,51 +132,59 @@ public class DisbursementService {
 
     if (charges != null && !charges.isEmpty()) {
       for (RemittanceChargeInformation charge : charges) {
-        switch (charge.getChargeAccountType()) {
-          case GL:
-            transactionService.doGlTransaction(
-                remittanceTransactionMapper.getChargeableGLCredit(
-                    entity, auditInformation, charge, activityId),
-                TransactionRequestType.TRANSFER);
-            break;
-          case SUBGL:
-            transactionService.doSubGlTransaction(
-                remittanceTransactionMapper.getChargeableSubGLCredit(
-                    entity, auditInformation, charge, activityId),
-                TransactionRequestType.TRANSFER);
-            break;
+        if (charge.getChargeAmountAfterWaived() != null
+            && !charge.getChargeAmountAfterWaived().equals(BigDecimal.ZERO)) {
+          switch (charge.getChargeAccountType()) {
+            case GL:
+              transactionService.doGlTransaction(
+                  remittanceTransactionMapper.getChargeableGLCredit(
+                      entity, auditInformation, charge, activityId),
+                  TransactionRequestType.TRANSFER);
+              break;
+            case SUBGL:
+              transactionService.doSubGlTransaction(
+                  remittanceTransactionMapper.getChargeableSubGLCredit(
+                      entity, auditInformation, charge, activityId),
+                  TransactionRequestType.TRANSFER);
+              break;
+          }
         }
 
-        switch (charge.getVatAccountType()) {
-          case GL:
-            transactionService.doGlTransaction(
-                remittanceTransactionMapper.getVATGLCredit(
-                    entity, auditInformation, charge, activityId),
-                TransactionRequestType.TRANSFER);
-            break;
-          case SUBGL:
-            transactionService.doSubGlTransaction(
-                remittanceTransactionMapper.getVALSubGLCredit(
-                    entity, auditInformation, charge, activityId),
-                TransactionRequestType.TRANSFER);
-            break;
+        if (charge.getVatAmountAfterWaived() != null
+            && !charge.getVatAmountAfterWaived().equals(BigDecimal.ZERO)) {
+          switch (charge.getVatAccountType()) {
+            case GL:
+              transactionService.doGlTransaction(
+                  remittanceTransactionMapper.getVATGLCredit(
+                      entity, auditInformation, charge, activityId),
+                  TransactionRequestType.TRANSFER);
+              break;
+            case SUBGL:
+              transactionService.doSubGlTransaction(
+                  remittanceTransactionMapper.getVALSubGLCredit(
+                      entity, auditInformation, charge, activityId),
+                  TransactionRequestType.TRANSFER);
+              break;
+          }
         }
       }
     }
     // customer Account Debit
-    switch (entity.getChargeAccountType()) {
-      case GL:
-        transactionService.doGlTransaction(
-            remittanceTransactionMapper.getChargeableGLDebit(
-                entity, auditInformation, totalChargeAndVat, baseCurrency, activityId),
-            TransactionRequestType.TRANSFER);
-        break;
-      case CASA:
-        transactionService.doCasaTransaction(
-            remittanceTransactionMapper.getChargeableCASADebit(
-                entity, auditInformation, totalChargeAndVat, baseCurrency),
-            TransactionRequestType.TRANSFER);
-        break;
+    if (totalChargeAndVat != null && !totalChargeAndVat.equals(BigDecimal.ZERO)) {
+      switch (entity.getChargeAccountType()) {
+        case GL:
+          transactionService.doGlTransaction(
+              remittanceTransactionMapper.getChargeableGLDebit(
+                  entity, auditInformation, totalChargeAndVat, baseCurrency, activityId),
+              TransactionRequestType.TRANSFER);
+          break;
+        case CASA:
+          transactionService.doCasaTransaction(
+              remittanceTransactionMapper.getChargeableCASADebit(
+                  entity, auditInformation, totalChargeAndVat, baseCurrency),
+              TransactionRequestType.TRANSFER);
+          break;
+      }
     }
   }
 

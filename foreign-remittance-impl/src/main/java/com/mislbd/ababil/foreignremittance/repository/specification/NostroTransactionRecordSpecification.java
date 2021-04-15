@@ -29,8 +29,11 @@ public class NostroTransactionRecordSpecification {
 
       if (reconcileStatus != null) {
         predicate = cb.and(predicate, cb.equal(root.get("reconcileStatus"), reconcileStatus));
-      }else{
-        predicate = cb.and(predicate, cb.equal(root.get("reconcileStatus"), OtherCbsSystemSettlementStatus.Pending));
+      } else {
+        predicate =
+            cb.and(
+                predicate,
+                cb.equal(root.get("reconcileStatus"), OtherCbsSystemSettlementStatus.Pending));
       }
 
       predicate.in(query.orderBy(cb.desc(root.get("id"))));

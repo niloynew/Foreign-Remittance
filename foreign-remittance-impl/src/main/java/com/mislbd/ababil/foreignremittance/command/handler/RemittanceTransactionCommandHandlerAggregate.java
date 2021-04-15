@@ -1,7 +1,6 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.Auditor;
-import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.*;
@@ -14,9 +13,7 @@ import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionR
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeInformationEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionBankMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
-import com.mislbd.ababil.foreignremittance.service.BankTypeService;
 import com.mislbd.ababil.foreignremittance.service.salient.DisbursementService;
-import com.mislbd.ababil.organization.service.BranchService;
 import com.mislbd.ababil.transaction.service.TransactionService;
 import com.mislbd.asset.command.api.Command;
 import com.mislbd.asset.command.api.CommandEvent;
@@ -25,7 +22,6 @@ import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.security.core.NgSession;
-import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -45,11 +41,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final NgSession ngSession;
   private final DisbursementService disbursementService;
   private final TransactionService transactionService;
-  private final ConfigurationService configurationService;
   private final Auditor auditor;
-  private final BranchService branchService;
-  private final SwiftMTMessageService swiftMTMessageService;
-  private final BankTypeService bankTypeService;
   private String serviceURL = "192.168.1.104:8087/swift-service";
 
   //  CalendarConfigurationService calendarConfigurationService;
@@ -64,11 +56,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
       NgSession ngSession,
       DisbursementService disbursementService,
       TransactionService transactionService,
-      ConfigurationService configurationService,
-      Auditor auditor,
-      BranchService branchService,
-      SwiftMTMessageService swiftMTMessageService,
-      BankTypeService bankTypeService) {
+      Auditor auditor) {
 
     this.transactionRepository = transactionRepository;
     this.transactionMapper = transactionMapper;
@@ -79,11 +67,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
     this.ngSession = ngSession;
     this.disbursementService = disbursementService;
     this.transactionService = transactionService;
-    this.configurationService = configurationService;
     this.auditor = auditor;
-    this.branchService = branchService;
-    this.swiftMTMessageService = swiftMTMessageService;
-    this.bankTypeService = bankTypeService;
   }
 
   @CommandListener(
@@ -92,7 +76,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
         CreateOutwardRemittanceTransactionCommand.class
       })
   public void auditCreateInwardRemittanceTransaction(CommandEvent e) {
-
     auditor.audit(e.getCommand().getPayload(), e.getCommand());
   }
 

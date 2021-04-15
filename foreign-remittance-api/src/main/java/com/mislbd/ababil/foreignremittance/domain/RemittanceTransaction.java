@@ -74,9 +74,13 @@ public class RemittanceTransaction {
   private Long clientRateTypeId;
   private BigDecimal clientRate;
 
-  @NotNull private BigDecimal amountFcy;
+  @NotNull(message = "Transaction amount can't be null or zero")
+  private BigDecimal amountFcy;
+
   @NotNull private BigDecimal amountLcy;
-  @NotNull private BigDecimal amountRcy;
+
+  @NotNull(message = "Reference amount can't be null or zero")
+  private BigDecimal amountRcy;
 
   private LocalDate valueDate;
   private Long globalTransactionNo;
