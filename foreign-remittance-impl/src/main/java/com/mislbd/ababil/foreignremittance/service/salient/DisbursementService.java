@@ -134,38 +134,18 @@ public class DisbursementService {
       for (RemittanceChargeInformation charge : charges) {
         if (charge.getChargeAmountAfterWaived() != null
             && !charge.getChargeAmountAfterWaived().equals(BigDecimal.ZERO)) {
-          switch (charge.getChargeAccountType()) {
-            case GL:
-              transactionService.doGlTransaction(
-                  remittanceTransactionMapper.getChargeableGLCredit(
-                      entity, auditInformation, charge, activityId),
-                  TransactionRequestType.TRANSFER);
-              break;
-            case SUBGL:
-              transactionService.doSubGlTransaction(
-                  remittanceTransactionMapper.getChargeableSubGLCredit(
-                      entity, auditInformation, charge, activityId),
-                  TransactionRequestType.TRANSFER);
-              break;
-          }
+          transactionService.doGlTransaction(
+              remittanceTransactionMapper.getChargeableGLCredit(
+                  entity, auditInformation, charge, activityId),
+              TransactionRequestType.TRANSFER);
         }
 
         if (charge.getVatAmountAfterWaived() != null
             && !charge.getVatAmountAfterWaived().equals(BigDecimal.ZERO)) {
-          switch (charge.getVatAccountType()) {
-            case GL:
-              transactionService.doGlTransaction(
-                  remittanceTransactionMapper.getVATGLCredit(
-                      entity, auditInformation, charge, activityId),
-                  TransactionRequestType.TRANSFER);
-              break;
-            case SUBGL:
-              transactionService.doSubGlTransaction(
-                  remittanceTransactionMapper.getVALSubGLCredit(
-                      entity, auditInformation, charge, activityId),
-                  TransactionRequestType.TRANSFER);
-              break;
-          }
+          transactionService.doGlTransaction(
+              remittanceTransactionMapper.getVATGLCredit(
+                  entity, auditInformation, charge, activityId),
+              TransactionRequestType.TRANSFER);
         }
       }
     }
