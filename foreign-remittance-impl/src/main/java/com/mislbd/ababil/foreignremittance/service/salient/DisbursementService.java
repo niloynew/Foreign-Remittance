@@ -3,6 +3,7 @@ package com.mislbd.ababil.foreignremittance.service.salient;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
+import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.transaction.domain.TransactionRequestType;
@@ -52,7 +53,7 @@ public class DisbursementService {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getNetPayableClientGL(
-                remittanceTransactionEntity, false, auditInformation, activityId),
+                remittanceTransactionEntity, false, auditInformation, activityId, baseCurrency),
             TransactionRequestType.TRANSFER);
         break;
 
@@ -71,6 +72,7 @@ public class DisbursementService {
         totalChargeAndVat,
         baseCurrency,
         activityId);
+    checkDebitCredit(remittanceTransactionEntity.getGlobalTransactionNo());
     return remittanceTransactionEntity.getGlobalTransactionNo();
   }
 
@@ -100,7 +102,7 @@ public class DisbursementService {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getNetPayableClientGL(
-                remittanceTransactionEntity, true, auditInformation, activityId),
+                remittanceTransactionEntity, true, auditInformation, activityId, baseCurrency),
             TransactionRequestType.TRANSFER);
         break;
 
@@ -119,6 +121,7 @@ public class DisbursementService {
         totalChargeAndVat,
         baseCurrency,
         activityId);
+    checkDebitCredit(remittanceTransactionEntity.getGlobalTransactionNo());
     return remittanceTransactionEntity.getGlobalTransactionNo();
   }
 
@@ -177,5 +180,13 @@ public class DisbursementService {
         remittanceTransactionMapper.getNetPayableShadow(
             entity, isDebit, auditInformation, activityId),
         TransactionRequestType.TRANSFER);
+  }
+
+  private void checkDebitCredit(Long globalTransactionNumber) {
+    try {
+      transactionService.isDebitCreditEqual(globalTransactionNumber);
+    } catch (Exception e) {
+      throw new ForeignRemittanceBaseException(e.getMessage());
+    }
   }
 }

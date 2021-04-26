@@ -3,6 +3,7 @@ package com.mislbd.ababil.foreignremittance.mapper;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
+import com.mislbd.ababil.foreignremittance.external.service.GLAccountService;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionTypeRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
@@ -24,14 +25,17 @@ public class RemittanceTransactionMapper {
   private BigDecimal chargeAmount = null;
   private BigDecimal vatAmount = null;
   private final BankInformationMapper bankInformationMapper;
+  private final GLAccountService glAccountService;
 
   public RemittanceTransactionMapper(
       RemittanceTransactionRepository remittanceTransactionRepository,
       TransactionTypeRepository transactionTypeRepository,
-      BankInformationMapper bankInformationMapper) {
+      BankInformationMapper bankInformationMapper,
+      GLAccountService glAccountService) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.transactionTypeRepository = transactionTypeRepository;
     this.bankInformationMapper = bankInformationMapper;
+    this.glAccountService = glAccountService;
   }
 
   public ResultMapper<RemittanceTransactionEntity, RemittanceTransaction> entityToDomain() {
@@ -134,12 +138,7 @@ public class RemittanceTransactionMapper {
       boolean isDebit,
       AuditInformation auditInformation,
       Long activityId) {
-    String narration;
-    if (isDebit) {
-      narration = "Disburse";
-    } else {
-      narration = "Payment";
-    }
+    String narration = request.getGlobalTransactionNo() + " : " + request.getShadowAccountNumber();
     IDTransactionRequest transactionRequest = new IDTransactionRequest();
     transactionRequest.setActivityId(activityId);
     transactionRequest.setAmountCcy(request.getAmountFcy());
@@ -168,17 +167,18 @@ public class RemittanceTransactionMapper {
       RemittanceTransactionEntity request,
       boolean isDebit,
       AuditInformation auditInformation,
-      Long activityId) {
-    String narration;
-    if (isDebit) {
-      narration = "Payment";
-    } else {
-      narration = "Disburse";
-    }
+      Long activityId,
+      String baseCurrency) {
+    String narration =
+        request.getGlobalTransactionNo()
+            + " : "
+            + glAccountService.getGLAccountByCode(request.getOperatingAccountNumber()).getName();
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest.setActivityId(activityId);
-    glRequest.setAmountCcy(request.getAmountLcy());
-    glRequest.setAccountCurrencyCode(request.getOperatingAccountCurrency());
+    glRequest.setAmountCcy(request.getAmountRcy());
+    glRequest.setReferenceAmount(request.getAmountFcy());
+    glRequest.setAccountCurrencyCode(baseCurrency);
+    glRequest.setRefCurrencyCode(request.getShadowAccountCurrency());
     glRequest.setExchangeRate(request.getOperatingRate());
     glRequest.setRateType(request.getOperatingRateTypeId());
     glRequest.setDebitTransaction(isDebit);
@@ -197,8 +197,6 @@ public class RemittanceTransactionMapper {
     glRequest.setInitiatorModule("ID");
     glRequest.setInitiatorBranch(auditInformation.getUserBranch());
     glRequest.setGlCode(request.getOperatingAccountNumber());
-    glRequest.setRefCurrencyCode(request.getShadowAccountCurrency());
-    glRequest.setReferenceAmount(request.getAmountRcy());
     return glRequest;
   }
 
@@ -207,12 +205,8 @@ public class RemittanceTransactionMapper {
       boolean isDebit,
       AuditInformation auditInformation,
       Long activityId) {
-    String narration;
-    if (isDebit) {
-      narration = "Payment";
-    } else {
-      narration = "Disburse";
-    }
+    String narration =
+        request.getGlobalTransactionNo() + " : " + request.getOperatingAccountNumber();
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest.setInstrumentNo("V-");
     casaRequest.setActivityId(activityId);
@@ -414,6 +408,7 @@ public class RemittanceTransactionMapper {
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest.setActivityId(activityId);
     glRequest.setAmountCcy(totalCharges);
+    glRequest.setAccountCurrencyCode(baseCurrency);
     glRequest.setReferenceAmount(totalCharges);
     glRequest.setExchangeRate(BigDecimal.ONE);
     glRequest.setRateType(1);

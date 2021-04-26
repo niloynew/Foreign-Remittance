@@ -26,6 +26,9 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
   public void validateInwardDisbursement(CreateInwardRemittanceTransactionCommand command) {
 
     RemittanceTransaction remittanceTransaction = command.getPayload();
+    if (remittanceTransaction.getOperatingAccountType().equals(AccountType.GL)) {
+      return;
+    }
 
     if (remittanceTransaction.getChargeAccountType() == AccountType.CASA) {
       Balance chargeAccountBalance =
@@ -48,7 +51,9 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
   @ValidationHandler
   public void validateOutwardDisbursement(CreateOutwardRemittanceTransactionCommand command) {
     RemittanceTransaction remittanceTransaction = command.getPayload();
-
+    if (remittanceTransaction.getOperatingAccountType().equals(AccountType.GL)) {
+      return;
+    }
     if (remittanceTransaction
         .getOperatingAccountNumber()
         .equals(remittanceTransaction.getChargeAccountNumber())) {
