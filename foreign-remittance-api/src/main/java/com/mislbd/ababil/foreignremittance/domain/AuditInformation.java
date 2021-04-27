@@ -17,4 +17,6 @@ public class AuditInformation {
   private String verifyTerminal;
   private Integer userBranch;
   private String processId;
+  private Long globalTxnNumber;
+  private String batchNumber;
 }

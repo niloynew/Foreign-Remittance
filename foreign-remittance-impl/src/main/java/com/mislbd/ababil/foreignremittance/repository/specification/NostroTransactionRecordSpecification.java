@@ -11,7 +11,8 @@ public class NostroTransactionRecordSpecification {
       Long accountId,
       LocalDate fromDate,
       LocalDate toDate,
-      OtherCbsSystemSettlementStatus reconcileStatus) {
+      OtherCbsSystemSettlementStatus reconcileStatus,
+      Boolean valid) {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
 
@@ -34,6 +35,10 @@ public class NostroTransactionRecordSpecification {
             cb.and(
                 predicate,
                 cb.equal(root.get("reconcileStatus"), OtherCbsSystemSettlementStatus.Pending));
+      }
+
+      if (valid != null){
+          predicate = cb.and(predicate, cb.equal(root.get("valid"), valid));
       }
 
       predicate.in(query.orderBy(cb.desc(root.get("id"))));
