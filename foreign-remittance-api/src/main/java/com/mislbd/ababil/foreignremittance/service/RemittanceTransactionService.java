@@ -3,7 +3,6 @@ package com.mislbd.ababil.foreignremittance.service;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
-import com.mislbd.ababil.transaction.domain.TransactionCorrectionRequest;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.time.LocalDate;
 import java.util.List;

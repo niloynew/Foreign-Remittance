@@ -67,7 +67,7 @@ public class ShadowTransactionRecordServiceImpl implements ShadowTransactionReco
     return PagedResultBuilder.build(
         shadowTransactionRecordRepository.findAll(
             NostroTransactionRecordSpecification.searchSpecification(
-                accountEntity.getId(), fromDate, toDate, null,true),
+                accountEntity.getId(), fromDate, toDate, null, true),
             pageable),
         shadowTransactionRecordMapper.entityToDomain());
   }
@@ -93,7 +93,7 @@ public class ShadowTransactionRecordServiceImpl implements ShadowTransactionReco
                 fromDate,
                 toDate,
                 reconcileStatus,
-                    true),
+                true),
             pageable),
         shadowTransactionRecordMapper.entityToDomain());
   }

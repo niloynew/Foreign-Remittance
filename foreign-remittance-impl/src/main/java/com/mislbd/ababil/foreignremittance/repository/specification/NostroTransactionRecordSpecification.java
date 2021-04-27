@@ -37,8 +37,8 @@ public class NostroTransactionRecordSpecification {
                 cb.equal(root.get("reconcileStatus"), OtherCbsSystemSettlementStatus.Pending));
       }
 
-      if (valid != null){
-          predicate = cb.and(predicate, cb.equal(root.get("valid"), valid));
+      if (valid != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("valid"), valid));
       }
 
       predicate.in(query.orderBy(cb.desc(root.get("id"))));
