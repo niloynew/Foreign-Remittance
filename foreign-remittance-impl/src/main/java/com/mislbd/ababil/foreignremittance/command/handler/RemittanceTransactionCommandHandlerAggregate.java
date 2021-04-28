@@ -16,7 +16,6 @@ import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowTransactionRecor
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeInformationEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionBankMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
-import com.mislbd.ababil.foreignremittance.repository.schema.ShadowTransactionRecordEntity;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
 import com.mislbd.ababil.foreignremittance.service.salient.DisbursementService;
 import com.mislbd.ababil.transaction.service.TransactionService;
@@ -158,14 +157,14 @@ public class RemittanceTransactionCommandHandlerAggregate {
     remittanceTransactionService.correctTransaction(auditInformation);
     // todo
     // transactionRepository.delete(transaction);
-    transaction.setValid(false);
+    /*transaction.setValid(false);
     transactionRepository.save(transaction);
     ShadowTransactionRecordEntity shadowTransactionRecordEntity =
         shadowTransactionRecordRepository
             .findByGlobalTxnNo(BigDecimal.valueOf(command.getPayload()))
             .orElseThrow(RemittanceTransactionNotFoundException::new);
     shadowTransactionRecordEntity.setValid(false);
-    shadowTransactionRecordRepository.save(shadowTransactionRecordEntity);
+    shadowTransactionRecordRepository.save(shadowTransactionRecordEntity);*/
     return CommandResponse.of(command.getPayload());
   }
 

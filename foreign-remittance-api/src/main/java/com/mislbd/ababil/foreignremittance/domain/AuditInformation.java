@@ -18,5 +18,4 @@ public class AuditInformation {
   private Integer userBranch;
   private String processId;
   private Long globalTxnNumber;
-
 }
