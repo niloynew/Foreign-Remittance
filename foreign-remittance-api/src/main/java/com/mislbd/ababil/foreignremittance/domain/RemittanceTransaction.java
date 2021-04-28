@@ -3,7 +3,6 @@ package com.mislbd.ababil.foreignremittance.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;

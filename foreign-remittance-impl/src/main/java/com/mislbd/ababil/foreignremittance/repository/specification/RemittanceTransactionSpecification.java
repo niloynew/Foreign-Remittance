@@ -59,7 +59,7 @@ public class RemittanceTransactionSpecification {
         predicate = cb.and(predicate, cb.lessThanOrEqualTo(root.get("valueDate"), toDate));
       }
 
-      predicate =  cb.and(predicate, cb.equal(root.get("valid"), true));
+      predicate = cb.and(predicate, cb.equal(root.get("valid"), true));
 
       return predicate;
     };
