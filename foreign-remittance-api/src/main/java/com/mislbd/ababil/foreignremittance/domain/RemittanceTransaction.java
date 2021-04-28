@@ -3,6 +3,7 @@ package com.mislbd.ababil.foreignremittance.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
@@ -76,6 +77,8 @@ public class RemittanceTransaction {
 
   @NotNull(message = "Transaction amount can't be null or zero")
   private BigDecimal amountFcy;
+
+  private boolean valid = true;
 
   @NotNull private BigDecimal amountLcy;
 

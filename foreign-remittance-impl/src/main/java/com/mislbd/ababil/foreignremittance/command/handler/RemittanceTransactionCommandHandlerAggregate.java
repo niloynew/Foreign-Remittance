@@ -157,7 +157,9 @@ public class RemittanceTransactionCommandHandlerAggregate {
         prepareAuditInformation(command, null, command.getPayload());
     remittanceTransactionService.correctTransaction(auditInformation);
     // todo
-    transactionRepository.delete(transaction);
+    //transactionRepository.delete(transaction);
+    transaction.setValid(false);
+    transactionRepository.save(transaction);
     ShadowTransactionRecordEntity shadowTransactionRecordEntity =
         shadowTransactionRecordRepository
             .findByGlobalTxnNo(command.getPayload())
