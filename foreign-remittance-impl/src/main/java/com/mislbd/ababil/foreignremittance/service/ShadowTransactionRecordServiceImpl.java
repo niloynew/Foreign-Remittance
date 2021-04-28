@@ -40,7 +40,7 @@ public class ShadowTransactionRecordServiceImpl implements ShadowTransactionReco
     Page<ShadowTransactionRecordEntity> accountStatement =
         shadowTransactionRecordRepository.findAll(
             NostroTransactionRecordSpecification.searchSpecification(
-                accountId, fromDate, toDate, null, true),
+                accountId, fromDate, toDate, null),
             pageable);
     return PagedResultBuilder.build(
         accountStatement, shadowTransactionRecordMapper.entityToDomain());
@@ -52,7 +52,7 @@ public class ShadowTransactionRecordServiceImpl implements ShadowTransactionReco
     List<ShadowTransactionRecordEntity> accountStatement =
         shadowTransactionRecordRepository.findAll(
             NostroTransactionRecordSpecification.searchSpecification(
-                accountId, fromDate, toDate, null, true));
+                accountId, fromDate, toDate, null));
     return ListResultBuilder.build(
         accountStatement, shadowTransactionRecordMapper.entityToDomain());
   }
@@ -67,7 +67,7 @@ public class ShadowTransactionRecordServiceImpl implements ShadowTransactionReco
     return PagedResultBuilder.build(
         shadowTransactionRecordRepository.findAll(
             NostroTransactionRecordSpecification.searchSpecification(
-                accountEntity.getId(), fromDate, toDate, null, true),
+                accountEntity.getId(), fromDate, toDate, null),
             pageable),
         shadowTransactionRecordMapper.entityToDomain());
   }
@@ -92,8 +92,7 @@ public class ShadowTransactionRecordServiceImpl implements ShadowTransactionReco
                 (accountEntity != null ? accountEntity.getId() : null),
                 fromDate,
                 toDate,
-                reconcileStatus,
-                true),
+                reconcileStatus),
             pageable),
         shadowTransactionRecordMapper.entityToDomain());
   }

@@ -162,7 +162,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
     transactionRepository.save(transaction);
     ShadowTransactionRecordEntity shadowTransactionRecordEntity =
         shadowTransactionRecordRepository
-            .findByGlobalTxnNo(command.getPayload())
+            .findByGlobalTxnNo(BigDecimal.valueOf(command.getPayload()))
             .orElseThrow(RemittanceTransactionNotFoundException::new);
     shadowTransactionRecordEntity.setValid(false);
     shadowTransactionRecordRepository.save(shadowTransactionRecordEntity);
@@ -185,16 +185,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
   public AuditInformation prepareAuditInformation(
       Command command, String batchNumber, Long globalTxnNumber) {
     return new AuditInformation()
-        .setGlobalTxnNumber(
-            globalTxnNumber != null
-                ? globalTxnNumber
-                : transactionService.getGlobalTransactionNumber(
-                    command.getInitiator(), ID_PAYMENT_ACTIVITY_ID))
-        .setBatchNumber(
-            batchNumber != null
-                ? batchNumber
-                : transactionService.getBatchNumber(
-                    ngSession.getUsername(), ID_PAYMENT_ACTIVITY_ID, ngSession.getUserBranch()))
+        .setGlobalTxnNumber(globalTxnNumber)
         .setEntryUser(command.getInitiator())
         .setVerifyUser(ngSession.getUsername())
         .setVerifyTerminal(ngSession.getTerminal())
