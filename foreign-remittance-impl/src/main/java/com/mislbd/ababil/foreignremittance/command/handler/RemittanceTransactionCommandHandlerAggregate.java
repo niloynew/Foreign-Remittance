@@ -103,7 +103,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
          * transaction processing
          * */
 
-        AuditInformation auditInformation = getAuditInformation(command);
+        AuditInformation auditInformation = getAuditInformation(command, null,null);
 
         RemittanceTransactionEntity remittanceTransactionEntity =
                 saveTransactionEntity(transaction, ID_DISBURSEMENT_ACTIVITY_ID, auditInformation);
@@ -127,7 +127,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
             CreateOutwardRemittanceTransactionCommand command) {
         RemittanceTransaction transaction = command.getPayload();
 
-        AuditInformation auditInformation = getAuditInformation(command);
+        AuditInformation auditInformation = getAuditInformation(command,null,null);
 
         RemittanceTransactionEntity remittanceTransactionEntity =
                 saveTransactionEntity(transaction, ID_PAYMENT_ACTIVITY_ID, auditInformation);
@@ -151,37 +151,34 @@ public class RemittanceTransactionCommandHandlerAggregate {
             RemittanceTransactionCorrectionCommand command) {
 
         AuditInformation auditInformation =
-                prepareAuditInformation(command, null, command.getPayload());
+                getAuditInformation(null, command, command.getPayload());
 
         remittanceTransactionService.correctTransaction(auditInformation);
 
         return CommandResponse.of(command.getPayload());
     }
 
-    private AuditInformation getAuditInformation(Command<RemittanceTransaction> command) {
+    private AuditInformation getAuditInformation(Command<RemittanceTransaction> transactionCommand,
+                                                 RemittanceTransactionCorrectionCommand correctionCommand, Long globalTransactionNumber) {
         AuditInformation auditInformation = new AuditInformation();
+        if (correctionCommand != null) {
+            auditInformation.setEntryUser(correctionCommand.getInitiator());
+            auditInformation.setProcessId(correctionCommand.getProcessId());
+            auditInformation.setGlobalTxnNumber(globalTransactionNumber);
+        }else{
+            auditInformation.setEntryUser(transactionCommand.getInitiator());
+            auditInformation.setProcessId(transactionCommand.getProcessId());
+        }
         auditInformation
-                .setEntryUser(command.getInitiator())
                 .setVerifyUser(ngSession.getUsername())
                 .setVerifyTerminal(ngSession.getTerminal())
                 .setUserBranch(ngSession.getUserBranch().intValue())
-                .setProcessId(command.getProcessId())
                 .setEntryDate(LocalDate.now());
         return auditInformation;
     }
 
-    // todo activity_id
-    public AuditInformation prepareAuditInformation(
-            Command command, String batchNumber, Long globalTxnNumber) {
-        return new AuditInformation()
-                .setGlobalTxnNumber(globalTxnNumber)
-                .setEntryUser(command.getInitiator())
-                .setVerifyUser(ngSession.getUsername())
-                .setVerifyTerminal(ngSession.getTerminal())
-                .setUserBranch(ngSession.getUserBranch().intValue())
-                .setProcessId(command.getProcessId())
-                .setEntryDate(LocalDate.now());
-    }
+
+
 
     private RemittanceTransactionEntity saveTransactionEntity(
             RemittanceTransaction domain, Long activityId, AuditInformation auditInformation) {
@@ -226,8 +223,11 @@ public class RemittanceTransactionCommandHandlerAggregate {
         return entity;
     }
 
-    // todo
-    // transactionRepository.delete(transaction);
+
+
+}
+
+// transactionRepository.delete(transaction);
     /*transaction.setValid(false);
     transactionRepository.save(transaction);
     ShadowTransactionRecordEntity shadowTransactionRecordEntity =
@@ -240,4 +240,3 @@ public class RemittanceTransactionCommandHandlerAggregate {
         transactionRepository
             .findByGlobalTransactionNo(command.getPayload())
             .orElseThrow(RemittanceTransactionNotFoundException::new);*/
-}

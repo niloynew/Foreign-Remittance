@@ -31,7 +31,7 @@ public interface RemittanceTransactionService {
 
   Optional<RemittanceTransaction> findTransaction(Long id);
 
-  Optional<RemittanceTransaction> findTransactionByGlobalTransactionNo(Long globalTransactionNo);
+
 
   Optional<RemittanceTransaction> findTransaction(String referenceNumber);
 

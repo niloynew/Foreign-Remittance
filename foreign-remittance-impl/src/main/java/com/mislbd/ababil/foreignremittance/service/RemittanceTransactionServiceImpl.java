@@ -109,13 +109,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
         .map(remittanceTransactionMapper.entityToDomain()::map);
   }
 
-  @Override
-  public Optional<RemittanceTransaction> findTransactionByGlobalTransactionNo(
-      Long globalTransactionNo) {
-    return remittanceTransactionRepository
-        .findByGlobalTransactionNo(globalTransactionNo)
-        .map(remittanceTransactionMapper.entityToDomain()::map);
-  }
+
 
   @Override
   public void correctTransaction(AuditInformation auditInformation) {

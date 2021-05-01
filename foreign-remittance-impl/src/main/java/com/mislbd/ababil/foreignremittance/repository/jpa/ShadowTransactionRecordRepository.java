@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface ShadowTransactionRecordRepository
     extends JpaRepository<ShadowTransactionRecordEntity, Long>, JpaSpecificationExecutor {
 
-  Optional<ShadowTransactionRecordEntity> findByGlobalTxnNo(BigDecimal globalTransactionNo);
+
 }
