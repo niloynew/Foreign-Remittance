@@ -1,11 +1,14 @@
 package com.mislbd.ababil.foreignremittance.service;
 
+import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.RemittanceTransactionSpecification;
+import com.mislbd.ababil.transaction.domain.TransactionCorrectionRequest;
+import com.mislbd.ababil.transaction.service.TransactionService;
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
@@ -23,12 +26,15 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
 
   private final RemittanceTransactionRepository remittanceTransactionRepository;
   private final RemittanceTransactionMapper remittanceTransactionMapper;
+  private final TransactionService transactionService;
 
   public RemittanceTransactionServiceImpl(
       RemittanceTransactionRepository remittanceTransactionRepository,
-      RemittanceTransactionMapper remittanceTransactionMapper) {
+      RemittanceTransactionMapper remittanceTransactionMapper,
+      TransactionService transactionService) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.remittanceTransactionMapper = remittanceTransactionMapper;
+    this.transactionService = transactionService;
   }
 
   @Override
@@ -101,5 +107,27 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
     return remittanceTransactionRepository
         .findByTransactionReferenceNumber(referenceNumber)
         .map(remittanceTransactionMapper.entityToDomain()::map);
+  }
+
+
+
+  @Override
+  public void correctTransaction(AuditInformation auditInformation) {
+    TransactionCorrectionRequest transactionCorrectionRequest =
+        prepareTransactionCorrectionRequest(auditInformation);
+    transactionService.correctTransaction(transactionCorrectionRequest);
+  }
+
+  private TransactionCorrectionRequest prepareTransactionCorrectionRequest(
+      AuditInformation auditInformation) {
+    TransactionCorrectionRequest request = new TransactionCorrectionRequest();
+    request.setEntryUser(auditInformation.getEntryUser());
+    request.setEntryTerminal(auditInformation.getEntryTerminal());
+    request.setEntryTime(auditInformation.getEntryDate());
+    request.setGlobalTransactionNumber(auditInformation.getGlobalTxnNumber());
+    request.setInitiatorBranch(Long.valueOf(auditInformation.getUserBranch()));
+    request.setVerifyUser(auditInformation.getVerifyUser());
+    request.setVerifyTerminal(auditInformation.getVerifyTerminal());
+    return request;
   }
 }
