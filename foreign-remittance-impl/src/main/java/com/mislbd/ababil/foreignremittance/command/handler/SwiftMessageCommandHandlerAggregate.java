@@ -106,16 +106,20 @@ public class SwiftMessageCommandHandlerAggregate {
   @CommandHandler
   public CommandResponse<Void> publish103Message(
       PublishSingleCustomerCreditTransferMessageCommand command) {
-    //    swiftMTMessageService.publish103message(serviceURL, command.getPayload());
-    // ToDo change when kafka integration complete
-    //    ProcessResult processResult =
-    //        swiftMTMessageService.save103message(serviceURL, command.getPayload());
     MT103MessageRequest request = command.getPayload();
     request.setEntryUser(String.valueOf(configurationService.getConfiguration("XMM_USER")));
     request.setEntryUserBranch(
         String.valueOf(configurationService.getConfiguration("XMM_USER_BRANCH")));
     request.setTransactionReferenceNumber(request.getSendersReference());
     request.setApplicationDate(configurationService.getCurrentApplicationDate());
+
+    xmmIntegrationService.publishCategoryNMessage(request);
+    return CommandResponse.asVoid();
+
+    //    swiftMTMessageService.publish103message(serviceURL, command.getPayload());
+    // ToDo change when kafka integration complete
+    //    ProcessResult processResult =
+    //        swiftMTMessageService.save103message(serviceURL, command.getPayload());
     /*if (processResult.getErrorCode() == 0) {
         MessageResponse messageResponse =
                 swiftMTMessageService.generate103message(serviceURL, command.getPayload());
@@ -125,8 +129,6 @@ public class SwiftMessageCommandHandlerAggregate {
                 request.getReceiverAddress(),
                 messageResponse.getMessage());
     }*/
-    xmmIntegrationService.publishCategoryNMessage(request);
-    return CommandResponse.asVoid();
   }
 
   @Transactional
@@ -152,8 +154,14 @@ public class SwiftMessageCommandHandlerAggregate {
   @CommandHandler
   public CommandResponse<MessageResponse> generate103Message(
       GenerateSingleCustomerCreditTransferMessageCommand command) {
-    MessageResponse messageResponse =
-        swiftMTMessageService.generate103message(serviceURL, command.getPayload());
+    MT103MessageRequest request = command.getPayload();
+    request.setEntryUser(
+        configurationService.getConfiguration("XMM_USER").get().getExpectedValue());
+    request.setEntryUserBranch(
+        configurationService.getConfiguration("XMM_USER_BRANCH").get().getExpectedValue());
+    request.setTransactionReferenceNumber(request.getSendersReference());
+    request.setApplicationDate(configurationService.getCurrentApplicationDate());
+    MessageResponse messageResponse = xmmIntegrationService.publishCategoryNMessage(request);
     return CommandResponse.of(messageResponse);
   }
 }
