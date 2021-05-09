@@ -1,10 +1,12 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
+import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.RemittanceTransactionCorrectionCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.query.Mt103RequestRemittanceTransactionIdQuery;
@@ -87,6 +89,15 @@ public class RemittanceTransactionController {
         .body(
             commandProcessor.executeResult(
                 new CreateInwardRemittanceTransactionCommand(remittanceTransaction)));
+  }
+
+  @PostMapping(path = "/remittance-transaction/correction/{voucherNumber}")
+  public ResponseEntity<CommandResponse<String>> correctionRemittanceTransaction(
+      @PathVariable("voucherNumber") Long voucherNumber) {
+    return status(ACCEPTED)
+        .body(
+            commandProcessor.executeResult(
+                new RemittanceTransactionCorrectionCommand(voucherNumber)));
   }
 
   @PostMapping(

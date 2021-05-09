@@ -77,6 +77,8 @@ public class RemittanceTransaction {
   @NotNull(message = "Transaction amount can't be null or zero")
   private BigDecimal amountFcy;
 
+  private boolean valid = true;
+
   @NotNull private BigDecimal amountLcy;
 
   @NotNull(message = "Reference amount can't be null or zero")
