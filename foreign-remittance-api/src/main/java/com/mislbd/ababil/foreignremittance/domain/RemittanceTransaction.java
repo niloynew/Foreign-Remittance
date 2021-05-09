@@ -78,6 +78,7 @@ public class RemittanceTransaction {
   private BigDecimal amountFcy;
 
   private boolean valid = true;
+  private boolean publishedToXmm = false;
 
   @NotNull private BigDecimal amountLcy;
 

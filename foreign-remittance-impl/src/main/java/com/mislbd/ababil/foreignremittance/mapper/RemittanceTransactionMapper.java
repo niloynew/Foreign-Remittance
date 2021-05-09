@@ -78,6 +78,7 @@ public class RemittanceTransactionMapper {
             .setGlobalTransactionNo(entity.getGlobalTransactionNo())
             .setTotalChargeAmount(entity.getTotalChargeAmount())
             .setTotalVatAmount(entity.getTotalVatAmount())
+            .setPublishedToXmm(entity.isPublishedToXmm())
             .setTotalChargeAmountAfterWaived(entity.getTotalChargeAmountAfterWaived())
             .setTotalVatAmountAfterWaived(entity.getTotalVatAmountAfterWaived())
             .setBankInformation(
@@ -127,6 +128,7 @@ public class RemittanceTransactionMapper {
             .setAmountLcy(domain.getAmountLcy())
             .setAmountRcy(domain.getAmountRcy())
             .setValueDate(domain.getValueDate())
+            .setPublishedToXmm(domain.isPublishedToXmm())
             .setTotalChargeAmount(domain.getTotalChargeAmount())
             .setTotalChargeAmountAfterWaived(domain.getTotalChargeAmountAfterWaived())
             .setTotalVatAmount(domain.getTotalVatAmount())

@@ -3,8 +3,13 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.*;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
+import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
+import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
+import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionEntity;
+import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
 import com.mislbd.ababil.foreignremittance.service.SwiftRegisterService;
 import com.mislbd.asset.command.api.CommandEvent;
 import com.mislbd.asset.command.api.CommandProcessor;
@@ -30,33 +35,39 @@ public class SwiftMessageCommandHandlerAggregate {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(SwiftMessageCommandHandlerAggregate.class);
   private final ShadowTransactionRepository shadowTransactionRepository;
+  private final RemittanceTransactionRepository remittanceTransactionRepository;
   private final ModelMapper modelMapper;
+  private final RemittanceTransactionMapper remittanceTransactionMapper;
   private final Auditor auditor;
   private final CommandProcessor commandProcessor;
   private final SwiftMTMessageService swiftMTMessageService;
   private final SwiftRegisterService swiftRegisterService;
   private final ConfigurationService configurationService;
   private final XmmIntegrationService xmmIntegrationService;
+  private final RemittanceTransactionService remittanceTransactionService;
   private String serviceURL = "http://192.168.1.104:8087/swift-service";
 
   public SwiftMessageCommandHandlerAggregate(
-      ShadowTransactionRepository shadowTransactionRepository,
-      ModelMapper modelMapper,
-      Auditor auditor,
-      CommandProcessor commandProcessor,
-      SwiftMTMessageService swiftMTMessageService,
-      SwiftRegisterService swiftRegisterService,
-      ConfigurationService configurationService,
-      XmmIntegrationService xmmIntegrationService) {
+          ShadowTransactionRepository shadowTransactionRepository,
+          RemittanceTransactionRepository remittanceTransactionRepository, ModelMapper modelMapper,
+          RemittanceTransactionMapper remittanceTransactionMapper, Auditor auditor,
+          CommandProcessor commandProcessor,
+          SwiftMTMessageService swiftMTMessageService,
+          SwiftRegisterService swiftRegisterService,
+          ConfigurationService configurationService,
+          XmmIntegrationService xmmIntegrationService, RemittanceTransactionService remittanceTransactionService) {
 
     this.shadowTransactionRepository = shadowTransactionRepository;
-    this.modelMapper = modelMapper;
-    this.auditor = auditor;
+      this.remittanceTransactionRepository = remittanceTransactionRepository;
+      this.modelMapper = modelMapper;
+      this.remittanceTransactionMapper = remittanceTransactionMapper;
+      this.auditor = auditor;
     this.commandProcessor = commandProcessor;
     this.swiftMTMessageService = swiftMTMessageService;
     this.swiftRegisterService = swiftRegisterService;
     this.configurationService = configurationService;
     this.xmmIntegrationService = xmmIntegrationService;
+    this.remittanceTransactionService = remittanceTransactionService;
   }
 
   @CommandListener(
@@ -114,6 +125,9 @@ public class SwiftMessageCommandHandlerAggregate {
     request.setApplicationDate(configurationService.getCurrentApplicationDate());
 
     xmmIntegrationService.publishCategoryNMessage(request);
+    RemittanceTransaction remittanceTransaction = remittanceTransactionService.findTransaction(request.getTransactionReferenceNumber()).orElseThrow(RemittanceTransactionNotFoundException::new);
+    remittanceTransaction.setPublishedToXmm(true);
+    remittanceTransactionRepository.save(remittanceTransactionMapper.domainToEntity().map(remittanceTransaction));
     return CommandResponse.asVoid();
 
     //    swiftMTMessageService.publish103message(serviceURL, command.getPayload());

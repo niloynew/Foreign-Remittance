@@ -131,6 +131,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "IS_VALID")
   private boolean valid = true;
 
+  @Column(name = "IS_PUBLISHED")
+  private boolean publishedToXmm = false;
+
   @Column(name = "AMOUNT_FCY")
   private BigDecimal amountFcy;
 
