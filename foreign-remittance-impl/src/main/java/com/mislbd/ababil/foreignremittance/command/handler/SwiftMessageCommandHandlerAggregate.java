@@ -48,20 +48,23 @@ public class SwiftMessageCommandHandlerAggregate {
   private String serviceURL = "http://192.168.1.104:8087/swift-service";
 
   public SwiftMessageCommandHandlerAggregate(
-          ShadowTransactionRepository shadowTransactionRepository,
-          RemittanceTransactionRepository remittanceTransactionRepository, ModelMapper modelMapper,
-          RemittanceTransactionMapper remittanceTransactionMapper, Auditor auditor,
-          CommandProcessor commandProcessor,
-          SwiftMTMessageService swiftMTMessageService,
-          SwiftRegisterService swiftRegisterService,
-          ConfigurationService configurationService,
-          XmmIntegrationService xmmIntegrationService, RemittanceTransactionService remittanceTransactionService) {
+      ShadowTransactionRepository shadowTransactionRepository,
+      RemittanceTransactionRepository remittanceTransactionRepository,
+      ModelMapper modelMapper,
+      RemittanceTransactionMapper remittanceTransactionMapper,
+      Auditor auditor,
+      CommandProcessor commandProcessor,
+      SwiftMTMessageService swiftMTMessageService,
+      SwiftRegisterService swiftRegisterService,
+      ConfigurationService configurationService,
+      XmmIntegrationService xmmIntegrationService,
+      RemittanceTransactionService remittanceTransactionService) {
 
     this.shadowTransactionRepository = shadowTransactionRepository;
-      this.remittanceTransactionRepository = remittanceTransactionRepository;
-      this.modelMapper = modelMapper;
-      this.remittanceTransactionMapper = remittanceTransactionMapper;
-      this.auditor = auditor;
+    this.remittanceTransactionRepository = remittanceTransactionRepository;
+    this.modelMapper = modelMapper;
+    this.remittanceTransactionMapper = remittanceTransactionMapper;
+    this.auditor = auditor;
     this.commandProcessor = commandProcessor;
     this.swiftMTMessageService = swiftMTMessageService;
     this.swiftRegisterService = swiftRegisterService;
@@ -125,24 +128,16 @@ public class SwiftMessageCommandHandlerAggregate {
     request.setApplicationDate(configurationService.getCurrentApplicationDate());
 
     xmmIntegrationService.publishCategoryNMessage(request);
-    RemittanceTransaction remittanceTransaction = remittanceTransactionService.findTransaction(request.getTransactionReferenceNumber()).orElseThrow(RemittanceTransactionNotFoundException::new);
+    RemittanceTransaction remittanceTransaction =
+        remittanceTransactionService
+            .findTransaction(request.getTransactionReferenceNumber())
+            .orElseThrow(RemittanceTransactionNotFoundException::new);
     remittanceTransaction.setPublishedToXmm(true);
-    remittanceTransactionRepository.save(remittanceTransactionMapper.domainToEntity().map(remittanceTransaction));
+    remittanceTransactionRepository.save(
+        remittanceTransactionMapper.domainToEntity().map(remittanceTransaction));
     return CommandResponse.asVoid();
 
-    //    swiftMTMessageService.publish103message(serviceURL, command.getPayload());
-    // ToDo change when kafka integration complete
-    //    ProcessResult processResult =
-    //        swiftMTMessageService.save103message(serviceURL, command.getPayload());
-    /*if (processResult.getErrorCode() == 0) {
-        MessageResponse messageResponse =
-                swiftMTMessageService.generate103message(serviceURL, command.getPayload());
-        swiftRegisterService.registerMessage(
-                request.getSendersReference(),
-                request.getSenderAddress(),
-                request.getReceiverAddress(),
-                messageResponse.getMessage());
-    }*/
+
   }
 
   @Transactional
@@ -179,3 +174,23 @@ public class SwiftMessageCommandHandlerAggregate {
     return CommandResponse.of(messageResponse);
   }
 }
+
+
+
+
+
+
+
+//    swiftMTMessageService.publish103message(serviceURL, command.getPayload());
+// ToDo change when kafka integration complete
+//    ProcessResult processResult =
+//        swiftMTMessageService.save103message(serviceURL, command.getPayload());
+    /*if (processResult.getErrorCode() == 0) {
+        MessageResponse messageResponse =
+                swiftMTMessageService.generate103message(serviceURL, command.getPayload());
+        swiftRegisterService.registerMessage(
+                request.getSendersReference(),
+                request.getSenderAddress(),
+                request.getReceiverAddress(),
+                messageResponse.getMessage());
+    }*/

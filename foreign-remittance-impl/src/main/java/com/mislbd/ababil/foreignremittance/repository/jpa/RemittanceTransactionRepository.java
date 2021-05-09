@@ -8,6 +8,4 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface RemittanceTransactionRepository
     extends JpaRepository<RemittanceTransactionEntity, Long>, JpaSpecificationExecutor {
   Optional<RemittanceTransactionEntity> findByTransactionReferenceNumber(String referenceNumber);
-
-
 }

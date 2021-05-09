@@ -90,6 +90,7 @@ public class RemittanceTransaction {
   private String batchNumber;
 
   private List<RemittanceChargeInformation> remittanceChargeInformationList;
+  private RemittanceAdditionalInformation remittanceAdditionalInformation;
   private BigDecimal totalChargeAmount = BigDecimal.ZERO;
   private BigDecimal totalChargeAmountAfterWaived = BigDecimal.ZERO;
   private BigDecimal totalVatAmount = BigDecimal.ZERO;
