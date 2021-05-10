@@ -25,16 +25,18 @@ public class RemittanceTransactionMapper {
   private BigDecimal chargeAmount = null;
   private BigDecimal vatAmount = null;
   private final BankInformationMapper bankInformationMapper;
+  private final AdditionInformationMapper additionInformationMapper;
   private final GLAccountService glAccountService;
 
   public RemittanceTransactionMapper(
-      RemittanceTransactionRepository remittanceTransactionRepository,
-      TransactionTypeRepository transactionTypeRepository,
-      BankInformationMapper bankInformationMapper,
-      GLAccountService glAccountService) {
+          RemittanceTransactionRepository remittanceTransactionRepository,
+          TransactionTypeRepository transactionTypeRepository,
+          BankInformationMapper bankInformationMapper,
+          AdditionInformationMapper additionInformationMapper, GLAccountService glAccountService) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.transactionTypeRepository = transactionTypeRepository;
     this.bankInformationMapper = bankInformationMapper;
+    this.additionInformationMapper = additionInformationMapper;
     this.glAccountService = glAccountService;
   }
 
@@ -81,6 +83,7 @@ public class RemittanceTransactionMapper {
             .setPublishedToXmm(entity.isPublishedToXmm())
             .setTotalChargeAmountAfterWaived(entity.getTotalChargeAmountAfterWaived())
             .setTotalVatAmountAfterWaived(entity.getTotalVatAmountAfterWaived())
+            .setRemittanceAdditionalInformation(additionInformationMapper.entityToDomain().map(entity.getRemittanceAdditionalInformation()))
             .setBankInformation(
                 entity
                     .getRemittanceTransactionBankMappingEntity()
@@ -132,6 +135,7 @@ public class RemittanceTransactionMapper {
             .setTotalChargeAmount(domain.getTotalChargeAmount())
             .setTotalChargeAmountAfterWaived(domain.getTotalChargeAmountAfterWaived())
             .setTotalVatAmount(domain.getTotalVatAmount())
+            .setRemittanceAdditionalInformation(additionInformationMapper.domainToEntity().map(domain.getRemittanceAdditionalInformation()))
             .setTotalVatAmountAfterWaived(domain.getTotalVatAmountAfterWaived());
   }
 

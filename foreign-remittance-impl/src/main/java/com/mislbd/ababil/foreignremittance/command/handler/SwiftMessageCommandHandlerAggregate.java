@@ -9,6 +9,8 @@ import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceAdditionalInformationEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
 import com.mislbd.ababil.foreignremittance.service.SwiftRegisterService;
 import com.mislbd.asset.command.api.CommandEvent;
@@ -126,15 +128,18 @@ public class SwiftMessageCommandHandlerAggregate {
         String.valueOf(configurationService.getConfiguration("XMM_USER_BRANCH")));
     request.setTransactionReferenceNumber(request.getSendersReference());
     request.setApplicationDate(configurationService.getCurrentApplicationDate());
-
     xmmIntegrationService.publishCategoryNMessage(request);
     RemittanceTransaction remittanceTransaction =
         remittanceTransactionService
             .findTransaction(request.getTransactionReferenceNumber())
             .orElseThrow(RemittanceTransactionNotFoundException::new);
     remittanceTransaction.setPublishedToXmm(true);
-    remittanceTransactionRepository.save(
-        remittanceTransactionMapper.domainToEntity().map(remittanceTransaction));
+    RemittanceTransactionEntity remittanceTransactionEntity = remittanceTransactionMapper.domainToEntity().map(remittanceTransaction);
+    RemittanceAdditionalInformationEntity remittanceAdditionalInformationEntity = new RemittanceAdditionalInformationEntity();
+    remittanceAdditionalInformationEntity.setInstructedAmount(request.getInstructedAmount());
+    remittanceAdditionalInformationEntity.setInstructedCurrency(request.getInstructedCurrency());
+    remittanceTransactionEntity.setRemittanceAdditionalInformation(remittanceAdditionalInformationEntity);
+    remittanceTransactionRepository.save(remittanceTransactionEntity);
     return CommandResponse.asVoid();
 
 

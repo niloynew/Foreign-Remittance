@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 
 public class RemittanceAdditionalInformation {
 
+    private long id;
     private String Code;
     private String timeIndication;
     private String Sign;
@@ -78,16 +79,4 @@ public class RemittanceAdditionalInformation {
     private String accountWithInstitutionIdentifierCode;
     private String accountWithInstitutionPartyLocation;
     private String accountWithInstitutionPartyNameAndAddress;
-
-
-
-
-
-
-
-
-
-
-
-
 }
