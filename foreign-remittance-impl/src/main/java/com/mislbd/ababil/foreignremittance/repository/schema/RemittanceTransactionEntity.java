@@ -167,7 +167,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "remittanceTransaction")
   private List<RemittanceChargeInformationEntity> chargeInformationEntities;
 
-  @OneToOne(fetch = FetchType.LAZY, mappedBy = "remittanceTransaction")
+  @OneToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.ALL},
+      mappedBy = "remittanceTransactionEntity")
   private RemittanceAdditionalInformationEntity remittanceAdditionalInformation;
-
 }
