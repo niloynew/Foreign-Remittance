@@ -34,6 +34,7 @@ public class RemittanceAdditionalInformation {
   private String regulatoryReportingCode;
   private String regulatoryReportingCountryCode;
   private String regulatoryReportingCNarrative;
+  private String envelopContents;
 
   private String remittanceInformation;
 

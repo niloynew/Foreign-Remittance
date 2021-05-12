@@ -61,6 +61,9 @@ public class RemittanceAdditionalInformationEntity {
   @Column(name = "REG_NARRATIVE")
   private String regulatoryReportingCNarrative;
 
+  @Column(name = "ENV_CONTENTS")
+  private String envelopContents;
+
   @Column(name = "REMIT_INFO")
   private String remittanceInformation;
 
