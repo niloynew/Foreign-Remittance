@@ -27,6 +27,7 @@ import com.mislbd.swift.broker.model.ProcessResult;
 import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
 import com.mislbd.swift.broker.model.raw.NostroTransaction;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
+import com.mislbd.swift.broker.model.raw.mt2xx.TimeIndication;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import com.mislbd.swift.broker.service.XmmIntegrationService;
 import org.modelmapper.ModelMapper;
@@ -199,8 +200,55 @@ public class SwiftMessageCommandHandlerAggregate {
         if (entity.getRemittanceAdditionalInformation() != null) {
             remittanceAdditionalInformation.setId(entity.getRemittanceAdditionalInformation().getId());
         }
-        remittanceAdditionalInformation.setInstructedAmount(request.getInstructedAmount());
-        remittanceAdditionalInformation.setInstructedCurrency(request.getInstructedCurrency());
+        remittanceAdditionalInformation
+                .setInstructedAmount(request.getInstructedAmount())
+                .setInstructedCurrency(request.getInstructedCurrency())
+                .setTimeIndication(request.getTimeIndications().get(0).getTimeIndication())
+                .setSign(request.getTimeIndications().get(0).getSign())
+                .setOffset(request.getTimeIndications().get(0).getOffset())
+                .setExchangeRate(request.getExchangeRate())
+                .setSendersChargeCurrency(request.getSendersChargeCurrency())
+                .setSendersChargeAmount(request.getSendersChargeAmount())
+                .setReceiversChargeCurrency(request.getReceiversChargeCurrency())
+                .setReceiversChargeAmount(request.getSendersChargeAmount())
+                .setTransactionTypeCode(request.getTransactionTypeCode())
+                .setInstructionCode(request.getInstructionCode())
+                .setInstructionCodeAdditionalInformation(request.getInstructionCodeAdditionalInformation())
+                .setRegulatoryReportingCode(request.getRegulatoryReportingCode())
+                .setRegulatoryReportingCountryCode(request.getRegulatoryReportingCountryCode())
+                .setRegulatoryReportingCountryCode(request.getRegulatoryReportingCountryCode())
+                .setRegulatoryReportingCNarrative(request.getRegulatoryReportingCNarrative())
+                .setRemittanceInformation(request.getRemittanceInformation())
+                .setSendingInstitutePartyIdentifier(request.getSendingInstitutePartyIdentifier())
+                .setSendingInstituteIdentifierCode(request.getSendingInstituteIdentifierCode())
+                .setSelectedOrderingInstitutionOption(request.getSelectedOrderingInstitutionOption())
+                .setOrderingInstitutionPartyIdentifier(request.getOrderingInstitutionPartyIdentifier())
+                .setOrderingInstitutionIdentifierCode(request.getOrderingInstitutionIdentifierCode())
+                .setOrderingInstitutionPartyNameAndAddress(request.getOrderingInstitutionPartyNameAndAddress())
+                .setSelectedSendersCorrespondentOption(request.getSelectedSendersCorrespondentOption())
+                .setSendersCorrespondentPartyIdentifier(request.getSendersCorrespondentPartyIdentifier())
+                .setSendersCorrespondentIdentifierCode(request.getSendersCorrespondentIdentifierCode())
+                .setSendersCorrespondentLocation(request.getSendersCorrespondentLocation())
+                .setSendersCorrespondentNameAndAddress(request.getSendersCorrespondentNameAndAddress())
+                .setSelectedReceiversCorrespondentOption(request.getSelectedReceiversCorrespondentOption())
+                .setReceiversCorrespondentPartyIdentifier(request.getReceiversCorrespondentPartyIdentifier())
+                .setReceiversCorrespondentIdentifierCode(request.getReceiversCorrespondentIdentifierCode())
+                .setReceiversCorrespondentLocation(request.getReceiversCorrespondentLocation())
+                .setReceiversCorrespondentNameAndAddress(request.getReceiversCorrespondentNameAndAddress())
+                .setSelectedThirdReimbursementInstitutionOption(request.getSelectedThirdReimbursementInstitutionOption())
+                .setThirdReimbursementInstitutionPartyIdentifier(request.getThirdReimbursementInstitutionPartyIdentifier())
+                .setThirdReimbursementInstitutionIdentifierCode(request.getThirdReimbursementInstitutionIdentifierCode())
+                .setThirdReimbursementInstitutionLocation(request.getThirdReimbursementInstitutionLocation())
+                .setThirdReimbursementInstitutionNameAndAddress(request.getThirdReimbursementInstitutionNameAndAddress())
+                .setSelectedIntermediaryInstitutionOption(request.getSelectedIntermediaryInstitutionOption())
+                .setIntermediaryInstitutionPartyIdentifier(request.getIntermediaryInstitutionPartyIdentifier())
+                .setIntermediaryInstitutionIdentifierCode(request.getIntermediaryInstitutionIdentifierCode())
+                .setIntermediaryInstitutionIdentifierNameAndAddress(request.getIntermediaryInstitutionIdentifierNameAndAddress())
+                .setSelectedAccountWithInstitutionOption(request.getSelectedAccountWithInstitutionOption())
+                .setAccountWithInstitutionPartyIdentifier(request.getAccountWithInstitutionPartyIdentifier())
+                .setAccountWithInstitutionIdentifierCode(request.getAccountWithInstitutionIdentifierCode())
+                .setAccountWithInstitutionPartyLocation(request.getAccountWithInstitutionIdentifierCode())
+                .setAccountWithInstitutionPartyNameAndAddress(request.getAccountWithInstitutionPartyNameAndAddress());
         RemittanceAdditionalInformationEntity remittanceAdditionalInformationEntity =
                 additionInformationMapper.domainToEntity().map(remittanceAdditionalInformation);
         remittanceAdditionalInformationEntity.setRemittanceTransactionEntity(entity);
@@ -208,30 +256,6 @@ public class SwiftMessageCommandHandlerAggregate {
         return remittanceAdditionalInformationEntity;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //    swiftMTMessageService.publish103message(serviceURL, command.getPayload());
 // ToDo change when kafka integration complete
