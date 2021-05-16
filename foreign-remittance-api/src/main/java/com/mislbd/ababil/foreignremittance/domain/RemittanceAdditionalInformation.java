@@ -37,6 +37,7 @@ public class RemittanceAdditionalInformation {
   private String envelopContents;
 
   private String remittanceInformation;
+  private String senderToReceiverInformation;
 
   private String sendingInstitutePartyIdentifier;
   private String sendingInstituteIdentifierCode;

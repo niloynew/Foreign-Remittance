@@ -45,7 +45,7 @@ public class TransactionToRequestMapper {
               .getBankType(bankInformation.getBankTypeId())
               .orElseThrow(BankTypeNotFoundException::new);
 
-      if (bankType.getCode().equalsIgnoreCase("00")) {
+      if (bankType.getCode().equalsIgnoreCase("57")) {
         request.setReceiverAddress(bankInformation.getSwiftCode());
       }
       if (!remittanceTransaction.isPublishedToXmm()) {
@@ -89,7 +89,7 @@ public class TransactionToRequestMapper {
     request.setInstructedCurrency(null);
     request.setInstructedAmount(null);
     request.setSelectedOrderingCustomerOption(SelectOptions.OptionK);
-    request.setOrderingCustomerAccount(remittanceTransaction.getApplicantAccountNumber());
+    request.setOrderingCustomerAccount(remittanceTransaction.getOperatingAccountNumber());
     request.setOrderingCustomerNameAndAddress(
         remittanceTransaction
             .getApplicant()
@@ -103,9 +103,13 @@ public class TransactionToRequestMapper {
             .concat(System.lineSeparator())
             .concat(remittanceTransaction.getBeneficiaryAddress()));
     request.setDetailsOfCharges(String.valueOf(DetailsOfCharges.OUR));
-    request.setSenderToReceiverInformation(
+    request.setRemittanceInformation(
         remittanceTransaction.getCommodityDescription() != null
             ? remittanceTransaction.getCommodityDescription()
+            : "");
+    request.setSenderToReceiverInformation(
+        remittanceTransaction.getDeliveryTerm() != null
+            ? remittanceTransaction.getDeliveryTerm()
             : "");
 
     if (remittanceTransaction.getRemittanceAdditionalInformation() != null) {
@@ -148,6 +152,8 @@ public class TransactionToRequestMapper {
         .setRegulatoryReportingCNarrative(
             remittanceAdditionalInformation.getRegulatoryReportingCNarrative())
         .setRemittanceInformation(remittanceAdditionalInformation.getRemittanceInformation())
+        .setSenderToReceiverInformation(
+            remittanceAdditionalInformation.getSenderToReceiverInformation())
         .setSendingInstitutePartyIdentifier(
             remittanceAdditionalInformation.getSendingInstitutePartyIdentifier())
         .setSendingInstituteIdentifierCode(

@@ -67,6 +67,9 @@ public class RemittanceAdditionalInformationEntity {
   @Column(name = "REMIT_INFO")
   private String remittanceInformation;
 
+  @Column(name = "SEND_RECEIVE_INFO")
+  private String senderToReceiverInformation;
+
   @Column(name = "TIME_INDICATION")
   private String timeIndication;
 
