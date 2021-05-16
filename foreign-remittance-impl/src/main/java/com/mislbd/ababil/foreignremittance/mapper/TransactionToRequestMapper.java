@@ -2,6 +2,7 @@ package com.mislbd.ababil.foreignremittance.mapper;
 
 import com.mislbd.ababil.foreignremittance.domain.BankInformation;
 import com.mislbd.ababil.foreignremittance.domain.BankType;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceAdditionalInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.exception.BankTypeNotFoundException;
 import com.mislbd.ababil.foreignremittance.service.BankTypeService;
@@ -11,7 +12,9 @@ import com.mislbd.swift.broker.model.BankOperationCode;
 import com.mislbd.swift.broker.model.DetailsOfCharges;
 import com.mislbd.swift.broker.model.raw.SelectOptions;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
+import com.mislbd.swift.broker.model.raw.mt2xx.TimeIndication;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -35,42 +38,46 @@ public class TransactionToRequestMapper {
     request.setSenderAddress(
         branchService.findBranch(ngSession.getUserBranch()).get().getSwiftCode());
     List<BankInformation> bankInformationList = remittanceTransaction.getBankInformation();
+
     for (BankInformation bankInformation : bankInformationList) {
       BankType bankType =
           bankTypeService
               .getBankType(bankInformation.getBankTypeId())
               .orElseThrow(BankTypeNotFoundException::new);
-      switch (bankType.getCode()) {
-        case "00":
-          request.setReceiverAddress(bankInformation.getSwiftCode());
-          break;
-        case "51":
-          request.setSendingInstituteIdentifierCode(bankInformation.getSwiftCode());
-          break;
-        case "52":
-          request.setSelectedOrderingInstitutionOption(SelectOptions.OptionA);
-          request.setOrderingInstitutionIdentifierCode(bankInformation.getSwiftCode());
-          break;
-        case "53":
-          request.setSelectedSendersCorrespondentOption(SelectOptions.OptionA);
-          request.setSendersCorrespondentIdentifierCode(bankInformation.getSwiftCode());
-          break;
-        case "54":
-          request.setSelectedReceiversCorrespondentOption(SelectOptions.OptionA);
-          request.setReceiversCorrespondentIdentifierCode(bankInformation.getSwiftCode());
-          break;
-        case "55":
-          request.setSelectedThirdReimbursementInstitutionOption(SelectOptions.OptionA);
-          request.setThirdReimbursementInstitutionIdentifierCode(bankInformation.getSwiftCode());
-          break;
-        case "56":
-          request.setSelectedIntermediaryInstitutionOption(SelectOptions.OptionA);
-          request.setIntermediaryInstitutionIdentifierCode(bankInformation.getSwiftCode());
-          break;
-        case "57":
-          request.setSelectedAccountWithInstitutionOption(SelectOptions.OptionA);
-          request.setAccountWithInstitutionIdentifierCode(bankInformation.getSwiftCode());
-          break;
+
+      if (bankType.getCode().equalsIgnoreCase("57")) {
+        request.setReceiverAddress(bankInformation.getSwiftCode());
+      }
+      if (!remittanceTransaction.isPublishedToXmm()) {
+        switch (bankType.getCode()) {
+          case "51":
+            request.setSendingInstituteIdentifierCode(bankInformation.getSwiftCode());
+            break;
+          case "52":
+            request.setSelectedOrderingInstitutionOption(SelectOptions.OptionA);
+            request.setOrderingInstitutionIdentifierCode(bankInformation.getSwiftCode());
+            break;
+          case "53":
+            request.setSelectedSendersCorrespondentOption(SelectOptions.OptionA);
+            request.setSendersCorrespondentIdentifierCode(bankInformation.getSwiftCode());
+            break;
+          case "54":
+            request.setSelectedReceiversCorrespondentOption(SelectOptions.OptionA);
+            request.setReceiversCorrespondentIdentifierCode(bankInformation.getSwiftCode());
+            break;
+          case "55":
+            request.setSelectedThirdReimbursementInstitutionOption(SelectOptions.OptionA);
+            request.setThirdReimbursementInstitutionIdentifierCode(bankInformation.getSwiftCode());
+            break;
+          case "56":
+            request.setSelectedIntermediaryInstitutionOption(SelectOptions.OptionA);
+            request.setIntermediaryInstitutionIdentifierCode(bankInformation.getSwiftCode());
+            break;
+          case "57":
+            request.setSelectedAccountWithInstitutionOption(SelectOptions.OptionA);
+            request.setAccountWithInstitutionIdentifierCode(bankInformation.getSwiftCode());
+            break;
+        }
       }
     }
 
@@ -82,7 +89,7 @@ public class TransactionToRequestMapper {
     request.setInstructedCurrency(null);
     request.setInstructedAmount(null);
     request.setSelectedOrderingCustomerOption(SelectOptions.OptionK);
-    request.setOrderingCustomerAccount(remittanceTransaction.getApplicantAccountNumber());
+    request.setOrderingCustomerAccount(remittanceTransaction.getOperatingAccountNumber());
     request.setOrderingCustomerNameAndAddress(
         remittanceTransaction
             .getApplicant()
@@ -96,10 +103,117 @@ public class TransactionToRequestMapper {
             .concat(System.lineSeparator())
             .concat(remittanceTransaction.getBeneficiaryAddress()));
     request.setDetailsOfCharges(String.valueOf(DetailsOfCharges.OUR));
-    request.setSenderToReceiverInformation(
+    request.setRemittanceInformation(
         remittanceTransaction.getCommodityDescription() != null
             ? remittanceTransaction.getCommodityDescription()
             : "");
+    request.setSenderToReceiverInformation(
+        remittanceTransaction.getDeliveryTerm() != null
+            ? remittanceTransaction.getDeliveryTerm()
+            : "");
+
+    if (remittanceTransaction.getRemittanceAdditionalInformation() != null) {
+      request =
+          mapAdditionalInformation(
+              request, remittanceTransaction.getRemittanceAdditionalInformation());
+    }
+    return request;
+  }
+
+  public MT103MessageRequest mapAdditionalInformation(
+      MT103MessageRequest request,
+      RemittanceAdditionalInformation remittanceAdditionalInformation) {
+    TimeIndication timeIndication = new TimeIndication();
+    List<TimeIndication> timeIndications = new ArrayList<TimeIndication>();
+    timeIndication
+        .setCode(remittanceAdditionalInformation.getCode())
+        .setOffset(remittanceAdditionalInformation.getOffset())
+        .setSign(remittanceAdditionalInformation.getSign())
+        .setTimeIndication(remittanceAdditionalInformation.getTimeIndication());
+    timeIndications.add(timeIndication);
+
+    request
+        .setInstructedAmount(remittanceAdditionalInformation.getInstructedAmount())
+        .setInstructedCurrency(remittanceAdditionalInformation.getInstructedCurrency())
+        .setTimeIndications(timeIndications)
+        .setExchangeRate(remittanceAdditionalInformation.getExchangeRate())
+        .setSendersChargeCurrency(remittanceAdditionalInformation.getSendersChargeCurrency())
+        .setSendersChargeAmount(remittanceAdditionalInformation.getSendersChargeAmount())
+        .setReceiversChargeCurrency(remittanceAdditionalInformation.getReceiversChargeCurrency())
+        .setReceiversChargeAmount(remittanceAdditionalInformation.getSendersChargeAmount())
+        .setTransactionTypeCode(remittanceAdditionalInformation.getTransactionTypeCode())
+        .setInstructionCode(remittanceAdditionalInformation.getInstructionCode())
+        .setInstructionCodeAdditionalInformation(
+            remittanceAdditionalInformation.getInstructionCodeAdditionalInformation())
+        .setRegulatoryReportingCode(remittanceAdditionalInformation.getRegulatoryReportingCode())
+        .setRegulatoryReportingCountryCode(
+            remittanceAdditionalInformation.getRegulatoryReportingCountryCode())
+        .setEnvelopeContents(remittanceAdditionalInformation.getEnvelopContents())
+        .setRegulatoryReportingCNarrative(
+            remittanceAdditionalInformation.getRegulatoryReportingCNarrative())
+        .setRemittanceInformation(remittanceAdditionalInformation.getRemittanceInformation())
+        .setSenderToReceiverInformation(
+            remittanceAdditionalInformation.getSenderToReceiverInformation())
+        .setSendingInstitutePartyIdentifier(
+            remittanceAdditionalInformation.getSendingInstitutePartyIdentifier())
+        .setSendingInstituteIdentifierCode(
+            remittanceAdditionalInformation.getSendingInstituteIdentifierCode())
+        .setSelectedOrderingInstitutionOption(
+            remittanceAdditionalInformation.getSelectedOrderingInstitutionOption())
+        .setOrderingInstitutionPartyIdentifier(
+            remittanceAdditionalInformation.getOrderingInstitutionPartyIdentifier())
+        .setOrderingInstitutionIdentifierCode(
+            remittanceAdditionalInformation.getOrderingInstitutionIdentifierCode())
+        .setOrderingInstitutionPartyNameAndAddress(
+            remittanceAdditionalInformation.getOrderingInstitutionPartyNameAndAddress())
+        .setSelectedSendersCorrespondentOption(
+            remittanceAdditionalInformation.getSelectedSendersCorrespondentOption())
+        .setSendersCorrespondentPartyIdentifier(
+            remittanceAdditionalInformation.getSendersCorrespondentPartyIdentifier())
+        .setSendersCorrespondentIdentifierCode(
+            remittanceAdditionalInformation.getSendersCorrespondentIdentifierCode())
+        .setSendersCorrespondentLocation(
+            remittanceAdditionalInformation.getSendersCorrespondentLocation())
+        .setSendersCorrespondentNameAndAddress(
+            remittanceAdditionalInformation.getSendersCorrespondentNameAndAddress())
+        .setSelectedReceiversCorrespondentOption(
+            remittanceAdditionalInformation.getSelectedReceiversCorrespondentOption())
+        .setReceiversCorrespondentPartyIdentifier(
+            remittanceAdditionalInformation.getReceiversCorrespondentPartyIdentifier())
+        .setReceiversCorrespondentIdentifierCode(
+            remittanceAdditionalInformation.getReceiversCorrespondentIdentifierCode())
+        .setReceiversCorrespondentLocation(
+            remittanceAdditionalInformation.getReceiversCorrespondentLocation())
+        .setReceiversCorrespondentNameAndAddress(
+            remittanceAdditionalInformation.getReceiversCorrespondentNameAndAddress())
+        .setSelectedThirdReimbursementInstitutionOption(
+            remittanceAdditionalInformation.getSelectedThirdReimbursementInstitutionOption())
+        .setThirdReimbursementInstitutionPartyIdentifier(
+            remittanceAdditionalInformation.getThirdReimbursementInstitutionPartyIdentifier())
+        .setThirdReimbursementInstitutionIdentifierCode(
+            remittanceAdditionalInformation.getThirdReimbursementInstitutionIdentifierCode())
+        .setThirdReimbursementInstitutionLocation(
+            remittanceAdditionalInformation.getThirdReimbursementInstitutionLocation())
+        .setThirdReimbursementInstitutionNameAndAddress(
+            remittanceAdditionalInformation.getThirdReimbursementInstitutionNameAndAddress())
+        .setSelectedIntermediaryInstitutionOption(
+            remittanceAdditionalInformation.getSelectedIntermediaryInstitutionOption())
+        .setIntermediaryInstitutionPartyIdentifier(
+            remittanceAdditionalInformation.getIntermediaryInstitutionPartyIdentifier())
+        .setIntermediaryInstitutionIdentifierCode(
+            remittanceAdditionalInformation.getIntermediaryInstitutionIdentifierCode())
+        .setIntermediaryInstitutionIdentifierNameAndAddress(
+            remittanceAdditionalInformation.getIntermediaryInstitutionIdentifierNameAndAddress())
+        .setSelectedAccountWithInstitutionOption(
+            remittanceAdditionalInformation.getSelectedAccountWithInstitutionOption())
+        .setAccountWithInstitutionPartyIdentifier(
+            remittanceAdditionalInformation.getAccountWithInstitutionPartyIdentifier())
+        .setAccountWithInstitutionIdentifierCode(
+            remittanceAdditionalInformation.getAccountWithInstitutionIdentifierCode())
+        .setAccountWithInstitutionPartyLocation(
+            remittanceAdditionalInformation.getAccountWithInstitutionPartyLocation())
+        .setAccountWithInstitutionPartyNameAndAddress(
+            remittanceAdditionalInformation.getAccountWithInstitutionPartyNameAndAddress());
     return request;
   }
 }

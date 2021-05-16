@@ -25,16 +25,19 @@ public class RemittanceTransactionMapper {
   private BigDecimal chargeAmount = null;
   private BigDecimal vatAmount = null;
   private final BankInformationMapper bankInformationMapper;
+  private final AdditionInformationMapper additionInformationMapper;
   private final GLAccountService glAccountService;
 
   public RemittanceTransactionMapper(
       RemittanceTransactionRepository remittanceTransactionRepository,
       TransactionTypeRepository transactionTypeRepository,
       BankInformationMapper bankInformationMapper,
+      AdditionInformationMapper additionInformationMapper,
       GLAccountService glAccountService) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.transactionTypeRepository = transactionTypeRepository;
     this.bankInformationMapper = bankInformationMapper;
+    this.additionInformationMapper = additionInformationMapper;
     this.glAccountService = glAccountService;
   }
 
@@ -78,8 +81,15 @@ public class RemittanceTransactionMapper {
             .setGlobalTransactionNo(entity.getGlobalTransactionNo())
             .setTotalChargeAmount(entity.getTotalChargeAmount())
             .setTotalVatAmount(entity.getTotalVatAmount())
+            .setPublishedToXmm(entity.isPublishedToXmm())
             .setTotalChargeAmountAfterWaived(entity.getTotalChargeAmountAfterWaived())
             .setTotalVatAmountAfterWaived(entity.getTotalVatAmountAfterWaived())
+            .setRemittanceAdditionalInformation(
+                entity.getRemittanceAdditionalInformation() == null
+                    ? null
+                    : additionInformationMapper
+                        .entityToDomain()
+                        .map(entity.getRemittanceAdditionalInformation()))
             .setBankInformation(
                 entity
                     .getRemittanceTransactionBankMappingEntity()
@@ -127,9 +137,16 @@ public class RemittanceTransactionMapper {
             .setAmountLcy(domain.getAmountLcy())
             .setAmountRcy(domain.getAmountRcy())
             .setValueDate(domain.getValueDate())
+            .setPublishedToXmm(domain.isPublishedToXmm())
             .setTotalChargeAmount(domain.getTotalChargeAmount())
             .setTotalChargeAmountAfterWaived(domain.getTotalChargeAmountAfterWaived())
             .setTotalVatAmount(domain.getTotalVatAmount())
+            .setRemittanceAdditionalInformation(
+                domain.getRemittanceAdditionalInformation() == null
+                    ? null
+                    : additionInformationMapper
+                        .domainToEntity()
+                        .map(domain.getRemittanceAdditionalInformation()))
             .setTotalVatAmountAfterWaived(domain.getTotalVatAmountAfterWaived());
   }
 

@@ -113,14 +113,11 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
     BigDecimal percentageChargeAmount =
         BigDecimal.valueOf(0.01).multiply(remittanceCharge.getChargePercentage().multiply(amount));
     if (percentageChargeAmount.compareTo(remittanceCharge.getMinimumChargeAmount()) == 1
-            && percentageChargeAmount.compareTo(remittanceCharge.getMaximumChargeAmount())
-            == -1) {
+        && percentageChargeAmount.compareTo(remittanceCharge.getMaximumChargeAmount()) == -1) {
       chargeAmount = percentageChargeAmount;
-    } else if (percentageChargeAmount.compareTo(remittanceCharge.getMinimumChargeAmount())
-            == -1) {
+    } else if (percentageChargeAmount.compareTo(remittanceCharge.getMinimumChargeAmount()) == -1) {
       chargeAmount = remittanceCharge.getMinimumChargeAmount();
-    } else if (percentageChargeAmount.compareTo(remittanceCharge.getMaximumChargeAmount())
-            == 1) {
+    } else if (percentageChargeAmount.compareTo(remittanceCharge.getMaximumChargeAmount()) == 1) {
       chargeAmount = remittanceCharge.getMaximumChargeAmount();
     }
     return chargeAmount;

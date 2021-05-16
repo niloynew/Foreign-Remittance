@@ -109,8 +109,6 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
         .map(remittanceTransactionMapper.entityToDomain()::map);
   }
 
-
-
   @Override
   public void correctTransaction(AuditInformation auditInformation) {
     TransactionCorrectionRequest transactionCorrectionRequest =
