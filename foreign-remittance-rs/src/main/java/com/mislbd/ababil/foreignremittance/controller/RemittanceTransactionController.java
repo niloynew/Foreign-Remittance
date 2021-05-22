@@ -12,6 +12,7 @@ import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.query.Mt103RequestRemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionQuery;
+import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.query.api.QueryManager;
@@ -33,11 +34,15 @@ public class RemittanceTransactionController {
   private final CommandProcessor commandProcessor;
   private final QueryManager queryManager;
   private QueryResult<?> queryResult;
+  private final RemittanceTransactionService remittanceTransactionService;
 
   public RemittanceTransactionController(
-      CommandProcessor commandProcessor, QueryManager queryManager) {
+      CommandProcessor commandProcessor,
+      QueryManager queryManager,
+      RemittanceTransactionService remittanceTransactionService) {
     this.commandProcessor = commandProcessor;
     this.queryManager = queryManager;
+    this.remittanceTransactionService = remittanceTransactionService;
   }
 
   @GetMapping(path = "/remittance-transaction")
@@ -118,5 +123,13 @@ public class RemittanceTransactionController {
     QueryResult<?> queryResult =
         queryManager.executeQuery(new Mt103RequestRemittanceTransactionIdQuery(transactionId));
     return ResponseEntity.ok(queryResult.getResult());
+  }
+
+  @GetMapping(path = "/outward-remittance-transaction/reference-numbers/{branchId}/{productId}")
+  public ResponseEntity<?> generateTransactionReferenceNumber(
+      @PathVariable("branchId") Long branchId, @PathVariable("productId") Long productId) {
+
+    return ResponseEntity.ok(
+        remittanceTransactionService.generateTransactionReferenceNumber(branchId, productId));
   }
 }

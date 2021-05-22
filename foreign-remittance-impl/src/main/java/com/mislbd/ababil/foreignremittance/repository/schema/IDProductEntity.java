@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceCategory;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.*;
@@ -28,6 +29,10 @@ public class IDProductEntity extends BaseEntity implements Serializable {
 
   @Column(name = "CODE", nullable = false, length = 3, unique = true)
   private String code;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "CATEGORY", nullable = false, columnDefinition = "varchar(2) default 'TT'")
+  private RemittanceCategory category;
 
   @ElementCollection
   @CollectionTable(
