@@ -69,7 +69,7 @@ public class AccountController {
   @ResponseStatus(ACCEPTED)
   public ResponseEntity<?> saveAccount(@RequestBody Account account) {
     commandProcessor.executeResult(new SaveShadowAccountCommand(account));
-    commandProcessor.executeResult(new SaveNostroAccountCommand(account));
+    //    commandProcessor.executeResult(new SaveNostroAccountCommand(account));
     return ResponseEntity.accepted().build();
   }
 
@@ -80,7 +80,7 @@ public class AccountController {
   public ResponseEntity<Void> updateAccount(
       @PathVariable("accountId") final long accountId, @RequestBody final Account account) {
     commandProcessor.executeUpdate(new UpdateShadowAccountCommand(accountId, account));
-    commandProcessor.executeUpdate(new UpdateNostroAccountCommand(accountId, account));
+    //    commandProcessor.executeUpdate(new UpdateNostroAccountCommand(accountId, account));
     return status(ACCEPTED).build();
   }
 
@@ -91,7 +91,7 @@ public class AccountController {
   public ResponseEntity<Void> inactiveShadowAccount(
       @PathVariable("accountId") final long accountId, @RequestBody final Account account) {
     commandProcessor.executeUpdate(new InactiveShadowAccountCommand(accountId, account));
-    commandProcessor.executeUpdate(new InactiveNostroAccountCommand(accountId, account));
+    //    commandProcessor.executeUpdate(new InactiveNostroAccountCommand(accountId, account));
     return status(ACCEPTED).build();
   }
 }

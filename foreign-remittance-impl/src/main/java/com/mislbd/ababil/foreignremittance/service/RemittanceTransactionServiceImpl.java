@@ -1,10 +1,15 @@
 package com.mislbd.ababil.foreignremittance.service;
 
+import com.google.common.base.Strings;
+import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
+import com.mislbd.ababil.foreignremittance.exception.IDProductNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
+import com.mislbd.ababil.foreignremittance.repository.jpa.IDProductRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.schema.IDProductEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.RemittanceTransactionSpecification;
 import com.mislbd.ababil.transaction.domain.TransactionCorrectionRequest;
@@ -27,14 +32,20 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   private final RemittanceTransactionRepository remittanceTransactionRepository;
   private final RemittanceTransactionMapper remittanceTransactionMapper;
   private final TransactionService transactionService;
+  private final IDProductRepository productRepository;
+  private final ConfigurationService configurationService;
 
   public RemittanceTransactionServiceImpl(
       RemittanceTransactionRepository remittanceTransactionRepository,
       RemittanceTransactionMapper remittanceTransactionMapper,
-      TransactionService transactionService) {
+      TransactionService transactionService,
+      IDProductRepository productRepository,
+      ConfigurationService configurationService) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.remittanceTransactionMapper = remittanceTransactionMapper;
     this.transactionService = transactionService;
+    this.productRepository = productRepository;
+    this.configurationService = configurationService;
   }
 
   @Override
@@ -114,6 +125,25 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
     TransactionCorrectionRequest transactionCorrectionRequest =
         prepareTransactionCorrectionRequest(auditInformation);
     transactionService.correctTransaction(transactionCorrectionRequest);
+  }
+
+  @Override
+  public String generateTransactionReferenceNumber(Long branchId, Long productId) {
+    IDProductEntity productEntity =
+        productRepository.findById(productId).orElseThrow(IDProductNotFoundException::new);
+    StringBuilder referenceNumber = new StringBuilder();
+    referenceNumber
+        .append(Strings.padStart(String.valueOf(branchId), 3, '0'))
+        .append(productEntity.getCategory())
+        .append(
+            String.valueOf(configurationService.getCurrentApplicationDate().getYear()).substring(2))
+        .append(
+            Strings.padStart(
+                String.valueOf(
+                    remittanceTransactionRepository.generateTransactionReferenceNumberSequence()),
+                5,
+                '0'));
+    return referenceNumber.toString();
   }
 
   private TransactionCorrectionRequest prepareTransactionCorrectionRequest(

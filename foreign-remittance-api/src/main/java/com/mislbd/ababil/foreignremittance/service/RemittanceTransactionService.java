@@ -34,4 +34,6 @@ public interface RemittanceTransactionService {
   Optional<RemittanceTransaction> findTransaction(String referenceNumber);
 
   void correctTransaction(AuditInformation auditInformation);
+
+  String generateTransactionReferenceNumber(Long branchId, Long productId);
 }

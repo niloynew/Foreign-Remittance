@@ -61,6 +61,8 @@ public class ShadowAccountSpecification {
 
       if (isActive != null) {
         predicate = cb.and(predicate, cb.equal(root.get("isActive"), isActive));
+      } else {
+        predicate = cb.and(predicate, cb.equal(root.get("isActive"), true));
       }
 
       return predicate;

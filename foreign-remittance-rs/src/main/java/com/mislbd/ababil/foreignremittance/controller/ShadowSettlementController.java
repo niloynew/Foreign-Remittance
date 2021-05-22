@@ -38,7 +38,7 @@ public class ShadowSettlementController {
       @RequestParam(value = "accountNumber", required = false) String accountNumber,
       @RequestParam(value = "fromDate", required = false) LocalDate fromDate,
       @RequestParam(value = "toDate", required = false) LocalDate toDate,
-      @RequestParam(value = "reconcileStatus", required = false)
+      @RequestParam(value = "reconcileStatus", required = false, defaultValue = "Pending")
           OtherCbsSystemSettlementStatus status) {
     QueryResult<?> queryResult =
         queryManager.executeQuery(
