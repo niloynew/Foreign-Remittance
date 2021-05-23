@@ -37,6 +37,7 @@ public class TransactionToRequestMapper {
     MT103MessageRequest request = new MT103MessageRequest();
     request.setSenderAddress(
         branchService.findBranch(ngSession.getUserBranch()).get().getSwiftCode());
+
     List<BankInformation> bankInformationList = remittanceTransaction.getBankInformation();
 
     for (BankInformation bankInformation : bankInformationList) {

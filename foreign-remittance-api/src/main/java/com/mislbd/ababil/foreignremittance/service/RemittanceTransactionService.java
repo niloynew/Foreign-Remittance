@@ -35,5 +35,5 @@ public interface RemittanceTransactionService {
 
   void correctTransaction(AuditInformation auditInformation);
 
-  String generateTransactionReferenceNumber(Long branchId, Long productId);
+  String generateTransactionReferenceNumber(String remittanceCategory);
 }

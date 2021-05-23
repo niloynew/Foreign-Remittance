@@ -88,6 +88,7 @@ public class RemittanceTransaction {
   private LocalDate valueDate;
   private Long globalTransactionNo;
   private String batchNumber;
+  private RemittanceCategory remittanceCategory;
 
   private List<RemittanceChargeInformation> remittanceChargeInformationList;
   private RemittanceAdditionalInformation remittanceAdditionalInformation;

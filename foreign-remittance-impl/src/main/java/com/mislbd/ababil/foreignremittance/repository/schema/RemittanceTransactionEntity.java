@@ -2,6 +2,7 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import com.mislbd.ababil.foreignremittance.domain.AccountType;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceCategory;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -160,6 +161,10 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   @Column(name = "TOTAL_VAT_AMOUNT")
   private BigDecimal totalVatAmount;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "CATEGORY")
+  private RemittanceCategory remittanceCategory;
 
   @Column(name = "VAT_AFTER_WAIVED")
   private BigDecimal totalVatAmountAfterWaived;

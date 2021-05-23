@@ -5,18 +5,18 @@ import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
-import com.mislbd.ababil.foreignremittance.exception.IDProductNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.IDProductRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.IDProductEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.RemittanceTransactionSpecification;
+import com.mislbd.ababil.organization.service.BranchService;
 import com.mislbd.ababil.transaction.domain.TransactionCorrectionRequest;
 import com.mislbd.ababil.transaction.service.TransactionService;
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
+import com.mislbd.security.core.NgSession;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,18 +34,24 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   private final TransactionService transactionService;
   private final IDProductRepository productRepository;
   private final ConfigurationService configurationService;
+  private final NgSession ngSession;
+  private final BranchService branchService;
 
   public RemittanceTransactionServiceImpl(
       RemittanceTransactionRepository remittanceTransactionRepository,
       RemittanceTransactionMapper remittanceTransactionMapper,
       TransactionService transactionService,
       IDProductRepository productRepository,
-      ConfigurationService configurationService) {
+      ConfigurationService configurationService,
+      NgSession ngSession,
+      BranchService branchService) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.remittanceTransactionMapper = remittanceTransactionMapper;
     this.transactionService = transactionService;
     this.productRepository = productRepository;
     this.configurationService = configurationService;
+    this.ngSession = ngSession;
+    this.branchService = branchService;
   }
 
   @Override
@@ -128,13 +134,17 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   }
 
   @Override
-  public String generateTransactionReferenceNumber(Long branchId, Long productId) {
-    IDProductEntity productEntity =
-        productRepository.findById(productId).orElseThrow(IDProductNotFoundException::new);
+  public String generateTransactionReferenceNumber(String remittanceCategory) {
+    // IDProductEntity productEntity =
+    //    productRepository.findById(productId).orElseThrow(IDProductNotFoundException::new);
+    String branchCode = null;
+    if (branchService.findBranch(ngSession.getUserBranch()).get().getCode() != null) {
+      branchCode = branchService.findBranch(ngSession.getUserBranch()).get().getCode();
+    }
     StringBuilder referenceNumber = new StringBuilder();
     referenceNumber
-        .append(Strings.padStart(String.valueOf(branchId), 3, '0'))
-        .append(productEntity.getCategory())
+        .append(Strings.padStart(String.valueOf(branchCode), 3, '0'))
+        .append(remittanceCategory)
         .append(
             String.valueOf(configurationService.getCurrentApplicationDate().getYear()).substring(2))
         .append(
