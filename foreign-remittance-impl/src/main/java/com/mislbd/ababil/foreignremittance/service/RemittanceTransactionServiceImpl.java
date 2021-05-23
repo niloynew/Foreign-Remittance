@@ -16,13 +16,12 @@ import com.mislbd.ababil.transaction.service.TransactionService;
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
+import com.mislbd.security.core.NgSession;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-
-import com.mislbd.security.core.NgSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,13 +37,14 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   private final NgSession ngSession;
   private final BranchService branchService;
 
-
   public RemittanceTransactionServiceImpl(
-          RemittanceTransactionRepository remittanceTransactionRepository,
-          RemittanceTransactionMapper remittanceTransactionMapper,
-          TransactionService transactionService,
-          IDProductRepository productRepository,
-          ConfigurationService configurationService, NgSession ngSession, BranchService branchService) {
+      RemittanceTransactionRepository remittanceTransactionRepository,
+      RemittanceTransactionMapper remittanceTransactionMapper,
+      TransactionService transactionService,
+      IDProductRepository productRepository,
+      ConfigurationService configurationService,
+      NgSession ngSession,
+      BranchService branchService) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.remittanceTransactionMapper = remittanceTransactionMapper;
     this.transactionService = transactionService;
@@ -135,11 +135,11 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
 
   @Override
   public String generateTransactionReferenceNumber(String remittanceCategory) {
-    //IDProductEntity productEntity =
+    // IDProductEntity productEntity =
     //    productRepository.findById(productId).orElseThrow(IDProductNotFoundException::new);
     String branchCode = null;
     if (branchService.findBranch(ngSession.getUserBranch()).get().getCode() != null) {
-       branchCode = branchService.findBranch(ngSession.getUserBranch()).get().getCode();
+      branchCode = branchService.findBranch(ngSession.getUserBranch()).get().getCode();
     }
     StringBuilder referenceNumber = new StringBuilder();
     referenceNumber

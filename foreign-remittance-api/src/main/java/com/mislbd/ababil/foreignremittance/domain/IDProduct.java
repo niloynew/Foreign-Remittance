@@ -25,7 +25,6 @@ public class IDProduct implements Serializable {
   @NotNull(message = "Code is required")
   private String code;
 
-
   private Long productGLId;
   private String productGLCode;
   private Long exchangeGainGLId;

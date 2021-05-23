@@ -20,7 +20,6 @@ public class IDProductMapper {
             .setId(entity.getId())
             .setName(entity.getName())
             .setCode(entity.getCode())
-
             .setProductGLId(entity.getProductGLId())
             .setProductGLCode(entity.getProductGLCode())
             .setExchangeGainGLId(entity.getExchangeGainGLId())
@@ -36,7 +35,6 @@ public class IDProductMapper {
             .setId(domain.getId())
             .setName(domain.getName())
             .setCode(domain.getCode())
-
             .setProductGLId(domain.getProductGLId())
             .setProductGLCode(domain.getProductGLCode())
             .setExchangeGainGLId(domain.getExchangeGainGLId())

@@ -127,7 +127,7 @@ public class RemittanceTransactionController {
 
   @GetMapping(path = "/outward-remittance-transaction/reference-numbers/{remittanceCategory}")
   public ResponseEntity<?> generateTransactionReferenceNumber(
-       @PathVariable("remittanceCategory") String remittanceCategory) {
+      @PathVariable("remittanceCategory") String remittanceCategory) {
 
     return ResponseEntity.ok(
         remittanceTransactionService.generateTransactionReferenceNumber(remittanceCategory));

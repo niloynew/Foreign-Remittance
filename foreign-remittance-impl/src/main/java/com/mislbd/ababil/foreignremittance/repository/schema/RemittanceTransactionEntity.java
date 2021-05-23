@@ -162,7 +162,8 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "TOTAL_VAT_AMOUNT")
   private BigDecimal totalVatAmount;
 
-  @Column(name = "OUT_REMIT_CATEGORY")
+  @Enumerated(EnumType.STRING)
+  @Column(name = "CATEGORY")
   private RemittanceCategory remittanceCategory;
 
   @Column(name = "VAT_AFTER_WAIVED")
