@@ -125,11 +125,11 @@ public class RemittanceTransactionController {
     return ResponseEntity.ok(queryResult.getResult());
   }
 
-  @GetMapping(path = "/outward-remittance-transaction/reference-numbers/{branchId}/{productId}")
+  @GetMapping(path = "/outward-remittance-transaction/reference-numbers/{remittanceCategory}")
   public ResponseEntity<?> generateTransactionReferenceNumber(
-      @PathVariable("branchId") Long branchId, @PathVariable("productId") Long productId) {
+       @PathVariable("remittanceCategory") String remittanceCategory) {
 
     return ResponseEntity.ok(
-        remittanceTransactionService.generateTransactionReferenceNumber(branchId, productId));
+        remittanceTransactionService.generateTransactionReferenceNumber(remittanceCategory));
   }
 }

@@ -82,6 +82,7 @@ public class RemittanceTransactionMapper {
             .setTotalChargeAmount(entity.getTotalChargeAmount())
             .setTotalVatAmount(entity.getTotalVatAmount())
             .setPublishedToXmm(entity.isPublishedToXmm())
+            .setRemittanceCategory(entity.getRemittanceCategory())
             .setTotalChargeAmountAfterWaived(entity.getTotalChargeAmountAfterWaived())
             .setTotalVatAmountAfterWaived(entity.getTotalVatAmountAfterWaived())
             .setRemittanceAdditionalInformation(
@@ -132,6 +133,7 @@ public class RemittanceTransactionMapper {
             .setChargeAccountNumber(domain.getChargeAccountNumber())
             .setAdjustmentRefIdForCharge(domain.getAdjustmentRefIdForCharge())
             .setClientRateTypeId(domain.getClientRateTypeId())
+            .setRemittanceCategory(domain.getRemittanceCategory())
             .setClientRate(domain.getClientRate())
             .setAmountFcy(domain.getAmountFcy())
             .setAmountLcy(domain.getAmountLcy())
