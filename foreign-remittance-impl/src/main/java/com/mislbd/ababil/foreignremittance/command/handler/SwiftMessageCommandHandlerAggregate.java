@@ -22,6 +22,7 @@ import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
+import com.mislbd.security.core.NgSession;
 import com.mislbd.swift.broker.model.MessageResponse;
 import com.mislbd.swift.broker.model.ProcessResult;
 import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
@@ -52,6 +53,7 @@ public class SwiftMessageCommandHandlerAggregate {
   private final ConfigurationService configurationService;
   private final XmmIntegrationService xmmIntegrationService;
   private final RemittanceTransactionService remittanceTransactionService;
+  private final NgSession ngSession;
   private String serviceURL = "http://192.168.1.104:8087/swift-service";
 
   public SwiftMessageCommandHandlerAggregate(
@@ -67,7 +69,8 @@ public class SwiftMessageCommandHandlerAggregate {
       SwiftRegisterService swiftRegisterService,
       ConfigurationService configurationService,
       XmmIntegrationService xmmIntegrationService,
-      RemittanceTransactionService remittanceTransactionService) {
+      RemittanceTransactionService remittanceTransactionService,
+      NgSession ngSession) {
 
     this.shadowTransactionRepository = shadowTransactionRepository;
     this.remittanceTransactionRepository = remittanceTransactionRepository;
@@ -82,6 +85,7 @@ public class SwiftMessageCommandHandlerAggregate {
     this.configurationService = configurationService;
     this.xmmIntegrationService = xmmIntegrationService;
     this.remittanceTransactionService = remittanceTransactionService;
+    this.ngSession = ngSession;
   }
 
   @CommandListener(
@@ -132,10 +136,8 @@ public class SwiftMessageCommandHandlerAggregate {
   public CommandResponse<MessageResponse> publish103Message(
       PublishSingleCustomerCreditTransferMessageCommand command) {
     MT103MessageRequest request = command.getPayload();
-    request.setEntryUser(
-        configurationService.getConfiguration("XMM_USER").get().getExpectedValue());
-    request.setEntryUserBranch(
-        configurationService.getConfiguration("XMM_USER_BRANCH").get().getExpectedValue());
+    request.setEntryUser(ngSession.getUsername());
+    request.setEntryUserBranch(String.valueOf(ngSession.getUserBranch()));
     request.setTransactionReferenceNumber(request.getSendersReference());
     request.setApplicationDate(configurationService.getCurrentApplicationDate());
     MessageResponse messageResponse = xmmIntegrationService.publishCategoryNMessage(request);
@@ -177,10 +179,8 @@ public class SwiftMessageCommandHandlerAggregate {
   public CommandResponse<MessageResponse> generate103Message(
       GenerateSingleCustomerCreditTransferMessageCommand command) {
     MT103MessageRequest request = command.getPayload();
-    request.setEntryUser(
-        configurationService.getConfiguration("XMM_USER").get().getExpectedValue());
-    request.setEntryUserBranch(
-        configurationService.getConfiguration("XMM_USER_BRANCH").get().getExpectedValue());
+    request.setEntryUser(ngSession.getUsername());
+    request.setEntryUserBranch(String.valueOf(ngSession.getUserBranch()));
     request.setTransactionReferenceNumber(request.getSendersReference());
     request.setApplicationDate(configurationService.getCurrentApplicationDate());
     MessageResponse messageResponse = xmmIntegrationService.publishCategoryNMessage(request);
