@@ -14,6 +14,7 @@ import com.mislbd.swift.broker.model.raw.SelectOptions;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.model.raw.mt2xx.TimeIndication;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -112,6 +113,7 @@ public class TransactionToRequestMapper {
         remittanceTransaction.getDeliveryTerm() != null
             ? remittanceTransaction.getDeliveryTerm()
             : "");
+    //request.setInterbankSettlementValueDate(Date.valueOf(remittanceTransaction.getValueDate()));
 
     if (remittanceTransaction.getRemittanceAdditionalInformation() != null) {
       request =

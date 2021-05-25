@@ -19,7 +19,7 @@ public class RemittanceAdditionalInformation {
   private String Offset;
   private String instructedCurrency;
   private BigDecimal instructedAmount;
-  private LocalDate valueDate;
+
   private BigDecimal exchangeRate;
 
   private String sendersChargeCurrency;

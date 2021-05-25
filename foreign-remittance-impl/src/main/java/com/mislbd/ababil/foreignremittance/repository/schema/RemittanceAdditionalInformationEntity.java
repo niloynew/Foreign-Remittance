@@ -29,8 +29,7 @@ public class RemittanceAdditionalInformationEntity {
   @Column(name = "INSTR_AMOUNT")
   private BigDecimal instructedAmount;
 
-  @Column(name = "VALUE_DATE")
-  private LocalDate valueDate;
+
 
   @Column(name = "EXCHANGE_RATE")
   private BigDecimal exchangeRate;
