@@ -18,6 +18,7 @@ public class AdditionInformationMapper {
                 domain.getInstructedCurrency() == null ? null : domain.getInstructedCurrency())
             .setInstructedAmount(
                 domain.getInstructedAmount() == null ? null : domain.getInstructedAmount())
+            .setValueDate(domain.getValueDate())
             .setCode(domain.getCode())
             .setTimeIndication(domain.getTimeIndication())
             .setSign(domain.getSign())
@@ -96,6 +97,7 @@ public class AdditionInformationMapper {
                 entity.getInstructedCurrency() == null ? null : entity.getInstructedCurrency())
             .setInstructedAmount(
                 entity.getInstructedAmount() == null ? null : entity.getInstructedAmount())
+            .setValueDate(entity.getValueDate())
             .setTimeIndication(entity.getTimeIndication())
             .setSign(entity.getSign())
             .setOffset(entity.getOffset())
