@@ -2,7 +2,6 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.swift.broker.model.raw.SelectOptions;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,8 +27,6 @@ public class RemittanceAdditionalInformationEntity {
 
   @Column(name = "INSTR_AMOUNT")
   private BigDecimal instructedAmount;
-
-
 
   @Column(name = "EXCHANGE_RATE")
   private BigDecimal exchangeRate;
