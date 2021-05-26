@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceCategory;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.asset.commons.data.domain.PagedResult;
@@ -35,5 +36,5 @@ public interface RemittanceTransactionService {
 
   void correctTransaction(AuditInformation auditInformation);
 
-  String generateTransactionReferenceNumber(String remittanceCategory);
+  String generateTransactionReferenceNumber(Long branch, RemittanceCategory category);
 }

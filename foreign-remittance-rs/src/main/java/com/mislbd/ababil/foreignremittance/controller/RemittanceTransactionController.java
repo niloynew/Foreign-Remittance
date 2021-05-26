@@ -7,6 +7,7 @@ import static org.springframework.http.ResponseEntity.status;
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.RemittanceTransactionCorrectionCommand;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceCategory;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.query.Mt103RequestRemittanceTransactionIdQuery;
@@ -125,11 +126,10 @@ public class RemittanceTransactionController {
     return ResponseEntity.ok(queryResult.getResult());
   }
 
-  @GetMapping(path = "/outward-remittance-transaction/reference-numbers/{remittanceCategory}")
+  @GetMapping(path = "/reference-numbers/{branch}/{category}")
   public ResponseEntity<?> generateTransactionReferenceNumber(
-      @PathVariable("remittanceCategory") String remittanceCategory) {
-
+      @PathVariable("branch") Long branch, @PathVariable("category") RemittanceCategory category) {
     return ResponseEntity.ok(
-        remittanceTransactionService.generateTransactionReferenceNumber(remittanceCategory));
+        remittanceTransactionService.generateTransactionReferenceNumber(branch, category));
   }
 }

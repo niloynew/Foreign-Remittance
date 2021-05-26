@@ -3,6 +3,7 @@ package com.mislbd.ababil.foreignremittance.service;
 import com.google.common.base.Strings;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceCategory;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
@@ -134,26 +135,19 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   }
 
   @Override
-  public String generateTransactionReferenceNumber(String remittanceCategory) {
-    // IDProductEntity productEntity =
-    //    productRepository.findById(productId).orElseThrow(IDProductNotFoundException::new);
-    String branchCode = null;
-    if (branchService.findBranch(ngSession.getUserBranch()).get().getCode() != null) {
-      branchCode = branchService.findBranch(ngSession.getUserBranch()).get().getCode();
-    }
-    StringBuilder referenceNumber = new StringBuilder();
-    referenceNumber
-        .append(Strings.padStart(String.valueOf(branchCode), 3, '0'))
-        .append(remittanceCategory)
-        .append(
-            String.valueOf(configurationService.getCurrentApplicationDate().getYear()).substring(2))
-        .append(
-            Strings.padStart(
-                String.valueOf(
-                    remittanceTransactionRepository.generateTransactionReferenceNumberSequence()),
-                5,
-                '0'));
-    return referenceNumber.toString();
+  public String generateTransactionReferenceNumber(Long branch, RemittanceCategory category) {
+    return Strings.padStart(String.valueOf(branch), 3, '0')
+        + category
+        + String.valueOf(configurationService.getCurrentApplicationDate().getYear()).substring(2)
+        + Strings.padStart(
+            String.valueOf(
+                category.equals(RemittanceCategory.TT)
+                    ? remittanceTransactionRepository
+                        .generateTransactionReferenceNumberSequenceForTT()
+                    : remittanceTransactionRepository
+                        .generateTransactionReferenceNumberSequenceForDD()),
+            5,
+            '0');
   }
 
   private TransactionCorrectionRequest prepareTransactionCorrectionRequest(
