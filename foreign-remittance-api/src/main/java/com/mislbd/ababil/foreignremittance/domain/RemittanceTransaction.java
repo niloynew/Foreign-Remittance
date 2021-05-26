@@ -79,6 +79,7 @@ public class RemittanceTransaction {
 
   private boolean valid = true;
   private boolean publishedToXmm = false;
+  private boolean authorizedToXmm = false;
 
   @NotNull private BigDecimal amountLcy;
 

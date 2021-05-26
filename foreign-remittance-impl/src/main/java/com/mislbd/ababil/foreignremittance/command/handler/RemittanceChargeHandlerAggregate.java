@@ -109,19 +109,21 @@ public class RemittanceChargeHandlerAggregate {
       }
     }
 
-    if (remittanceCharge.isFixedVat()) {
+    /*if (remittanceCharge.isFixedVat()) {
       if (remittanceCharge.getVatAmount() == null) {
         throw new RemittanceVatAmountNotFoundException();
       }
-    }
+    }*/
 
     if (!remittanceCharge.isFixedVat()) {
-      if (remittanceCharge.getVatPercentage() == null) {
+      /*if (remittanceCharge.getVatPercentage() == null) {
         throw new RemittanceVatPercentageNotFoundException();
-      }
-      if (remittanceCharge.getVatPercentage().compareTo(BigDecimal.valueOf(100)) == 1) {
-        throw new RemittanceVatPercentageNotFoundException(
-            "VAT percentage cannot be more than 100%.");
+      }*/
+      if (remittanceCharge.getVatPercentage() != null) {
+        if (remittanceCharge.getVatPercentage().compareTo(BigDecimal.valueOf(100)) == 1) {
+          throw new RemittanceVatPercentageNotFoundException(
+              "VAT percentage cannot be more than 100%.");
+        }
       }
     }
 

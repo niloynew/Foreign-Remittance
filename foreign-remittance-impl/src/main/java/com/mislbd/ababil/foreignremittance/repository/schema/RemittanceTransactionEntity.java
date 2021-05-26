@@ -135,6 +135,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "IS_PUBLISHED")
   private boolean publishedToXmm = false;
 
+  @Column(name = "IS_AUTHORIZED")
+  private boolean authorizedToXmm = false;
+
   @Column(name = "AMOUNT_FCY")
   private BigDecimal amountFcy;
 

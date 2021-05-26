@@ -3,6 +3,7 @@ package com.mislbd.ababil.foreignremittance.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
+import com.mislbd.ababil.foreignremittance.command.AuthorizeSingleCustomerCreditTransferMessageCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateSingleCustomerCreditTransferMessageCommand;
 import com.mislbd.ababil.foreignremittance.command.GenerateSingleCustomerCreditTransferMessageCommand;
 import com.mislbd.ababil.foreignremittance.command.PublishSingleCustomerCreditTransferMessageCommand;
@@ -35,6 +36,18 @@ public class SwiftMessageController {
         .body(
             commandProcessor.executeResult(
                 new PublishSingleCustomerCreditTransferMessageCommand(mt103MessageRequest)));
+  }
+
+  @PostMapping(
+      path = "/authorize-mt103-message/{referenceNumber}",
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<CommandResponse<Long>> authorizeSingleCustomerCreditTransferMessage(
+      @PathVariable("referenceNumber") String transactionReferenceNumber) {
+    return status(CREATED)
+        .body(
+            commandProcessor.executeResult(
+                new AuthorizeSingleCustomerCreditTransferMessageCommand(
+                    transactionReferenceNumber)));
   }
 
   @PostMapping(path = "/save-mt103-message", consumes = MediaType.APPLICATION_JSON_VALUE)
