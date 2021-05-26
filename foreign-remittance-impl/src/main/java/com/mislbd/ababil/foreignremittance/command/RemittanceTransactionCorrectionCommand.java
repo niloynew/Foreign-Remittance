@@ -16,4 +16,3 @@ public class RemittanceTransactionCorrectionCommand extends Command<Long> implem
     return String.valueOf(getPayload());
   }
 }
-

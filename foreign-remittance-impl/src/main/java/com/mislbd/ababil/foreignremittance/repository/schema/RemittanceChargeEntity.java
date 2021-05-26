@@ -40,7 +40,7 @@ public class RemittanceChargeEntity extends BaseEntity {
   @Column(name = "VAT_ACC_TYPE")
   private ChargeAccountType vatAccountType;
 
-  @Column(name = "VAT_ACC_CODE", nullable = false, length = 13)
+  @Column(name = "VAT_ACC_CODE", length = 13)
   private String vatAccountCode;
 
   @Column(name = "IS_CHARGE_MODIFIABLE")
