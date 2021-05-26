@@ -161,6 +161,28 @@ public class SwiftMessageCommandHandlerAggregate {
 
   @Transactional
   @CommandHandler
+  public CommandResponse<MessageResponse> authorize103Message(
+          AuthorizeSingleCustomerCreditTransferMessageCommand command) {
+    String reference  = command.getPayload();
+
+    MessageResponse messageResponse = xmmIntegrationService.authorizeCategoryNMessage(reference);
+    RemittanceTransaction remittanceTransaction =
+            remittanceTransactionService
+                    .findTransaction(reference)
+                    .orElseThrow(RemittanceTransactionNotFoundException::new);
+    if (messageResponse.getStatus().equalsIgnoreCase("200")) {
+      remittanceTransaction.setAuthorizedToXmm(true);
+      remittanceTransactionRepository.save(
+              remittanceTransactionMapper.domainToEntity().map(remittanceTransaction));
+      //remittanceAdditionalInformationRepository.save(mapAdditionalInformation(request));
+    }
+
+    return CommandResponse.of(messageResponse);
+  }
+
+
+  @Transactional
+  @CommandHandler
   public CommandResponse<ProcessResult> save103Message(
       CreateSingleCustomerCreditTransferMessageCommand command) {
     ProcessResult processResult =

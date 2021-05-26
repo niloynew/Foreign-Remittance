@@ -17,24 +17,3 @@ public class RemittanceTransactionCorrectionCommand extends Command<Long> implem
   }
 }
 
-/*
-@CommandAttribute(name = "Correction Bank Guarantee", group = "BG")
-public class BankGuaranteeCorrectionCommand extends Command<Long> implements HasIdentity {
-
-  public BankGuaranteeCorrectionCommand(Long payload) {
-    super(payload);
-  }
-
-  @Override
-  public String getIdentity() {
-    return String.valueOf(getPayload());
-  }
-}
-
-
-
-
-
-
-
-*/
