@@ -111,6 +111,7 @@ public class TransactionToRequestMapper {
         remittanceTransaction.getDeliveryTerm() != null
             ? remittanceTransaction.getDeliveryTerm()
             : "");
+    // request.setInterbankSettlementValueDate(Date.valueOf(remittanceTransaction.getValueDate()));
 
     if (remittanceTransaction.getRemittanceAdditionalInformation() != null) {
       request =

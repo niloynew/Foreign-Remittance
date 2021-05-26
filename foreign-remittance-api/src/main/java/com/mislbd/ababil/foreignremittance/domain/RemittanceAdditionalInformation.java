@@ -2,7 +2,6 @@ package com.mislbd.ababil.foreignremittance.domain;
 
 import com.mislbd.swift.broker.model.raw.SelectOptions;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -19,7 +18,7 @@ public class RemittanceAdditionalInformation {
   private String Offset;
   private String instructedCurrency;
   private BigDecimal instructedAmount;
-  private LocalDate valueDate;
+
   private BigDecimal exchangeRate;
 
   private String sendersChargeCurrency;
