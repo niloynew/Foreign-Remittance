@@ -69,11 +69,17 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
     BigDecimal vatAmount = BigDecimal.ZERO;
     if (chargeAmount != BigDecimal.ZERO) {
       if (remittanceCharge.isFixedVat()) {
-        vatAmount = remittanceCharge.getVatAmount();
+
+        vatAmount =
+            remittanceCharge.getVatAmount() == null
+                ? BigDecimal.ZERO
+                : remittanceCharge.getVatAmount();
       } else {
         vatAmount =
-            BigDecimal.valueOf(0.01)
-                .multiply(remittanceCharge.getVatPercentage().multiply(chargeAmount));
+            remittanceCharge.getVatPercentage() == null
+                ? BigDecimal.ZERO
+                : BigDecimal.valueOf(0.01)
+                    .multiply(remittanceCharge.getVatPercentage().multiply(chargeAmount));
       }
     }
     return vatAmount;
