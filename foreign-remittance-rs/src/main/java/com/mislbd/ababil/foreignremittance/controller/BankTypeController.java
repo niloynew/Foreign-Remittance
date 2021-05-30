@@ -1,7 +1,9 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.query.BankTypeIdQuery;
 import com.mislbd.ababil.foreignremittance.query.BankTypeQuery;
+import com.mislbd.ababil.foreignremittance.service.BankTypeService;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class BankTypeController {
 
   private final QueryManager queryManager;
+  private final BankTypeService bankTypeService;
 
-  public BankTypeController(QueryManager queryManager) {
+  public BankTypeController(QueryManager queryManager, BankTypeService bankTypeService) {
     this.queryManager = queryManager;
+    this.bankTypeService = bankTypeService;
   }
 
   @GetMapping
@@ -37,5 +41,10 @@ public class BankTypeController {
       return ResponseEntity.noContent().build();
     }
     return ResponseEntity.ok(queryResult.getResult());
+  }
+
+  @GetMapping(path = "/mandatory-bank/{type}")
+  public ResponseEntity<?> getMandatoryBankType(@PathVariable("type") RemittanceType type) {
+    return ResponseEntity.ok(bankTypeService.getMandatoryBankByRemittanceType(type));
   }
 }

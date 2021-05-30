@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.BankType;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import java.util.List;
 import java.util.Optional;
@@ -13,4 +14,6 @@ public interface BankTypeService {
   List<BankType> getBankTypes();
 
   Optional<BankType> getBankType(long bankTypeId);
+
+  BankType getMandatoryBankByRemittanceType(RemittanceType type);
 }
