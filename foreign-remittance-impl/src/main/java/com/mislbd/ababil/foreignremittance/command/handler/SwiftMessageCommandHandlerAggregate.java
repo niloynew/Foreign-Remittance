@@ -136,12 +136,12 @@ public class SwiftMessageCommandHandlerAggregate {
   public CommandResponse<MessageResponse> publish103Message(
       PublishSingleCustomerCreditTransferMessageCommand command) {
     MT103MessageRequest request = command.getPayload();
-    request.setEntryUser(
-        configurationService.getConfiguration("XMM_USER").get().getExpectedValue());
-    request.setEntryUserBranch(
-        configurationService.getConfiguration("XMM_USER_BRANCH").get().getExpectedValue());
-    // request.setEntryUser(ngSession.getUsername());
-    // request.setEntryUserBranch(String.valueOf(ngSession.getUserBranch()).concat("00"));
+    //    request.setEntryUser(
+    //        configurationService.getConfiguration("XMM_USER").get().getExpectedValue());
+    //    request.setEntryUserBranch(
+    //        configurationService.getConfiguration("XMM_USER_BRANCH").get().getExpectedValue());
+    request.setEntryUser(ngSession.getUsername());
+    request.setEntryUserBranch(String.valueOf(ngSession.getUserBranch()).concat("00"));
     request.setTransactionReferenceNumber(request.getSendersReference());
     request.setApplicationDate(configurationService.getCurrentApplicationDate());
     MessageResponse messageResponse = xmmIntegrationService.publishCategoryNMessage(request);

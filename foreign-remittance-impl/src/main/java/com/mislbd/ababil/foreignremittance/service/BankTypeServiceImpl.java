@@ -1,6 +1,8 @@
 package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.BankType;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
+import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
 import com.mislbd.ababil.foreignremittance.mapper.BankTypeMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.BankTypeRepository;
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
@@ -36,5 +38,16 @@ public class BankTypeServiceImpl implements BankTypeService {
   @Override
   public Optional<BankType> getBankType(long bankTypeId) {
     return bankTypeRepository.findById(bankTypeId).map(bankTypeMapper.entityToDomain()::map);
+  }
+
+  @Override
+  public BankType getMandatoryBankByRemittanceType(RemittanceType type) {
+    return bankTypeMapper
+        .entityToDomain()
+        .map(
+            bankTypeRepository
+                .findByMandatory(type.equals(RemittanceType.INWARD_REMITTANCE) ? "I" : "O")
+                .orElseThrow(
+                    () -> new ForeignRemittanceBaseException("Mandatory bank type not found")));
   }
 }

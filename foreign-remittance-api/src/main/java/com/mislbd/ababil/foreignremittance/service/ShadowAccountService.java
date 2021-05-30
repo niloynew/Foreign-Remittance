@@ -32,4 +32,6 @@ public interface ShadowAccountService {
       Boolean isActive);
 
   Account findById(Long id);
+
+  List<Account> getAccountsByBICCode(Long branchId);
 }

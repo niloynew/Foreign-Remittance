@@ -29,4 +29,7 @@ public class BankTypeEntity {
 
   @Column(name = "DESCRIPTION")
   private String description;
+
+  @Column(name = "MANDATORY", length = 1)
+  private String mandatory;
 }

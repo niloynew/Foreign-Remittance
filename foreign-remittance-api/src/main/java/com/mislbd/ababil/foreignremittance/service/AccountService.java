@@ -32,4 +32,6 @@ public interface AccountService {
       Boolean isActive);
 
   Account findById(Long id);
+
+  List<Account> getAccountsByBICCode(String bicCode);
 }

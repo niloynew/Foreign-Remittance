@@ -85,4 +85,10 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
         .entityToDomain()
         .map(shadowAccountRepository.findById(id).orElseThrow(AccountNotFoundException::new));
   }
+
+  @Override
+  public List<Account> getAccountsByBICCode(Long branchId) {
+    return ListResultBuilder.build(
+        shadowAccountRepository.findAllByBranchId(branchId), shadowAccountMapper.entityToDomain());
+  }
 }
