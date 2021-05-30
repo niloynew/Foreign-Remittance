@@ -99,7 +99,7 @@ public class AccountController {
     return status(ACCEPTED).build();
   }
 
-  @GetMapping(path = "/bank/{BIC}")
+  @GetMapping(path = "/bic/{BIC}")
   public ResponseEntity<?> getIDAccountsByBIC(@PathVariable("BIC") final String bicCode) {
     return ResponseEntity.ok(accountService.getAccountsByBICCode(bicCode));
   }

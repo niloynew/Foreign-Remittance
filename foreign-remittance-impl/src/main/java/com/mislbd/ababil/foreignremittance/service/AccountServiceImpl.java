@@ -84,9 +84,7 @@ public class AccountServiceImpl implements AccountService {
     Optional<AllBankBranchesProjection> branchesProjection =
         branchService.getBranchInformations(bicCode);
     return branchesProjection
-        .map(
-            allBankBranchesProjection ->
-                shadowAccountService.getAccountsByBICCode(allBankBranchesProjection.getBranchId()))
+        .map(x -> shadowAccountService.getAccountsByBICCode(x.getBranchId()))
         .orElse(Collections.emptyList());
   }
 }
