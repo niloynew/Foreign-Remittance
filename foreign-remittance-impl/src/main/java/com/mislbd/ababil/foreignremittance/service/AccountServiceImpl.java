@@ -87,4 +87,14 @@ public class AccountServiceImpl implements AccountService {
         .map(x -> shadowAccountService.getAccountsByBICCode(x.getBranchId()))
         .orElse(Collections.emptyList());
   }
+
+  @Override
+  public Account findByAccountNumber(String accountNumber) {
+    return shadowAccountService.findAccountByNumber(accountNumber);
+  }
+
+  @Override
+  public Account findByNostroAccountNumber(String accountNumber) {
+    return shadowAccountService.findAccountByNostroAccountNumber(accountNumber);
+  }
 }

@@ -34,4 +34,8 @@ public interface ShadowAccountService {
   Account findById(Long id);
 
   List<Account> getAccountsByBICCode(Long branchId);
+
+  Account findAccountByNumber(String accountNumber);
+
+  Account findAccountByNostroAccountNumber(String accountNumber);
 }

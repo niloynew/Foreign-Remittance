@@ -11,5 +11,7 @@ public interface ShadowAccountRepository
 
   Optional<ShadowAccountEntity> findByNumber(String accountNumber);
 
+  Optional<ShadowAccountEntity> findByNostroAccountNumber(String accountNumber);
+
   List<ShadowAccountEntity> findAllByBranchId(Long branchId);
 }
