@@ -45,7 +45,7 @@ public class TransactionToRequestMapper {
               .getBankType(bankInformation.getBankTypeId())
               .orElseThrow(BankTypeNotFoundException::new);
 
-      if (bankType.getCode().equalsIgnoreCase("57")) {
+      if (bankType.getCode().equalsIgnoreCase("00")) {
         request.setReceiverAddress(bankInformation.getSwiftCode());
       }
       if (!remittanceTransaction.isPublishedToXmm()) {
