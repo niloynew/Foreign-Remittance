@@ -103,4 +103,16 @@ public class AccountController {
   public ResponseEntity<?> getIDAccountsByBIC(@PathVariable("BIC") final String bicCode) {
     return ResponseEntity.ok(accountService.getAccountsByBICCode(bicCode));
   }
+
+  @GetMapping(path = "/account/{accountNumber}")
+  public ResponseEntity<?> getAccountByNumber(
+      @PathVariable("accountNumber") final String accountNumber) {
+    return ResponseEntity.ok(accountService.findByAccountNumber(accountNumber));
+  }
+
+  @GetMapping(path = "/account/nostro/{accountNumber}")
+  public ResponseEntity<?> getAccountByNostroAccountNumber(
+      @PathVariable("accountNumber") final String accountNumber) {
+    return ResponseEntity.ok(accountService.findByNostroAccountNumber(accountNumber));
+  }
 }

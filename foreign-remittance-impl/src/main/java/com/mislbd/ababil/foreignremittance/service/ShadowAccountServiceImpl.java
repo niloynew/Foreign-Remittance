@@ -91,4 +91,24 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
     return ListResultBuilder.build(
         shadowAccountRepository.findAllByBranchId(branchId), shadowAccountMapper.entityToDomain());
   }
+
+  @Override
+  public Account findAccountByNumber(String accountNumber) {
+    return shadowAccountMapper
+        .entityToDomain()
+        .map(
+            shadowAccountRepository
+                .findByNumber(accountNumber)
+                .orElseThrow(AccountNotFoundException::new));
+  }
+
+  @Override
+  public Account findAccountByNostroAccountNumber(String accountNumber) {
+    return shadowAccountMapper
+        .entityToDomain()
+        .map(
+            shadowAccountRepository
+                .findByNostroAccountNumber(accountNumber)
+                .orElseThrow(AccountNotFoundException::new));
+  }
 }

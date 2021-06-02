@@ -34,4 +34,8 @@ public interface AccountService {
   Account findById(Long id);
 
   List<Account> getAccountsByBICCode(String bicCode);
+
+  Account findByAccountNumber(String accountNumber);
+
+  Account findByNostroAccountNumber(String accountNumber);
 }
