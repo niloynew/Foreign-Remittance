@@ -89,7 +89,8 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
   @Override
   public List<Account> getAccountsByBICCode(Long branchId) {
     return ListResultBuilder.build(
-        shadowAccountRepository.findAllByBranchId(branchId), shadowAccountMapper.entityToDomain());
+        shadowAccountRepository.findAllByBranchIdAndIsActive(branchId, true),
+        shadowAccountMapper.entityToDomain());
   }
 
   @Override
