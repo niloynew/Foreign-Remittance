@@ -1,9 +1,11 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
 import com.mislbd.ababil.foreignremittance.domain.Account;
+import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
 import com.mislbd.ababil.foreignremittance.repository.jpa.IDProductRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
+import com.mislbd.ababil.organization.service.AllBankBranchesService;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import com.mislbd.security.core.NgSession;
 import org.springframework.stereotype.Component;
@@ -14,14 +16,17 @@ public class ShadowAccountMapper {
   private final ShadowAccountRepository shadowAccountRepository;
   private final IDProductRepository idProductRepository;
   private final NgSession ngSession;
+  private final AllBankBranchesService allBankBranchesService;
 
   public ShadowAccountMapper(
       ShadowAccountRepository shadowAccountRepository,
       IDProductRepository idProductRepository,
-      NgSession ngSession) {
+      NgSession ngSession,
+      AllBankBranchesService allBankBranchesService) {
     this.shadowAccountRepository = shadowAccountRepository;
     this.idProductRepository = idProductRepository;
     this.ngSession = ngSession;
+    this.allBankBranchesService = allBankBranchesService;
   }
 
   public ResultMapper<ShadowAccountEntity, Account> entityToDomain() {
@@ -39,7 +44,18 @@ public class ShadowAccountMapper {
             .setAccountOpenDate(entity.getAccountOpenDate())
             .setBalance(entity.getBalance())
             .setBlockAmount(entity.getBlockAmount())
-            .setActive(entity.isActive());
+            .setActive(entity.isActive())
+            .setBranchBIC(
+                allBankBranchesService
+                    .getBranchInfoByBankIdAndBranchId(entity.getBankId(), entity.getBranchId())
+                    .orElseThrow(
+                        () ->
+                            new ForeignRemittanceBaseException(
+                                "Branch not found with id "
+                                    + entity.getBranchId()
+                                    + ", and bank id "
+                                    + entity.getBankId()))
+                    .getSwiftCode());
   }
 
   public ResultMapper<Account, ShadowAccountEntity> domainToEntity() {

@@ -20,6 +20,7 @@ public class Account {
   private String currencyCode;
   private Long bankId;
   private Long branchId;
+  private String branchBIC;
   private LocalDate accountOpenDate;
   private BigDecimal balance;
   private BigDecimal blockAmount;
