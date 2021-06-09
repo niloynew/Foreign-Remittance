@@ -29,7 +29,7 @@ public class ShadowAccountMapper {
     this.allBankBranchesService = allBankBranchesService;
   }
 
-  public ResultMapper<ShadowAccountEntity, Account> entityToDomain() {
+  public ResultMapper<ShadowAccountEntity, Account> entityToDomain(boolean bicRequired) {
     return entity ->
         new Account()
             .setId(entity.getId())
@@ -46,16 +46,18 @@ public class ShadowAccountMapper {
             .setBlockAmount(entity.getBlockAmount())
             .setActive(entity.isActive())
             .setBranchBIC(
-                allBankBranchesService
-                    .getBranchInfoByBankIdAndBranchId(entity.getBankId(), entity.getBranchId())
-                    .orElseThrow(
-                        () ->
-                            new ForeignRemittanceBaseException(
-                                "Branch not found with id "
-                                    + entity.getBranchId()
-                                    + ", and bank id "
-                                    + entity.getBankId()))
-                    .getSwiftCode());
+                bicRequired
+                    ? allBankBranchesService
+                        .getBranchInfoByBankIdAndBranchId(entity.getBankId(), entity.getBranchId())
+                        .orElseThrow(
+                            () ->
+                                new ForeignRemittanceBaseException(
+                                    "Branch not found with id "
+                                        + entity.getBranchId()
+                                        + ", and bank id "
+                                        + entity.getBankId()))
+                        .getSwiftCode()
+                    : null);
   }
 
   public ResultMapper<Account, ShadowAccountEntity> domainToEntity() {

@@ -50,7 +50,7 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
                 product,
                 isActive),
             pageable),
-        shadowAccountMapper.entityToDomain());
+        shadowAccountMapper.entityToDomain(false));
   }
 
   @Override
@@ -76,13 +76,13 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
                 currency,
                 product,
                 isActive)),
-        shadowAccountMapper.entityToDomain());
+        shadowAccountMapper.entityToDomain(false));
   }
 
   @Override
   public Account findById(Long id) {
     return shadowAccountMapper
-        .entityToDomain()
+        .entityToDomain(true)
         .map(shadowAccountRepository.findById(id).orElseThrow(AccountNotFoundException::new));
   }
 
@@ -90,13 +90,13 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
   public List<Account> getAccountsByBICCode(Long branchId) {
     return ListResultBuilder.build(
         shadowAccountRepository.findAllByBranchIdAndIsActive(branchId, true),
-        shadowAccountMapper.entityToDomain());
+        shadowAccountMapper.entityToDomain(false));
   }
 
   @Override
   public Account findAccountByNumber(String accountNumber) {
     return shadowAccountMapper
-        .entityToDomain()
+        .entityToDomain(true)
         .map(
             shadowAccountRepository
                 .findByNumber(accountNumber)
@@ -106,7 +106,7 @@ public class ShadowAccountServiceImpl implements ShadowAccountService {
   @Override
   public Account findAccountByNostroAccountNumber(String accountNumber) {
     return shadowAccountMapper
-        .entityToDomain()
+        .entityToDomain(true)
         .map(
             shadowAccountRepository
                 .findByNostroAccountNumber(accountNumber)
