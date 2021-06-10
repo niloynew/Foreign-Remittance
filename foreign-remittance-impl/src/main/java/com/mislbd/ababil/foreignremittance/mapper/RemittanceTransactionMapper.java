@@ -3,6 +3,7 @@ package com.mislbd.ababil.foreignremittance.mapper;
 import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.external.service.GLAccountService;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionTypeRepository;
@@ -452,8 +453,8 @@ public class RemittanceTransactionMapper {
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
     glRequest.setNarration(
         "Charges against "
-            + request.getTransactionType().getName()
-            + "#"
+            + (request.getRemittanceType().equals(RemittanceType.INWARD_REMITTANCE) ? "Inward remittance" : "Outward remittance")
+            + " # "
             + request.getTransactionReferenceNumber());
     glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     glRequest.setInitiatorBranch(auditInformation.getUserBranch());
