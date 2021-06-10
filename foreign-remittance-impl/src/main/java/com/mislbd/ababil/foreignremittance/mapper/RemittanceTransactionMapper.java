@@ -158,8 +158,8 @@ public class RemittanceTransactionMapper {
       RemittanceTransactionEntity request,
       boolean isDebit,
       AuditInformation auditInformation,
+      String narration,
       Long activityId) {
-    String narration = request.getGlobalTransactionNo() + " : " + request.getShadowAccountNumber();
     IDTransactionRequest transactionRequest = new IDTransactionRequest();
     transactionRequest.setActivityId(activityId);
     transactionRequest.setAmountCcy(request.getAmountFcy());
@@ -188,12 +188,9 @@ public class RemittanceTransactionMapper {
       RemittanceTransactionEntity request,
       boolean isDebit,
       AuditInformation auditInformation,
+      String narration,
       Long activityId,
       String baseCurrency) {
-    String narration =
-        request.getGlobalTransactionNo()
-            + " : "
-            + glAccountService.getGLAccountByCode(request.getOperatingAccountNumber()).getName();
     GlTransactionRequest glRequest = new GlTransactionRequest();
     glRequest.setActivityId(activityId);
     glRequest.setAmountCcy(request.getAmountRcy());
@@ -225,9 +222,8 @@ public class RemittanceTransactionMapper {
       RemittanceTransactionEntity request,
       boolean isDebit,
       AuditInformation auditInformation,
+      String narration,
       Long activityId) {
-    String narration =
-        request.getGlobalTransactionNo() + " : " + request.getOperatingAccountNumber();
     CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest.setInstrumentNo("V-");
     casaRequest.setActivityId(activityId);
@@ -280,7 +276,11 @@ public class RemittanceTransactionMapper {
     glRequest.setEntryTime(auditInformation.getEntryDate());
     glRequest.setVerifyUser(auditInformation.getVerifyUser());
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
-    glRequest.setNarration("Charge : " + charge.getChargeAccountCode());
+    glRequest.setNarration(
+        "Charges against "
+            + request.getTransactionType().getName()
+            + "#"
+            + request.getTransactionReferenceNumber());
     glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     glRequest.setInitiatorModule("ID");
     glRequest.setInitiatorBranch(auditInformation.getUserBranch());
@@ -346,7 +346,11 @@ public class RemittanceTransactionMapper {
     glRequest.setEntryTime(auditInformation.getEntryDate());
     glRequest.setVerifyUser(auditInformation.getVerifyUser());
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
-    glRequest.setNarration("VAT on charge from A/C " + request.getChargeAccountNumber());
+    glRequest.setNarration(
+        "Vat against "
+            + request.getTransactionType().getName()
+            + "#"
+            + request.getTransactionReferenceNumber());
     glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     glRequest.setInitiatorBranch(auditInformation.getUserBranch());
     glRequest.setOwnerBranch(auditInformation.getUserBranch());
@@ -411,7 +415,11 @@ public class RemittanceTransactionMapper {
     casaRequest.setEntryTime(auditInformation.getEntryDate());
     casaRequest.setVerifyUser(auditInformation.getVerifyUser());
     casaRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
-    casaRequest.setNarration("Charge deducted");
+    casaRequest.setNarration(
+        "Charges against "
+            + request.getTransactionType().getName()
+            + "#"
+            + request.getTransactionReferenceNumber());
     casaRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     casaRequest.setInitiatorBranch(auditInformation.getUserBranch());
     casaRequest.setInitiatorModule("ID");
@@ -442,7 +450,11 @@ public class RemittanceTransactionMapper {
     glRequest.setEntryTime(auditInformation.getEntryDate());
     glRequest.setVerifyUser(auditInformation.getVerifyUser());
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
-    glRequest.setNarration("Charge deducted");
+    glRequest.setNarration(
+        "Charges against "
+            + request.getTransactionType().getName()
+            + "#"
+            + request.getTransactionReferenceNumber());
     glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     glRequest.setInitiatorBranch(auditInformation.getUserBranch());
     glRequest.setOwnerBranch(auditInformation.getUserBranch());

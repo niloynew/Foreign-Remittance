@@ -29,13 +29,21 @@ public class DisbursementService {
   }
 
   public Long doInwardTransaction(
-      RemittanceTransactionEntity remittanceTransactionEntity,
+      RemittanceTransactionEntity entity,
       AuditInformation auditInformation,
       List<RemittanceChargeInformation> charges,
       BigDecimal totalChargeAndVat,
       Long activityId) {
     String baseCurrency = configurationService.getBaseCurrencyCode();
-
+    String narration =
+        "Remit "
+            + entity.getShadowAccountCurrency()
+            + " "
+            + entity.getAmountFcy()
+            + " @ "
+            + entity.getOperatingRate()
+            + "/"
+            + entity.getTransactionReferenceNumber();
     /*
      * Debit the principle amount to the respective GL
      * Credit the payable amount to the respective customer or GL account
@@ -48,32 +56,27 @@ public class DisbursementService {
      * Debit the exchange gain to GL account defined in product definition
      * */
 
-    shadowAccountTransaction(remittanceTransactionEntity, true, auditInformation, activityId);
-    switch (remittanceTransactionEntity.getOperatingAccountType()) {
+    shadowAccountTransaction(entity, true, auditInformation, narration, activityId);
+    switch (entity.getOperatingAccountType()) {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getNetPayableClientGL(
-                remittanceTransactionEntity, false, auditInformation, activityId, baseCurrency),
+                entity, false, auditInformation, narration, activityId, baseCurrency),
             TransactionRequestType.TRANSFER);
         break;
 
       case CASA:
         transactionService.doCasaTransaction(
             remittanceTransactionMapper.getNetPayableCASAClient(
-                remittanceTransactionEntity, false, auditInformation, activityId),
+                entity, false, auditInformation, narration, activityId),
             TransactionRequestType.TRANSFER);
         break;
     }
 
     chargeTransaction(
-        remittanceTransactionEntity,
-        charges,
-        auditInformation,
-        totalChargeAndVat,
-        baseCurrency,
-        activityId);
-    checkDebitCredit(remittanceTransactionEntity.getGlobalTransactionNo());
-    return remittanceTransactionEntity.getGlobalTransactionNo();
+        entity, charges, auditInformation, totalChargeAndVat, baseCurrency, activityId);
+    checkDebitCredit(entity.getGlobalTransactionNo());
+    return entity.getGlobalTransactionNo();
   }
 
   public Long doOutwardTransaction(
@@ -95,21 +98,28 @@ public class DisbursementService {
      * Debit the exchange gain to GL account defined in product definition
      * */
     String baseCurrency = configurationService.getBaseCurrencyCode();
+    String narration = "Remittance# " + remittanceTransactionEntity.getTransactionReferenceNumber();
 
     // Managing Credit transaction
-    shadowAccountTransaction(remittanceTransactionEntity, false, auditInformation, activityId);
+    shadowAccountTransaction(
+        remittanceTransactionEntity, false, auditInformation, narration, activityId);
     switch (remittanceTransactionEntity.getOperatingAccountType()) {
       case GL:
         transactionService.doGlTransaction(
             remittanceTransactionMapper.getNetPayableClientGL(
-                remittanceTransactionEntity, true, auditInformation, activityId, baseCurrency),
+                remittanceTransactionEntity,
+                true,
+                auditInformation,
+                narration,
+                activityId,
+                baseCurrency),
             TransactionRequestType.TRANSFER);
         break;
 
       case CASA:
         transactionService.doCasaTransaction(
             remittanceTransactionMapper.getNetPayableCASAClient(
-                remittanceTransactionEntity, true, auditInformation, activityId),
+                remittanceTransactionEntity, true, auditInformation, narration, activityId),
             TransactionRequestType.TRANSFER);
         break;
     }
@@ -175,10 +185,11 @@ public class DisbursementService {
       RemittanceTransactionEntity entity,
       boolean isDebit,
       AuditInformation auditInformation,
+      String narration,
       Long activityId) {
     transactionService.doIDTransaction(
         remittanceTransactionMapper.getNetPayableShadow(
-            entity, isDebit, auditInformation, activityId),
+            entity, isDebit, auditInformation, narration, activityId),
         TransactionRequestType.TRANSFER);
   }
 
