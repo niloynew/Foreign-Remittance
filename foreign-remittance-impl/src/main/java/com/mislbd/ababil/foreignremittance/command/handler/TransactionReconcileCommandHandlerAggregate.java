@@ -113,7 +113,7 @@ public class TransactionReconcileCommandHandlerAggregate {
                   .requestId(StringUtils.leftPad(String.valueOf(x.getGlobalTxnNo()), 12, "0"))
                   .build());
           shadowTransactionRecordRepository.save(
-                  transactionRecordEntity.setReconcileStatus(OtherCbsSystemSettlementStatus.Settled));
+              transactionRecordEntity.setReconcileStatus(OtherCbsSystemSettlementStatus.Settled));
           success += 1;
         } catch (Exception e) {
           LOGGER.error(
