@@ -88,12 +88,12 @@ public class TransactionReconcileCommandHandlerAggregate {
                         new ForeignRemittanceBaseException(
                             "Shadow Transaction record not found for id: " + x.getId()));
         BigDecimal txnAmount = x.getDebit();
-        String debitAccount = shadowAccount.getProduct().getProductGLCode();
+        String debitAccount = shadowAccount.getNostroAccountNumber();
         String creditAccount = settlementAccount.getExternalAccount();
         if (Integer.valueOf(x.getTxnDefinitionId().toString().substring(0, 1)) == 1) {
           txnAmount = x.getCredit();
           debitAccount = settlementAccount.getExternalAccount();
-          creditAccount = shadowAccount.getProduct().getProductGLCode();
+          creditAccount = shadowAccount.getNostroAccountNumber();
         }
         try {
           theCityBankService.doTransaction(
