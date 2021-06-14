@@ -7,6 +7,7 @@ import com.mislbd.ababil.foreignremittance.domain.SenderOrReceiverCustomer;
 import com.mislbd.ababil.foreignremittance.query.SenderOrReceiverCustomerByIdQuery;
 import com.mislbd.ababil.foreignremittance.query.SenderOrReceiverCustomerQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
+import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
 import org.springframework.data.domain.Pageable;
@@ -56,8 +57,9 @@ public class SenderOrReceiverCustomerController {
   @ResponseStatus(ACCEPTED)
   public ResponseEntity<?> saveExportLC(
       @RequestBody SenderOrReceiverCustomer senderOrReceiverCustomer) {
-    commandProcessor.executeResult(
-        new SaveSenderOrReceiverCustomerCommand(senderOrReceiverCustomer));
-    return ResponseEntity.accepted().build();
+    CommandResponse<SenderOrReceiverCustomer> customerCommandResponse =
+        commandProcessor.executeResult(
+            new SaveSenderOrReceiverCustomerCommand(senderOrReceiverCustomer));
+    return ResponseEntity.accepted().body(customerCommandResponse);
   }
 }

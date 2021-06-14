@@ -2,6 +2,7 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.foreignremittance.command.SaveSenderOrReceiverCustomerCommand;
+import com.mislbd.ababil.foreignremittance.domain.SenderOrReceiverCustomer;
 import com.mislbd.ababil.foreignremittance.mapper.SenderOrReceiverCustomerMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.SenderOrReceiverCustomerRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.SenderOrReceiverCustomerEntity;
@@ -35,10 +36,12 @@ public class SenderOrReceiverCustomerCommandHandlerAggregate {
 
   @Transactional
   @CommandHandler
-  public CommandResponse<Long> saveExportLC(SaveSenderOrReceiverCustomerCommand command) {
+  public CommandResponse<SenderOrReceiverCustomer> saveExportLC(
+      SaveSenderOrReceiverCustomerCommand command) {
     SenderOrReceiverCustomerEntity senderOrReceiverCustomer =
-        senderOrReceiverCustomerMapper.domainToEntity().map(command.getPayload());
-    senderOrReceiverCustomerRepository.save(senderOrReceiverCustomer);
-    return CommandResponse.of(senderOrReceiverCustomer.getId());
+        senderOrReceiverCustomerRepository.save(
+            senderOrReceiverCustomerMapper.domainToEntity().map(command.getPayload()));
+    return CommandResponse.of(
+        senderOrReceiverCustomerMapper.entityToDomain().map(senderOrReceiverCustomer));
   }
 }

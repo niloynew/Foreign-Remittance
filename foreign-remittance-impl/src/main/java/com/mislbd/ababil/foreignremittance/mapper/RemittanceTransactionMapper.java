@@ -453,7 +453,9 @@ public class RemittanceTransactionMapper {
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
     glRequest.setNarration(
         "Charges against "
-            + (request.getRemittanceType().equals(RemittanceType.INWARD_REMITTANCE) ? "Inward remittance" : "Outward remittance")
+            + (request.getRemittanceType().equals(RemittanceType.INWARD_REMITTANCE)
+                ? "Inward remittance"
+                : "Outward remittance")
             + " # "
             + request.getTransactionReferenceNumber());
     glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
