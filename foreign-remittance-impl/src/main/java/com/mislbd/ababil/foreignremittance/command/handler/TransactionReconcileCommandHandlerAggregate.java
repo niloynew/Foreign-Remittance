@@ -87,8 +87,6 @@ public class TransactionReconcileCommandHandlerAggregate {
                     () ->
                         new ForeignRemittanceBaseException(
                             "Shadow Transaction record not found for id: " + x.getId()));
-        shadowTransactionRecordRepository.save(
-            transactionRecordEntity.setReconcileStatus(OtherCbsSystemSettlementStatus.Settled));
         BigDecimal txnAmount = x.getDebit();
         String debitAccount = shadowAccount.getNostroAccountNumber();
         String creditAccount = settlementAccount.getExternalAccount();
@@ -114,10 +112,10 @@ public class TransactionReconcileCommandHandlerAggregate {
                   .reference(String.valueOf(x.getGlobalTxnNo()))
                   .requestId(StringUtils.leftPad(String.valueOf(x.getGlobalTxnNo()), 12, "0"))
                   .build());
+          shadowTransactionRecordRepository.save(
+              transactionRecordEntity.setReconcileStatus(OtherCbsSystemSettlementStatus.Settled));
           success += 1;
         } catch (Exception e) {
-          shadowTransactionRecordRepository.save(
-              transactionRecordEntity.setReconcileStatus(OtherCbsSystemSettlementStatus.Pending));
           LOGGER.error(
               "Settlement failed for txnId: "
                   + x.getId()

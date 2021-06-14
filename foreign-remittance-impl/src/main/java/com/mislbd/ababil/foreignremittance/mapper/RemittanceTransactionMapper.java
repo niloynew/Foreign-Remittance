@@ -417,9 +417,11 @@ public class RemittanceTransactionMapper {
     casaRequest.setVerifyUser(auditInformation.getVerifyUser());
     casaRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
     casaRequest.setNarration(
-        "Charges against "
-            + request.getTransactionType().getName()
-            + "#"
+        "Charges and Vat against "
+            + (request.getRemittanceType().equals(RemittanceType.INWARD_REMITTANCE)
+                ? "Inward remittance"
+                : "Outward remittance")
+            + " # "
             + request.getTransactionReferenceNumber());
     casaRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     casaRequest.setInitiatorBranch(auditInformation.getUserBranch());
@@ -452,7 +454,7 @@ public class RemittanceTransactionMapper {
     glRequest.setVerifyUser(auditInformation.getVerifyUser());
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
     glRequest.setNarration(
-        "Charges against "
+        "Charges and Vat against "
             + (request.getRemittanceType().equals(RemittanceType.INWARD_REMITTANCE)
                 ? "Inward remittance"
                 : "Outward remittance")
