@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
+import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.AccountType;
@@ -11,6 +12,8 @@ import com.mislbd.ababil.foreignremittance.external.service.CASAAccountService;
 import com.mislbd.ababil.foreignremittance.mapper.TransactionToRequestMapper;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.ValidationHandler;
+import com.mislbd.security.core.NgSession;
+import com.mislbd.swift.broker.model.MessageResponse;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.XmmIntegrationService;
 import java.math.BigDecimal;
@@ -23,6 +26,8 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
   private final CASAAccountService casaAccountService;
   private final TransactionToRequestMapper transactionToRequestMapper;
   private final XmmIntegrationService xmmIntegrationService;
+  private final NgSession ngSession;
+  private final ConfigurationService configurationService;
 
   Logger logger =
       LoggerFactory.getLogger(RemittanceTransactionValidationCommandHandlerAggregate.class);
@@ -30,10 +35,14 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
   public RemittanceTransactionValidationCommandHandlerAggregate(
       CASAAccountService casaAccountService,
       TransactionToRequestMapper transactionToRequestMapper,
-      XmmIntegrationService xmmIntegrationService) {
+      XmmIntegrationService xmmIntegrationService,
+      NgSession ngSession,
+      ConfigurationService configurationService) {
     this.casaAccountService = casaAccountService;
     this.transactionToRequestMapper = transactionToRequestMapper;
     this.xmmIntegrationService = xmmIntegrationService;
+    this.ngSession = ngSession;
+    this.configurationService = configurationService;
   }
 
   @ValidationHandler
@@ -126,11 +135,21 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
   private void publishMT103(RemittanceTransaction remittanceTransaction) {
     MT103MessageRequest mt103MessageRequest =
         transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
+    mt103MessageRequest.setEntryUser(ngSession.getUsername());
+    mt103MessageRequest.setEntryUserBranch(String.valueOf(ngSession.getUserBranch()).concat("00"));
+    mt103MessageRequest.setTransactionReferenceNumber(mt103MessageRequest.getSendersReference());
+    mt103MessageRequest.setApplicationDate(configurationService.getCurrentApplicationDate());
     try {
-      xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
+      MessageResponse messageResponse =
+          xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
+      if (!messageResponse.getStatus().equalsIgnoreCase("200")) {
+        logger.error(messageResponse.getMessage());
+        throw new Error(
+            "Mt103 Message Publication not Successful. Caused By:" + messageResponse.getMessage());
+      }
     } catch (Exception e) {
       logger.error(e.getMessage());
-      throw new ForeignRemittanceBaseException("Message can't publish");
+      throw new ForeignRemittanceBaseException("Message can't be  published");
     }
   }
 }
