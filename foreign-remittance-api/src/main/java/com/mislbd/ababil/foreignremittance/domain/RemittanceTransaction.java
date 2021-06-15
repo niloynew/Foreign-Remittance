@@ -97,4 +97,6 @@ public class RemittanceTransaction {
   private BigDecimal totalChargeAmountAfterWaived = BigDecimal.ZERO;
   private BigDecimal totalVatAmount = BigDecimal.ZERO;
   private BigDecimal totalVatAmountAfterWaived = BigDecimal.ZERO;
+
+  private boolean doPublishMT103;
 }

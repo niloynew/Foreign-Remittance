@@ -178,6 +178,6 @@ public class RemittanceAdditionalInformationEntity {
   private String accountWithInstitutionPartyNameAndAddress;
 
   @OneToOne
-  @JoinColumn(name = "Remittance_Tnx_Id")
+  @JoinColumn(name = "REMITTANCE_TNX_ID")
   private RemittanceTransactionEntity remittanceTransactionEntity;
 }

@@ -152,7 +152,8 @@ public class RemittanceTransactionMapper {
                     : additionInformationMapper
                         .domainToEntity()
                         .map(domain.getRemittanceAdditionalInformation()))
-            .setTotalVatAmountAfterWaived(domain.getTotalVatAmountAfterWaived());
+            .setTotalVatAmountAfterWaived(domain.getTotalVatAmountAfterWaived())
+            .setPublishedToXmm(domain.isDoPublishMT103());
   }
 
   public IDTransactionRequest getNetPayableShadow(

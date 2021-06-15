@@ -8,18 +8,32 @@ import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseExcept
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionException;
 import com.mislbd.ababil.foreignremittance.external.domain.Balance;
 import com.mislbd.ababil.foreignremittance.external.service.CASAAccountService;
+import com.mislbd.ababil.foreignremittance.mapper.TransactionToRequestMapper;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.ValidationHandler;
+import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
+import com.mislbd.swift.broker.service.XmmIntegrationService;
 import java.math.BigDecimal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Aggregate
 public class RemittanceTransactionValidationCommandHandlerAggregate {
 
   private final CASAAccountService casaAccountService;
+  private final TransactionToRequestMapper transactionToRequestMapper;
+  private final XmmIntegrationService xmmIntegrationService;
+
+  Logger logger =
+      LoggerFactory.getLogger(RemittanceTransactionValidationCommandHandlerAggregate.class);
 
   public RemittanceTransactionValidationCommandHandlerAggregate(
-      CASAAccountService casaAccountService) {
+      CASAAccountService casaAccountService,
+      TransactionToRequestMapper transactionToRequestMapper,
+      XmmIntegrationService xmmIntegrationService) {
     this.casaAccountService = casaAccountService;
+    this.transactionToRequestMapper = transactionToRequestMapper;
+    this.xmmIntegrationService = xmmIntegrationService;
   }
 
   @ValidationHandler
@@ -102,6 +116,21 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
                   + remittanceTransaction.getChargeAccountNumber());
         }
       }
+    }
+
+    if (remittanceTransaction.isDoPublishMT103()) {
+      publishMT103(remittanceTransaction);
+    }
+  }
+
+  private void publishMT103(RemittanceTransaction remittanceTransaction) {
+    MT103MessageRequest mt103MessageRequest =
+        transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
+    try {
+      xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
+    } catch (Exception e) {
+      logger.error(e.getMessage());
+      throw new ForeignRemittanceBaseException("Message can't publish");
     }
   }
 }
