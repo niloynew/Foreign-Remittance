@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
+import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.AccountType;
@@ -11,11 +12,11 @@ import com.mislbd.ababil.foreignremittance.external.service.CASAAccountService;
 import com.mislbd.ababil.foreignremittance.mapper.TransactionToRequestMapper;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.ValidationHandler;
+import com.mislbd.security.core.NgSession;
+import com.mislbd.swift.broker.model.MessageResponse;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.XmmIntegrationService;
 import java.math.BigDecimal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Aggregate
 public class RemittanceTransactionValidationCommandHandlerAggregate {
@@ -23,17 +24,20 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
   private final CASAAccountService casaAccountService;
   private final TransactionToRequestMapper transactionToRequestMapper;
   private final XmmIntegrationService xmmIntegrationService;
-
-  Logger logger =
-      LoggerFactory.getLogger(RemittanceTransactionValidationCommandHandlerAggregate.class);
+  private final NgSession ngSession;
+  private final ConfigurationService configurationService;
 
   public RemittanceTransactionValidationCommandHandlerAggregate(
       CASAAccountService casaAccountService,
       TransactionToRequestMapper transactionToRequestMapper,
-      XmmIntegrationService xmmIntegrationService) {
+      XmmIntegrationService xmmIntegrationService,
+      NgSession ngSession,
+      ConfigurationService configurationService) {
     this.casaAccountService = casaAccountService;
     this.transactionToRequestMapper = transactionToRequestMapper;
     this.xmmIntegrationService = xmmIntegrationService;
+    this.ngSession = ngSession;
+    this.configurationService = configurationService;
   }
 
   @ValidationHandler
@@ -48,13 +52,17 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
       Balance chargeAccountBalance =
           casaAccountService.getDepositAccountBalance(
               remittanceTransaction.getChargeAccountNumber());
-      if (chargeAccountBalance
-              .getAvailableBalance()
-              .compareTo(
-                  remittanceTransaction
-                      .getTotalChargeAmountAfterWaived()
-                      .add(remittanceTransaction.getTotalVatAmountAfterWaived()))
-          < 0) {
+      BigDecimal totalChargeVat =
+          remittanceTransaction
+              .getTotalChargeAmountAfterWaived()
+              .add(remittanceTransaction.getTotalVatAmountAfterWaived());
+      if (remittanceTransaction
+              .getChargeAccountNumber()
+              .equals(remittanceTransaction.getOperatingAccountNumber())
+          && (remittanceTransaction.getAmountRcy().subtract(totalChargeVat).signum() >= 0)) {
+        return;
+      }
+      if (chargeAccountBalance.getAvailableBalance().compareTo(totalChargeVat) < 0) {
         throw new ForeignRemittanceBaseException(
             "Insufficient creditAccountBalance in "
                 + remittanceTransaction.getChargeAccountNumber());
@@ -126,11 +134,14 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
   private void publishMT103(RemittanceTransaction remittanceTransaction) {
     MT103MessageRequest mt103MessageRequest =
         transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
-    try {
-      xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
-    } catch (Exception e) {
-      logger.error(e.getMessage());
-      throw new ForeignRemittanceBaseException("Message can't publish");
+    mt103MessageRequest.setEntryUser(ngSession.getUsername());
+    mt103MessageRequest.setEntryUserBranch(String.valueOf(ngSession.getUserBranch()).concat("00"));
+    mt103MessageRequest.setTransactionReferenceNumber(
+        remittanceTransaction.getTransactionReferenceNumber());
+    mt103MessageRequest.setApplicationDate(configurationService.getCurrentApplicationDate());
+    MessageResponse response = xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
+    if (!response.getStatus().equals("200")) {
+      remittanceTransaction.setDoPublishMT103(false);
     }
   }
 }

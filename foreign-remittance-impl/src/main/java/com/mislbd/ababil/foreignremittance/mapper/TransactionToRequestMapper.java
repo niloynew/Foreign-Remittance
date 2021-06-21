@@ -82,6 +82,7 @@ public class TransactionToRequestMapper {
     }
 
     request.setSendersReference(remittanceTransaction.getTransactionReferenceNumber());
+
     request.setBankOperationCode(String.valueOf(BankOperationCode.CRED));
     request.setInterbankSettlementValueDate(remittanceTransaction.getValueDate());
     request.setInterbankSettlementCurrency(remittanceTransaction.getShadowAccountCurrency());

@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
+import com.mislbd.ababil.approvalflow.annotation.OnStart;
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
@@ -11,7 +12,6 @@ import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.BankInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
-import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowTransactionRecordRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeInformationEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionBankMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
@@ -28,9 +28,11 @@ import com.mislbd.security.core.NgSession;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 @Aggregate
+@Slf4j
 public class RemittanceTransactionCommandHandlerAggregate {
 
   private static final Long ID_DISBURSEMENT_ACTIVITY_ID = 805L;
@@ -39,7 +41,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final RemittanceTransactionService remittanceTransactionService;
   private final RemittanceTransactionMapper transactionMapper;
   private final BankInformationRepository bankInformationRepository;
-  private final ShadowTransactionRecordRepository shadowTransactionRecordRepository;
   private final BankInformationMapper bankInformationMapper;
   private final RemittanceChargeInformationRepository chargeInformationRepository;
   private final RemittanceChargeInformationMapper chargeInformationMapper;
@@ -47,16 +48,18 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final DisbursementService disbursementService;
   private final TransactionService transactionService;
   private final Auditor auditor;
-  private String serviceURL = "192.168.1.104:8087/swift-service";
 
-  //  CalendarConfigurationService calendarConfigurationService;
+//  @OnStart(commandClass = CreateOutwardRemittanceTransactionCommand.class, priority = 1)
+//  public void onApprovalFlowStart(Command event) {
+//    log.info("##### Initialization #######");
+//    log.info(event.toString());
+//  }
 
   public RemittanceTransactionCommandHandlerAggregate(
       RemittanceTransactionRepository transactionRepository,
       RemittanceTransactionService remittanceTransactionService,
       RemittanceTransactionMapper transactionMapper,
       BankInformationRepository bankInformationRepository,
-      ShadowTransactionRecordRepository shadowTransactionRecordRepository,
       BankInformationMapper bankInformationMapper,
       RemittanceChargeInformationRepository chargeInformationRepository,
       RemittanceChargeInformationMapper chargeInformationMapper,
@@ -69,7 +72,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
     this.remittanceTransactionService = remittanceTransactionService;
     this.transactionMapper = transactionMapper;
     this.bankInformationRepository = bankInformationRepository;
-    this.shadowTransactionRecordRepository = shadowTransactionRecordRepository;
     this.bankInformationMapper = bankInformationMapper;
     this.chargeInformationRepository = chargeInformationRepository;
     this.chargeInformationMapper = chargeInformationMapper;
