@@ -17,8 +17,6 @@ import com.mislbd.swift.broker.model.MessageResponse;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.XmmIntegrationService;
 import java.math.BigDecimal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Aggregate
 public class RemittanceTransactionValidationCommandHandlerAggregate {
@@ -28,9 +26,6 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
   private final XmmIntegrationService xmmIntegrationService;
   private final NgSession ngSession;
   private final ConfigurationService configurationService;
-
-  Logger logger =
-      LoggerFactory.getLogger(RemittanceTransactionValidationCommandHandlerAggregate.class);
 
   public RemittanceTransactionValidationCommandHandlerAggregate(
       CASAAccountService casaAccountService,
@@ -57,13 +52,17 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
       Balance chargeAccountBalance =
           casaAccountService.getDepositAccountBalance(
               remittanceTransaction.getChargeAccountNumber());
-      if (chargeAccountBalance
-              .getAvailableBalance()
-              .compareTo(
-                  remittanceTransaction
-                      .getTotalChargeAmountAfterWaived()
-                      .add(remittanceTransaction.getTotalVatAmountAfterWaived()))
-          < 0) {
+      BigDecimal totalChargeVat =
+          remittanceTransaction
+              .getTotalChargeAmountAfterWaived()
+              .add(remittanceTransaction.getTotalVatAmountAfterWaived());
+      if (remittanceTransaction
+              .getChargeAccountNumber()
+              .equals(remittanceTransaction.getOperatingAccountNumber())
+          && (remittanceTransaction.getAmountRcy().subtract(totalChargeVat).signum() >= 0)) {
+        return;
+      }
+      if (chargeAccountBalance.getAvailableBalance().compareTo(totalChargeVat) < 0) {
         throw new ForeignRemittanceBaseException(
             "Insufficient creditAccountBalance in "
                 + remittanceTransaction.getChargeAccountNumber());
@@ -137,19 +136,12 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
         transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
     mt103MessageRequest.setEntryUser(ngSession.getUsername());
     mt103MessageRequest.setEntryUserBranch(String.valueOf(ngSession.getUserBranch()).concat("00"));
-    mt103MessageRequest.setTransactionReferenceNumber(mt103MessageRequest.getSendersReference());
+    mt103MessageRequest.setTransactionReferenceNumber(
+        remittanceTransaction.getTransactionReferenceNumber());
     mt103MessageRequest.setApplicationDate(configurationService.getCurrentApplicationDate());
-    try {
-      MessageResponse messageResponse =
-          xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
-      if (!messageResponse.getStatus().equalsIgnoreCase("200")) {
-        logger.error(messageResponse.getMessage());
-        throw new Error(
-            "Mt103 Message Publication not Successful. Caused By:" + messageResponse.getMessage());
-      }
-    } catch (Exception e) {
-      logger.error(e.getMessage());
-      throw new ForeignRemittanceBaseException("Message can't be  published");
+    MessageResponse response = xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
+    if (!response.getStatus().equals("200")) {
+      remittanceTransaction.setDoPublishMT103(false);
     }
   }
 }
