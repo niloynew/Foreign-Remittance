@@ -1,6 +1,5 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
-import com.mislbd.ababil.approvalflow.annotation.OnStart;
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
@@ -48,12 +47,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final DisbursementService disbursementService;
   private final TransactionService transactionService;
   private final Auditor auditor;
-
-//  @OnStart(commandClass = CreateOutwardRemittanceTransactionCommand.class, priority = 1)
-//  public void onApprovalFlowStart(Command event) {
-//    log.info("##### Initialization #######");
-//    log.info(event.toString());
-//  }
 
   public RemittanceTransactionCommandHandlerAggregate(
       RemittanceTransactionRepository transactionRepository,
