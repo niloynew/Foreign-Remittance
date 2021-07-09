@@ -58,6 +58,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "APPLICANT_ID")
   private Long applicantId;
 
+  @Column(name = "CUSTOMER_ID")
+  private Long customerId;
+
   @Column(name = "APPLICANT_NAME")
   private String applicant;
 
