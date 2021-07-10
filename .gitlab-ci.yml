@@ -1,6 +1,7 @@
 variables:
   PIPELINE_VERSION: 'SERVICE-0.0.2-GRADLE'
   DEBUG_OPTS: '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005'
+  RELEASE_NUMBER: '5.1.0'
   # DOCKER_FILE: ''
   # DOCKER_STACK_FILE: ''
 
@@ -32,7 +33,7 @@ cache:
 
 build:
   stage: build
-  only: ['dev']
+  only: ['R5.1.0']
   tags:
     - 'openjdk:8u181'
   before_script:
@@ -53,15 +54,14 @@ build_image:
     - export ARTIFACT="${ARTIFACT_BUILD_PATH}/libs/$(cat gradle.properties | grep PROJECT_ARTIFACT | cut -d'=' -f2-)-$(cat gradle.properties | grep PROJECT_VERSION | cut -d'=' -f2-).jar"
     - export VERSION="$(cat gradle.properties | grep PROJECT_VERSION | cut -d'=' -f2-)"
     - docker build --rm --force-rm --label "com.mislbd.global.build.id=$CI_PIPELINE_ID" --label "com.mislbd.local.build.id=$CI_PIPELINE_ID" --label "com.mislbd.version=${VERSION}" --build-arg ARTIFACT="$ARTIFACT" -t ${DOCKER_IMAGE}:latest .
-    - docker tag ${DOCKER_IMAGE}:latest ${DOCKER_IMAGE}:B${CI_PIPELINE_ID}
-  only: ['dev']
+    - docker tag ${DOCKER_IMAGE}:latest ${DOCKER_IMAGE}:${RELEASE_NUMBER}_${CI_PIPELINE_ID}
+  only: ['R5.1.0']
   tags: ['shell']
 
 push_image:
   stage: push_image
   when: on_success
-  only:
-    - dev
+  only: ['R5.1.0']
   tags:
     - shell
   before_script:
@@ -69,88 +69,9 @@ push_image:
   script:
     - export ARTIFACT="${ARTIFACT_BUILD_PATH}/libs/$(cat gradle.properties | grep PROJECT_ARTIFACT | cut -d'=' -f2-)-$(cat gradle.properties | grep PROJECT_VERSION | cut -d'=' -f2-).jar"
     - docker push ${DOCKER_IMAGE}:latest
-    - docker push ${DOCKER_IMAGE}:B${CI_PIPELINE_ID}
+    - docker push ${DOCKER_IMAGE}:${RELEASE_NUMBER}_${CI_PIPELINE_ID}
     # clean up image
     - docker rmi ${DOCKER_IMAGE}:latest
-    - docker rmi ${DOCKER_IMAGE}:B${CI_PIPELINE_ID}
+    - docker rmi ${DOCKER_IMAGE}:${RELEASE_NUMBER}_${CI_PIPELINE_ID}
 
-deploy_dev:
-  stage: deploy
-  when: on_success
-  only:
-    - dev
-  tags:
-    - docker-server-ssh
-  before_script:
-    - 'echo "Using pipeline: ${PIPELINE_VERSION}"'
-    - 'export STACK_FILE_STORE=/home/docker/.stack/dev'
-    - 'export SERVICE_NETWORK=stage-net'
-    - 'export DEBUG_PORT=${ENABLE_DEV_DEBUG:+${DEBUG_PORT}}'
-    - 'export DEBUG_PORT_PREFIX=3'
-    - 'export CONFIG_SERVER_URI=${DEV_CONFIG_SERVER_URI}'
-    - 'export STACK_NAME=stage-ababil-service'
-    - 'export STACK_SERVICE_NAME=${STACK_NAME}_${SERVICE_NAME}'
-    - 'export TRAEFIK_TAG=${STACK_NAME}-stack'
-    - 'export SERVICE_IMAGE=${DOCKER_IMAGE}:B${CI_PIPELINE_ID}'
-    - wget -O stack.yml $DOCKER_STACK_FILE
-    - mkdir -p ${STACK_FILE_STORE}
-    - 'eval "echo \"$(<stack.yml)"\" > ${STACK_FILE_STORE}/${SERVICE_NAME}.yml'
-  script:
-    - echo "Stack File:-"
-    - cat ${STACK_FILE_STORE}/${SERVICE_NAME}.yml
-    - docker stack deploy -c ${STACK_FILE_STORE}/${SERVICE_NAME}.yml ${STACK_NAME}
-    - docker service update --force --image ${SERVICE_IMAGE} ${STACK_SERVICE_NAME}
 
-deploy_qa:
-  stage: deploy
-  when: manual
-  only:
-    - dev
-  tags:
-    - docker-server-ssh
-  before_script:
-    - 'echo "Using pipeline: ${PIPELINE_VERSION}"'
-    - 'export STACK_FILE_STORE=/home/docker/.stack/qa'
-    - 'export SERVICE_NETWORK=qa-net'
-    - 'export DEBUG_PORT=${ENABLE_QA_DEBUG:+${DEBUG_PORT}}'
-    - 'export DEBUG_PORT_PREFIX=4'
-    - 'export CONFIG_SERVER_URI=${QA_CONFIG_SERVER_URI}'
-    - 'export STACK_NAME=qa-ababil-service'
-    - 'export STACK_SERVICE_NAME=${STACK_NAME}_${SERVICE_NAME}'
-    - 'export TRAEFIK_TAG=${STACK_NAME}-stack'
-    - 'export SERVICE_IMAGE=${DOCKER_IMAGE}:B${CI_PIPELINE_ID}'
-    - wget -O stack.yml $DOCKER_STACK_FILE
-    - mkdir -p ${STACK_FILE_STORE}
-    - 'eval "echo \"$(<stack.yml)"\" > ${STACK_FILE_STORE}/${SERVICE_NAME}.yml'
-  script:
-    - echo "Stack File:-"
-    - cat ${STACK_FILE_STORE}/${SERVICE_NAME}.yml
-    - docker stack deploy -c ${STACK_FILE_STORE}/${SERVICE_NAME}.yml ${STACK_NAME}
-    - docker service update --force --image ${SERVICE_IMAGE} ${STACK_SERVICE_NAME}
-
-deploy_sbl:
-  stage: deploy
-  when: manual
-  only:
-    - dev
-  tags:
-    - docker-server-ssh
-  before_script:
-    - 'echo "Using pipeline: ${PIPELINE_VERSION}"'
-    - 'export STACK_FILE_STORE=/home/docker/.stack/sbl'
-    - 'export SERVICE_NETWORK=sbl-net'
-    - 'export DEBUG_PORT=${ENABLE_SBL_DEBUG:+${DEBUG_PORT}}'
-    - 'export DEBUG_PORT_PREFIX=1'
-    - 'export CONFIG_SERVER_URI=${SBL_CONFIG_SERVER_URI}'
-    - 'export STACK_NAME=sbl-ababil-service'
-    - 'export STACK_SERVICE_NAME=${STACK_NAME}_${SERVICE_NAME}'
-    - 'export TRAEFIK_TAG=${STACK_NAME}-stack'
-    - 'export SERVICE_IMAGE=${DOCKER_IMAGE}:B${CI_PIPELINE_ID}'
-    - wget -O stack.yml $DOCKER_STACK_FILE
-    - mkdir -p ${STACK_FILE_STORE}
-    - 'eval "echo \"$(<stack.yml)"\" > ${STACK_FILE_STORE}/${SERVICE_NAME}.yml'
-  script:
-    - echo "Stack File:-"
-    - cat ${STACK_FILE_STORE}/${SERVICE_NAME}.yml
-    - docker stack deploy -c ${STACK_FILE_STORE}/${SERVICE_NAME}.yml ${STACK_NAME}
-    - docker service update --force --image ${SERVICE_IMAGE} ${STACK_SERVICE_NAME}
