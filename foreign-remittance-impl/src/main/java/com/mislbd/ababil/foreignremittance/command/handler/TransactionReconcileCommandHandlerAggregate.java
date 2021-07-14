@@ -102,7 +102,7 @@ public class TransactionReconcileCommandHandlerAggregate {
                   .debitAccount(debitAccount)
                   .creditAccount(creditAccount)
                   .currencyCode(shadowAccount.getCurrencyCode())
-                  .remarks(x.getTxnNarration() != null ? x.getTxnNarration().substring(0, 29) : null)
+                  .remarks(x.getTxnNarration() != null && x.getTxnNarration().length() > 30 ? x.getTxnNarration().substring(0, 30) : x.getTxnNarration())
                   .transactionAmount(txnAmount.doubleValue())
                   .reference(String.valueOf(x.getGlobalTxnNo()))
                   .requestId(StringUtils.leftPad(String.valueOf(x.getGlobalTxnNo()), 12, "0"))
