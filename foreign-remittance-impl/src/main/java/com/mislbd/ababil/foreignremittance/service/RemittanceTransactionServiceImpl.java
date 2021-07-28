@@ -141,12 +141,8 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
         + String.valueOf(configurationService.getCurrentApplicationDate().getYear()).substring(2)
         + Strings.padStart(
             String.valueOf(
-                category.equals(RemittanceCategory.TT)
-                    ? remittanceTransactionRepository
-                        .generateTransactionReferenceNumberSequenceForTT()
-                    : remittanceTransactionRepository
-                        .generateTransactionReferenceNumberSequenceForDD()),
-            5,
+                remittanceTransactionRepository.generateTransactionReferenceNumberSequence()),
+            4,
             '0');
   }
 
