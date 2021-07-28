@@ -32,6 +32,7 @@ public class RemittanceTransaction {
 
   @NotNull(message = "Applicant can't be null")
   private Long applicantId;
+
   @NotNull(message = "CustomerId can't be null")
   private Long customerId;
 

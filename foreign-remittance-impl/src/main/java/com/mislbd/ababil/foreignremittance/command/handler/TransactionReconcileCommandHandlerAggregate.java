@@ -70,8 +70,8 @@ public class TransactionReconcileCommandHandlerAggregate {
     int success = 0;
     if (recordList != null && !recordList.isEmpty()) {
       for (ShadowTransactionRecord x : recordList) {
-        if (x.getReconcileStatus() == OtherCbsSystemSettlementStatus.Settled ||
-                x.getReconcileStatus() == OtherCbsSystemSettlementStatus.Reject) continue;
+        if (x.getReconcileStatus() == OtherCbsSystemSettlementStatus.Settled
+            || x.getReconcileStatus() == OtherCbsSystemSettlementStatus.Reject) continue;
         ShadowAccountEntity shadowAccount =
             shadowAccountRepository
                 .findById(x.getAccountId())
@@ -102,7 +102,10 @@ public class TransactionReconcileCommandHandlerAggregate {
                   .debitAccount(debitAccount)
                   .creditAccount(creditAccount)
                   .currencyCode(shadowAccount.getCurrencyCode())
-                  .remarks(x.getTxnNarration() != null && x.getTxnNarration().length() > 30 ? x.getTxnNarration().substring(0, 30) : x.getTxnNarration())
+                  .remarks(
+                      x.getTxnNarration() != null && x.getTxnNarration().length() > 30
+                          ? x.getTxnNarration().substring(0, 30)
+                          : x.getTxnNarration())
                   .transactionAmount(txnAmount.doubleValue())
                   .reference(String.valueOf(x.getGlobalTxnNo()))
                   .requestId(StringUtils.leftPad(String.valueOf(x.getGlobalTxnNo()), 12, "0"))

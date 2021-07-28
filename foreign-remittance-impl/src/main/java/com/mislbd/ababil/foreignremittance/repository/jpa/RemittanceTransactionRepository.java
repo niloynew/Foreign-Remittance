@@ -10,9 +10,6 @@ public interface RemittanceTransactionRepository
     extends JpaRepository<RemittanceTransactionEntity, Long>, JpaSpecificationExecutor {
   Optional<RemittanceTransactionEntity> findByTransactionReferenceNumber(String referenceNumber);
 
-  @Query(value = "SELECT S_ID_TXN_REFERENCE_NUMBER_TT.nextval FROM dual", nativeQuery = true)
-  Long generateTransactionReferenceNumberSequenceForTT();
-
-  @Query(value = "SELECT S_ID_TXN_REFERENCE_NUMBER_DD.nextval FROM dual", nativeQuery = true)
-  Long generateTransactionReferenceNumberSequenceForDD();
+  @Query(value = "SELECT S_ID_TXN_REFERENCE_NUMBER.nextval FROM dual", nativeQuery = true)
+  Long generateTransactionReferenceNumberSequence();
 }
