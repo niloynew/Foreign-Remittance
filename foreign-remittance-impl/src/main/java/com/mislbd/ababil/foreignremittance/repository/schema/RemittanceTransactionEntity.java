@@ -11,7 +11,6 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter

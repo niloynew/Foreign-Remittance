@@ -96,10 +96,7 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
                 remittanceTransaction.getChargeAccountNumber());
         if (chargeAccountBalance
                 .getAvailableBalance()
-                .compareTo(
-                    remittanceTransaction
-                        .getTotalChargeAmountAfterWaived()
-                        .add(remittanceTransaction.getTotalVatAmountAfterWaived()))
+                .compareTo(remittanceTransaction.getChargeAmountRcy())
             < 0) {
           throw new ForeignRemittanceBaseException(
               "Insufficient creditAccountBalance in "
