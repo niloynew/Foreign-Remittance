@@ -11,6 +11,7 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
@@ -174,6 +175,15 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   @Column(name = "VAT_AFTER_WAIVED")
   private BigDecimal totalVatAmountAfterWaived;
+
+  @Column(name = "CHARGE_RATE_TYPE")
+  private Long chargeRateTypeId;
+
+  @Column(name = "CHARGE_RATE")
+  private BigDecimal chargeRate;
+
+  @Column(name = "CHARGE_AMOUNT_RCY")
+  private BigDecimal chargeAmountRcy;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "remittanceTransaction")
   private List<RemittanceChargeInformationEntity> chargeInformationEntities;
