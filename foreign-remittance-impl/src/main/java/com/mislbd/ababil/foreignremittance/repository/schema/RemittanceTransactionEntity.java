@@ -123,6 +123,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "CHARGE_ACC_NUMBER")
   private String chargeAccountNumber;
 
+  @Column(name = "CHARGE_ACC_CURRENCY")
+  private String chargeDeductedAccountCurrency;
+
   @Column(name = "ADJ_REF_CHARGE")
   private Long adjustmentRefIdForCharge;
 

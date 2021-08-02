@@ -72,6 +72,8 @@ public class RemittanceTransaction {
   private AccountType chargeAccountType;
 
   @NotNull private String chargeAccountNumber;
+  @NotNull private String chargeDeductedAccountCurrency;
+
   private Long adjustmentRefIdForCharge;
 
   private Long clientRateTypeId;
