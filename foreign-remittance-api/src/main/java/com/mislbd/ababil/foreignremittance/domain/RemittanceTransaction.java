@@ -72,6 +72,8 @@ public class RemittanceTransaction {
   private AccountType chargeAccountType;
 
   @NotNull private String chargeAccountNumber;
+  @NotNull private String chargeDeductedAccountCurrency;
+
   private Long adjustmentRefIdForCharge;
 
   private Long clientRateTypeId;
@@ -100,6 +102,9 @@ public class RemittanceTransaction {
   private BigDecimal totalChargeAmountAfterWaived = BigDecimal.ZERO;
   private BigDecimal totalVatAmount = BigDecimal.ZERO;
   private BigDecimal totalVatAmountAfterWaived = BigDecimal.ZERO;
+  private Long chargeRateTypeId;
+  private BigDecimal chargeRate;
+  private BigDecimal chargeAmountRcy = BigDecimal.ZERO;
 
   private boolean doPublishMT103;
 }

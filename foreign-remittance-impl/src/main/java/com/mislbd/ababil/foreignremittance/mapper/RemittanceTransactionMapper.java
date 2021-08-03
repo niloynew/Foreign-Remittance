@@ -75,6 +75,7 @@ public class RemittanceTransactionMapper {
             .setOperatingRate(entity.getOperatingRate())
             .setChargeAccountType(entity.getChargeAccountType())
             .setChargeAccountNumber(entity.getChargeAccountNumber())
+            .setChargeDeductedAccountCurrency(entity.getChargeDeductedAccountCurrency())
             .setClientRateTypeId(entity.getClientRateTypeId())
             .setClientRate(entity.getClientRate())
             .setAmountFcy(entity.getAmountFcy())
@@ -83,6 +84,9 @@ public class RemittanceTransactionMapper {
             .setGlobalTransactionNo(entity.getGlobalTransactionNo())
             .setTotalChargeAmount(entity.getTotalChargeAmount())
             .setTotalVatAmount(entity.getTotalVatAmount())
+            .setChargeRateTypeId(entity.getChargeRateTypeId())
+            .setChargeRate(entity.getChargeRate())
+            .setChargeAmountRcy(entity.getChargeAmountRcy())
             .setPublishedToXmm(entity.isPublishedToXmm())
             .setAuthorizedToXmm(entity.isAuthorizedToXmm())
             .setRemittanceCategory(entity.getRemittanceCategory())
@@ -135,6 +139,10 @@ public class RemittanceTransactionMapper {
             .setAdjustmentRefIdForOperation(domain.getAdjustmentRefIdForOperation())
             .setChargeAccountType(domain.getChargeAccountType())
             .setChargeAccountNumber(domain.getChargeAccountNumber())
+            .setChargeDeductedAccountCurrency(domain.getChargeDeductedAccountCurrency())
+            .setChargeRateTypeId(domain.getChargeRateTypeId())
+            .setChargeRate(domain.getChargeRate())
+            .setChargeAmountRcy(domain.getChargeAmountRcy())
             .setAdjustmentRefIdForCharge(domain.getAdjustmentRefIdForCharge())
             .setClientRateTypeId(domain.getClientRateTypeId())
             .setRemittanceCategory(domain.getRemittanceCategory())
@@ -402,15 +410,17 @@ public class RemittanceTransactionMapper {
       RemittanceTransactionEntity request,
       AuditInformation auditInformation,
       BigDecimal totalCharges,
+      Long activityId,
       String baseCurrency) {
-    CasaTransactionRequest casaRequest = new CasaTransactionRequest();
 
+    CasaTransactionRequest casaRequest = new CasaTransactionRequest();
     casaRequest.setInstrumentNo("V-");
-    casaRequest.setAmountCcy(totalCharges);
+    casaRequest.setActivityId(activityId);
+    casaRequest.setAmountCcy(request.getChargeAmountRcy());
     casaRequest.setReferenceAmount(totalCharges);
     casaRequest.setRefCurrencyCode(baseCurrency);
-    casaRequest.setExchangeRate(BigDecimal.ONE);
-    casaRequest.setRateType(1);
+    casaRequest.setExchangeRate(request.getChargeRate());
+    casaRequest.setRateType(request.getChargeRateTypeId());
     casaRequest.setDebitTransaction(true);
     casaRequest.setBatchNo(request.getBatchNumber());
     casaRequest.setGlobalTxnNo(request.getGlobalTransactionNo());

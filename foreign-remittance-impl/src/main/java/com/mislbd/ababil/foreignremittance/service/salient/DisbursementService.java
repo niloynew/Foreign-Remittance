@@ -174,7 +174,7 @@ public class DisbursementService {
         case CASA:
           transactionService.doCasaTransaction(
               remittanceTransactionMapper.getChargeableCASADebit(
-                  entity, auditInformation, totalChargeAndVat, baseCurrency),
+                  entity, auditInformation, totalChargeAndVat, activityId, baseCurrency),
               TransactionRequestType.TRANSFER);
           break;
       }

@@ -123,6 +123,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "CHARGE_ACC_NUMBER")
   private String chargeAccountNumber;
 
+  @Column(name = "CHARGE_ACC_CURRENCY")
+  private String chargeDeductedAccountCurrency;
+
   @Column(name = "ADJ_REF_CHARGE")
   private Long adjustmentRefIdForCharge;
 
@@ -174,6 +177,15 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   @Column(name = "VAT_AFTER_WAIVED")
   private BigDecimal totalVatAmountAfterWaived;
+
+  @Column(name = "CHARGE_RATE_TYPE")
+  private Long chargeRateTypeId;
+
+  @Column(name = "CHARGE_RATE")
+  private BigDecimal chargeRate;
+
+  @Column(name = "CHARGE_AMOUNT_RCY")
+  private BigDecimal chargeAmountRcy;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "remittanceTransaction")
   private List<RemittanceChargeInformationEntity> chargeInformationEntities;
