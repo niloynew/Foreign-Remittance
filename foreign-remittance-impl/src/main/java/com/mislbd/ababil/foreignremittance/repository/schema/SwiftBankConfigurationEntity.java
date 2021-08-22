@@ -40,5 +40,5 @@ public class SwiftBankConfigurationEntity {
   @Column(name = "BRANCH_NAME")
   private String branchName;
 
-  @ManyToOne @JoinColumn private NostroTransactionEntity nostroTransaction;
+  @ManyToOne @JoinColumn private NostroTransactionRecordEntity nostroTransaction;
 }

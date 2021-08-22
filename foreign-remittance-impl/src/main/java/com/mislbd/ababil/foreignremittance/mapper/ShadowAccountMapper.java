@@ -44,6 +44,7 @@ public class ShadowAccountMapper {
             .setAccountOpenDate(entity.getAccountOpenDate())
             .setBalance(entity.getBalance())
             .setBlockAmount(entity.getBlockAmount())
+            .setSenderToReceiverInformation(entity.getSenderToReceiverInformation())
             .setActive(entity.isActive())
             .setBranchBIC(
                 bicRequired
@@ -80,6 +81,7 @@ public class ShadowAccountMapper {
             .setBalance(domain.getBalance())
             .setBlockAmount(domain.getBlockAmount())
             .setOwnerBranchId(ngSession.getUserBranch())
+            .setSenderToReceiverInformation(domain.getSenderToReceiverInformation())
             .setActive(true);
   }
 }

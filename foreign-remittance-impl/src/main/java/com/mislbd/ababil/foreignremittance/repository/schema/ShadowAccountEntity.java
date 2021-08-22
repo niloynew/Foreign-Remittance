@@ -54,6 +54,9 @@ public class ShadowAccountEntity extends BaseEntity {
   @Column(name = "BLOCK_AMOUNT")
   private BigDecimal blockAmount;
 
+  @Column(name = "SWIFT_TXT", columnDefinition = "varchar(45) default '/REC/BEN/'")
+  private String senderToReceiverInformation;
+
   @Column(name = "IsActive")
   private boolean isActive;
 

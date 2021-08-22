@@ -24,5 +24,6 @@ public class Account {
   private LocalDate accountOpenDate;
   private BigDecimal balance;
   private BigDecimal blockAmount;
+  private String senderToReceiverInformation;
   private boolean active;
 }

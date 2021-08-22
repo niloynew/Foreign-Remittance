@@ -4,5 +4,5 @@ import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionRe
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface NostroTransactionRecordRepository
+public interface NostroTransactionRepository
     extends JpaRepository<NostroTransactionRecordEntity, Long>, JpaSpecificationExecutor {}

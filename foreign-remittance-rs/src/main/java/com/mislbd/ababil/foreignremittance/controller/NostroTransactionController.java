@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/messages", produces = MediaType.APPLICATION_JSON_VALUE)
-public class NostroReconcileController {
+public class NostroTransactionController {
 
   private final CommandProcessor commandProcessor;
   private final QueryManager queryManager;
 
-  public NostroReconcileController(CommandProcessor commandProcessor, QueryManager queryManager) {
+  public NostroTransactionController(CommandProcessor commandProcessor, QueryManager queryManager) {
     this.commandProcessor = commandProcessor;
     this.queryManager = queryManager;
   }
