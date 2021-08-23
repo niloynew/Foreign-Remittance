@@ -3,6 +3,8 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.*;
+import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecord;
+import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecordsDto;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceAdditionalInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
@@ -25,8 +27,6 @@ import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.security.core.NgSession;
 import com.mislbd.swift.broker.model.MessageResponse;
 import com.mislbd.swift.broker.model.ProcessResult;
-import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
-import com.mislbd.swift.broker.model.raw.NostroTransaction;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import com.mislbd.swift.broker.service.XmmIntegrationService;
@@ -111,11 +111,11 @@ public class SwiftMessageCommandHandlerAggregate {
   @Transactional
   @CommandHandler
   public CommandResponse<Integer> processMessage(ProcessNostroTransactionCommand command) {
-    NostroAccountTransactionsDto dtoList = command.getPayload();
+    NostroTransactionRecordsDto dtoList = command.getPayload();
     int success = 0;
-    if (dtoList.getNostroAccountTransactionList() != null
-        && !dtoList.getNostroAccountTransactionList().isEmpty()) {
-      for (NostroTransaction dto : dtoList.getNostroAccountTransactionList()) {
+    if (dtoList.getNostroAccountTransactionRecordsList() != null
+        && !dtoList.getNostroAccountTransactionRecordsList().isEmpty()) {
+      for (NostroTransactionRecord dto : dtoList.getNostroAccountTransactionRecordsList()) {
         try {
           NostroTransactionRecordEntity nostroTransactionRecordEntity =
               modelMapper.map(dto, NostroTransactionRecordEntity.class);

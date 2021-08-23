@@ -3,6 +3,7 @@ package com.mislbd.ababil.foreignremittance.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mislbd.ababil.foreignremittance.command.ProcessNostroTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.UpdateSwiftRegisterCommand;
+import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecordsDto;
 import com.mislbd.ababil.foreignremittance.domain.SwiftRegister;
 import com.mislbd.ababil.foreignremittance.mapper.SwiftRegisterMapper;
 import com.mislbd.ababil.foreignremittance.service.SwiftRegisterService;
@@ -30,9 +31,9 @@ public class KafkaConsumer {
   public void receiveMessage(ConsumerRecord<String, Object> consumerRecord) {
     LOGGER.info("received message='{}'", consumerRecord.key());
     try {
-      NostroAccountTransactionsDto dtoResponse =
-          objectMapper.convertValue(consumerRecord.value(), NostroAccountTransactionsDto.class);
-      if (dtoResponse != null && !dtoResponse.getNostroAccountTransactionList().isEmpty()) {
+      NostroTransactionRecordsDto dtoResponse =
+          objectMapper.convertValue(consumerRecord.value(), NostroTransactionRecordsDto.class);
+      if (dtoResponse != null && !dtoResponse.getNostroAccountTransactionRecordsList().isEmpty()) {
         commandProcessor.execute(new ProcessNostroTransactionCommand(dtoResponse));
       }
     } catch (Exception e) {

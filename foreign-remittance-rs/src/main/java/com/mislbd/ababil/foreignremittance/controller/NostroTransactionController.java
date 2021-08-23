@@ -5,12 +5,12 @@ import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.ProcessNostroTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.UpdateNostroTransactionCommand;
+import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecord;
+import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecordsDto;
 import com.mislbd.ababil.foreignremittance.query.NostroReconcileQuery;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
-import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
-import com.mislbd.swift.broker.model.raw.NostroTransaction;
 import java.time.LocalDate;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -49,14 +49,15 @@ public class NostroTransactionController {
 
   @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Void> updateMessage(
-      @PathVariable("id") Long id, @Valid @RequestBody NostroTransaction nostroTransaction) {
-    commandProcessor.executeUpdate(new UpdateNostroTransactionCommand(id, nostroTransaction));
+      @PathVariable("id") Long id,
+      @Valid @RequestBody NostroTransactionRecord nostroTransactionRecord) {
+    commandProcessor.executeUpdate(new UpdateNostroTransactionCommand(id, nostroTransactionRecord));
     return status(ACCEPTED).build();
   }
 
   @PutMapping(path = "/process", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Integer> processMultipleMessage(
-      @Valid @RequestBody NostroAccountTransactionsDto nostroReconcileDtoList) {
+      @Valid @RequestBody NostroTransactionRecordsDto nostroReconcileDtoList) {
     return ResponseEntity.ok(
         (Integer)
             commandProcessor

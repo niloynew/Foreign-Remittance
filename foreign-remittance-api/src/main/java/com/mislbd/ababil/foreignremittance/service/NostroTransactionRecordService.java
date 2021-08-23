@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
+import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecord;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.swift.broker.model.raw.NostroTransaction;
 import java.time.LocalDate;
@@ -9,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface NostroTransactionRecordService {
 
-  PagedResult<NostroTransaction> getMessages(
+  PagedResult<NostroTransactionRecord> getMessages(
       Pageable pageable,
       Long id,
       String accountNo,

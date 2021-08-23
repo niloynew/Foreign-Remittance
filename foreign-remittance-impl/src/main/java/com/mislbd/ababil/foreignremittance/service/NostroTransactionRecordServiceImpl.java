@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
+import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecord;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionRecordEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.NostroReconcileSpecification;
@@ -28,7 +29,7 @@ public class NostroTransactionRecordServiceImpl implements NostroTransactionReco
   }
 
   @Override
-  public PagedResult<NostroTransaction> getMessages(
+  public PagedResult<NostroTransactionRecord> getMessages(
       Pageable pageable,
       Long id,
       String accountNo,
@@ -41,17 +42,17 @@ public class NostroTransactionRecordServiceImpl implements NostroTransactionReco
             NostroReconcileSpecification.searchSpecification(
                 id, accountNo, advBranch, selected, valueDate),
             pageable),
-        NostroTransaction.class);
+        NostroTransactionRecord.class);
   }
 
   @Override
-  public List<NostroTransaction> getMessages(
+  public List<NostroTransactionRecord> getMessages(
       Long id, String accountNo, String advBranch, boolean selected, LocalDate valueDate) {
     return ListResultBuilderFR.build(
         nostroTransactionRepository.findAll(
             NostroReconcileSpecification.searchSpecification(
                 id, accountNo, advBranch, selected, valueDate)),
-        NostroTransaction.class);
+        NostroTransactionRecord.class);
   }
 
   @Override
