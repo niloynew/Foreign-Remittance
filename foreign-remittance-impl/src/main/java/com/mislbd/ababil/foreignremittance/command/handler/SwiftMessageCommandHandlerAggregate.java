@@ -3,15 +3,17 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.*;
+import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecord;
+import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecordsDto;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceAdditionalInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.AdditionInformationMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
+import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceAdditionalInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
-import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowTransactionRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionRecordEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceAdditionalInformationEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
@@ -25,8 +27,6 @@ import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.security.core.NgSession;
 import com.mislbd.swift.broker.model.MessageResponse;
 import com.mislbd.swift.broker.model.ProcessResult;
-import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
-import com.mislbd.swift.broker.model.raw.NostroTransaction;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.SwiftMTMessageService;
 import com.mislbd.swift.broker.service.XmmIntegrationService;
@@ -40,7 +40,7 @@ public class SwiftMessageCommandHandlerAggregate {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(SwiftMessageCommandHandlerAggregate.class);
-  private final ShadowTransactionRepository shadowTransactionRepository;
+  private final NostroTransactionRepository nostroTransactionRepository;
   private final RemittanceTransactionRepository remittanceTransactionRepository;
   private final RemittanceAdditionalInformationRepository remittanceAdditionalInformationRepository;
   private final ModelMapper modelMapper;
@@ -57,7 +57,7 @@ public class SwiftMessageCommandHandlerAggregate {
   private String serviceURL = "http://192.168.1.104:8087/swift-service";
 
   public SwiftMessageCommandHandlerAggregate(
-      ShadowTransactionRepository shadowTransactionRepository,
+      NostroTransactionRepository nostroTransactionRepository,
       RemittanceTransactionRepository remittanceTransactionRepository,
       RemittanceAdditionalInformationRepository remittanceAdditionalInformationRepository,
       ModelMapper modelMapper,
@@ -72,7 +72,7 @@ public class SwiftMessageCommandHandlerAggregate {
       RemittanceTransactionService remittanceTransactionService,
       NgSession ngSession) {
 
-    this.shadowTransactionRepository = shadowTransactionRepository;
+    this.nostroTransactionRepository = nostroTransactionRepository;
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.remittanceAdditionalInformationRepository = remittanceAdditionalInformationRepository;
     this.modelMapper = modelMapper;
@@ -101,26 +101,26 @@ public class SwiftMessageCommandHandlerAggregate {
   @CommandHandler
   public CommandResponse<Void> updateMessage(UpdateNostroTransactionCommand command) {
 
-    NostroTransactionEntity nostroTransactionEntity =
-        modelMapper.map(command.getPayload(), NostroTransactionEntity.class);
+    NostroTransactionRecordEntity nostroTransactionRecordEntity =
+        modelMapper.map(command.getPayload(), NostroTransactionRecordEntity.class);
 
-    shadowTransactionRepository.save(nostroTransactionEntity);
+    nostroTransactionRepository.save(nostroTransactionRecordEntity);
     return CommandResponse.asVoid();
   }
 
   @Transactional
   @CommandHandler
   public CommandResponse<Integer> processMessage(ProcessNostroTransactionCommand command) {
-    NostroAccountTransactionsDto dtoList = command.getPayload();
+    NostroTransactionRecordsDto dtoList = command.getPayload();
     int success = 0;
-    if (dtoList.getNostroAccountTransactionList() != null
-        && !dtoList.getNostroAccountTransactionList().isEmpty()) {
-      for (NostroTransaction dto : dtoList.getNostroAccountTransactionList()) {
+    if (dtoList.getNostroAccountTransactionRecordsList() != null
+        && !dtoList.getNostroAccountTransactionRecordsList().isEmpty()) {
+      for (NostroTransactionRecord dto : dtoList.getNostroAccountTransactionRecordsList()) {
         try {
-          NostroTransactionEntity nostroTransactionEntity =
-              modelMapper.map(dto, NostroTransactionEntity.class);
-          nostroTransactionEntity.setSelected(true);
-          shadowTransactionRepository.save(nostroTransactionEntity);
+          NostroTransactionRecordEntity nostroTransactionRecordEntity =
+              modelMapper.map(dto, NostroTransactionRecordEntity.class);
+          nostroTransactionRecordEntity.setSelected(true);
+          nostroTransactionRepository.save(nostroTransactionRecordEntity);
           success++;
         } catch (Exception e) {
           e.printStackTrace();

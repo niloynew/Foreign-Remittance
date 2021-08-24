@@ -1,11 +1,11 @@
 package com.mislbd.ababil.foreignremittance.command;
 
+import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecordsDto;
 import com.mislbd.asset.command.api.Command;
-import com.mislbd.swift.broker.model.raw.NostroAccountTransactionsDto;
 
-public class ProcessNostroTransactionCommand extends Command<NostroAccountTransactionsDto> {
+public class ProcessNostroTransactionCommand extends Command<NostroTransactionRecordsDto> {
 
-  public ProcessNostroTransactionCommand(NostroAccountTransactionsDto payload) {
+  public ProcessNostroTransactionCommand(NostroTransactionRecordsDto payload) {
     super(payload);
   }
 }

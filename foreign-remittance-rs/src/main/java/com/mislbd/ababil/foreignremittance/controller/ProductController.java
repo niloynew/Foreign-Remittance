@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/id-products", produces = MediaType.APPLICATION_JSON_VALUE)
-public class IDProductController {
+public class ProductController {
   private final CommandProcessor commandProcessor;
   private final QueryManager queryManager;
 
-  public IDProductController(CommandProcessor commandProcessor, QueryManager queryManager) {
+  public ProductController(CommandProcessor commandProcessor, QueryManager queryManager) {
     this.commandProcessor = commandProcessor;
     this.queryManager = queryManager;
   }

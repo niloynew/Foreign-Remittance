@@ -2,7 +2,11 @@ package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.domain.TransactionType;
+import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.mapper.TransactionTypeMapper;
+import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionBanksRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionTypeRepository;
 import com.mislbd.ababil.foreignremittance.repository.specification.TransactionTypeSpecification;
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
@@ -16,12 +20,22 @@ import org.springframework.stereotype.Service;
 public class TransactionTypeServiceImpl implements TransactionTypeService {
 
   private final TransactionTypeRepository transactionTypeRepository;
+  private final NostroTransactionRepository nostroTransactionRepository;
+  private final TransactionBanksRepository transactionBanksRepository;
   private final TransactionTypeMapper transactionTypeMapper;
+  // private final NostroTransactionMapper nostroTransactionMapper;
 
   public TransactionTypeServiceImpl(
       TransactionTypeRepository transactionTypeRepository,
-      TransactionTypeMapper transactionTypeMapper) {
+      RemittanceTransactionRepository remittanceTransactionRepository,
+      TransactionBanksRepository transactionBanksRepository,
+      TransactionTypeMapper transactionTypeMapper,
+      RemittanceTransactionMapper remittanceTransactionMapper,
+      NostroTransactionRepository nostroTransactionRepository) {
     this.transactionTypeRepository = transactionTypeRepository;
+    this.nostroTransactionRepository = nostroTransactionRepository;
+
+    this.transactionBanksRepository = transactionBanksRepository;
     this.transactionTypeMapper = transactionTypeMapper;
   }
 
@@ -42,3 +56,10 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
         transactionTypeMapper.entityToDomain());
   }
 }
+//  @Override
+//  public List<SwiftBankConfiguration> getConfigurations (Long id){
+//    //NostroTransaction nostroTransaction =
+// nostroTransactionRepository.findById(id).orElseThrow(RemittanceTransactionNotFoundException::new);
+//    //transactionBanksRepository.findByNostroTransaction(remittanceTransaction)
+//  //}
+// }
