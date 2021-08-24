@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TxnBanksQuery extends QueryRequest {
-    private Pageable pageable;
-    private Long txnId;
-    private boolean asPage;
+  private Pageable pageable;
+  private Long txnId;
+  private boolean asPage;
 }

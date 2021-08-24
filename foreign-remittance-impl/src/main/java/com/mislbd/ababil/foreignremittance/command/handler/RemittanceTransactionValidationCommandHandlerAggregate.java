@@ -66,7 +66,7 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
         Balance balance =
             casaAccountService.getDepositAccountBalance(
                 remittanceTransaction.getOperatingAccountNumber());
-        if (totalAmount.compareTo(balance.getAvailableBalance()) < 0) {
+        if (totalAmount.compareTo(balance.getAvailableBalance()) > 0) {
           throw new ForeignRemittanceBaseException(
               "Insufficient account balance in "
                   + remittanceTransaction.getOperatingAccountNumber());
@@ -76,7 +76,7 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
             casaAccountService.getDepositAccountBalance(
                 remittanceTransaction.getOperatingAccountNumber());
         if (remittanceTransaction.getAmountRcy().compareTo(remittanceBalance.getAvailableBalance())
-            < 0) {
+            > 0) {
           throw new ForeignRemittanceBaseException(
               "Insufficient account balance in "
                   + remittanceTransaction.getOperatingAccountNumber());
@@ -87,7 +87,7 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
         if (remittanceTransaction
                 .getChargeAmountRcy()
                 .compareTo(chargeBalance.getAvailableBalance())
-            < 0) {
+            > 0) {
           throw new ForeignRemittanceBaseException(
               "Insufficient account balance in " + remittanceTransaction.getChargeAccountNumber());
         }
@@ -97,7 +97,7 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
           casaAccountService.getDepositAccountBalance(
               remittanceTransaction.getOperatingAccountNumber());
       if (remittanceTransaction.getAmountRcy().compareTo(remittanceBalance.getAvailableBalance())
-          < 0) {
+          > 0) {
         throw new ForeignRemittanceBaseException(
             "Insufficient account balance in " + remittanceTransaction.getOperatingAccountNumber());
       }
@@ -106,7 +106,7 @@ public class RemittanceTransactionValidationCommandHandlerAggregate {
           casaAccountService.getDepositAccountBalance(
               remittanceTransaction.getChargeAccountNumber());
       if (remittanceTransaction.getChargeAmountRcy().compareTo(chargeBalance.getAvailableBalance())
-          < 0) {
+          > 0) {
         throw new ForeignRemittanceBaseException(
             "Insufficient account balance in " + remittanceTransaction.getChargeAccountNumber());
       }
