@@ -7,12 +7,15 @@ import com.mislbd.ababil.foreignremittance.command.AuthorizeSingleCustomerCredit
 import com.mislbd.ababil.foreignremittance.command.CreateSingleCustomerCreditTransferMessageCommand;
 import com.mislbd.ababil.foreignremittance.command.GenerateSingleCustomerCreditTransferMessageCommand;
 import com.mislbd.ababil.foreignremittance.command.PublishSingleCustomerCreditTransferMessageCommand;
+import com.mislbd.ababil.foreignremittance.domain.XmmRequest;
+import com.mislbd.ababil.foreignremittance.service.SwiftMsgService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.swift.broker.model.MessageResponse;
 import com.mislbd.swift.broker.model.ProcessResult;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
+import java.io.IOException;
 import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +26,15 @@ import org.springframework.web.bind.annotation.*;
 public class SwiftMessageController {
   private final CommandProcessor commandProcessor;
   private final QueryManager queryManager;
+  private SwiftMsgService swiftMessageService;
 
-  public SwiftMessageController(CommandProcessor commandProcessor, QueryManager queryManager) {
+  public SwiftMessageController(
+      CommandProcessor commandProcessor,
+      QueryManager queryManager,
+      SwiftMsgService swiftMessageService) {
     this.commandProcessor = commandProcessor;
     this.queryManager = queryManager;
+    this.swiftMessageService = swiftMessageService;
   }
 
   @PostMapping(path = "/publish-mt103-message", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -67,5 +75,11 @@ public class SwiftMessageController {
         .body(
             commandProcessor.executeResult(
                 new GenerateSingleCustomerCreditTransferMessageCommand(mt103MessageRequest)));
+  }
+
+  @PostMapping(path = "/publishXmm103", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> publishCategory7Message(@Valid @RequestBody XmmRequest xmmRequest)
+      throws IOException {
+    return ResponseEntity.ok(swiftMessageService.generateSwiftMT103(xmmRequest));
   }
 }

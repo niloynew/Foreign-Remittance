@@ -1,9 +1,7 @@
 package com.mislbd.ababil.foreignremittance.listener;
 
 import com.mislbd.ababil.approvalflow.annotation.ApprovalFlowTaskListener;
-import com.mislbd.ababil.approvalflow.annotation.OnStart;
 import com.mislbd.ababil.asset.service.ConfigurationService;
-import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.mapper.TransactionToRequestMapper;
 import com.mislbd.security.core.NgSession;
@@ -32,13 +30,13 @@ public class OutwardRemittanceTaskListener {
     this.configurationService = configurationService;
   }
 
-  @OnStart(commandClass = CreateOutwardRemittanceTransactionCommand.class, priority = 1)
-  public void doBeforeTransaction(CreateOutwardRemittanceTransactionCommand command) {
-    RemittanceTransaction remittanceTransaction = command.getPayload();
-    if (remittanceTransaction.isDoPublishMT103()) {
-      publishMT103(remittanceTransaction);
-    }
-  }
+  //  @OnStart(commandClass = CreateOutwardRemittanceTransactionCommand.class, priority = 1)
+  //  public void doBeforeTransaction(CreateOutwardRemittanceTransactionCommand command) {
+  //    RemittanceTransaction remittanceTransaction = command.getPayload();
+  //    if (remittanceTransaction.isDoPublishMT103()) {
+  //      publishMT103(remittanceTransaction);
+  //    }
+  //  }
 
   private void publishMT103(RemittanceTransaction remittanceTransaction) {
     MT103MessageRequest mt103MessageRequest =

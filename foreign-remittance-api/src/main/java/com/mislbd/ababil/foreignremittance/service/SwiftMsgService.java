@@ -1,7 +1,10 @@
 package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceMessageDto;
+import com.mislbd.ababil.foreignremittance.domain.XmmRequest;
 import com.mislbd.asset.commons.data.domain.PagedResult;
+import com.mislbd.swift.broker.model.MessageResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -17,4 +20,8 @@ public interface SwiftMsgService {
   RemittanceMessageDto findByLCNo(String lcNo);
 
   int process(List<Long> msgIds);
+
+  String getSwiftMiddlewareUrl();
+
+  MessageResponse generateSwiftMT103(XmmRequest xmmRequest) throws IOException;
 }
