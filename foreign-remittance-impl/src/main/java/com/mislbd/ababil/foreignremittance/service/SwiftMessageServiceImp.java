@@ -88,7 +88,7 @@ public class SwiftMessageServiceImp implements SwiftMsgService {
     }
   }
 
-  public MessageResponse processMT103(XmmRequest xmmRequest) throws IOException {
+  private MessageResponse processMT103(XmmRequest xmmRequest) throws IOException {
     if (approvalFlowTaskInstanceRepository
         .findFirstByDomainGroupAndDomainReference(
             xmmRequest.getDomainGroup(), xmmRequest.getReferenceNumber())
@@ -114,18 +114,14 @@ public class SwiftMessageServiceImp implements SwiftMsgService {
       mt103MessageRequest.setTransactionReferenceNumber(
           remittanceTransaction.getTransactionReferenceNumber());
       mt103MessageRequest.setApplicationDate(configurationService.getCurrentApplicationDate());
-      MessageResponse messageResponse =
-          xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
-      return messageResponse;
+      return xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
     } else if (remittanceTransactionService
         .findTransaction(xmmRequest.getReferenceNumber())
         .isPresent()) {
-      MessageResponse messageResponse =
-          xmmIntegrationService.authorizeCategoryNMessage(xmmRequest.getReferenceNumber());
-      return messageResponse;
+      return xmmIntegrationService.authorizeCategoryNMessage(xmmRequest.getReferenceNumber());
     } else {
       throw new ForeignRemittanceBaseException(
-          "Outward not found for generate MT103, please check.");
+          "Outward transaction not found with reference number " + xmmRequest.getReferenceNumber());
     }
   }
 }

@@ -85,7 +85,11 @@ public class TransactionToRequestMapper {
 
     request.setBankOperationCode(String.valueOf(BankOperationCode.CRED));
     request.setInterbankSettlementValueDate(remittanceTransaction.getValueDate());
-    request.setInterbankSettlementCurrency(remittanceTransaction.getShadowAccountCurrency());
+    if (remittanceTransaction.getShadowAccountCurrency().equalsIgnoreCase("ACU")) {
+      request.setInterbankSettlementCurrency("USD");
+    } else {
+      request.setInterbankSettlementCurrency(remittanceTransaction.getShadowAccountCurrency());
+    }
     request.setInterbankSettlementAmount(remittanceTransaction.getAmountFcy());
     request.setInstructedCurrency(null);
     request.setInstructedAmount(null);
