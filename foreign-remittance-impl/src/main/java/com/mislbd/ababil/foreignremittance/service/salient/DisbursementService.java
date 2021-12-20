@@ -197,7 +197,7 @@ public class DisbursementService {
     try {
       transactionService.isDebitCreditEqual(globalTransactionNumber);
     } catch (Exception e) {
-      throw new ForeignRemittanceBaseException(e.getMessage());
+      throw new ForeignRemittanceBaseException("Total Dr Cr not equal");
     }
   }
 }

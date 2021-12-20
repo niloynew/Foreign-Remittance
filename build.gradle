@@ -135,7 +135,7 @@ configure(subprojects) { project ->
                 "com.mislbd.ababil:ababil-organization-impl",
                 "com.mislbd:swift-broker-api:1.15.27-SNAPSHOT",
                 "com.mislbd:swift-broker-impl:1.15.27-SNAPSHOT",
-                "com.mislbd:the-city-bank-gateway-api:0.0.3-SNAPSHOT",
+                "com.mislbd:external-cbs-client:1.0.3-SNAPSHOT",
                 "com.mislbd.ababil:ababil-policy-based-security-client",
                 "com.mislbd.ababil:ababil-kafka-configuration"
         )

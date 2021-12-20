@@ -289,9 +289,8 @@ public class RemittanceTransactionMapper {
     glRequest.setVerifyUser(auditInformation.getVerifyUser());
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
     glRequest.setNarration(
-        "Charges against "
-            + request.getTransactionType().getName()
-            + "#"
+        charge.getChargeName()
+            + "# "
             + request.getTransactionReferenceNumber());
     glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     glRequest.setInitiatorModule("ID");
@@ -328,7 +327,7 @@ public class RemittanceTransactionMapper {
     subGLRequest.setVerifyUser(auditInformation.getVerifyUser());
     subGLRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
     subGLRequest.setNarration(
-        charge.getChargeName() + " from A/C " + request.getChargeAccountNumber());
+        charge.getChargeName() + "# " + request.getTransactionReferenceNumber());
     subGLRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     subGLRequest.setInitiatorBranch(auditInformation.getUserBranch());
     subGLRequest.setInitiatorModule("ID");
@@ -359,8 +358,8 @@ public class RemittanceTransactionMapper {
     glRequest.setVerifyUser(auditInformation.getVerifyUser());
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
     glRequest.setNarration(
-        "Vat against "
-            + request.getTransactionType().getName()
+        "Vat on "
+            + charge.getChargeName()
             + "#"
             + request.getTransactionReferenceNumber());
     glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
@@ -397,7 +396,10 @@ public class RemittanceTransactionMapper {
     subGLRequest.setEntryTime(auditInformation.getEntryDate());
     subGLRequest.setVerifyUser(auditInformation.getVerifyUser());
     subGLRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
-    subGLRequest.setNarration("VAT on charge from A/C " + request.getChargeAccountNumber());
+    subGLRequest.setNarration("Vat on "
+            + charge.getChargeName()
+            + "#"
+            + request.getTransactionReferenceNumber());
     subGLRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     subGLRequest.setInitiatorBranch(auditInformation.getUserBranch());
     subGLRequest.setInitiatorModule("ID");
