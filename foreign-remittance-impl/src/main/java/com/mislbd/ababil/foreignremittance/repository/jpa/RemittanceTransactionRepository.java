@@ -1,9 +1,11 @@
 package com.mislbd.ababil.foreignremittance.repository.jpa;
 
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface RemittanceTransactionRepository
@@ -12,4 +14,8 @@ public interface RemittanceTransactionRepository
 
   @Query(value = "SELECT S_ID_TXN_REFERENCE_NUMBER.nextval FROM dual", nativeQuery = true)
   Long generateTransactionReferenceNumberSequence();
+
+  @Modifying(clearAutomatically = true)
+  @Query(value = "UPDATE RemittanceTransactionEntity SET customerId=?1 WHERE customerId IN ?2")
+  void updateCustomerIds(Long originalCustomerId, List<Long> duplicateCustomerId);
 }

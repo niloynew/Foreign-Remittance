@@ -114,7 +114,8 @@ public class RemittanceTransactionController {
     return status(CREATED)
         .body(
             commandProcessor.executeResult(
-                new CreateOutwardRemittanceTransactionCommand(remittanceTransaction)));
+                new CreateOutwardRemittanceTransactionCommand(
+                    remittanceTransaction, remittanceTransaction.getTransactionReferenceNumber())));
   }
 
   @GetMapping(path = "/outward-remittance-transaction/{transactionId}")
