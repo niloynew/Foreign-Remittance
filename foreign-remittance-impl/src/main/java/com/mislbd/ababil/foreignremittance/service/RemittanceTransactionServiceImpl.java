@@ -6,18 +6,19 @@ import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceCategory;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
+import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
+import com.mislbd.ababil.foreignremittance.mapper.RemittanceCategoryMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
-import com.mislbd.ababil.foreignremittance.repository.jpa.IDProductRepository;
+import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceCategoryRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceCategoryEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.RemittanceTransactionSpecification;
-import com.mislbd.ababil.organization.service.BranchService;
 import com.mislbd.ababil.transaction.domain.TransactionCorrectionRequest;
 import com.mislbd.ababil.transaction.service.TransactionService;
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
-import com.mislbd.security.core.NgSession;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,26 +34,23 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   private final RemittanceTransactionRepository remittanceTransactionRepository;
   private final RemittanceTransactionMapper remittanceTransactionMapper;
   private final TransactionService transactionService;
-  private final IDProductRepository productRepository;
+  private final RemittanceCategoryMapper categoryMapper;
   private final ConfigurationService configurationService;
-  private final NgSession ngSession;
-  private final BranchService branchService;
+  private final RemittanceCategoryRepository categoryRepository;
 
   public RemittanceTransactionServiceImpl(
       RemittanceTransactionRepository remittanceTransactionRepository,
       RemittanceTransactionMapper remittanceTransactionMapper,
       TransactionService transactionService,
-      IDProductRepository productRepository,
+      RemittanceCategoryMapper categoryMapper,
       ConfigurationService configurationService,
-      NgSession ngSession,
-      BranchService branchService) {
+      RemittanceCategoryRepository categoryRepository) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.remittanceTransactionMapper = remittanceTransactionMapper;
     this.transactionService = transactionService;
-    this.productRepository = productRepository;
+    this.categoryMapper = categoryMapper;
     this.configurationService = configurationService;
-    this.ngSession = ngSession;
-    this.branchService = branchService;
+    this.categoryRepository = categoryRepository;
   }
 
   @Override
@@ -135,15 +133,40 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   }
 
   @Override
-  public String generateTransactionReferenceNumber(Long branch, RemittanceCategory category) {
+  public String generateTransactionReferenceNumber(Long branch, Long categoryId) {
+    RemittanceCategoryEntity category =
+        categoryRepository
+            .findById(categoryId)
+            .orElseThrow(
+                () ->
+                    new ForeignRemittanceBaseException(
+                        "Remittance category not found with id- " + categoryId));
     return Strings.padStart(String.valueOf(branch), 3, '0')
-        + category
+        + category.getName()
         + String.valueOf(configurationService.getCurrentApplicationDate().getYear()).substring(2)
         + Strings.padStart(
             String.valueOf(
                 remittanceTransactionRepository.generateTransactionReferenceNumberSequence()),
-            4,
+            5,
             '0');
+  }
+
+  @Override
+  public List<RemittanceCategory> getRemittanceCategories() {
+    return ListResultBuilder.build(categoryRepository.findAll(), categoryMapper.entityToDomain());
+  }
+
+  @Override
+  public RemittanceCategory getRemittanceCategoryById(Long id) {
+    return categoryMapper
+        .entityToDomain()
+        .map(
+            categoryRepository
+                .findById(id)
+                .orElseThrow(
+                    () ->
+                        new ForeignRemittanceBaseException(
+                            "Remittance category not found with id - " + id)));
   }
 
   private TransactionCorrectionRequest prepareTransactionCorrectionRequest(

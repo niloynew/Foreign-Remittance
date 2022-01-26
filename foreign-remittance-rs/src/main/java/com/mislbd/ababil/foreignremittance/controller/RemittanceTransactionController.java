@@ -19,6 +19,7 @@ import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.query.api.QueryManager;
 import com.mislbd.asset.query.api.QueryResult;
 import java.time.LocalDate;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -127,10 +128,23 @@ public class RemittanceTransactionController {
     return ResponseEntity.ok(queryResult.getResult());
   }
 
-  @GetMapping(path = "/reference-numbers/{branch}/{category}")
+  @GetMapping(path = "/remittance-categories")
+  public ResponseEntity<List<RemittanceCategory>> getRemittanceCategories() {
+    List<RemittanceCategory> categories = remittanceTransactionService.getRemittanceCategories();
+    return categories.isEmpty()
+        ? ResponseEntity.noContent().build()
+        : ResponseEntity.ok(categories);
+  }
+
+  @GetMapping(path = "/remittance-categories/{id}")
+  public ResponseEntity<RemittanceCategory> getRemittanceCategories(@PathVariable("id") Long id) {
+    return ResponseEntity.ok(remittanceTransactionService.getRemittanceCategoryById(id));
+  }
+
+  @GetMapping(path = "/reference-numbers/{branch}/{categoryId}")
   public ResponseEntity<?> generateTransactionReferenceNumber(
-      @PathVariable("branch") Long branch, @PathVariable("category") RemittanceCategory category) {
+      @PathVariable("branch") Long branch, @PathVariable("categoryId") Long categoryId) {
     return ResponseEntity.ok(
-        remittanceTransactionService.generateTransactionReferenceNumber(branch, category));
+        remittanceTransactionService.generateTransactionReferenceNumber(branch, categoryId));
   }
 }

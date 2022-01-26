@@ -36,5 +36,9 @@ public interface RemittanceTransactionService {
 
   void correctTransaction(AuditInformation auditInformation);
 
-  String generateTransactionReferenceNumber(Long branch, RemittanceCategory category);
+  String generateTransactionReferenceNumber(Long branch, Long categoryId);
+
+  List<RemittanceCategory> getRemittanceCategories();
+
+  RemittanceCategory getRemittanceCategoryById(Long id);
 }

@@ -19,8 +19,8 @@ import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
-import com.mislbd.cityservice.gateway.model.TransactionRequest;
-import com.mislbd.cityservice.gateway.service.TheCityBankService;
+import com.mislbd.ext.cbs.api.ExternalCBSService;
+import com.mislbd.ext.cbs.api.TransactionRequest;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -31,24 +31,24 @@ import org.springframework.transaction.annotation.Transactional;
 @Aggregate
 public class TransactionReconcileCommandHandlerAggregate {
 
-  private static final String EXTERNAL_MODULE_NAME = "FINACLE";
+  private static final String EXTERNAL_MODULE_NAME = "EXT_CBS";
   private static final Logger LOGGER =
       LoggerFactory.getLogger(TransactionReconcileCommandHandlerAggregate.class);
   private final Auditor auditor;
   private final ExternalModuleSettlementAccountRepository settlementAccountRepository;
-  private final TheCityBankService theCityBankService;
+  private final ExternalCBSService externalCBSService;
   private final ShadowAccountRepository shadowAccountRepository;
   private final ShadowTransactionRecordRepository shadowTransactionRecordRepository;
 
   public TransactionReconcileCommandHandlerAggregate(
       Auditor auditor,
       ExternalModuleSettlementAccountRepository settlementAccountRepository,
-      TheCityBankService theCityBankService,
+      ExternalCBSService externalCBSService,
       ShadowAccountRepository shadowAccountRepository,
       ShadowTransactionRecordRepository shadowTransactionRecordRepository) {
     this.auditor = auditor;
     this.settlementAccountRepository = settlementAccountRepository;
-    this.theCityBankService = theCityBankService;
+    this.externalCBSService = externalCBSService;
     this.shadowAccountRepository = shadowAccountRepository;
     this.shadowTransactionRecordRepository = shadowTransactionRecordRepository;
   }
@@ -97,7 +97,7 @@ public class TransactionReconcileCommandHandlerAggregate {
           creditAccount = shadowAccount.getNostroAccountNumber();
         }
         try {
-          theCityBankService.doTransaction(
+          externalCBSService.doTransaction(
               TransactionRequest.requestBuilder()
                   .debitAccount(debitAccount)
                   .creditAccount(creditAccount)

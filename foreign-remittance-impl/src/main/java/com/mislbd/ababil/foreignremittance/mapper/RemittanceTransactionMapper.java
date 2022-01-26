@@ -89,7 +89,7 @@ public class RemittanceTransactionMapper {
             .setChargeAmountRcy(entity.getChargeAmountRcy())
             .setPublishedToXmm(entity.isPublishedToXmm())
             .setAuthorizedToXmm(entity.isAuthorizedToXmm())
-            .setRemittanceCategory(entity.getRemittanceCategory())
+            .setCategoryId(entity.getCategoryId())
             .setTotalChargeAmountAfterWaived(entity.getTotalChargeAmountAfterWaived())
             .setTotalVatAmountAfterWaived(entity.getTotalVatAmountAfterWaived())
             .setRemittanceAdditionalInformation(
@@ -145,7 +145,7 @@ public class RemittanceTransactionMapper {
             .setChargeAmountRcy(domain.getChargeAmountRcy())
             .setAdjustmentRefIdForCharge(domain.getAdjustmentRefIdForCharge())
             .setClientRateTypeId(domain.getClientRateTypeId())
-            .setRemittanceCategory(domain.getRemittanceCategory())
+            .setCategoryId(domain.getCategoryId())
             .setClientRate(domain.getClientRate())
             .setAmountFcy(domain.getAmountFcy())
             .setAmountLcy(domain.getAmountLcy())
@@ -288,11 +288,7 @@ public class RemittanceTransactionMapper {
     glRequest.setEntryTime(auditInformation.getEntryDate());
     glRequest.setVerifyUser(auditInformation.getVerifyUser());
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
-    glRequest.setNarration(
-        "Charges against "
-            + request.getTransactionType().getName()
-            + "#"
-            + request.getTransactionReferenceNumber());
+    glRequest.setNarration(charge.getChargeName() + "#" + request.getTransactionReferenceNumber());
     glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     glRequest.setInitiatorModule("ID");
     glRequest.setInitiatorBranch(auditInformation.getUserBranch());
@@ -328,7 +324,7 @@ public class RemittanceTransactionMapper {
     subGLRequest.setVerifyUser(auditInformation.getVerifyUser());
     subGLRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
     subGLRequest.setNarration(
-        charge.getChargeName() + " from A/C " + request.getChargeAccountNumber());
+        charge.getChargeName() + "# " + request.getTransactionReferenceNumber());
     subGLRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     subGLRequest.setInitiatorBranch(auditInformation.getUserBranch());
     subGLRequest.setInitiatorModule("ID");
@@ -359,10 +355,7 @@ public class RemittanceTransactionMapper {
     glRequest.setVerifyUser(auditInformation.getVerifyUser());
     glRequest.setVerifyTerminal(auditInformation.getVerifyTerminal());
     glRequest.setNarration(
-        "Vat against "
-            + request.getTransactionType().getName()
-            + "#"
-            + request.getTransactionReferenceNumber());
+        "Vat on " + charge.getChargeName() + "#" + request.getTransactionReferenceNumber());
     glRequest.setApprovalFlowInstanceId(auditInformation.getProcessId());
     glRequest.setInitiatorBranch(auditInformation.getUserBranch());
     glRequest.setOwnerBranch(auditInformation.getUserBranch());
