@@ -1,18 +1,18 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
 import com.mislbd.ababil.foreignremittance.domain.AdditionalInformation;
-import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceAdditionalInformationEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.AdditionalInformationEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AdditionInformationMapper {
 
-  public ResultMapper<AdditionalInformation, RemittanceAdditionalInformationEntity>
+  public ResultMapper<AdditionalInformation, AdditionalInformationEntity>
       domainToEntity() {
 
     return domain ->
-        new RemittanceAdditionalInformationEntity()
+        new AdditionalInformationEntity()
             .setId(domain.getId())
             .setInstructedCurrency(
                 domain.getInstructedCurrency() == null ? null : domain.getInstructedCurrency())
@@ -87,7 +87,7 @@ public class AdditionInformationMapper {
                 domain.getAccountWithInstitutionPartyNameAndAddress());
   }
 
-  public ResultMapper<RemittanceAdditionalInformationEntity, AdditionalInformation>
+  public ResultMapper<AdditionalInformationEntity, AdditionalInformation>
       entityToDomain() {
     return entity ->
         new AdditionalInformation()

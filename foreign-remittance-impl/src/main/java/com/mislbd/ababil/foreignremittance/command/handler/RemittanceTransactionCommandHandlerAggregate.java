@@ -12,7 +12,7 @@ import com.mislbd.ababil.foreignremittance.repository.jpa.BankInformationReposit
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeInformationEntity;
-import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionBankMappingEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.BankMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
 import com.mislbd.ababil.foreignremittance.service.salient.DisbursementService;
@@ -194,10 +194,10 @@ public class RemittanceTransactionCommandHandlerAggregate {
     if (!bankInformationList.isEmpty())
       bankInformationList.forEach(
           bankInformation -> {
-            RemittanceTransactionBankMappingEntity remittanceTransactionBankMappingEntity =
+            BankMappingEntity bankMappingEntity =
                 bankInformationMapper.domainToEntity().map(bankInformation);
-            remittanceTransactionBankMappingEntity.setRemittanceTransaction(entity);
-            bankInformationRepository.save(remittanceTransactionBankMappingEntity);
+            bankMappingEntity.setRemittanceTransaction(entity);
+            bankInformationRepository.save(bankMappingEntity);
           });
 
     List<RemittanceChargeInformation> chargeInformationList =
