@@ -1,16 +1,19 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+public enum BankType {
 
-@Getter
-@Setter
-@Accessors(chain = true)
-public class BankType {
+  SendingInstitution("Sending Institution"),
+  OrderingInstitution("Ordering Institution"),
+  SenderCorrespondent("Sender's Correspondent"),
+  ReceiverCorrespondent("Receiver's Correspondent"),
+  ThirdReimbursementInstitution("Third Reimbursement Institution"),
+  IntermediaryInstitution("Intermediary Institution"),
+  AccountWithInstitution("Account With Institution");
 
-  private Long id;
-  private String code;
-  private String name;
-  private String description;
+  public final String name;
+
+  BankType(String name){
+    this.name = name;
+  }
+
 }

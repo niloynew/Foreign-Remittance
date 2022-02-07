@@ -5,7 +5,7 @@ import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.*;
 import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecord;
 import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecordsDto;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceAdditionalInformation;
+import com.mislbd.ababil.foreignremittance.domain.AdditionalInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.AdditionInformationMapper;
@@ -150,7 +150,7 @@ public class SwiftMessageCommandHandlerAggregate {
             .findTransaction(request.getTransactionReferenceNumber())
             .orElseThrow(RemittanceTransactionNotFoundException::new);
     if (messageResponse.getStatus().equalsIgnoreCase("200")) {
-      remittanceTransaction.setPublishedToXmm(true);
+//      remittanceTransaction.setPublishedToXmm(true);
       remittanceTransactionRepository.save(
           remittanceTransactionMapper.domainToEntity().map(remittanceTransaction));
       remittanceAdditionalInformationRepository.save(mapAdditionalInformation(request));
@@ -171,7 +171,7 @@ public class SwiftMessageCommandHandlerAggregate {
             .findTransaction(reference)
             .orElseThrow(RemittanceTransactionNotFoundException::new);
     if (messageResponse.getStatus().equalsIgnoreCase("200")) {
-      remittanceTransaction.setAuthorizedToXmm(true);
+//      remittanceTransaction.setAuthorizedToXmm(true);
       remittanceTransactionRepository.save(
           remittanceTransactionMapper.domainToEntity().map(remittanceTransaction));
       // remittanceAdditionalInformationRepository.save(mapAdditionalInformation(request));
@@ -219,18 +219,18 @@ public class SwiftMessageCommandHandlerAggregate {
         remittanceTransactionRepository
             .findByTransactionReferenceNumber(request.getSendersReference())
             .orElseThrow(RemittanceTransactionNotFoundException::new);
-    RemittanceAdditionalInformation remittanceAdditionalInformation =
-        new RemittanceAdditionalInformation();
+    AdditionalInformation additionalInformation =
+        new AdditionalInformation();
     if (entity.getRemittanceAdditionalInformation() != null) {
-      remittanceAdditionalInformation.setId(entity.getRemittanceAdditionalInformation().getId());
+      additionalInformation.setId(entity.getRemittanceAdditionalInformation().getId());
     }
     if (request.getTimeIndications() != null && !request.getTimeIndications().isEmpty()) {
-      remittanceAdditionalInformation
+      additionalInformation
           .setTimeIndication(request.getTimeIndications().get(0).getTimeIndication())
           .setSign(request.getTimeIndications().get(0).getSign())
           .setOffset(request.getTimeIndications().get(0).getOffset());
     }
-    remittanceAdditionalInformation
+    additionalInformation
         .setInstructedAmount(request.getInstructedAmount())
         .setInstructedCurrency(request.getInstructedCurrency())
         .setExchangeRate(request.getExchangeRate())
@@ -247,51 +247,52 @@ public class SwiftMessageCommandHandlerAggregate {
         .setEnvelopContents(request.getEnvelopeContents())
         .setRemittanceInformation(request.getRemittanceInformation())
         .setSenderToReceiverInformation(request.getSenderToReceiverInformation())
-        .setSendingInstitutePartyIdentifier(request.getSendingInstitutePartyIdentifier())
-        .setSendingInstituteIdentifierCode(request.getSendingInstituteIdentifierCode())
-        .setSelectedOrderingInstitutionOption(request.getSelectedOrderingInstitutionOption())
-        .setOrderingInstitutionPartyIdentifier(request.getOrderingInstitutionPartyIdentifier())
-        .setOrderingInstitutionIdentifierCode(request.getOrderingInstitutionIdentifierCode())
-        .setOrderingInstitutionPartyNameAndAddress(
-            request.getOrderingInstitutionPartyNameAndAddress())
-        .setSelectedSendersCorrespondentOption(request.getSelectedSendersCorrespondentOption())
-        .setSendersCorrespondentPartyIdentifier(request.getSendersCorrespondentPartyIdentifier())
-        .setSendersCorrespondentIdentifierCode(request.getSendersCorrespondentIdentifierCode())
-        .setSendersCorrespondentLocation(request.getSendersCorrespondentLocation())
-        .setSendersCorrespondentNameAndAddress(request.getSendersCorrespondentNameAndAddress())
-        .setSelectedReceiversCorrespondentOption(request.getSelectedReceiversCorrespondentOption())
-        .setReceiversCorrespondentPartyIdentifier(
-            request.getReceiversCorrespondentPartyIdentifier())
-        .setReceiversCorrespondentIdentifierCode(request.getReceiversCorrespondentIdentifierCode())
-        .setReceiversCorrespondentLocation(request.getReceiversCorrespondentLocation())
-        .setReceiversCorrespondentNameAndAddress(request.getReceiversCorrespondentNameAndAddress())
-        .setSelectedThirdReimbursementInstitutionOption(
-            request.getSelectedThirdReimbursementInstitutionOption())
-        .setThirdReimbursementInstitutionPartyIdentifier(
-            request.getThirdReimbursementInstitutionPartyIdentifier())
-        .setThirdReimbursementInstitutionIdentifierCode(
-            request.getThirdReimbursementInstitutionIdentifierCode())
-        .setThirdReimbursementInstitutionLocation(
-            request.getThirdReimbursementInstitutionLocation())
-        .setThirdReimbursementInstitutionNameAndAddress(
-            request.getThirdReimbursementInstitutionNameAndAddress())
-        .setSelectedIntermediaryInstitutionOption(
-            request.getSelectedIntermediaryInstitutionOption())
-        .setIntermediaryInstitutionPartyIdentifier(
-            request.getIntermediaryInstitutionPartyIdentifier())
-        .setIntermediaryInstitutionIdentifierCode(
-            request.getIntermediaryInstitutionIdentifierCode())
-        .setIntermediaryInstitutionIdentifierNameAndAddress(
-            request.getIntermediaryInstitutionIdentifierNameAndAddress())
-        .setSelectedAccountWithInstitutionOption(request.getSelectedAccountWithInstitutionOption())
-        .setAccountWithInstitutionPartyIdentifier(
-            request.getAccountWithInstitutionPartyIdentifier())
-        .setAccountWithInstitutionIdentifierCode(request.getAccountWithInstitutionIdentifierCode())
-        .setAccountWithInstitutionPartyLocation(request.getAccountWithInstitutionPartyLocation())
-        .setAccountWithInstitutionPartyNameAndAddress(
-            request.getAccountWithInstitutionPartyNameAndAddress());
+//        .setSendingInstitutePartyIdentifier(request.getSendingInstitutePartyIdentifier())
+//        .setSendingInstituteIdentifierCode(request.getSendingInstituteIdentifierCode())
+//        .setSelectedOrderingInstitutionOption(request.getSelectedOrderingInstitutionOption())
+//        .setOrderingInstitutionPartyIdentifier(request.getOrderingInstitutionPartyIdentifier())
+//        .setOrderingInstitutionIdentifierCode(request.getOrderingInstitutionIdentifierCode())
+//        .setOrderingInstitutionPartyNameAndAddress(
+//            request.getOrderingInstitutionPartyNameAndAddress())
+//        .setSelectedSendersCorrespondentOption(request.getSelectedSendersCorrespondentOption())
+//        .setSendersCorrespondentPartyIdentifier(request.getSendersCorrespondentPartyIdentifier())
+//        .setSendersCorrespondentIdentifierCode(request.getSendersCorrespondentIdentifierCode())
+//        .setSendersCorrespondentLocation(request.getSendersCorrespondentLocation())
+//        .setSendersCorrespondentNameAndAddress(request.getSendersCorrespondentNameAndAddress())
+//        .setSelectedReceiversCorrespondentOption(request.getSelectedReceiversCorrespondentOption())
+//        .setReceiversCorrespondentPartyIdentifier(
+//            request.getReceiversCorrespondentPartyIdentifier())
+//        .setReceiversCorrespondentIdentifierCode(request.getReceiversCorrespondentIdentifierCode())
+//        .setReceiversCorrespondentLocation(request.getReceiversCorrespondentLocation())
+//        .setReceiversCorrespondentNameAndAddress(request.getReceiversCorrespondentNameAndAddress())
+//        .setSelectedThirdReimbursementInstitutionOption(
+//            request.getSelectedThirdReimbursementInstitutionOption())
+//        .setThirdReimbursementInstitutionPartyIdentifier(
+//            request.getThirdReimbursementInstitutionPartyIdentifier())
+//        .setThirdReimbursementInstitutionIdentifierCode(
+//            request.getThirdReimbursementInstitutionIdentifierCode())
+//        .setThirdReimbursementInstitutionLocation(
+//            request.getThirdReimbursementInstitutionLocation())
+//        .setThirdReimbursementInstitutionNameAndAddress(
+//            request.getThirdReimbursementInstitutionNameAndAddress())
+//        .setSelectedIntermediaryInstitutionOption(
+//            request.getSelectedIntermediaryInstitutionOption())
+//        .setIntermediaryInstitutionPartyIdentifier(
+//            request.getIntermediaryInstitutionPartyIdentifier())
+//        .setIntermediaryInstitutionIdentifierCode(
+//            request.getIntermediaryInstitutionIdentifierCode())
+//        .setIntermediaryInstitutionIdentifierNameAndAddress(
+//            request.getIntermediaryInstitutionIdentifierNameAndAddress())
+//        .setSelectedAccountWithInstitutionOption(request.getSelectedAccountWithInstitutionOption())
+//        .setAccountWithInstitutionPartyIdentifier(
+//            request.getAccountWithInstitutionPartyIdentifier())
+//        .setAccountWithInstitutionIdentifierCode(request.getAccountWithInstitutionIdentifierCode())
+//        .setAccountWithInstitutionPartyLocation(request.getAccountWithInstitutionPartyLocation())
+//        .setAccountWithInstitutionPartyNameAndAddress(
+//            request.getAccountWithInstitutionPartyNameAndAddress())
+ ;
     RemittanceAdditionalInformationEntity remittanceAdditionalInformationEntity =
-        additionInformationMapper.domainToEntity().map(remittanceAdditionalInformation);
+        additionInformationMapper.domainToEntity().map(additionalInformation);
     remittanceAdditionalInformationEntity.setRemittanceTransactionEntity(entity);
 
     return remittanceAdditionalInformationEntity;

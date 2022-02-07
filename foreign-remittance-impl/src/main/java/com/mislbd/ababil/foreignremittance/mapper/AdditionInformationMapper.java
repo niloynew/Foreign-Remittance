@@ -1,6 +1,6 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
-import com.mislbd.ababil.foreignremittance.domain.RemittanceAdditionalInformation;
+import com.mislbd.ababil.foreignremittance.domain.AdditionalInformation;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceAdditionalInformationEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AdditionInformationMapper {
 
-  public ResultMapper<RemittanceAdditionalInformation, RemittanceAdditionalInformationEntity>
+  public ResultMapper<AdditionalInformation, RemittanceAdditionalInformationEntity>
       domainToEntity() {
 
     return domain ->
@@ -87,10 +87,10 @@ public class AdditionInformationMapper {
                 domain.getAccountWithInstitutionPartyNameAndAddress());
   }
 
-  public ResultMapper<RemittanceAdditionalInformationEntity, RemittanceAdditionalInformation>
+  public ResultMapper<RemittanceAdditionalInformationEntity, AdditionalInformation>
       entityToDomain() {
     return entity ->
-        new RemittanceAdditionalInformation()
+        new AdditionalInformation()
             .setId(entity.getId())
             .setInstructedCurrency(
                 entity.getInstructedCurrency() == null ? null : entity.getInstructedCurrency())
