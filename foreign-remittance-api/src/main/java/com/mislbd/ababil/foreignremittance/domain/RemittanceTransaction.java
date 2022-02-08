@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
-
 import com.mislbd.transaction.api.transaction.model.AccountType;
 import com.mislbd.transaction.api.transaction.model.CbsTransaction;
 import com.mislbd.transaction.api.transaction.model.ChargeInformation;

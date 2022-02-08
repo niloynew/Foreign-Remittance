@@ -14,7 +14,7 @@ import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepos
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceAdditionalInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionRecordEntity;
-import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceAdditionalInformationEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.AdditionalInformationEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
 import com.mislbd.ababil.foreignremittance.service.SwiftRegisterService;
@@ -212,7 +212,7 @@ public class SwiftMessageCommandHandlerAggregate {
     return CommandResponse.of(messageResponse);
   }
 
-  public RemittanceAdditionalInformationEntity mapAdditionalInformation(
+  public AdditionalInformationEntity mapAdditionalInformation(
       MT103MessageRequest request) {
 
     RemittanceTransactionEntity entity =
@@ -221,8 +221,8 @@ public class SwiftMessageCommandHandlerAggregate {
             .orElseThrow(RemittanceTransactionNotFoundException::new);
     AdditionalInformation additionalInformation =
         new AdditionalInformation();
-    if (entity.getRemittanceAdditionalInformation() != null) {
-      additionalInformation.setId(entity.getRemittanceAdditionalInformation().getId());
+    if (entity.getAdditionalInformationEntity() != null) {
+      additionalInformation.setId(entity.getAdditionalInformationEntity().getId());
     }
     if (request.getTimeIndications() != null && !request.getTimeIndications().isEmpty()) {
       additionalInformation
@@ -291,11 +291,11 @@ public class SwiftMessageCommandHandlerAggregate {
 //        .setAccountWithInstitutionPartyNameAndAddress(
 //            request.getAccountWithInstitutionPartyNameAndAddress())
  ;
-    RemittanceAdditionalInformationEntity remittanceAdditionalInformationEntity =
+    AdditionalInformationEntity additionalInformationEntity =
         additionInformationMapper.domainToEntity().map(additionalInformation);
-    remittanceAdditionalInformationEntity.setRemittanceTransactionEntity(entity);
+    additionalInformationEntity.setRemittanceTransactionEntity(entity);
 
-    return remittanceAdditionalInformationEntity;
+    return additionalInformationEntity;
   }
 }
 

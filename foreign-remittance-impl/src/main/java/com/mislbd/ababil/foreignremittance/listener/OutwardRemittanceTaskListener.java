@@ -54,7 +54,7 @@ public class OutwardRemittanceTaskListener {
               + remittanceTransaction.getTransactionReferenceNumber());
       log.error("Reason : " + response.getMessage());
       log.error("## End ##");
-      remittanceTransaction.setDoPublishMT103(false);
+      //remittanceTransaction.setDoPublishMT103(false);
     }
   }
 }
