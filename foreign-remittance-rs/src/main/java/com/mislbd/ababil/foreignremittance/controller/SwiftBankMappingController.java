@@ -23,7 +23,7 @@ public class SwiftBankMappingController {
   @GetMapping
   public ResponseEntity<?> getTransactionBanks(
       Pageable pageable,
-      @RequestParam(required = true, name = "txnId") Long transactionId,
+      @RequestParam(name = "txnId") Long transactionId,
       @RequestParam(name = "asPage") final boolean asPage) {
     QueryResult<?> queryResult =
         queryManager.executeQuery(new TxnBanksQuery(pageable, transactionId, asPage));

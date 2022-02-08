@@ -8,6 +8,8 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
 import com.mislbd.transaction.api.transaction.model.AccountType;
+import com.mislbd.transaction.api.transaction.model.CbsTransaction;
+import com.mislbd.transaction.api.transaction.model.ChargeInformation;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -52,6 +54,8 @@ public class RemittanceTransaction {
     private BigDecimal chargeRate;
     private BigDecimal amountLcy;
 
+    private ChargeInformation chargeInformation;
+
     private LocalDate valueDate;
 
     // Bank information
@@ -59,4 +63,7 @@ public class RemittanceTransaction {
 
     // Other information
     private AdditionalInformation additionalInformation;
+
+    // Transaction build data
+    private List<CbsTransaction> cbsTransactions;
 }

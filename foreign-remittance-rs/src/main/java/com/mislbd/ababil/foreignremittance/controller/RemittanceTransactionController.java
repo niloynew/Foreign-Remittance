@@ -4,13 +4,11 @@ import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.status;
 
-import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
-import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
+import com.mislbd.ababil.foreignremittance.command.CreateRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.RemittanceTransactionCorrectionCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceCategory;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
-import com.mislbd.ababil.foreignremittance.query.Mt103RequestRemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionQuery;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
@@ -89,13 +87,13 @@ public class RemittanceTransactionController {
     return ResponseEntity.ok(queryResult.getResult());
   }
 
-  @PostMapping(path = "/inward-remittance-transaction", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(path = "/remittance-transaction", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<CommandResponse<Long>> disburseRemittanceFromBranch(
       @RequestBody @Valid RemittanceTransaction remittanceTransaction) {
     return status(CREATED)
         .body(
             commandProcessor.executeResult(
-                new CreateInwardRemittanceTransactionCommand(remittanceTransaction)));
+                new CreateRemittanceTransactionCommand(remittanceTransaction)));
   }
 
   @PostMapping(path = "/remittance-transaction/correction/{voucherNumber}")
@@ -107,26 +105,26 @@ public class RemittanceTransactionController {
                 new RemittanceTransactionCorrectionCommand(voucherNumber)));
   }
 
-  @PostMapping(
-      path = "/outward-remittance-transaction",
-      consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<CommandResponse<Long>> outgoingRemittanceFromBranch(
-      @RequestBody @Valid RemittanceTransaction remittanceTransaction) {
-    return status(CREATED)
-        .body(
-            commandProcessor.executeResult(
-                new CreateOutwardRemittanceTransactionCommand(
-                    remittanceTransaction, remittanceTransaction.getTransactionReferenceNumber())));
-  }
-
-  @GetMapping(path = "/outward-remittance-transaction/{transactionId}")
-  public ResponseEntity<?> getMt103RequestByRemittanceTransactionId(
-      @PathVariable("transactionId") Long transactionId) {
-
-    QueryResult<?> queryResult =
-        queryManager.executeQuery(new Mt103RequestRemittanceTransactionIdQuery(transactionId));
-    return ResponseEntity.ok(queryResult.getResult());
-  }
+//  @PostMapping(
+//      path = "/outward-remittance-transaction",
+//      consumes = MediaType.APPLICATION_JSON_VALUE)
+//  public ResponseEntity<CommandResponse<Long>> outgoingRemittanceFromBranch(
+//      @RequestBody @Valid RemittanceTransaction remittanceTransaction) {
+//    return status(CREATED)
+//        .body(
+//            commandProcessor.executeResult(
+//                new CreateOutwardRemittanceTransactionCommand(
+//                    remittanceTransaction, remittanceTransaction.getTransactionReferenceNumber())));
+//  }
+//
+//  @GetMapping(path = "/outward-remittance-transaction/{transactionId}")
+//  public ResponseEntity<?> getMt103RequestByRemittanceTransactionId(
+//      @PathVariable("transactionId") Long transactionId) {
+//
+//    QueryResult<?> queryResult =
+//        queryManager.executeQuery(new Mt103RequestRemittanceTransactionIdQuery(transactionId));
+//    return ResponseEntity.ok(queryResult.getResult());
+//  }
 
   @GetMapping(path = "/remittance-categories")
   public ResponseEntity<List<RemittanceCategory>> getRemittanceCategories() {

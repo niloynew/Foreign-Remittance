@@ -2,6 +2,7 @@ package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
 import com.mislbd.ababil.foreignremittance.domain.AccountType;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceTransactionStatus;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -193,4 +194,6 @@ public class RemittanceTransactionEntity extends BaseEntity {
       cascade = {CascadeType.ALL},
       mappedBy = "remittanceTransactionEntity")
   private RemittanceAdditionalInformationEntity remittanceAdditionalInformation;
+
+  private RemittanceTransactionStatus transactionStatus;
 }
