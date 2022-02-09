@@ -6,38 +6,43 @@ import com.mislbd.transaction.api.transaction.model.CbsTransaction;
 import com.mislbd.transaction.api.transaction.model.Charge;
 import com.mislbd.transaction.api.transaction.model.ChargeInformation;
 import com.mislbd.transaction.api.transaction.service.TransactionTemplateService;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TemplateBaseTransactionService {
 
-    private static final String ID_DISBURSEMENT_ACTIVITY_ID = "805";
-    private static final String ID_PAYMENT_ACTIVITY_ID = "806";
-    private final RemittanceChargeInformationService chargeInformationService;
-    private final TransactionTemplateService templateService;
+  private static final String ID_DISBURSEMENT_ACTIVITY_ID = "805";
+  private static final String ID_PAYMENT_ACTIVITY_ID = "806";
+  private final RemittanceChargeInformationService chargeInformationService;
+  private final TransactionTemplateService templateService;
 
-    public TemplateBaseTransactionService(RemittanceChargeInformationService chargeInformationService, TransactionTemplateService templateService) {
-        this.chargeInformationService = chargeInformationService;
-        this.templateService = templateService;
-    }
+  public TemplateBaseTransactionService(
+      RemittanceChargeInformationService chargeInformationService,
+      TransactionTemplateService templateService) {
+    this.chargeInformationService = chargeInformationService;
+    this.templateService = templateService;
+  }
 
-    public List<CbsTransaction> buildTransaction(RemittanceTransaction transaction) {
-        // Generate Charges for transaction
-        List<Charge> charges = chargeInformationService.getChargeInfo(transaction.getRemittanceType(), transaction.getTransactionTypeId(), transaction.getAmountLcy());
-        ChargeInformation chargeInformation = ChargeInformation.builder()
-                .charges(charges)
-                .debitAccount(transaction.getOperatingAccountNumber())
-                .debitAccountType(transaction.getOperatingAccountType())
-                .debitAccountCurrency(transaction.getOperatingAccountCurrency())
-                .build();
-        transaction.setChargeInformation(chargeInformation);
-        if(transaction.getRemittanceType() == RemittanceType.INWARD_REMITTANCE){
-            return templateService.buildTransaction(transaction, ID_DISBURSEMENT_ACTIVITY_ID);
-        } else {
-            return templateService.buildTransaction(transaction, ID_PAYMENT_ACTIVITY_ID);
-        }
+  public List<CbsTransaction> buildTransaction(RemittanceTransaction transaction) {
+    // Generate Charges for transaction
+    List<Charge> charges =
+        chargeInformationService.getChargeInfo(
+            transaction.getRemittanceType(),
+            transaction.getTransactionTypeId(),
+            transaction.getAmountLcy());
+    ChargeInformation chargeInformation =
+        ChargeInformation.builder()
+            .charges(charges)
+            .debitAccount(transaction.getOperatingAccountNumber())
+            .debitAccountType(transaction.getOperatingAccountType())
+            .debitAccountCurrency(transaction.getOperatingAccountCurrency())
+            .build();
+    transaction.setChargeInformation(chargeInformation);
+    if (transaction.getRemittanceType() == RemittanceType.INWARD_REMITTANCE) {
+      return templateService.buildTransaction(transaction, ID_DISBURSEMENT_ACTIVITY_ID);
+    } else {
+      return templateService.buildTransaction(transaction, ID_PAYMENT_ACTIVITY_ID);
     }
+  }
 }
-

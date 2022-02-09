@@ -3,9 +3,9 @@ package com.mislbd.ababil.foreignremittance.command.handler;
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.*;
+import com.mislbd.ababil.foreignremittance.domain.AdditionalInformation;
 import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecord;
 import com.mislbd.ababil.foreignremittance.domain.NostroTransactionRecordsDto;
-import com.mislbd.ababil.foreignremittance.domain.AdditionalInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.AdditionInformationMapper;
@@ -13,8 +13,8 @@ import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceAdditionalInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionRecordEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.AdditionalInformationEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.NostroTransactionRecordEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
 import com.mislbd.ababil.foreignremittance.service.SwiftRegisterService;
@@ -150,7 +150,7 @@ public class SwiftMessageCommandHandlerAggregate {
             .findTransaction(request.getTransactionReferenceNumber())
             .orElseThrow(RemittanceTransactionNotFoundException::new);
     if (messageResponse.getStatus().equalsIgnoreCase("200")) {
-//      remittanceTransaction.setPublishedToXmm(true);
+      //      remittanceTransaction.setPublishedToXmm(true);
       remittanceTransactionRepository.save(
           remittanceTransactionMapper.domainToEntity().map(remittanceTransaction));
       remittanceAdditionalInformationRepository.save(mapAdditionalInformation(request));
@@ -171,7 +171,7 @@ public class SwiftMessageCommandHandlerAggregate {
             .findTransaction(reference)
             .orElseThrow(RemittanceTransactionNotFoundException::new);
     if (messageResponse.getStatus().equalsIgnoreCase("200")) {
-//      remittanceTransaction.setAuthorizedToXmm(true);
+      //      remittanceTransaction.setAuthorizedToXmm(true);
       remittanceTransactionRepository.save(
           remittanceTransactionMapper.domainToEntity().map(remittanceTransaction));
       // remittanceAdditionalInformationRepository.save(mapAdditionalInformation(request));
@@ -212,15 +212,13 @@ public class SwiftMessageCommandHandlerAggregate {
     return CommandResponse.of(messageResponse);
   }
 
-  public AdditionalInformationEntity mapAdditionalInformation(
-      MT103MessageRequest request) {
+  public AdditionalInformationEntity mapAdditionalInformation(MT103MessageRequest request) {
 
     RemittanceTransactionEntity entity =
         remittanceTransactionRepository
             .findByTransactionReferenceNumber(request.getSendersReference())
             .orElseThrow(RemittanceTransactionNotFoundException::new);
-    AdditionalInformation additionalInformation =
-        new AdditionalInformation();
+    AdditionalInformation additionalInformation = new AdditionalInformation();
     if (entity.getAdditionalInformationEntity() != null) {
       additionalInformation.setId(entity.getAdditionalInformationEntity().getId());
     }
@@ -247,50 +245,61 @@ public class SwiftMessageCommandHandlerAggregate {
         .setEnvelopContents(request.getEnvelopeContents())
         .setRemittanceInformation(request.getRemittanceInformation())
         .setSenderToReceiverInformation(request.getSenderToReceiverInformation())
-//        .setSendingInstitutePartyIdentifier(request.getSendingInstitutePartyIdentifier())
-//        .setSendingInstituteIdentifierCode(request.getSendingInstituteIdentifierCode())
-//        .setSelectedOrderingInstitutionOption(request.getSelectedOrderingInstitutionOption())
-//        .setOrderingInstitutionPartyIdentifier(request.getOrderingInstitutionPartyIdentifier())
-//        .setOrderingInstitutionIdentifierCode(request.getOrderingInstitutionIdentifierCode())
-//        .setOrderingInstitutionPartyNameAndAddress(
-//            request.getOrderingInstitutionPartyNameAndAddress())
-//        .setSelectedSendersCorrespondentOption(request.getSelectedSendersCorrespondentOption())
-//        .setSendersCorrespondentPartyIdentifier(request.getSendersCorrespondentPartyIdentifier())
-//        .setSendersCorrespondentIdentifierCode(request.getSendersCorrespondentIdentifierCode())
-//        .setSendersCorrespondentLocation(request.getSendersCorrespondentLocation())
-//        .setSendersCorrespondentNameAndAddress(request.getSendersCorrespondentNameAndAddress())
-//        .setSelectedReceiversCorrespondentOption(request.getSelectedReceiversCorrespondentOption())
-//        .setReceiversCorrespondentPartyIdentifier(
-//            request.getReceiversCorrespondentPartyIdentifier())
-//        .setReceiversCorrespondentIdentifierCode(request.getReceiversCorrespondentIdentifierCode())
-//        .setReceiversCorrespondentLocation(request.getReceiversCorrespondentLocation())
-//        .setReceiversCorrespondentNameAndAddress(request.getReceiversCorrespondentNameAndAddress())
-//        .setSelectedThirdReimbursementInstitutionOption(
-//            request.getSelectedThirdReimbursementInstitutionOption())
-//        .setThirdReimbursementInstitutionPartyIdentifier(
-//            request.getThirdReimbursementInstitutionPartyIdentifier())
-//        .setThirdReimbursementInstitutionIdentifierCode(
-//            request.getThirdReimbursementInstitutionIdentifierCode())
-//        .setThirdReimbursementInstitutionLocation(
-//            request.getThirdReimbursementInstitutionLocation())
-//        .setThirdReimbursementInstitutionNameAndAddress(
-//            request.getThirdReimbursementInstitutionNameAndAddress())
-//        .setSelectedIntermediaryInstitutionOption(
-//            request.getSelectedIntermediaryInstitutionOption())
-//        .setIntermediaryInstitutionPartyIdentifier(
-//            request.getIntermediaryInstitutionPartyIdentifier())
-//        .setIntermediaryInstitutionIdentifierCode(
-//            request.getIntermediaryInstitutionIdentifierCode())
-//        .setIntermediaryInstitutionIdentifierNameAndAddress(
-//            request.getIntermediaryInstitutionIdentifierNameAndAddress())
-//        .setSelectedAccountWithInstitutionOption(request.getSelectedAccountWithInstitutionOption())
-//        .setAccountWithInstitutionPartyIdentifier(
-//            request.getAccountWithInstitutionPartyIdentifier())
-//        .setAccountWithInstitutionIdentifierCode(request.getAccountWithInstitutionIdentifierCode())
-//        .setAccountWithInstitutionPartyLocation(request.getAccountWithInstitutionPartyLocation())
-//        .setAccountWithInstitutionPartyNameAndAddress(
-//            request.getAccountWithInstitutionPartyNameAndAddress())
- ;
+    //        .setSendingInstitutePartyIdentifier(request.getSendingInstitutePartyIdentifier())
+    //        .setSendingInstituteIdentifierCode(request.getSendingInstituteIdentifierCode())
+    //        .setSelectedOrderingInstitutionOption(request.getSelectedOrderingInstitutionOption())
+    //
+    // .setOrderingInstitutionPartyIdentifier(request.getOrderingInstitutionPartyIdentifier())
+    //        .setOrderingInstitutionIdentifierCode(request.getOrderingInstitutionIdentifierCode())
+    //        .setOrderingInstitutionPartyNameAndAddress(
+    //            request.getOrderingInstitutionPartyNameAndAddress())
+    //
+    // .setSelectedSendersCorrespondentOption(request.getSelectedSendersCorrespondentOption())
+    //
+    // .setSendersCorrespondentPartyIdentifier(request.getSendersCorrespondentPartyIdentifier())
+    //
+    // .setSendersCorrespondentIdentifierCode(request.getSendersCorrespondentIdentifierCode())
+    //        .setSendersCorrespondentLocation(request.getSendersCorrespondentLocation())
+    //
+    // .setSendersCorrespondentNameAndAddress(request.getSendersCorrespondentNameAndAddress())
+    //
+    // .setSelectedReceiversCorrespondentOption(request.getSelectedReceiversCorrespondentOption())
+    //        .setReceiversCorrespondentPartyIdentifier(
+    //            request.getReceiversCorrespondentPartyIdentifier())
+    //
+    // .setReceiversCorrespondentIdentifierCode(request.getReceiversCorrespondentIdentifierCode())
+    //        .setReceiversCorrespondentLocation(request.getReceiversCorrespondentLocation())
+    //
+    // .setReceiversCorrespondentNameAndAddress(request.getReceiversCorrespondentNameAndAddress())
+    //        .setSelectedThirdReimbursementInstitutionOption(
+    //            request.getSelectedThirdReimbursementInstitutionOption())
+    //        .setThirdReimbursementInstitutionPartyIdentifier(
+    //            request.getThirdReimbursementInstitutionPartyIdentifier())
+    //        .setThirdReimbursementInstitutionIdentifierCode(
+    //            request.getThirdReimbursementInstitutionIdentifierCode())
+    //        .setThirdReimbursementInstitutionLocation(
+    //            request.getThirdReimbursementInstitutionLocation())
+    //        .setThirdReimbursementInstitutionNameAndAddress(
+    //            request.getThirdReimbursementInstitutionNameAndAddress())
+    //        .setSelectedIntermediaryInstitutionOption(
+    //            request.getSelectedIntermediaryInstitutionOption())
+    //        .setIntermediaryInstitutionPartyIdentifier(
+    //            request.getIntermediaryInstitutionPartyIdentifier())
+    //        .setIntermediaryInstitutionIdentifierCode(
+    //            request.getIntermediaryInstitutionIdentifierCode())
+    //        .setIntermediaryInstitutionIdentifierNameAndAddress(
+    //            request.getIntermediaryInstitutionIdentifierNameAndAddress())
+    //
+    // .setSelectedAccountWithInstitutionOption(request.getSelectedAccountWithInstitutionOption())
+    //        .setAccountWithInstitutionPartyIdentifier(
+    //            request.getAccountWithInstitutionPartyIdentifier())
+    //
+    // .setAccountWithInstitutionIdentifierCode(request.getAccountWithInstitutionIdentifierCode())
+    //
+    // .setAccountWithInstitutionPartyLocation(request.getAccountWithInstitutionPartyLocation())
+    //        .setAccountWithInstitutionPartyNameAndAddress(
+    //            request.getAccountWithInstitutionPartyNameAndAddress())
+    ;
     AdditionalInformationEntity additionalInformationEntity =
         additionInformationMapper.domainToEntity().map(additionalInformation);
     additionalInformationEntity.setRemittanceTransactionEntity(entity);

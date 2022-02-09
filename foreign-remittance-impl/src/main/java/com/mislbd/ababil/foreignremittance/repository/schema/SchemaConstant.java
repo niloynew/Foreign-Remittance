@@ -66,5 +66,4 @@ public class SchemaConstant {
 
   public static final String ID_TRANSACTION_REGISTER_TABLE_NAME = "ID_TRANSACTION_REGISTER";
   public static final String ID_TRANSACTION_REGISTER_SEQUENCE_NAME = "S_ID_TRANSACTION_REGISTER";
-
 }

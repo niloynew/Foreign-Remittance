@@ -20,8 +20,6 @@ import com.mislbd.asset.commons.data.domain.ListResultBuilder;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.asset.commons.data.domain.PagedResultBuilder;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -98,15 +96,6 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
                 beneficiaryName,
                 fromDate,
                 toDate));
-
-    Collections.sort(
-        remittanceTransactions,
-        new Comparator<RemittanceTransactionEntity>() {
-          @Override
-          public int compare(RemittanceTransactionEntity rm1, RemittanceTransactionEntity rm2) {
-            return rm2.getGlobalTransactionNo().compareTo(rm1.getGlobalTransactionNo());
-          }
-        });
     return ListResultBuilder.build(
         remittanceTransactions, remittanceTransactionMapper.entityToDomain());
   }

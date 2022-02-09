@@ -1,8 +1,6 @@
 package com.mislbd.ababil.foreignremittance.query.handler;
 
-import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.TransactionToRequestMapper;
-import com.mislbd.ababil.foreignremittance.query.Mt103RequestRemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionQuery;
 import com.mislbd.ababil.foreignremittance.service.BankTypeService;
@@ -73,13 +71,13 @@ public class RemittanceTransactionQueryHandlerAggregate {
         remittanceTransactionService.findTransaction(remittanceTransactionIdQuery.getId()));
   }
 
-  @QueryHandler
-  public QueryResult<?> getMt103RequestByRemittanceTransactionId(
-      Mt103RequestRemittanceTransactionIdQuery mt103RequestRemittanceTransactionIdQuery) {
-    return QueryResult.of(
-        transactionToRequestMapper.mapTransactionToMessageRequest(
-            remittanceTransactionService
-                .findTransaction(mt103RequestRemittanceTransactionIdQuery.getId())
-                .orElseThrow(RemittanceTransactionNotFoundException::new)));
-  }
+  //  @QueryHandler
+  //  public QueryResult<?> getMt103RequestByRemittanceTransactionId(
+  //      Mt103RequestRemittanceTransactionIdQuery mt103RequestRemittanceTransactionIdQuery) {
+  //    return QueryResult.of(
+  //        transactionToRequestMapper.mapTransactionToMessageRequest(
+  //            remittanceTransactionService
+  //                .findTransaction(mt103RequestRemittanceTransactionIdQuery.getId())
+  //                .orElseThrow(RemittanceTransactionNotFoundException::new)));
+  //  }
 }

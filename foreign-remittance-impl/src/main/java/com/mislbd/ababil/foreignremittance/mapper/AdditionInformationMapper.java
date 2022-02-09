@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AdditionInformationMapper {
 
-  public ResultMapper<AdditionalInformation, AdditionalInformationEntity>
-      domainToEntity() {
+  public ResultMapper<AdditionalInformation, AdditionalInformationEntity> domainToEntity() {
 
     return domain ->
         new AdditionalInformationEntity()
@@ -36,59 +35,10 @@ public class AdditionInformationMapper {
             .setEnvelopContents(domain.getEnvelopContents())
             .setRegulatoryReportingCNarrative(domain.getRegulatoryReportingCNarrative())
             .setRemittanceInformation(domain.getRemittanceInformation())
-            .setSenderToReceiverInformation(domain.getSenderToReceiverInformation())
-            .setSendingInstitutePartyIdentifier(domain.getSendingInstitutePartyIdentifier())
-            .setSendingInstituteIdentifierCode(domain.getSendingInstituteIdentifierCode())
-            .setSelectedOrderingInstitutionOption(domain.getSelectedOrderingInstitutionOption())
-            .setOrderingInstitutionPartyIdentifier(domain.getOrderingInstitutionPartyIdentifier())
-            .setOrderingInstitutionIdentifierCode(domain.getOrderingInstitutionIdentifierCode())
-            .setOrderingInstitutionPartyNameAndAddress(
-                domain.getOrderingInstitutionPartyNameAndAddress())
-            .setSelectedSendersCorrespondentOption(domain.getSelectedSendersCorrespondentOption())
-            .setSendersCorrespondentPartyIdentifier(domain.getSendersCorrespondentPartyIdentifier())
-            .setSendersCorrespondentIdentifierCode(domain.getSendersCorrespondentIdentifierCode())
-            .setSendersCorrespondentLocation(domain.getSendersCorrespondentLocation())
-            .setSendersCorrespondentNameAndAddress(domain.getSendersCorrespondentNameAndAddress())
-            .setSelectedReceiversCorrespondentOption(
-                domain.getSelectedReceiversCorrespondentOption())
-            .setReceiversCorrespondentPartyIdentifier(
-                domain.getReceiversCorrespondentPartyIdentifier())
-            .setReceiversCorrespondentIdentifierCode(
-                domain.getReceiversCorrespondentIdentifierCode())
-            .setReceiversCorrespondentLocation(domain.getReceiversCorrespondentLocation())
-            .setReceiversCorrespondentNameAndAddress(
-                domain.getReceiversCorrespondentNameAndAddress())
-            .setSelectedThirdReimbursementInstitutionOption(
-                domain.getSelectedThirdReimbursementInstitutionOption())
-            .setThirdReimbursementInstitutionPartyIdentifier(
-                domain.getThirdReimbursementInstitutionPartyIdentifier())
-            .setThirdReimbursementInstitutionIdentifierCode(
-                domain.getThirdReimbursementInstitutionIdentifierCode())
-            .setThirdReimbursementInstitutionLocation(
-                domain.getThirdReimbursementInstitutionLocation())
-            .setThirdReimbursementInstitutionNameAndAddress(
-                domain.getThirdReimbursementInstitutionNameAndAddress())
-            .setSelectedIntermediaryInstitutionOption(
-                domain.getSelectedIntermediaryInstitutionOption())
-            .setIntermediaryInstitutionPartyIdentifier(
-                domain.getIntermediaryInstitutionPartyIdentifier())
-            .setIntermediaryInstitutionIdentifierCode(
-                domain.getIntermediaryInstitutionIdentifierCode())
-            .setIntermediaryInstitutionIdentifierNameAndAddress(
-                domain.getIntermediaryInstitutionIdentifierNameAndAddress())
-            .setSelectedAccountWithInstitutionOption(
-                domain.getSelectedAccountWithInstitutionOption())
-            .setAccountWithInstitutionPartyIdentifier(
-                domain.getAccountWithInstitutionPartyIdentifier())
-            .setAccountWithInstitutionIdentifierCode(
-                domain.getAccountWithInstitutionIdentifierCode())
-            .setAccountWithInstitutionPartyLocation(domain.getAccountWithInstitutionPartyLocation())
-            .setAccountWithInstitutionPartyNameAndAddress(
-                domain.getAccountWithInstitutionPartyNameAndAddress());
+            .setSenderToReceiverInformation(domain.getSenderToReceiverInformation());
   }
 
-  public ResultMapper<AdditionalInformationEntity, AdditionalInformation>
-      entityToDomain() {
+  public ResultMapper<AdditionalInformationEntity, AdditionalInformation> entityToDomain() {
     return entity ->
         new AdditionalInformation()
             .setId(entity.getId())
@@ -113,54 +63,6 @@ public class AdditionInformationMapper {
             .setEnvelopContents(entity.getEnvelopContents())
             .setRegulatoryReportingCNarrative(entity.getRegulatoryReportingCNarrative())
             .setRemittanceInformation(entity.getRemittanceInformation())
-            .setSenderToReceiverInformation(entity.getSenderToReceiverInformation())
-            .setSendingInstitutePartyIdentifier(entity.getSendingInstitutePartyIdentifier())
-            .setSendingInstituteIdentifierCode(entity.getSendingInstituteIdentifierCode())
-            .setSelectedOrderingInstitutionOption(entity.getSelectedOrderingInstitutionOption())
-            .setOrderingInstitutionPartyIdentifier(entity.getOrderingInstitutionPartyIdentifier())
-            .setOrderingInstitutionIdentifierCode(entity.getOrderingInstitutionIdentifierCode())
-            .setOrderingInstitutionPartyNameAndAddress(
-                entity.getOrderingInstitutionPartyNameAndAddress())
-            .setSelectedSendersCorrespondentOption(entity.getSelectedSendersCorrespondentOption())
-            .setSendersCorrespondentPartyIdentifier(entity.getSendersCorrespondentPartyIdentifier())
-            .setSendersCorrespondentIdentifierCode(entity.getSendersCorrespondentIdentifierCode())
-            .setSendersCorrespondentLocation(entity.getSendersCorrespondentLocation())
-            .setSendersCorrespondentNameAndAddress(entity.getSendersCorrespondentNameAndAddress())
-            .setSelectedReceiversCorrespondentOption(
-                entity.getSelectedReceiversCorrespondentOption())
-            .setReceiversCorrespondentPartyIdentifier(
-                entity.getReceiversCorrespondentPartyIdentifier())
-            .setReceiversCorrespondentIdentifierCode(
-                entity.getReceiversCorrespondentIdentifierCode())
-            .setReceiversCorrespondentLocation(entity.getReceiversCorrespondentLocation())
-            .setReceiversCorrespondentNameAndAddress(
-                entity.getReceiversCorrespondentNameAndAddress())
-            .setSelectedThirdReimbursementInstitutionOption(
-                entity.getSelectedThirdReimbursementInstitutionOption())
-            .setThirdReimbursementInstitutionPartyIdentifier(
-                entity.getThirdReimbursementInstitutionPartyIdentifier())
-            .setThirdReimbursementInstitutionIdentifierCode(
-                entity.getThirdReimbursementInstitutionIdentifierCode())
-            .setThirdReimbursementInstitutionLocation(
-                entity.getThirdReimbursementInstitutionLocation())
-            .setThirdReimbursementInstitutionNameAndAddress(
-                entity.getThirdReimbursementInstitutionNameAndAddress())
-            .setSelectedIntermediaryInstitutionOption(
-                entity.getSelectedIntermediaryInstitutionOption())
-            .setIntermediaryInstitutionPartyIdentifier(
-                entity.getIntermediaryInstitutionPartyIdentifier())
-            .setIntermediaryInstitutionIdentifierCode(
-                entity.getIntermediaryInstitutionIdentifierCode())
-            .setIntermediaryInstitutionIdentifierNameAndAddress(
-                entity.getIntermediaryInstitutionIdentifierNameAndAddress())
-            .setSelectedAccountWithInstitutionOption(
-                entity.getSelectedAccountWithInstitutionOption())
-            .setAccountWithInstitutionPartyIdentifier(
-                entity.getAccountWithInstitutionPartyIdentifier())
-            .setAccountWithInstitutionIdentifierCode(
-                entity.getAccountWithInstitutionIdentifierCode())
-            .setAccountWithInstitutionPartyLocation(entity.getAccountWithInstitutionPartyLocation())
-            .setAccountWithInstitutionPartyNameAndAddress(
-                entity.getAccountWithInstitutionPartyNameAndAddress());
+            .setSenderToReceiverInformation(entity.getSenderToReceiverInformation());
   }
 }

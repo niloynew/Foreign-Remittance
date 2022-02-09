@@ -15,8 +15,6 @@ import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.security.core.NgSession;
-
-
 import com.mislbd.transaction.api.transaction.service.external.AbabilTransactionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +30,13 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final AbabilTransactionClient transactionClient;
   private final TransactionRegisterService transactionRegisterService;
 
-  public RemittanceTransactionCommandHandlerAggregate(NgSession ngSession, Auditor auditor, RemittanceTransactionMapper transactionMapper, RemittanceTransactionRepository transactionRepository, AbabilTransactionClient transactionClient, TransactionRegisterService transactionRegisterService) {
+  public RemittanceTransactionCommandHandlerAggregate(
+      NgSession ngSession,
+      Auditor auditor,
+      RemittanceTransactionMapper transactionMapper,
+      RemittanceTransactionRepository transactionRepository,
+      AbabilTransactionClient transactionClient,
+      TransactionRegisterService transactionRegisterService) {
     this.ngSession = ngSession;
     this.auditor = auditor;
     this.transactionMapper = transactionMapper;
@@ -41,10 +45,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
     this.transactionRegisterService = transactionRegisterService;
   }
 
-  @CommandListener(
-      commandClasses = {
-        CreateRemittanceTransactionCommand.class
-      })
+  @CommandListener(commandClasses = {CreateRemittanceTransactionCommand.class})
   public void auditRemittanceTransaction(CommandEvent e) {
     auditor.audit(e.getCommand().getPayload(), e.getCommand());
   }
@@ -55,19 +56,20 @@ public class RemittanceTransactionCommandHandlerAggregate {
       CreateRemittanceTransactionCommand command) {
     RemittanceTransaction transaction = command.getPayload();
     RemittanceTransactionEntity remittanceTransactionEntity =
-            transactionMapper.domainToEntity().map(transaction);
+        transactionMapper.domainToEntity().map(transaction);
     String globalTxnNumber = null;
     try {
       globalTxnNumber = transactionClient.doTransaction(transaction.getCbsTransactions());
       remittanceTransactionEntity.setTransactionStatus(RemittanceTransactionStatus.Succeed);
       saveTransactionEntity(remittanceTransactionEntity);
-      transactionRegisterService.doRegister(transaction.getCbsTransactions(), remittanceTransactionEntity.getId());
-    } catch (Exception e){
+      transactionRegisterService.doRegister(
+          transaction.getCbsTransactions(), remittanceTransactionEntity.getId());
+    } catch (Exception e) {
       log.error("Error in Feign transaction", e.getMessage());
       remittanceTransactionEntity.setTransactionStatus(RemittanceTransactionStatus.Failed);
       saveTransactionEntity(remittanceTransactionEntity);
     }
-      return CommandResponse.of(Long.valueOf(globalTxnNumber));
+    return CommandResponse.of(Long.valueOf(globalTxnNumber));
   }
 
   @Transactional
@@ -76,20 +78,22 @@ public class RemittanceTransactionCommandHandlerAggregate {
       RemittanceTransactionCorrectionCommand command) {
 
     Long globalTxnNumber = command.getPayload();
-    try{
+    try {
       transactionClient.doCorrection(globalTxnNumber);
       transactionRegisterService.invalidRegister(globalTxnNumber);
-      RemittanceTransactionEntity entity = transactionRepository.findById(command.getRemittanceTransactionId()).orElseThrow(RemittanceTransactionNotFoundException::new);
+      RemittanceTransactionEntity entity =
+          transactionRepository
+              .findById(command.getRemittanceTransactionId())
+              .orElseThrow(RemittanceTransactionNotFoundException::new);
       entity.setTransactionStatus(RemittanceTransactionStatus.Reversed);
       saveTransactionEntity(entity);
-    } catch (Exception e){
+    } catch (Exception e) {
       log.error("Error in Feign reverse transaction", e.getMessage());
     }
     return CommandResponse.of(command.getPayload());
   }
 
-  private void saveTransactionEntity(
-      RemittanceTransactionEntity entity) {
+  private void saveTransactionEntity(RemittanceTransactionEntity entity) {
     transactionRepository.save(entity);
   }
 }

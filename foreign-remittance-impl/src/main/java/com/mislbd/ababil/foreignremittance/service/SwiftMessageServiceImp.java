@@ -5,7 +5,6 @@ import com.mislbd.ababil.approvalflow.repository.jpa.ApprovalFlowTaskInstanceRep
 import com.mislbd.ababil.approvalflow.service.ApprovalFlowTaskInstanceService;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceMessageDto;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.XmmMessageType;
 import com.mislbd.ababil.foreignremittance.domain.XmmRequest;
 import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
@@ -13,7 +12,6 @@ import com.mislbd.ababil.foreignremittance.mapper.TransactionToRequestMapper;
 import com.mislbd.asset.commons.data.domain.PagedResult;
 import com.mislbd.security.core.NgSession;
 import com.mislbd.swift.broker.model.MessageResponse;
-import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.XmmIntegrationService;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -89,39 +87,42 @@ public class SwiftMessageServiceImp implements SwiftMsgService {
   }
 
   private MessageResponse processMT103(XmmRequest xmmRequest) throws IOException {
-    if (approvalFlowTaskInstanceRepository
-        .findFirstByDomainGroupAndDomainReference(
-            xmmRequest.getDomainGroup(), xmmRequest.getReferenceNumber())
-        .isPresent()) {
-
-      long Id =
-          approvalFlowTaskInstanceRepository
-              .findFirstByDomainGroupAndDomainReference(
-                  xmmRequest.getDomainGroup(), xmmRequest.getReferenceNumber())
-              .get()
-              .getId();
-
-      RemittanceTransaction remittanceTransaction =
-          objectMapper.readValue(
-              approvalFlowTaskInstanceService.getApprovalFlowTaskInstancePayload(Id).get(),
-              RemittanceTransaction.class);
-
-      MT103MessageRequest mt103MessageRequest =
-          transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
-      mt103MessageRequest.setEntryUser(ngSession.getUsername());
-      mt103MessageRequest.setEntryUserBranch(
-          String.valueOf(ngSession.getUserBranch()).concat("00"));
-      mt103MessageRequest.setTransactionReferenceNumber(
-          remittanceTransaction.getTransactionReferenceNumber());
-      mt103MessageRequest.setApplicationDate(configurationService.getCurrentApplicationDate());
-      return xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
-    } else if (remittanceTransactionService
-        .findTransaction(xmmRequest.getReferenceNumber())
-        .isPresent()) {
-      return xmmIntegrationService.authorizeCategoryNMessage(xmmRequest.getReferenceNumber());
-    } else {
-      throw new ForeignRemittanceBaseException(
-          "Outward transaction not found with reference number " + xmmRequest.getReferenceNumber());
-    }
+    //    if (approvalFlowTaskInstanceRepository
+    //        .findFirstByDomainGroupAndDomainReference(
+    //            xmmRequest.getDomainGroup(), xmmRequest.getReferenceNumber())
+    //        .isPresent()) {
+    //
+    //      long Id =
+    //          approvalFlowTaskInstanceRepository
+    //              .findFirstByDomainGroupAndDomainReference(
+    //                  xmmRequest.getDomainGroup(), xmmRequest.getReferenceNumber())
+    //              .get()
+    //              .getId();
+    //
+    //      RemittanceTransaction remittanceTransaction =
+    //          objectMapper.readValue(
+    //              approvalFlowTaskInstanceService.getApprovalFlowTaskInstancePayload(Id).get(),
+    //              RemittanceTransaction.class);
+    //
+    //      MT103MessageRequest mt103MessageRequest =
+    //          transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
+    //      mt103MessageRequest.setEntryUser(ngSession.getUsername());
+    //      mt103MessageRequest.setEntryUserBranch(
+    //          String.valueOf(ngSession.getUserBranch()).concat("00"));
+    //      mt103MessageRequest.setTransactionReferenceNumber(
+    //          remittanceTransaction.getTransactionReferenceNumber());
+    //
+    // mt103MessageRequest.setApplicationDate(configurationService.getCurrentApplicationDate());
+    //      return xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
+    //    } else if (remittanceTransactionService
+    //        .findTransaction(xmmRequest.getReferenceNumber())
+    //        .isPresent()) {
+    //      return xmmIntegrationService.authorizeCategoryNMessage(xmmRequest.getReferenceNumber());
+    //    } else {
+    //      throw new ForeignRemittanceBaseException(
+    //          "Outward transaction not found with reference number " +
+    // xmmRequest.getReferenceNumber());
+    //    }
+    return null;
   }
 }

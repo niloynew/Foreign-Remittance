@@ -1,8 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
-import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.SwiftRegister;
-import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
 import com.mislbd.ababil.foreignremittance.exception.SwiftRegisterNotFoundException;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.mapper.SwiftRegisterMapper;
@@ -139,20 +137,21 @@ public class SwiftRegisterServiceImpl implements SwiftRegisterService {
 
   @Override
   public MT103MessageRequest getMessageRequestByRegisterId(Long id) {
-    SwiftRegister swiftRegister =
-        swiftRegisterMapper
-            .entityToDomain()
-            .map(
-                swiftRegisterRepository
-                    .findById(id)
-                    .orElseThrow(SwiftRegisterNotFoundException::new));
-
-    RemittanceTransaction remittanceTransaction =
-        remittanceTransactionRepository
-            .findByTransactionReferenceNumber(swiftRegister.getReferenceNo())
-            .map(remittanceTransactionMapper.entityToDomain()::map)
-            .orElseThrow(RemittanceTransactionNotFoundException::new);
-
-    return transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
+    //    SwiftRegister swiftRegister =
+    //        swiftRegisterMapper
+    //            .entityToDomain()
+    //            .map(
+    //                swiftRegisterRepository
+    //                    .findById(id)
+    //                    .orElseThrow(SwiftRegisterNotFoundException::new));
+    //
+    //    RemittanceTransaction remittanceTransaction =
+    //        remittanceTransactionRepository
+    //            .findByTransactionReferenceNumber(swiftRegister.getReferenceNo())
+    //            .map(remittanceTransactionMapper.entityToDomain()::map)
+    //            .orElseThrow(RemittanceTransactionNotFoundException::new);
+    //
+    //    return transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
+    return null;
   }
 }

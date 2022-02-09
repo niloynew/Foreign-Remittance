@@ -1,9 +1,8 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
-import javax.persistence.*;
-
 import com.mislbd.ababil.foreignremittance.domain.BankType;
 import com.mislbd.swift.broker.model.raw.SelectOptions;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -26,15 +25,20 @@ public class BankMappingEntity {
 
   @Column(name = "Option")
   private SelectOptions option;
+
   @Column(name = "BANK_TYPE")
   private BankType bankType;
-  @Column (name = "PARTY_IDENTIFIER")
+
+  @Column(name = "PARTY_IDENTIFIER")
   private String partyIdentifier;
-  @Column (name = "IDENTIFIER_CODE")
+
+  @Column(name = "IDENTIFIER_CODE")
   private String identifierCode;
-  @Column (name = "LOCATION")
+
+  @Column(name = "LOCATION")
   private String location;
-  @Column (name = "NAME_AND_ADDRESS")
+
+  @Column(name = "NAME_AND_ADDRESS")
   private String nameAndAddress;
 
   @ManyToOne

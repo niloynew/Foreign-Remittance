@@ -1,14 +1,11 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.NotNull;
 import com.mislbd.transaction.api.transaction.model.AccountType;
 import com.mislbd.transaction.api.transaction.model.CbsTransaction;
 import com.mislbd.transaction.api.transaction.model.ChargeInformation;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -18,51 +15,52 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class RemittanceTransaction {
 
-    // General Information
-    private long id;
-    private RemittanceType remittanceType;
-    private Long categoryId;
-    private Long transactionTypeId;
-    private String transactionReferenceNumber;
-    private String ppCode;
-    private String instrumentNumber;
-    private Long cbFundSourceId;
-    private Long applicantId;
-    private String applicantAccountNumber;
-    private Long beneficiaryId;
-    private String beneficiaryAccountNumber;
-    private String senderBIC;
-    private String receiverBIC;
+  // General Information
+  private long id;
+  private RemittanceType remittanceType;
+  private Long categoryId;
+  private Long transactionTypeId;
+  private String transactionReferenceNumber;
+  private String ppCode;
+  private String instrumentNumber;
+  private Long cbFundSourceId;
+  private Long applicantId;
+  private String applicantAccountNumber;
+  private Long beneficiaryId;
+  private String beneficiaryAccountNumber;
+  private String senderBIC;
+  private String receiverBIC;
 
-    // Transactional Information
-    private AccountType shadowAccountType;
-    private String shadowAccountNumber;
-    private String shadowAccountCurrency;
+  // Transactional Information
+  private AccountType shadowAccountType;
+  private String shadowAccountNumber;
+  private String shadowAccountCurrency;
 
-    private AccountType operatingAccountType;
-    private String operatingAccountNumber;
-    private String operatingAccountCurrency;
+  private AccountType operatingAccountType;
+  private String operatingAccountNumber;
+  private String operatingAccountCurrency;
 
-    private Long operatingRateTypeId;
-    private BigDecimal operatingRate;
-    private BigDecimal amountFcy;
-    private BigDecimal amountRcy;
-    private Long adjustmentRefIdForOperation;
+  private Long operatingRateTypeId;
+  private BigDecimal operatingRate;
+  private BigDecimal amountFcy;
+  private BigDecimal amountRcy;
+  private Long adjustmentRefIdForOperation;
 
-    private Long chargeRateTypeId;
-    private BigDecimal chargeRate;
-    private BigDecimal amountLcy;
+  private Long chargeRateTypeId;
+  private BigDecimal chargeRate;
+  private BigDecimal amountLcy;
 
-    private ChargeInformation chargeInformation;
+  private LocalDate valueDate;
 
-    private LocalDate valueDate;
+  // Bank information
+  private List<BankInformation> bankInformations;
 
-    // Bank information
-    private List<BankInformation> bankInformations;
+  // Other information
+  private AdditionalInformation additionalInformation;
 
-    // Other information
-    private AdditionalInformation additionalInformation;
+  private Long initiatorBranchId;
 
-    // Transaction build data
-    private List<CbsTransaction> cbsTransactions;
+  // Transaction build data
+  private ChargeInformation chargeInformation;
+  private List<CbsTransaction> cbsTransactions;
 }

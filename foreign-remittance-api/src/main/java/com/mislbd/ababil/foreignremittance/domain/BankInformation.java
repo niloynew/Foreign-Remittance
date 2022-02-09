@@ -17,5 +17,4 @@ public class BankInformation {
   private String identifierCode;
   private String location;
   private String nameAndAddress;
-
 }

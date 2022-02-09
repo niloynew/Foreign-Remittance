@@ -9,16 +9,10 @@ import org.springframework.stereotype.Component;
 public class BankInformationMapper {
 
   public ResultMapper<BankInformation, BankMappingEntity> domainToEntity() {
-    return domain ->
-        new BankMappingEntity()
-            .setSwiftCode(domain.getSwiftCode())
-            .setBankTypeId(domain.getBankTypeId());
+    return domain -> new BankMappingEntity();
   }
 
   public ResultMapper<BankMappingEntity, BankInformation> entityToDomain() {
-    return entity ->
-        new BankInformation()
-            .setSwiftCode(entity.getSwiftCode())
-            .setBankTypeId(entity.getBankTypeId());
+    return entity -> new BankInformation();
   }
 }

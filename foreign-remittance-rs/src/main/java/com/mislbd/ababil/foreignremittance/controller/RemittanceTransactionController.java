@@ -96,35 +96,14 @@ public class RemittanceTransactionController {
                 new CreateRemittanceTransactionCommand(remittanceTransaction)));
   }
 
-  @PostMapping(path = "/remittance-transaction/correction/{voucherNumber}")
+  @PostMapping(path = "/remittance-transaction/{id}/correction/{voucherNumber}")
   public ResponseEntity<CommandResponse<String>> correctionRemittanceTransaction(
-      @PathVariable("voucherNumber") Long voucherNumber) {
+      @PathVariable("id") Long id, @PathVariable("voucherNumber") Long voucherNumber) {
     return status(ACCEPTED)
         .body(
             commandProcessor.executeResult(
-                new RemittanceTransactionCorrectionCommand(voucherNumber)));
+                new RemittanceTransactionCorrectionCommand(voucherNumber, id)));
   }
-
-//  @PostMapping(
-//      path = "/outward-remittance-transaction",
-//      consumes = MediaType.APPLICATION_JSON_VALUE)
-//  public ResponseEntity<CommandResponse<Long>> outgoingRemittanceFromBranch(
-//      @RequestBody @Valid RemittanceTransaction remittanceTransaction) {
-//    return status(CREATED)
-//        .body(
-//            commandProcessor.executeResult(
-//                new CreateOutwardRemittanceTransactionCommand(
-//                    remittanceTransaction, remittanceTransaction.getTransactionReferenceNumber())));
-//  }
-//
-//  @GetMapping(path = "/outward-remittance-transaction/{transactionId}")
-//  public ResponseEntity<?> getMt103RequestByRemittanceTransactionId(
-//      @PathVariable("transactionId") Long transactionId) {
-//
-//    QueryResult<?> queryResult =
-//        queryManager.executeQuery(new Mt103RequestRemittanceTransactionIdQuery(transactionId));
-//    return ResponseEntity.ok(queryResult.getResult());
-//  }
 
   @GetMapping(path = "/remittance-categories")
   public ResponseEntity<List<RemittanceCategory>> getRemittanceCategories() {

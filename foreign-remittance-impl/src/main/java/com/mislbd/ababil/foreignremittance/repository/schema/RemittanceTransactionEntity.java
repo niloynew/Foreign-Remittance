@@ -1,15 +1,13 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.asset.repository.schema.BaseEntity;
-
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransactionStatus;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
+import com.mislbd.transaction.api.transaction.model.AccountType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.*;
-
-import com.mislbd.transaction.api.transaction.model.AccountType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -40,8 +38,6 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   @Column(name = "PP_CODE")
   private String ppCode;
-
-
 
   @Column(name = "TRANSACTION_REFERENCE_NUMBER")
   private String transactionReferenceNumber;
@@ -131,9 +127,6 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   @Column(name = "CHARGE_RATE")
   private BigDecimal chargeRate;
-
-  /*@OneToMany(fetch = FetchType.LAZY, mappedBy = "remittanceTransaction")
-  private List<RemittanceChargeInformationEntity> chargeInformationEntities;*/
 
   @OneToOne(
       fetch = FetchType.LAZY,

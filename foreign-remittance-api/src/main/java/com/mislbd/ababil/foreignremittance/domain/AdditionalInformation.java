@@ -47,5 +47,4 @@ public class AdditionalInformation {
   private String regulatoryReportingCountryCode;
   private String regulatoryReportingCNarrative;
   private String envelopContents;
-
 }
