@@ -3,7 +3,6 @@ package com.mislbd.ababil.foreignremittance.controller;
 import com.mislbd.ababil.foreignremittance.domain.CbsTemplateTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.service.TemplateBaseTransactionService;
-import com.mislbd.transaction.api.transaction.model.CbsTransaction;
 import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

@@ -38,11 +38,14 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final ConfigurationService configurationService;
 
   public RemittanceTransactionCommandHandlerAggregate(
-          NgSession ngSession,
-          Auditor auditor,
-          RemittanceTransactionMapper transactionMapper,
-          RemittanceTransactionRepository transactionRepository,
-          TransactionRegisterService transactionRegisterService, BatchApiClient batchApiClient, ApiTransactionMapper apiTransactionMapper, ConfigurationService configurationService) {
+      NgSession ngSession,
+      Auditor auditor,
+      RemittanceTransactionMapper transactionMapper,
+      RemittanceTransactionRepository transactionRepository,
+      TransactionRegisterService transactionRegisterService,
+      BatchApiClient batchApiClient,
+      ApiTransactionMapper apiTransactionMapper,
+      ConfigurationService configurationService) {
     this.ngSession = ngSession;
     this.auditor = auditor;
     this.transactionMapper = transactionMapper;
@@ -67,7 +70,8 @@ public class RemittanceTransactionCommandHandlerAggregate {
         transactionMapper.domainToEntity().map(transaction);
     ResponseEntity<?> response = null;
     try {
-      ApiTransactionRequest request = apiTransactionMapper.cbsTransactionToApiRequest().map(transaction.getCbsTransactions());
+      ApiTransactionRequest request =
+          apiTransactionMapper.cbsTransactionToApiRequest().map(transaction.getCbsTransactions());
       request.setRequestId(null);
       request.setValueDate(transaction.getValueDate());
       request.setInitiatorBranchId(transaction.getInitiatorBranchId());
@@ -86,7 +90,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
       remittanceTransactionEntity.setTransactionStatus(RemittanceTransactionStatus.Failed);
       saveTransactionEntity(remittanceTransactionEntity);
     }
-    if(response != null){
+    if (response != null) {
       return CommandResponse.of(response.getBody().toString());
     } else {
       throw new ForeignRemittanceBaseException("Transaction Failed");
@@ -100,7 +104,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
 
     Long globalTxnNumber = command.getPayload();
     try {
-//      transactionClient.doCorrection(globalTxnNumber);
+      //      transactionClient.doCorrection(globalTxnNumber);
       transactionRegisterService.invalidRegister(globalTxnNumber);
       RemittanceTransactionEntity entity =
           transactionRepository

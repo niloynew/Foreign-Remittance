@@ -6,7 +6,6 @@ import com.mislbd.ababil.foreignremittance.mapper.TransactionRegisterMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionRegisterRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.TransactionRegisterEntity;
 import com.mislbd.asset.commons.data.domain.ListResultBuilder;
-import com.mislbd.transaction.api.transaction.model.CbsTransaction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

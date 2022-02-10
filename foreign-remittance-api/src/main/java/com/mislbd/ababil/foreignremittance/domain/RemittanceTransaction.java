@@ -1,7 +1,6 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
 import com.mislbd.transaction.api.transaction.model.AccountType;
-import com.mislbd.transaction.api.transaction.model.CbsTransaction;
 import com.mislbd.transaction.api.transaction.model.ChargeInformation;
 import java.math.BigDecimal;
 import java.time.LocalDate;

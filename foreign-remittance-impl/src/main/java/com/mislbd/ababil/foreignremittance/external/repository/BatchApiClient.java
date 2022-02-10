@@ -8,21 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(
-        name = "ababil-batch-transaction",
-        url = "${mislbd.api.gatewayUrl}/ababil-batch-transaction"
-)
+    name = "ababil-batch-transaction",
+    url = "${mislbd.api.gatewayUrl}/ababil-batch-transaction")
 public interface BatchApiClient {
 
-    @RequestMapping(
-            method = {RequestMethod.POST},
-            value = {"/api-transaction"}
-    )
-    ResponseEntity<?> doBatchApiTransaction(ApiTransactionRequest var1);
+  @RequestMapping(
+      method = {RequestMethod.POST},
+      value = {"/api-transaction"})
+  ResponseEntity<?> doBatchApiTransaction(ApiTransactionRequest var1);
 
-    @RequestMapping(
-            method = {RequestMethod.POST},
-            value = {"/api-transaction/correction"}
-    )
-    ResponseEntity<?> doApiTxnCorrection(TransactionCorrectionRequest var1);
-
+  @RequestMapping(
+      method = {RequestMethod.POST},
+      value = {"/api-transaction/correction"})
+  ResponseEntity<?> doApiTxnCorrection(TransactionCorrectionRequest var1);
 }
