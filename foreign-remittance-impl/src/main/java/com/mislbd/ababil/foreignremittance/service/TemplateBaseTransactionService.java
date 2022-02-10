@@ -1,11 +1,14 @@
 package com.mislbd.ababil.foreignremittance.service;
 
+import com.mislbd.ababil.foreignremittance.domain.CbsTemplateTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.transaction.api.transaction.model.CbsTransaction;
 import com.mislbd.transaction.api.transaction.model.Charge;
 import com.mislbd.transaction.api.transaction.model.ChargeInformation;
 import com.mislbd.transaction.api.transaction.service.TransactionTemplateService;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +27,7 @@ public class TemplateBaseTransactionService {
     this.templateService = templateService;
   }
 
-  public List<CbsTransaction> buildTransaction(RemittanceTransaction transaction) {
+  public List<CbsTemplateTransaction> buildTransaction(RemittanceTransaction transaction) {
     // Generate Charges for transaction
     List<Charge> charges =
         chargeInformationService.getChargeInfo(
@@ -39,10 +42,13 @@ public class TemplateBaseTransactionService {
             .debitAccountCurrency(transaction.getOperatingAccountCurrency())
             .build();
     transaction.setChargeInformation(chargeInformation);
+      List<CbsTemplateTransaction> cbsTemplateTransactions = new ArrayList<>();
+      // mapper for CbsTransactions to CbsTemplateTransactions
     if (transaction.getRemittanceType() == RemittanceType.INWARD_REMITTANCE) {
-      return templateService.buildTransaction(transaction, ID_DISBURSEMENT_ACTIVITY_ID);
+      List<CbsTransaction> cbsTransactions = templateService.buildTransaction(transaction, ID_DISBURSEMENT_ACTIVITY_ID);
     } else {
-      return templateService.buildTransaction(transaction, ID_PAYMENT_ACTIVITY_ID);
+//        cbsTransactions = templateService.buildTransaction(transaction, ID_PAYMENT_ACTIVITY_ID);
     }
+    return cbsTemplateTransactions;
   }
 }

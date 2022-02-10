@@ -62,5 +62,5 @@ public class RemittanceTransaction {
 
   // Transaction build data
   private ChargeInformation chargeInformation;
-  private List<CbsTransaction> cbsTransactions;
+  private List<CbsTemplateTransaction> cbsTransactions;
 }

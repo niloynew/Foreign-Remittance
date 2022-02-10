@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.controller;
 
+import com.mislbd.ababil.foreignremittance.domain.CbsTemplateTransaction;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.service.TemplateBaseTransactionService;
 import com.mislbd.transaction.api.transaction.model.CbsTransaction;
@@ -22,7 +23,7 @@ public class TemplateBaseTransactionController {
       path = {"build"},
       method = {RequestMethod.POST},
       consumes = {"application/json"})
-  public ResponseEntity<List<CbsTransaction>> buildTransaction(
+  public ResponseEntity<List<CbsTemplateTransaction>> buildTransaction(
       @RequestBody RemittanceTransaction remittanceTransaction) {
     return ResponseEntity.ok(transactionService.buildTransaction(remittanceTransaction));
   }

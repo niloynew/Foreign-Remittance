@@ -1,10 +1,15 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
 import com.mislbd.ababil.asset.service.Auditor;
+import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.RemittanceTransactionCorrectionCommand;
 import com.mislbd.ababil.foreignremittance.domain.*;
+import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
+import com.mislbd.ababil.foreignremittance.external.domain.ApiTransactionRequest;
+import com.mislbd.ababil.foreignremittance.external.mapper.ApiTransactionMapper;
+import com.mislbd.ababil.foreignremittance.external.repository.BatchApiClient;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
@@ -15,8 +20,8 @@ import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.security.core.NgSession;
-import com.mislbd.transaction.api.transaction.service.external.AbabilTransactionClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Aggregate
@@ -27,22 +32,25 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final Auditor auditor;
   private final RemittanceTransactionMapper transactionMapper;
   private final RemittanceTransactionRepository transactionRepository;
-  private final AbabilTransactionClient transactionClient;
   private final TransactionRegisterService transactionRegisterService;
+  private final BatchApiClient batchApiClient;
+  private final ApiTransactionMapper apiTransactionMapper;
+  private final ConfigurationService configurationService;
 
   public RemittanceTransactionCommandHandlerAggregate(
-      NgSession ngSession,
-      Auditor auditor,
-      RemittanceTransactionMapper transactionMapper,
-      RemittanceTransactionRepository transactionRepository,
-      AbabilTransactionClient transactionClient,
-      TransactionRegisterService transactionRegisterService) {
+          NgSession ngSession,
+          Auditor auditor,
+          RemittanceTransactionMapper transactionMapper,
+          RemittanceTransactionRepository transactionRepository,
+          TransactionRegisterService transactionRegisterService, BatchApiClient batchApiClient, ApiTransactionMapper apiTransactionMapper, ConfigurationService configurationService) {
     this.ngSession = ngSession;
     this.auditor = auditor;
     this.transactionMapper = transactionMapper;
     this.transactionRepository = transactionRepository;
-    this.transactionClient = transactionClient;
     this.transactionRegisterService = transactionRegisterService;
+    this.batchApiClient = batchApiClient;
+    this.apiTransactionMapper = apiTransactionMapper;
+    this.configurationService = configurationService;
   }
 
   @CommandListener(commandClasses = {CreateRemittanceTransactionCommand.class})
@@ -52,14 +60,23 @@ public class RemittanceTransactionCommandHandlerAggregate {
 
   @Transactional
   @CommandHandler
-  public CommandResponse<Long> createRemittanceTransaction(
+  public CommandResponse<String> createRemittanceTransaction(
       CreateRemittanceTransactionCommand command) {
     RemittanceTransaction transaction = command.getPayload();
     RemittanceTransactionEntity remittanceTransactionEntity =
         transactionMapper.domainToEntity().map(transaction);
-    String globalTxnNumber = null;
+    ResponseEntity<?> response = null;
     try {
-      globalTxnNumber = transactionClient.doTransaction(transaction.getCbsTransactions());
+      ApiTransactionRequest request = apiTransactionMapper.cbsTransactionToApiRequest().map(transaction.getCbsTransactions());
+      request.setRequestId(null);
+      request.setValueDate(transaction.getValueDate());
+      request.setInitiatorBranchId(transaction.getInitiatorBranchId());
+      request.setInitiatorModule("ID");
+      request.setReferenceNumber(null);
+      request.setTransactionDate(configurationService.getCurrentApplicationDate());
+      request.setVerifyUser(ngSession.getUsername());
+      request.setVerifyUserTerminal(ngSession.getTerminal());
+      response = batchApiClient.doBatchApiTransaction(request);
       remittanceTransactionEntity.setTransactionStatus(RemittanceTransactionStatus.Succeed);
       saveTransactionEntity(remittanceTransactionEntity);
       transactionRegisterService.doRegister(
@@ -69,7 +86,11 @@ public class RemittanceTransactionCommandHandlerAggregate {
       remittanceTransactionEntity.setTransactionStatus(RemittanceTransactionStatus.Failed);
       saveTransactionEntity(remittanceTransactionEntity);
     }
-    return CommandResponse.of(Long.valueOf(globalTxnNumber));
+    if(response != null){
+      return CommandResponse.of(response.getBody().toString());
+    } else {
+      throw new ForeignRemittanceBaseException("Transaction Failed");
+    }
   }
 
   @Transactional
@@ -79,7 +100,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
 
     Long globalTxnNumber = command.getPayload();
     try {
-      transactionClient.doCorrection(globalTxnNumber);
+//      transactionClient.doCorrection(globalTxnNumber);
       transactionRegisterService.invalidRegister(globalTxnNumber);
       RemittanceTransactionEntity entity =
           transactionRepository

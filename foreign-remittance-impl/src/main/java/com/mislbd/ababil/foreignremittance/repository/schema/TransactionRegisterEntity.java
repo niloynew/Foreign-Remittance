@@ -50,5 +50,6 @@ public class TransactionRegisterEntity {
   private Long initiatorBranchId;
   private boolean ibtaRequired;
   private Long remittanceTransactionId;
+  private Long adjReferenceId;
   private boolean valid;
 }

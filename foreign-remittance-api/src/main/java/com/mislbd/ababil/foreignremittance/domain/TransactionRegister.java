@@ -42,5 +42,6 @@ public class TransactionRegister {
   private boolean ibtaRequired;
   private IbtaInformation ibtaInformation;
   private Long remittanceTransactionId;
+  private Long adjReferenceId;
   private boolean valid;
 }

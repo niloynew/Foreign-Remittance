@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
+import com.mislbd.ababil.foreignremittance.domain.CbsTemplateTransaction;
 import com.mislbd.ababil.foreignremittance.domain.TransactionRegister;
 import com.mislbd.ababil.foreignremittance.mapper.TransactionRegisterMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionRegisterRepository;
@@ -25,7 +26,7 @@ public class TransactionRegisterServiceImpl implements TransactionRegisterServic
   }
 
   @Override
-  public void doRegister(List<CbsTransaction> transactions, Long remittanceTransactionId) {
+  public void doRegister(List<CbsTemplateTransaction> transactions, Long remittanceTransactionId) {
     List<TransactionRegisterEntity> registerEntities = new ArrayList<>();
     if (transactions != null && !transactions.isEmpty() && remittanceTransactionId != null) {
       transactions.forEach(
