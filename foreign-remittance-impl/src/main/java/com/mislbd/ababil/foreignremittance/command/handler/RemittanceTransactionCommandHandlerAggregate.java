@@ -76,7 +76,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
       request.setValueDate(transaction.getValueDate());
       request.setInitiatorBranchId(transaction.getInitiatorBranchId());
       request.setInitiatorModule("ID");
-      request.setReferenceNumber(null);
+      request.setReferenceNumber(transaction.getTransactionReferenceNumber());
       request.setTransactionDate(configurationService.getCurrentApplicationDate());
       request.setVerifyUser(ngSession.getUsername());
       request.setVerifyUserTerminal(ngSession.getTerminal());
