@@ -41,16 +41,24 @@ public class TemplateBaseTransactionService {
 
   public List<CbsTemplateTransaction> buildTransaction(RemittanceTransaction transaction) {
     // Generate Charges for transaction
-    Long chargeRateType =
+    Long rateType =
         Long.valueOf(
             configurationService
-                .getConfiguration("ID_CHARGE_RATE_TYPE")
-                .orElseThrow(() -> new ForeignRemittanceBaseException("Charge Rate Type not found"))
+                .getConfiguration("ID_RATE_TYPE")
+                .orElseThrow(() -> new ForeignRemittanceBaseException("Rate Type not found"))
                 .getValue());
     String baseCurrency = configurationService.getBaseCurrencyCode();
+    BigDecimal operatingRate =
+        exchangeRateService
+            .findExchangeRate(
+                transaction.getShadowAccountCurrency(),
+                transaction.getOperatingAccountCurrency(),
+                rateType)
+            .getExchangeRate();
+    transaction.setAmountRcy(transaction.getAmountFcy().multiply(operatingRate));
     BigDecimal chargeRate =
         exchangeRateService
-            .findExchangeRate(transaction.getShadowAccountCurrency(), baseCurrency, chargeRateType)
+            .findExchangeRate(transaction.getShadowAccountCurrency(), baseCurrency, rateType)
             .getExchangeRate();
     List<Charge> charges =
         chargeInformationService.getChargeInfo(
