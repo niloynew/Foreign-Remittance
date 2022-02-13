@@ -5,7 +5,8 @@ import com.mislbd.ababil.foreignremittance.domain.TransactionRegister;
 import java.util.List;
 
 public interface TransactionRegisterService {
-  void doRegister(List<CbsTemplateTransaction> transactions, Long remittanceTransactionId);
+  void doRegister(
+      List<CbsTemplateTransaction> transactions, Long voucherNumber, Long remittanceTransactionId);
 
   List<TransactionRegister> findTransactionRegisterByGlobalTxnNumber(Long globalTxnNumber);
 

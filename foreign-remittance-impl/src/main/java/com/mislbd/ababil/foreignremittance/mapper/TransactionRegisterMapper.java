@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransactionRegisterMapper {
 
-  public ResultMapper<CbsTemplateTransaction, TransactionRegisterEntity> cbsDomainEntity() {
+  public ResultMapper<CbsTemplateTransaction, TransactionRegisterEntity> cbsDomainEntity(
+      Long voucherNumber) {
     return txn ->
         new TransactionRegisterEntity()
             .setSetNumber(txn.getSetNumber())
@@ -28,7 +29,7 @@ public class TransactionRegisterMapper {
             .setAccountCurrencyCode(txn.getAccountCurrencyCode())
             .setCurrencyCode(txn.getCurrencyCode())
             .setValueDate(txn.getValueDate())
-            .setVoucherNumber(txn.getVoucherNumber())
+            .setVoucherNumber(voucherNumber)
             .setReferenceNumber(txn.getReferenceNumber())
             .setAccountBranchId(txn.getAccountBranchId())
             .setInitiatorBranchId(txn.getInitiatorBranchId())

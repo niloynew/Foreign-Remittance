@@ -18,4 +18,7 @@ public interface RemittanceTransactionRepository
   @Modifying(clearAutomatically = true)
   @Query(value = "UPDATE RemittanceTransactionEntity SET customerId=?1 WHERE customerId IN ?2")
   void updateCustomerIds(Long originalCustomerId, List<Long> duplicateCustomerId);
+
+  @Query(value = "SELECT S_ID_REQUEST_REFERENCE_NUMBER.nextval FROM dual", nativeQuery = true)
+  Long generateRequestIdSequence();
 }

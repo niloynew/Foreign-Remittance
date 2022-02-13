@@ -1,6 +1,7 @@
 package com.mislbd.ababil.foreignremittance.external.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import lombok.experimental.Accessors;
 public class ApiTransactionRequest {
 
   private String requestId;
+  private LocalDateTime requestDateTime;
   private String referenceNumber;
   private LocalDate valueDate;
   private LocalDate transactionDate;

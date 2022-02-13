@@ -43,10 +43,6 @@ public class RemittanceTransaction {
   private BigDecimal operatingRate;
   private BigDecimal amountFcy;
   private BigDecimal amountRcy;
-  private Long adjustmentRefIdForOperation;
-
-  private Long chargeRateTypeId;
-  private BigDecimal chargeRate;
   private BigDecimal amountLcy;
 
   private LocalDate valueDate;

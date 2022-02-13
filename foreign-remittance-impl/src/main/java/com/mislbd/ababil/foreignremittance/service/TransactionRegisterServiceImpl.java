@@ -25,13 +25,14 @@ public class TransactionRegisterServiceImpl implements TransactionRegisterServic
   }
 
   @Override
-  public void doRegister(List<CbsTemplateTransaction> transactions, Long remittanceTransactionId) {
+  public void doRegister(
+      List<CbsTemplateTransaction> transactions, Long voucherNumber, Long remittanceTransactionId) {
     List<TransactionRegisterEntity> registerEntities = new ArrayList<>();
     if (transactions != null && !transactions.isEmpty() && remittanceTransactionId != null) {
       transactions.forEach(
           txn -> {
             TransactionRegisterEntity registerEntity =
-                transactionRegisterMapper.cbsDomainEntity().map(txn);
+                transactionRegisterMapper.cbsDomainEntity(voucherNumber).map(txn);
             registerEntity.setRemittanceTransactionId(remittanceTransactionId);
             registerEntity.setValid(true);
             registerEntities.add(registerEntity);

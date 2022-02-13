@@ -88,7 +88,7 @@ public class RemittanceTransactionController {
   }
 
   @PostMapping(path = "/remittance-transaction", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<CommandResponse<Long>> disburseRemittanceFromBranch(
+  public ResponseEntity<CommandResponse<Long>> remittanceTransactionFromBranch(
       @RequestBody @Valid RemittanceTransaction remittanceTransaction) {
     return status(CREATED)
         .body(
@@ -97,7 +97,7 @@ public class RemittanceTransactionController {
   }
 
   @PostMapping(path = "/remittance-transaction/{id}/correction/{voucherNumber}")
-  public ResponseEntity<CommandResponse<String>> correctionRemittanceTransaction(
+  public ResponseEntity<CommandResponse<Void>> correctionRemittanceTransaction(
       @PathVariable("id") Long id, @PathVariable("voucherNumber") Long voucherNumber) {
     return status(ACCEPTED)
         .body(

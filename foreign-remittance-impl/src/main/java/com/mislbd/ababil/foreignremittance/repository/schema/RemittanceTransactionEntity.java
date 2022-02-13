@@ -104,9 +104,6 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "OPERATING_ACC_CURRENCY")
   private String operatingAccountCurrency;
 
-  @Column(name = "ADJ_REF_OPERATION")
-  private Long adjustmentRefIdForOperation;
-
   @Column(name = "AMOUNT_FCY")
   private BigDecimal amountFcy;
 
@@ -121,12 +118,6 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   @Column(name = "CATEGORY_ID")
   private Long categoryId;
-
-  @Column(name = "CHARGE_RATE_TYPE")
-  private Long chargeRateTypeId;
-
-  @Column(name = "CHARGE_RATE")
-  private BigDecimal chargeRate;
 
   @OneToOne(
       fetch = FetchType.LAZY,

@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
+import com.google.common.base.Strings;
 import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceTransactionCommand;
@@ -14,12 +15,16 @@ import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.TransactionRegisterService;
+import com.mislbd.ababil.transaction.domain.TransactionCorrectionRequest;
 import com.mislbd.asset.command.api.CommandEvent;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
-import com.mislbd.security.core.NgSession;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.LinkedHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class RemittanceTransactionCommandHandlerAggregate {
 
-  private final NgSession ngSession;
   private final Auditor auditor;
   private final RemittanceTransactionMapper transactionMapper;
   private final RemittanceTransactionRepository transactionRepository;
@@ -38,7 +42,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
   private final ConfigurationService configurationService;
 
   public RemittanceTransactionCommandHandlerAggregate(
-      NgSession ngSession,
       Auditor auditor,
       RemittanceTransactionMapper transactionMapper,
       RemittanceTransactionRepository transactionRepository,
@@ -46,7 +49,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
       BatchApiClient batchApiClient,
       ApiTransactionMapper apiTransactionMapper,
       ConfigurationService configurationService) {
-    this.ngSession = ngSession;
     this.auditor = auditor;
     this.transactionMapper = transactionMapper;
     this.transactionRepository = transactionRepository;
@@ -63,35 +65,37 @@ public class RemittanceTransactionCommandHandlerAggregate {
 
   @Transactional
   @CommandHandler
-  public CommandResponse<String> createRemittanceTransaction(
+  public CommandResponse<Long> createRemittanceTransaction(
       CreateRemittanceTransactionCommand command) {
     RemittanceTransaction transaction = command.getPayload();
     RemittanceTransactionEntity remittanceTransactionEntity =
         transactionMapper.domainToEntity().map(transaction);
-    ResponseEntity<?> response = null;
+    Long voucherNumber = null;
     try {
       ApiTransactionRequest request =
           apiTransactionMapper.cbsTransactionToApiRequest().map(transaction.getCbsTransactions());
-      request.setRequestId(null);
+      request.setRequestId(generateRequestId(transaction.getTransactionReferenceNumber()));
+      request.setRequestDateTime(LocalDateTime.now());
       request.setValueDate(transaction.getValueDate());
-      request.setInitiatorBranchId(transaction.getInitiatorBranchId());
+      request.setInitiatorBranchId(command.getInitiatorBranch());
+      request.setEntryUserTerminal(command.getInitiatorTerminal());
       request.setInitiatorModule("ID");
       request.setReferenceNumber(transaction.getTransactionReferenceNumber());
       request.setTransactionDate(configurationService.getCurrentApplicationDate());
-      request.setVerifyUser(ngSession.getUsername());
-      request.setVerifyUserTerminal(ngSession.getTerminal());
-      response = batchApiClient.doBatchApiTransaction(request);
+      request.setVerifyUser(command.getVerifier());
+      request.setVerifyUserTerminal(command.getVerifierTerminal());
+      ResponseEntity<?> responseEntity = batchApiClient.doBatchApiTransaction(request);
+      LinkedHashMap<String, Long> response = (LinkedHashMap<String, Long>) responseEntity.getBody();
+      voucherNumber = response.get("content");
       remittanceTransactionEntity.setTransactionStatus(RemittanceTransactionStatus.Succeed);
       saveTransactionEntity(remittanceTransactionEntity);
       transactionRegisterService.doRegister(
-          transaction.getCbsTransactions(), remittanceTransactionEntity.getId());
+          transaction.getCbsTransactions(), voucherNumber, remittanceTransactionEntity.getId());
     } catch (Exception e) {
-      log.error("Error in Feign transaction", e.getMessage());
-      remittanceTransactionEntity.setTransactionStatus(RemittanceTransactionStatus.Failed);
-      saveTransactionEntity(remittanceTransactionEntity);
+      log.error("Error in Feign transaction", e.getCause());
     }
-    if (response != null) {
-      return CommandResponse.of(response.getBody().toString());
+    if (voucherNumber != null) {
+      return CommandResponse.of(voucherNumber);
     } else {
       throw new ForeignRemittanceBaseException("Transaction Failed");
     }
@@ -99,12 +103,19 @@ public class RemittanceTransactionCommandHandlerAggregate {
 
   @Transactional
   @CommandHandler
-  public CommandResponse<Long> correctionRemittanceTransaction(
+  public CommandResponse<Void> correctionRemittanceTransaction(
       RemittanceTransactionCorrectionCommand command) {
 
     Long globalTxnNumber = command.getPayload();
     try {
-      //      transactionClient.doCorrection(globalTxnNumber);
+      TransactionCorrectionRequest request = new TransactionCorrectionRequest();
+      request.setInitiatorBranch(command.getInitiatorBranch());
+      request.setGlobalTransactionNumber(globalTxnNumber);
+      request.setEntryUser(command.getInitiator());
+      request.setEntryTerminal(command.getInitiatorTerminal());
+      request.setVerifyUser(command.getVerifier());
+      request.setVerifyTerminal(command.getVerifierTerminal());
+      batchApiClient.doApiTxnCorrection(request);
       transactionRegisterService.invalidRegister(globalTxnNumber);
       RemittanceTransactionEntity entity =
           transactionRepository
@@ -115,10 +126,17 @@ public class RemittanceTransactionCommandHandlerAggregate {
     } catch (Exception e) {
       log.error("Error in Feign reverse transaction", e.getMessage());
     }
-    return CommandResponse.of(command.getPayload());
+    return CommandResponse.asVoid();
   }
 
   private void saveTransactionEntity(RemittanceTransactionEntity entity) {
     transactionRepository.save(entity);
+  }
+
+  private String generateRequestId(String referenceNumber) {
+    String date = new SimpleDateFormat("ddMMyy").format(new Date());
+    return date.concat(referenceNumber)
+        .concat(
+            Strings.padStart(transactionRepository.generateRequestIdSequence().toString(), 5, '0'));
   }
 }
