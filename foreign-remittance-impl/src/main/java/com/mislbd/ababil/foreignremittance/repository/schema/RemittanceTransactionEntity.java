@@ -92,9 +92,11 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "OPERATING_ACC_TYPE")
   private AccountType operatingAccountType;
 
+  @Deprecated
   @Column(name = "OPERATING_RATE_TYPE")
   private Long operatingRateTypeId;
 
+  @Deprecated
   @Column(name = "OPERATING_RATE")
   private BigDecimal operatingRate;
 
@@ -107,9 +109,11 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "AMOUNT_FCY")
   private BigDecimal amountFcy;
 
+  @Deprecated
   @Column(name = "AMOUNT_LCY")
   private BigDecimal amountLcy;
 
+  @Deprecated
   @Column(name = "AMOUNT_RCY")
   private BigDecimal amountRcy;
 

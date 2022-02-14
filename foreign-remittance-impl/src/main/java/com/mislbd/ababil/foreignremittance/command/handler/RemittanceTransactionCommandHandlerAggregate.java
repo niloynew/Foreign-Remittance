@@ -137,6 +137,6 @@ public class RemittanceTransactionCommandHandlerAggregate {
     String date = new SimpleDateFormat("ddMMyy").format(new Date());
     return date.concat(referenceNumber)
         .concat(
-            Strings.padStart(transactionRepository.generateRequestIdSequence().toString(), 5, '0'));
+            Strings.padStart(transactionRepository.generateRequestIdSequence().toString(), 3, '0'));
   }
 }

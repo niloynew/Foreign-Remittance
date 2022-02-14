@@ -8,6 +8,7 @@ import com.mislbd.ababil.foreignremittance.command.CreateRemittanceTransactionCo
 import com.mislbd.ababil.foreignremittance.command.RemittanceTransactionCorrectionCommand;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceCategory;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceTransactionStatus;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionQuery;
@@ -19,9 +20,7 @@ import com.mislbd.asset.query.api.QueryResult;
 import java.time.LocalDate;
 import java.util.List;
 import javax.validation.Valid;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,10 +46,9 @@ public class RemittanceTransactionController {
 
   @GetMapping(path = "/remittance-transaction")
   public ResponseEntity<?> getTransactions(
-      @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+      Pageable pageable,
       @RequestParam(value = "asPage", required = false) final boolean asPage,
-      @RequestParam(value = "globalTransactionNo", required = false)
-          final String globalTransactionNo,
+      @RequestParam(value = "status", required = false) final RemittanceTransactionStatus status,
       @RequestParam(value = "remittanceType", required = false) final RemittanceType remittanceType,
       @RequestParam(value = "transactionReferenceNumber", required = false)
           final String transactionReferenceNumber,
@@ -62,21 +60,19 @@ public class RemittanceTransactionController {
       @RequestParam(value = "toDate", required = false)
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           final LocalDate toDate) {
-    pageNumber = pageNumber != null ? pageNumber : 0;
-    Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("globalTransactionNo").descending());
 
     QueryResult<?> queryResult =
         queryManager.executeQuery(
             new RemittanceTransactionQuery(
                 asPage,
                 pageable,
-                globalTransactionNo,
                 remittanceType,
                 transactionReferenceNumber,
                 applicantName,
                 beneficiaryName,
                 fromDate,
-                toDate));
+                toDate,
+                status));
     return ResponseEntity.ok(queryResult.getResult());
   }
 

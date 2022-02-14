@@ -41,7 +41,7 @@ public class RemittanceTransactionQueryHandlerAggregate {
       PagedResult<?> pagedResult =
           remittanceTransactionService.getTransactions(
               remittanceTransactionQuery.getPageable(),
-              remittanceTransactionQuery.getGlobalTransactionNo(),
+              remittanceTransactionQuery.getStatus(),
               remittanceTransactionQuery.getRemittanceType(),
               remittanceTransactionQuery.getTransactionReferenceNumber(),
               remittanceTransactionQuery.getApplicantName(),
@@ -53,7 +53,7 @@ public class RemittanceTransactionQueryHandlerAggregate {
 
       List<?> listResult =
           remittanceTransactionService.getTransactions(
-              remittanceTransactionQuery.getGlobalTransactionNo(),
+              remittanceTransactionQuery.getStatus(),
               remittanceTransactionQuery.getRemittanceType(),
               remittanceTransactionQuery.getTransactionReferenceNumber(),
               remittanceTransactionQuery.getApplicantName(),

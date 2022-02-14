@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.query;
 
+import com.mislbd.ababil.foreignremittance.domain.RemittanceTransactionStatus;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.asset.query.api.QueryRequest;
 import java.time.LocalDate;
@@ -16,11 +17,11 @@ import org.springframework.data.domain.Pageable;
 public class RemittanceTransactionQuery extends QueryRequest {
   private boolean asPage;
   private Pageable pageable;
-  private String globalTransactionNo;
   private RemittanceType remittanceType;
   private String transactionReferenceNumber;
   private String applicantName;
   private String beneficiaryName;
   private LocalDate fromDate;
   private LocalDate toDate;
+  private RemittanceTransactionStatus status;
 }

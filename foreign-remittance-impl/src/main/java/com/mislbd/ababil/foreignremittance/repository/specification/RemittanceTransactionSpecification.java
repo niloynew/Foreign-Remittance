@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.repository.specification;
 
+import com.mislbd.ababil.foreignremittance.domain.RemittanceTransactionStatus;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import java.time.LocalDate;
@@ -8,7 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class RemittanceTransactionSpecification {
   public static Specification<RemittanceTransactionEntity> searchSpecification(
-      String globalTransactionNo,
+      RemittanceTransactionStatus status,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
       String applicantName,
@@ -18,9 +19,13 @@ public class RemittanceTransactionSpecification {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
 
-      if (globalTransactionNo != null) {
+      if (status != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("transactionStatus"), status));
+      } else {
         predicate =
-            cb.and(predicate, cb.equal(root.get("globalTransactionNo"), globalTransactionNo));
+            cb.and(
+                predicate,
+                cb.equal(root.get("transactionStatus"), RemittanceTransactionStatus.Succeed));
       }
 
       if (remittanceType != null) {

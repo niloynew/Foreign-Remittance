@@ -2,10 +2,7 @@ package com.mislbd.ababil.foreignremittance.service;
 
 import com.google.common.base.Strings;
 import com.mislbd.ababil.asset.service.ConfigurationService;
-import com.mislbd.ababil.foreignremittance.domain.AuditInformation;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceCategory;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
+import com.mislbd.ababil.foreignremittance.domain.*;
 import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceCategoryMapper;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
@@ -54,7 +51,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   @Override
   public PagedResult<RemittanceTransaction> getTransactions(
       Pageable pageable,
-      String globalTransactionNo,
+      RemittanceTransactionStatus status,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
       String applicantName,
@@ -64,7 +61,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
     Page<RemittanceTransactionEntity> remittanceTransactions =
         remittanceTransactionRepository.findAll(
             RemittanceTransactionSpecification.searchSpecification(
-                globalTransactionNo,
+                status,
                 remittanceType,
                 transactionReferenceNumber,
                 applicantName,
@@ -79,7 +76,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
 
   @Override
   public List<RemittanceTransaction> getTransactions(
-      String globalTransactionNo,
+      RemittanceTransactionStatus status,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
       String applicantName,
@@ -89,7 +86,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
     List<RemittanceTransactionEntity> remittanceTransactions =
         remittanceTransactionRepository.findAll(
             RemittanceTransactionSpecification.searchSpecification(
-                globalTransactionNo,
+                status,
                 remittanceType,
                 transactionReferenceNumber,
                 applicantName,
