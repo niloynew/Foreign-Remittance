@@ -25,8 +25,9 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
   private final RemittanceChargeRepository remittanceChargeRepository;
 
   public RemittanceChargeInformationServiceImpl(
-          RemittanceChargeMappingRepository remittanceChargeMappingRepository,
-          RemittanceChargeRepository remittanceChargeRepository, TransactionDefinitionService transactionDefinitionService) {
+      RemittanceChargeMappingRepository remittanceChargeMappingRepository,
+      RemittanceChargeRepository remittanceChargeRepository,
+      TransactionDefinitionService transactionDefinitionService) {
     this.remittanceChargeMappingRepository = remittanceChargeMappingRepository;
     this.remittanceChargeRepository = remittanceChargeRepository;
   }

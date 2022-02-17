@@ -40,7 +40,7 @@ public class TemplateBaseTransactionService {
   }
 
   public List<CbsTemplateTransaction> buildTransaction(RemittanceTransaction transaction) {
-    // Generate Charges for transaction
+    // Basic transaction generation
     Long rateType =
         Long.valueOf(
             configurationService
@@ -55,16 +55,20 @@ public class TemplateBaseTransactionService {
                 transaction.getOperatingAccountCurrency(),
                 rateType)
             .getExchangeRate();
+    transaction.setOperatingRateTypeId(rateType);
+    transaction.setOperatingRate(operatingRate);
     transaction.setAmountRcy(transaction.getAmountFcy().multiply(operatingRate));
     BigDecimal chargeRate =
         exchangeRateService
             .findExchangeRate(transaction.getShadowAccountCurrency(), baseCurrency, rateType)
             .getExchangeRate();
+
+    // Charge transaction generation
+    BigDecimal amountLcy = transaction.getAmountFcy().multiply(chargeRate);
+    transaction.setAmountLcy(amountLcy);
     List<Charge> charges =
         chargeInformationService.getChargeInfo(
-            transaction.getRemittanceType(),
-            transaction.getTransactionTypeId(),
-            transaction.getAmountFcy().multiply(chargeRate));
+            transaction.getRemittanceType(), transaction.getTransactionTypeId(), amountLcy);
     ChargeInformation chargeInformation =
         ChargeInformation.builder()
             .charges(charges)
@@ -73,6 +77,7 @@ public class TemplateBaseTransactionService {
             .debitAccountCurrency(transaction.getOperatingAccountCurrency())
             .build();
     transaction.setChargeInformation(chargeInformation);
+
     if (transaction.getRemittanceType() == RemittanceType.INWARD_REMITTANCE) {
       return ListResultBuilder.build(
           templateService.buildTransaction(transaction, ID_DISBURSEMENT_ACTIVITY_ID),
