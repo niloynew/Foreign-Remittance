@@ -9,6 +9,7 @@ import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeEnt
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeSlabEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.RemittanceChargeMappingSpecification;
+import com.mislbd.ababil.transaction.service.TransactionDefinitionService;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import com.mislbd.transaction.api.transaction.model.Charge;
 import java.math.BigDecimal;
@@ -24,8 +25,8 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
   private final RemittanceChargeRepository remittanceChargeRepository;
 
   public RemittanceChargeInformationServiceImpl(
-      RemittanceChargeMappingRepository remittanceChargeMappingRepository,
-      RemittanceChargeRepository remittanceChargeRepository) {
+          RemittanceChargeMappingRepository remittanceChargeMappingRepository,
+          RemittanceChargeRepository remittanceChargeRepository, TransactionDefinitionService transactionDefinitionService) {
     this.remittanceChargeMappingRepository = remittanceChargeMappingRepository;
     this.remittanceChargeRepository = remittanceChargeRepository;
   }
@@ -49,7 +50,7 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
                   BigDecimal vatAmount = vatCalculation(remittanceCharge, chargeAmount);
                   Charge charge =
                       Charge.builder()
-                          .chargeCode(remittanceCharge.getChargeAccountCode())
+                          .chargeCode("003")
                           .chargeName(remittanceCharge.getChargeName())
                           .chargeAccountCode(remittanceCharge.getChargeAccountCode())
                           .currencyCode(remittanceCharge.getCurrencyCode())
