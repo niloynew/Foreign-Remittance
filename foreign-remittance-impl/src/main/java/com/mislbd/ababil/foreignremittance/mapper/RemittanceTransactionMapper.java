@@ -105,6 +105,14 @@ public class RemittanceTransactionMapper {
                     ? null
                     : additionInformationMapper
                         .domainToEntity()
-                        .map(domain.getAdditionalInformation()));
+                        .map(domain.getAdditionalInformation()))
+            .setBankMappingEntity(
+                domain.getBankInformations() == null || domain.getBankInformations().isEmpty()
+                    ? null
+                    : domain
+                        .getBankInformations()
+                        .stream()
+                        .map(x -> bankInformationMapper.domainToEntity().map(x))
+                        .collect(Collectors.toList()));
   }
 }

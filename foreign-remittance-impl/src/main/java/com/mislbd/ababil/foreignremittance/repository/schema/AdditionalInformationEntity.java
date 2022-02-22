@@ -90,6 +90,6 @@ public class AdditionalInformationEntity {
   private String envelopContents;
 
   @OneToOne
-  @JoinColumn(name = "REMITTANCE_TNX_ID")
+  @JoinColumn(name = "REMITTANCE_TNX_ID", referencedColumnName = "ID")
   private RemittanceTransactionEntity remittanceTransactionEntity;
 }

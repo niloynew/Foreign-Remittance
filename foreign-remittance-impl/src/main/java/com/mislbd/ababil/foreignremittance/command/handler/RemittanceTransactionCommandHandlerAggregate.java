@@ -130,6 +130,9 @@ public class RemittanceTransactionCommandHandlerAggregate {
   }
 
   private void saveTransactionEntity(RemittanceTransactionEntity entity) {
+    if (entity.getAdditionalInformationEntity() != null) {
+      entity.getAdditionalInformationEntity().setRemittanceTransactionEntity(entity);
+    }
     transactionRepository.save(entity);
   }
 

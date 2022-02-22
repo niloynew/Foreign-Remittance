@@ -74,7 +74,7 @@ public class RemittanceTransactionEntity extends BaseEntity {
   private String receiverBIC;
 
   // ##### Banks Information #####//
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "remittanceTransaction")
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "remittanceTransactionEntity")
   private List<BankMappingEntity> bankMappingEntity;
 
   // ##### Financial Information #####//

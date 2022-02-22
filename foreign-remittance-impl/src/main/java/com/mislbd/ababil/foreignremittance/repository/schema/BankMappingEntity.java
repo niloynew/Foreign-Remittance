@@ -23,7 +23,7 @@ public class BankMappingEntity {
   @Column(name = "ID")
   private long id;
 
-  @Column(name = "Option")
+  @Column(name = "SELECTED_OPTION")
   private SelectOptions option;
 
   @Column(name = "BANK_TYPE")
@@ -42,6 +42,6 @@ public class BankMappingEntity {
   private String nameAndAddress;
 
   @ManyToOne
-  @JoinColumn(name = "Remittance_Tnx_Id")
-  private RemittanceTransactionEntity remittanceTransaction;
+  @JoinColumn(name = "REMITTANCE_TNX_ID")
+  private RemittanceTransactionEntity remittanceTransactionEntity;
 }
