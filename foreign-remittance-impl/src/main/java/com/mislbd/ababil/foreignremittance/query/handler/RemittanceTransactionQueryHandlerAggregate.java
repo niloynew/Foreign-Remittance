@@ -44,8 +44,6 @@ public class RemittanceTransactionQueryHandlerAggregate {
               remittanceTransactionQuery.getStatus(),
               remittanceTransactionQuery.getRemittanceType(),
               remittanceTransactionQuery.getTransactionReferenceNumber(),
-              remittanceTransactionQuery.getApplicantName(),
-              remittanceTransactionQuery.getBeneficiaryName(),
               remittanceTransactionQuery.getFromDate(),
               remittanceTransactionQuery.getToDate());
       return QueryResult.of(pagedResult);
@@ -56,8 +54,6 @@ public class RemittanceTransactionQueryHandlerAggregate {
               remittanceTransactionQuery.getStatus(),
               remittanceTransactionQuery.getRemittanceType(),
               remittanceTransactionQuery.getTransactionReferenceNumber(),
-              remittanceTransactionQuery.getApplicantName(),
-              remittanceTransactionQuery.getBeneficiaryName(),
               remittanceTransactionQuery.getFromDate(),
               remittanceTransactionQuery.getToDate());
       return QueryResult.of(listResult);

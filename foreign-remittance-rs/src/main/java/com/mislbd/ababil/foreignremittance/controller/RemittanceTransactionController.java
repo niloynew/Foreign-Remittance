@@ -6,13 +6,11 @@ import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.RemittanceTransactionCorrectionCommand;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceCategory;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceTransactionStatus;
-import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
+import com.mislbd.ababil.foreignremittance.domain.*;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionQuery;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
+import com.mislbd.ababil.foreignremittance.service.TransactionRegisterService;
 import com.mislbd.asset.command.api.CommandProcessor;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.query.api.QueryManager;
@@ -34,32 +32,33 @@ public class RemittanceTransactionController {
   private final QueryManager queryManager;
   private QueryResult<?> queryResult;
   private final RemittanceTransactionService remittanceTransactionService;
+  private final TransactionRegisterService transactionRegisterService;
 
   public RemittanceTransactionController(
       CommandProcessor commandProcessor,
       QueryManager queryManager,
-      RemittanceTransactionService remittanceTransactionService) {
+      RemittanceTransactionService remittanceTransactionService,
+      TransactionRegisterService transactionRegisterService) {
     this.commandProcessor = commandProcessor;
     this.queryManager = queryManager;
     this.remittanceTransactionService = remittanceTransactionService;
+    this.transactionRegisterService = transactionRegisterService;
   }
 
-  @GetMapping(path = "/remittance-transaction")
+  @GetMapping(path = "/remittance-transactions")
   public ResponseEntity<?> getTransactions(
       Pageable pageable,
       @RequestParam(value = "asPage", required = false) final boolean asPage,
-      @RequestParam(value = "status", required = false) final RemittanceTransactionStatus status,
       @RequestParam(value = "remittanceType", required = false) final RemittanceType remittanceType,
       @RequestParam(value = "transactionReferenceNumber", required = false)
           final String transactionReferenceNumber,
-      @RequestParam(value = "applicant", required = false) final String applicantName,
-      @RequestParam(value = "beneficiaryName", required = false) final String beneficiaryName,
       @RequestParam(value = "fromDate", required = false)
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           final LocalDate fromDate,
       @RequestParam(value = "toDate", required = false)
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-          final LocalDate toDate) {
+          final LocalDate toDate,
+      @RequestParam(value = "status", required = false) final RemittanceTransactionStatus status) {
 
     QueryResult<?> queryResult =
         queryManager.executeQuery(
@@ -68,22 +67,20 @@ public class RemittanceTransactionController {
                 pageable,
                 remittanceType,
                 transactionReferenceNumber,
-                applicantName,
-                beneficiaryName,
                 fromDate,
                 toDate,
                 status));
     return ResponseEntity.ok(queryResult.getResult());
   }
 
-  @GetMapping(path = "/remittance-transaction/{transactionId}")
+  @GetMapping(path = "/remittance-transactions/{transactionId}")
   public ResponseEntity<?> getTransaction(@PathVariable("transactionId") Long transactionId) {
     QueryResult<?> queryResult =
         queryManager.executeQuery(new RemittanceTransactionIdQuery(transactionId));
     return ResponseEntity.ok(queryResult.getResult());
   }
 
-  @PostMapping(path = "/remittance-transaction", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(path = "/remittance-transactions", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<CommandResponse<Long>> remittanceTransactionFromBranch(
       @RequestBody @Valid RemittanceTransaction remittanceTransaction) {
     return status(CREATED)
@@ -92,7 +89,7 @@ public class RemittanceTransactionController {
                 new CreateRemittanceTransactionCommand(remittanceTransaction)));
   }
 
-  @PostMapping(path = "/remittance-transaction/{id}/correction/{voucherNumber}")
+  @PostMapping(path = "/remittance-transactions/{id}/correction/{voucherNumber}")
   public ResponseEntity<CommandResponse<Void>> correctionRemittanceTransaction(
       @PathVariable("id") Long id, @PathVariable("voucherNumber") Long voucherNumber) {
     return status(ACCEPTED)
@@ -119,5 +116,12 @@ public class RemittanceTransactionController {
       @PathVariable("branch") Long branch, @PathVariable("categoryId") Long categoryId) {
     return ResponseEntity.ok(
         remittanceTransactionService.generateTransactionReferenceNumber(branch, categoryId));
+  }
+
+  @GetMapping(path = "remittance-transactions/registers/{transactionId}")
+  public ResponseEntity<List<TransactionRegister>> getRegisterByRemittance(
+      @PathVariable("transactionId") Long transactionId) {
+    return ResponseEntity.ok(
+        transactionRegisterService.findTransactionRegisterByRemittanceTransaction(transactionId));
   }
 }

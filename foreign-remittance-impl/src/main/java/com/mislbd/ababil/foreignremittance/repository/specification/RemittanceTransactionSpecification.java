@@ -12,8 +12,6 @@ public class RemittanceTransactionSpecification {
       RemittanceTransactionStatus status,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
-      String applicantName,
-      String beneficiaryName,
       LocalDate fromDate,
       LocalDate toDate) {
     return (root, query, cb) -> {
@@ -37,23 +35,6 @@ public class RemittanceTransactionSpecification {
             cb.and(
                 predicate,
                 cb.equal(root.get("transactionReferenceNumber"), transactionReferenceNumber));
-      }
-
-      if (applicantName != null) {
-        predicate =
-            cb.and(
-                predicate,
-                cb.like(
-                    cb.lower(root.get("applicantName")), "%" + applicantName.toLowerCase() + "%"));
-      }
-
-      if (beneficiaryName != null) {
-        predicate =
-            cb.and(
-                predicate,
-                cb.like(
-                    cb.lower(root.get("beneficiaryName")),
-                    "%" + beneficiaryName.toLowerCase() + "%"));
       }
 
       if (fromDate != null) {

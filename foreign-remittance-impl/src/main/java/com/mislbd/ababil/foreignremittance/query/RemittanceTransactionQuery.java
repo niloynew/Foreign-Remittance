@@ -19,8 +19,6 @@ public class RemittanceTransactionQuery extends QueryRequest {
   private Pageable pageable;
   private RemittanceType remittanceType;
   private String transactionReferenceNumber;
-  private String applicantName;
-  private String beneficiaryName;
   private LocalDate fromDate;
   private LocalDate toDate;
   private RemittanceTransactionStatus status;

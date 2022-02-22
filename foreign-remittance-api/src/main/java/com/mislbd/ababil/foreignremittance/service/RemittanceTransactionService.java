@@ -13,8 +13,6 @@ public interface RemittanceTransactionService {
       RemittanceTransactionStatus status,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
-      String applicantName,
-      String beneficiaryName,
       LocalDate fromDate,
       LocalDate toDate);
 
@@ -22,8 +20,6 @@ public interface RemittanceTransactionService {
       RemittanceTransactionStatus status,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
-      String applicantName,
-      String beneficiaryName,
       LocalDate fromDate,
       LocalDate toDate);
 

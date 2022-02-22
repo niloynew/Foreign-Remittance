@@ -54,20 +54,12 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
       RemittanceTransactionStatus status,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
-      String applicantName,
-      String beneficiaryName,
       LocalDate fromDate,
       LocalDate toDate) {
     Page<RemittanceTransactionEntity> remittanceTransactions =
         remittanceTransactionRepository.findAll(
             RemittanceTransactionSpecification.searchSpecification(
-                status,
-                remittanceType,
-                transactionReferenceNumber,
-                applicantName,
-                beneficiaryName,
-                fromDate,
-                toDate),
+                status, remittanceType, transactionReferenceNumber, fromDate, toDate),
             pageable);
 
     return PagedResultBuilder.build(
@@ -79,20 +71,12 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
       RemittanceTransactionStatus status,
       RemittanceType remittanceType,
       String transactionReferenceNumber,
-      String applicantName,
-      String beneficiaryName,
       LocalDate fromDate,
       LocalDate toDate) {
     List<RemittanceTransactionEntity> remittanceTransactions =
         remittanceTransactionRepository.findAll(
             RemittanceTransactionSpecification.searchSpecification(
-                status,
-                remittanceType,
-                transactionReferenceNumber,
-                applicantName,
-                beneficiaryName,
-                fromDate,
-                toDate));
+                status, remittanceType, transactionReferenceNumber, fromDate, toDate));
     return ListResultBuilder.build(
         remittanceTransactions, remittanceTransactionMapper.entityToDomain());
   }
