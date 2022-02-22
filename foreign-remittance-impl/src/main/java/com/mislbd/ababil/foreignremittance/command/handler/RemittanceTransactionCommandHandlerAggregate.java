@@ -9,13 +9,13 @@ import com.mislbd.ababil.foreignremittance.domain.*;
 import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
 import com.mislbd.ababil.foreignremittance.external.domain.ApiTransactionRequest;
+import com.mislbd.ababil.foreignremittance.external.domain.CorrectionRequest;
 import com.mislbd.ababil.foreignremittance.external.mapper.ApiTransactionMapper;
 import com.mislbd.ababil.foreignremittance.external.repository.BatchApiClient;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.ababil.foreignremittance.service.TransactionRegisterService;
-import com.mislbd.ababil.transaction.domain.TransactionCorrectionRequest;
 import com.mislbd.asset.command.api.CommandEvent;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
@@ -105,28 +105,30 @@ public class RemittanceTransactionCommandHandlerAggregate {
   @CommandHandler
   public CommandResponse<Void> correctionRemittanceTransaction(
       RemittanceTransactionCorrectionCommand command) {
-
+    boolean succeed = false;
     Long globalTxnNumber = command.getPayload();
+    RemittanceTransactionEntity entity =
+        transactionRepository
+            .findById(command.getRemittanceTransactionId())
+            .orElseThrow(RemittanceTransactionNotFoundException::new);
     try {
-      TransactionCorrectionRequest request = new TransactionCorrectionRequest();
-      request.setInitiatorBranch(command.getInitiatorBranch());
-      request.setGlobalTransactionNumber(globalTxnNumber);
-      request.setEntryUser(command.getInitiator());
-      request.setEntryTerminal(command.getInitiatorTerminal());
-      request.setVerifyUser(command.getVerifier());
-      request.setVerifyTerminal(command.getVerifierTerminal());
+      CorrectionRequest request = new CorrectionRequest();
+      request.setRequestId(generateRequestId(entity.getTransactionReferenceNumber()));
+      request.setReferenceNumber(entity.getTransactionReferenceNumber());
+      request.setVoucherNumber(String.valueOf(globalTxnNumber));
       batchApiClient.doApiTxnCorrection(request);
       transactionRegisterService.invalidRegister(globalTxnNumber);
-      RemittanceTransactionEntity entity =
-          transactionRepository
-              .findById(command.getRemittanceTransactionId())
-              .orElseThrow(RemittanceTransactionNotFoundException::new);
       entity.setTransactionStatus(RemittanceTransactionStatus.Reversed);
       saveTransactionEntity(entity);
+      succeed = true;
     } catch (Exception e) {
       log.error("Error in Feign reverse transaction", e.getMessage());
     }
-    return CommandResponse.asVoid();
+    if (succeed) {
+      return CommandResponse.asVoid();
+    } else {
+      throw new ForeignRemittanceBaseException("Reverse Transaction Failed");
+    }
   }
 
   private void saveTransactionEntity(RemittanceTransactionEntity entity) {

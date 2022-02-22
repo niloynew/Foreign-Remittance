@@ -1,7 +1,7 @@
 package com.mislbd.ababil.foreignremittance.external.repository;
 
 import com.mislbd.ababil.foreignremittance.external.domain.ApiTransactionRequest;
-import com.mislbd.ababil.transaction.domain.TransactionCorrectionRequest;
+import com.mislbd.ababil.foreignremittance.external.domain.CorrectionRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,5 +20,5 @@ public interface BatchApiClient {
   @RequestMapping(
       method = {RequestMethod.POST},
       value = {"/api-transaction/correction"})
-  ResponseEntity<?> doApiTxnCorrection(TransactionCorrectionRequest var1);
+  ResponseEntity<?> doApiTxnCorrection(CorrectionRequest var1);
 }
