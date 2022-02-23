@@ -1,6 +1,11 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
+import com.mislbd.ababil.foreignremittance.domain.BankInformation;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
+import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class TransactionToRequestMapper {
@@ -16,15 +21,14 @@ public class TransactionToRequestMapper {
   //    this.bankTypeService = bankTypeService;
   //  }
   //
-  //  public MT103MessageRequest mapTransactionToMessageRequest(
-  //      RemittanceTransaction remittanceTransaction) {
-  //    MT103MessageRequest request = new MT103MessageRequest();
-  //    request.setSenderAddress(
-  //        branchService.findBranch(ngSession.getUserBranch()).get().getSwiftCode());
-  //
-  //    List<BankInformation> bankInformationList = remittanceTransaction.getBankInformation();
-  //
-  //    for (BankInformation bankInformation : bankInformationList) {
+    public MT103MessageRequest mapTransactionToMessageRequest(
+        RemittanceTransaction transaction) {
+      MT103MessageRequest request = new MT103MessageRequest();
+      request.setSenderAddress(transaction.getSenderBIC());
+
+      List<BankInformation> bankInformationList = transaction.getBankInformations();
+
+      for (BankInformation bankInformation : bankInformationList) {
   //      BankType bankType =
   //          bankTypeService
   //              .getBankType(bankInformation.getBankTypeId())
@@ -34,7 +38,7 @@ public class TransactionToRequestMapper {
   //        request.setReceiverAddress(bankInformation.getSwiftCode());
   //      }
   //      if (!remittanceTransaction.isPublishedToXmm()) {
-  //        switch (bankType.getCode()) {
+          switch (bankInformation.getBankType()) {
   //          case "51":
   //            request.setSendingInstituteIdentifierCode(bankInformation.getSwiftCode());
   //            break;
@@ -64,9 +68,9 @@ public class TransactionToRequestMapper {
   //            request.setAccountWithInstitutionIdentifierCode(bankInformation.getSwiftCode());
   //            break;
   //        }
-  //      }
-  //    }
-  //
+        }
+      }
+
   //    request.setSendersReference(remittanceTransaction.getTransactionReferenceNumber());
   //
   //    request.setBankOperationCode(String.valueOf(BankOperationCode.CRED));
@@ -110,11 +114,11 @@ public class TransactionToRequestMapper {
   //          mapAdditionalInformation(
   //              request, remittanceTransaction.getRemittanceAdditionalInformation());
   //    }
-  //    return request;
-  //  }
-  //
-  //  public MT103MessageRequest mapAdditionalInformation(
-  //      MT103MessageRequest request, AdditionalInformation additionalInformation) {
+      return request;
+    }
+
+//    public MT103MessageRequest mapAdditionalInformation(
+//        MT103MessageRequest request, AdditionalInformation additionalInformation) {
   //    TimeIndication timeIndication = new TimeIndication();
   //    List<TimeIndication> timeIndications = new ArrayList<TimeIndication>();
   //    timeIndication
