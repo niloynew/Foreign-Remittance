@@ -58,4 +58,7 @@ public class RemittanceTransaction {
   // Transaction build data
   private ChargeInformation chargeInformation;
   private List<CbsTemplateTransaction> cbsTransactions;
+
+  private RemittanceTransactionStatus transactionStatus;
+  private Long globalTransactionNo;
 }

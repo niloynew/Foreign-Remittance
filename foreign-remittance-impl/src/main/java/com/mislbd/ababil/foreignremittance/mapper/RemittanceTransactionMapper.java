@@ -2,6 +2,7 @@ package com.mislbd.ababil.foreignremittance.mapper;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionRegisterRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionTypeRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
@@ -15,19 +16,23 @@ public class RemittanceTransactionMapper {
   private final TransactionTypeRepository transactionTypeRepository;
   private final BankInformationMapper bankInformationMapper;
   private final AdditionInformationMapper additionInformationMapper;
+  private final TransactionRegisterRepository registerRepository;
 
   public RemittanceTransactionMapper(
       RemittanceTransactionRepository remittanceTransactionRepository,
       TransactionTypeRepository transactionTypeRepository,
       BankInformationMapper bankInformationMapper,
-      AdditionInformationMapper additionInformationMapper) {
+      AdditionInformationMapper additionInformationMapper,
+      TransactionRegisterRepository registerRepository) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.transactionTypeRepository = transactionTypeRepository;
     this.bankInformationMapper = bankInformationMapper;
     this.additionInformationMapper = additionInformationMapper;
+    this.registerRepository = registerRepository;
   }
 
-  public ResultMapper<RemittanceTransactionEntity, RemittanceTransaction> entityToDomain() {
+  public ResultMapper<RemittanceTransactionEntity, RemittanceTransaction> entityToDomain(
+      boolean voucherNumberRequired) {
     return entity ->
         new RemittanceTransaction()
             .setId(entity.getId())
@@ -56,6 +61,7 @@ public class RemittanceTransactionMapper {
             .setSenderBIC(entity.getSenderBIC())
             .setReceiverBIC(entity.getReceiverBIC())
             .setCategoryId(entity.getCategoryId())
+            .setTransactionStatus(entity.getTransactionStatus())
             .setAdditionalInformation(
                 entity.getAdditionalInformationEntity() == null
                     ? null
@@ -67,7 +73,13 @@ public class RemittanceTransactionMapper {
                     .getBankMappingEntity()
                     .stream()
                     .map(bankEntity -> bankInformationMapper.entityToDomain().map(bankEntity))
-                    .collect(Collectors.toList()));
+                    .collect(Collectors.toList()))
+            .setGlobalTransactionNo(
+                voucherNumberRequired
+                    ? registerRepository
+                        .getDistinctFirstByRemittanceTransactionId(entity.getId())
+                        .getVoucherNumber()
+                    : null);
   }
 
   public ResultMapper<RemittanceTransaction, RemittanceTransactionEntity> domainToEntity() {

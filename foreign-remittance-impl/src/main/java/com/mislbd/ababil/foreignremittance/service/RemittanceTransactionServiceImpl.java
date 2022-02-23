@@ -63,7 +63,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
             pageable);
 
     return PagedResultBuilder.build(
-        remittanceTransactions, remittanceTransactionMapper.entityToDomain());
+        remittanceTransactions, remittanceTransactionMapper.entityToDomain(false));
   }
 
   @Override
@@ -78,21 +78,21 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
             RemittanceTransactionSpecification.searchSpecification(
                 status, remittanceType, transactionReferenceNumber, fromDate, toDate));
     return ListResultBuilder.build(
-        remittanceTransactions, remittanceTransactionMapper.entityToDomain());
+        remittanceTransactions, remittanceTransactionMapper.entityToDomain(false));
   }
 
   @Override
   public Optional<RemittanceTransaction> findTransaction(Long id) {
     return remittanceTransactionRepository
         .findById(id)
-        .map(remittanceTransactionMapper.entityToDomain()::map);
+        .map(remittanceTransactionMapper.entityToDomain(true)::map);
   }
 
   @Override
   public Optional<RemittanceTransaction> findTransaction(String referenceNumber) {
     return remittanceTransactionRepository
         .findByTransactionReferenceNumber(referenceNumber)
-        .map(remittanceTransactionMapper.entityToDomain()::map);
+        .map(remittanceTransactionMapper.entityToDomain(true)::map);
   }
 
   @Override

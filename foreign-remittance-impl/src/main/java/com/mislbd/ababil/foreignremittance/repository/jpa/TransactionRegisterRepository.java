@@ -10,4 +10,6 @@ public interface TransactionRegisterRepository
   List<TransactionRegisterEntity> findAllByVoucherNumber(Long voucherNumber);
 
   List<TransactionRegisterEntity> findAllByRemittanceTransactionId(Long remittanceTransactionId);
+
+  TransactionRegisterEntity getDistinctFirstByRemittanceTransactionId(Long id);
 }
