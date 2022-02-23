@@ -16,6 +16,7 @@ public class TransactionRegisterMapper {
                         .setSetNumber(txn.getSetNumber())
                         .setTransactionTypeCode(txn.getTransactionTypeCode())
                         .setTransactionType(txn.getTransactionType())
+                        .setTransactionEntryType(txn.getTransactionEntryType())
                         .setAccountNumber(txn.getAccountNumber())
                         .setAccountType(txn.getAccountType())
                         .setAmountCCY(txn.getAmountCCY())
