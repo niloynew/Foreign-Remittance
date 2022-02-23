@@ -1,12 +1,10 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
-import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionRegisterRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionTypeRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
-import com.mislbd.ababil.organization.service.BranchService;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;

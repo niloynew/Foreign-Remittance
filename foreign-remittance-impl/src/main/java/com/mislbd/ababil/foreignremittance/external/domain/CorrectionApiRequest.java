@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class CorrectionRequest {
+public class CorrectionApiRequest {
   private String referenceNumber;
   private String requestId;
   private String voucherNumber;

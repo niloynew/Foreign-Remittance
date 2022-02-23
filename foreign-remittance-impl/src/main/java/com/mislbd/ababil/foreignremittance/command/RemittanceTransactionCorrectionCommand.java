@@ -6,7 +6,8 @@ import com.mislbd.asset.command.api.HasIdentity;
 import com.mislbd.asset.command.api.annotation.CommandAttribute;
 
 @CommandAttribute(name = "Correction Remittance Transaction", group = "ID")
-public class RemittanceTransactionCorrectionCommand extends Command<RemittanceTransactionCorrectionRequest> implements HasIdentity {
+public class RemittanceTransactionCorrectionCommand
+    extends Command<RemittanceTransactionCorrectionRequest> implements HasIdentity {
 
   public RemittanceTransactionCorrectionCommand(RemittanceTransactionCorrectionRequest payload) {
     super(payload);

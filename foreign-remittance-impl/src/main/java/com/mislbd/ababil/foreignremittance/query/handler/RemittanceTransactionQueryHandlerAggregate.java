@@ -69,13 +69,13 @@ public class RemittanceTransactionQueryHandlerAggregate {
         remittanceTransactionService.findTransaction(remittanceTransactionIdQuery.getId()));
   }
 
-    @QueryHandler
-    public QueryResult<?> getMt103RequestByRemittanceTransactionId(
-        Mt103RequestRemittanceTransactionIdQuery mt103RequestRemittanceTransactionIdQuery) {
-      return QueryResult.of(
-          transactionToRequestMapper.mapTransactionToMessageRequest(
-              remittanceTransactionService
-                  .findTransaction(mt103RequestRemittanceTransactionIdQuery.getId())
-                  .orElseThrow(RemittanceTransactionNotFoundException::new)));
-    }
+  @QueryHandler
+  public QueryResult<?> getMt103RequestByRemittanceTransactionId(
+      Mt103RequestRemittanceTransactionIdQuery mt103RequestRemittanceTransactionIdQuery) {
+    return QueryResult.of(
+        transactionToRequestMapper.mapTransactionToMessageRequest(
+            remittanceTransactionService
+                .findTransaction(mt103RequestRemittanceTransactionIdQuery.getId())
+                .orElseThrow(RemittanceTransactionNotFoundException::new)));
+  }
 }

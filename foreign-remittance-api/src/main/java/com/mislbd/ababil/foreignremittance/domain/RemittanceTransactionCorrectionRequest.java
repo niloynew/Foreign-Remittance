@@ -10,6 +10,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 public class RemittanceTransactionCorrectionRequest {
-    private Long remittanceTransactionId;
-    private Long globalTxnNumber;
+  private Long remittanceTransactionId;
+  private Long globalTxnNumber;
 }
