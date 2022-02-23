@@ -95,7 +95,7 @@ public class RemittanceTransactionController {
     return status(ACCEPTED)
         .body(
             commandProcessor.executeResult(
-                new RemittanceTransactionCorrectionCommand(voucherNumber, id)));
+                new RemittanceTransactionCorrectionCommand(new RemittanceTransactionCorrectionRequest(id, voucherNumber))));
   }
 
   @GetMapping(path = "/remittance-categories")

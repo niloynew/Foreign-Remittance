@@ -2,6 +2,7 @@ package com.mislbd.ababil.foreignremittance.mapper;
 
 import com.mislbd.ababil.foreignremittance.domain.BankInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
+import com.mislbd.swift.broker.model.raw.SelectOptions;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import org.springframework.stereotype.Component;
 
@@ -29,45 +30,70 @@ public class TransactionToRequestMapper {
       List<BankInformation> bankInformationList = transaction.getBankInformations();
 
       for (BankInformation bankInformation : bankInformationList) {
-  //      BankType bankType =
-  //          bankTypeService
-  //              .getBankType(bankInformation.getBankTypeId())
-  //              .orElseThrow(BankTypeNotFoundException::new);
-  //
-  //      if (bankType.getCode().equalsIgnoreCase("00")) {
-  //        request.setReceiverAddress(bankInformation.getSwiftCode());
-  //      }
-  //      if (!remittanceTransaction.isPublishedToXmm()) {
           switch (bankInformation.getBankType()) {
-  //          case "51":
-  //            request.setSendingInstituteIdentifierCode(bankInformation.getSwiftCode());
-  //            break;
-  //          case "52":
-  //            request.setSelectedOrderingInstitutionOption(SelectOptions.OptionA);
-  //            request.setOrderingInstitutionIdentifierCode(bankInformation.getSwiftCode());
-  //            break;
-  //          case "53":
-  //            request.setSelectedSendersCorrespondentOption(SelectOptions.OptionA);
-  //            request.setSendersCorrespondentIdentifierCode(bankInformation.getSwiftCode());
-  //            break;
-  //          case "54":
-  //            request.setSelectedReceiversCorrespondentOption(SelectOptions.OptionA);
-  //            request.setReceiversCorrespondentIdentifierCode(bankInformation.getSwiftCode());
-  //            break;
-  //          case "55":
-  //            request.setSelectedThirdReimbursementInstitutionOption(SelectOptions.OptionA);
-  //
-  // request.setThirdReimbursementInstitutionIdentifierCode(bankInformation.getSwiftCode());
-  //            break;
-  //          case "56":
-  //            request.setSelectedIntermediaryInstitutionOption(SelectOptions.OptionA);
-  //            request.setIntermediaryInstitutionIdentifierCode(bankInformation.getSwiftCode());
-  //            break;
-  //          case "57":
-  //            request.setSelectedAccountWithInstitutionOption(SelectOptions.OptionA);
-  //            request.setAccountWithInstitutionIdentifierCode(bankInformation.getSwiftCode());
-  //            break;
-  //        }
+              case SendingInstitution:
+              request.setSendingInstituteIdentifierCode(bankInformation.getIdentifierCode());
+              request.setSendingInstitutePartyIdentifier(bankInformation.getPartyIdentifier());
+              break;
+              case OrderingInstitution:
+              request.setSelectedOrderingInstitutionOption(bankInformation.getOption());
+                  request.setOrderingInstitutionPartyIdentifier(bankInformation.getPartyIdentifier());
+              if(bankInformation.getOption().equals(SelectOptions.OptionA)) {
+                  request.setOrderingInstitutionIdentifierCode(bankInformation.getIdentifierCode());
+              }
+              if(bankInformation.getOption().equals(SelectOptions.OptionD)){
+                  request.setOrderingInstitutionPartyNameAndAddress(bankInformation.getNameAndAddress());
+              }
+              break;
+              case SenderCorrespondent:
+                  request.setSendersCorrespondentPartyIdentifier(bankInformation.getPartyIdentifier());
+                  if(bankInformation.getOption().equals(SelectOptions.OptionA)) {
+                      request.setSendersCorrespondentIdentifierCode(bankInformation.getIdentifierCode());
+                  }
+                  if(bankInformation.getOption().equals(SelectOptions.OptionB)) {
+                      request.setSendersCorrespondentLocation(bankInformation.getLocation());
+                  }
+                  if(bankInformation.getOption().equals(SelectOptions.OptionD)){
+                      request.setSendersCorrespondentNameAndAddress(bankInformation.getNameAndAddress());
+                  }
+              break;
+              case ReceiverCorrespondent:
+                  request.setReceiversCorrespondentPartyIdentifier(bankInformation.getPartyIdentifier());
+                  if(bankInformation.getOption().equals(SelectOptions.OptionA)) {
+                      request.setReceiversCorrespondentIdentifierCode(bankInformation.getIdentifierCode());
+                  }
+                  if(bankInformation.getOption().equals(SelectOptions.OptionB)) {
+                      request.setReceiversCorrespondentLocation(bankInformation.getLocation());
+                  }
+                  if(bankInformation.getOption().equals(SelectOptions.OptionD)){
+                      request.setReceiversCorrespondentNameAndAddress(bankInformation.getNameAndAddress());
+                  }
+              break;
+              case ThirdReimbursementInstitution:
+                  request.setThirdReimbursementInstitutionPartyIdentifier(bankInformation.getPartyIdentifier());
+                  if(bankInformation.getOption().equals(SelectOptions.OptionA)) {
+                      request.setThirdReimbursementInstitutionIdentifierCode(bankInformation.getIdentifierCode());
+                  }
+                  if(bankInformation.getOption().equals(SelectOptions.OptionB)) {
+                      request.setThirdReimbursementInstitutionLocation(bankInformation.getLocation());
+                  }
+                  if(bankInformation.getOption().equals(SelectOptions.OptionD)){
+                      request.setThirdReimbursementInstitutionNameAndAddress(bankInformation.getNameAndAddress());
+                  }
+              break;
+              case IntermediaryInstitution:
+              request.setIntermediaryInstitutionPartyIdentifier(bankInformation.getPartyIdentifier());
+                  if(bankInformation.getOption().equals(SelectOptions.OptionA)) {
+                      request.setIntermediaryInstitutionIdentifierCode(bankInformation.getIdentifierCode());
+                  }
+                  if(bankInformation.getOption().equals(SelectOptions.OptionD)){
+                      request.setIntermediaryInstitutionIdentifierNameAndAddress(bankInformation.getNameAndAddress());
+                  }
+              break;
+              case AccountWithInstitution:
+              request.setSelectedAccountWithInstitutionOption(SelectOptions.OptionA);
+//              request.setAccountWithInstitutionIdentifierCode(bankInformation.getSwiftCode());
+              break;
         }
       }
 
