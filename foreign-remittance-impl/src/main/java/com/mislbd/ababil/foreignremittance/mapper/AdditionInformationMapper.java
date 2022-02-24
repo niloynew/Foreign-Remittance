@@ -1,166 +1,82 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
-import com.mislbd.ababil.foreignremittance.domain.RemittanceAdditionalInformation;
-import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceAdditionalInformationEntity;
+import com.mislbd.ababil.foreignremittance.domain.AdditionalInformation;
+import com.mislbd.ababil.foreignremittance.repository.jpa.AdditionalInformationRepository;
+import com.mislbd.ababil.foreignremittance.repository.schema.AdditionalInformationEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AdditionInformationMapper {
 
-  public ResultMapper<RemittanceAdditionalInformation, RemittanceAdditionalInformationEntity>
-      domainToEntity() {
+  private final AdditionalInformationRepository additionalInformationRepository;
+
+  public AdditionInformationMapper(
+      AdditionalInformationRepository additionalInformationRepository) {
+    this.additionalInformationRepository = additionalInformationRepository;
+  }
+
+  public ResultMapper<AdditionalInformation, AdditionalInformationEntity> domainToEntity() {
 
     return domain ->
-        new RemittanceAdditionalInformationEntity()
-            .setId(domain.getId())
-            .setInstructedCurrency(
-                domain.getInstructedCurrency() == null ? null : domain.getInstructedCurrency())
-            .setInstructedAmount(
-                domain.getInstructedAmount() == null ? null : domain.getInstructedAmount())
+        additionalInformationRepository
+            .findById(domain.getId())
+            .orElseGet(AdditionalInformationEntity::new)
             .setCode(domain.getCode())
             .setTimeIndication(domain.getTimeIndication())
             .setSign(domain.getSign())
             .setOffset(domain.getOffset())
+            .setInstructedCurrency(
+                domain.getInstructedCurrency() == null ? null : domain.getInstructedCurrency())
+            .setInstructedAmount(
+                domain.getInstructedAmount() == null ? null : domain.getInstructedAmount())
             .setExchangeRate(domain.getExchangeRate())
+            .setDetailsOfCharges(domain.getDetailsOfCharges())
             .setSendersChargeCurrency(domain.getSendersChargeCurrency())
             .setSendersChargeAmount(domain.getSendersChargeAmount())
             .setReceiversChargeCurrency(domain.getReceiversChargeCurrency())
             .setReceiversChargeAmount(domain.getSendersChargeAmount())
+            .setBankOperationCode(domain.getBankOperationCode())
             .setTransactionTypeCode(domain.getTransactionTypeCode())
             .setInstructionCode(domain.getInstructionCode())
             .setInstructionCodeAdditionalInformation(
                 domain.getInstructionCodeAdditionalInformation())
-            .setRegulatoryReportingCode(domain.getRegulatoryReportingCode())
-            .setRegulatoryReportingCountryCode(domain.getRegulatoryReportingCountryCode())
-            .setEnvelopContents(domain.getEnvelopContents())
-            .setRegulatoryReportingCNarrative(domain.getRegulatoryReportingCNarrative())
             .setRemittanceInformation(domain.getRemittanceInformation())
             .setSenderToReceiverInformation(domain.getSenderToReceiverInformation())
-            .setSendingInstitutePartyIdentifier(domain.getSendingInstitutePartyIdentifier())
-            .setSendingInstituteIdentifierCode(domain.getSendingInstituteIdentifierCode())
-            .setSelectedOrderingInstitutionOption(domain.getSelectedOrderingInstitutionOption())
-            .setOrderingInstitutionPartyIdentifier(domain.getOrderingInstitutionPartyIdentifier())
-            .setOrderingInstitutionIdentifierCode(domain.getOrderingInstitutionIdentifierCode())
-            .setOrderingInstitutionPartyNameAndAddress(
-                domain.getOrderingInstitutionPartyNameAndAddress())
-            .setSelectedSendersCorrespondentOption(domain.getSelectedSendersCorrespondentOption())
-            .setSendersCorrespondentPartyIdentifier(domain.getSendersCorrespondentPartyIdentifier())
-            .setSendersCorrespondentIdentifierCode(domain.getSendersCorrespondentIdentifierCode())
-            .setSendersCorrespondentLocation(domain.getSendersCorrespondentLocation())
-            .setSendersCorrespondentNameAndAddress(domain.getSendersCorrespondentNameAndAddress())
-            .setSelectedReceiversCorrespondentOption(
-                domain.getSelectedReceiversCorrespondentOption())
-            .setReceiversCorrespondentPartyIdentifier(
-                domain.getReceiversCorrespondentPartyIdentifier())
-            .setReceiversCorrespondentIdentifierCode(
-                domain.getReceiversCorrespondentIdentifierCode())
-            .setReceiversCorrespondentLocation(domain.getReceiversCorrespondentLocation())
-            .setReceiversCorrespondentNameAndAddress(
-                domain.getReceiversCorrespondentNameAndAddress())
-            .setSelectedThirdReimbursementInstitutionOption(
-                domain.getSelectedThirdReimbursementInstitutionOption())
-            .setThirdReimbursementInstitutionPartyIdentifier(
-                domain.getThirdReimbursementInstitutionPartyIdentifier())
-            .setThirdReimbursementInstitutionIdentifierCode(
-                domain.getThirdReimbursementInstitutionIdentifierCode())
-            .setThirdReimbursementInstitutionLocation(
-                domain.getThirdReimbursementInstitutionLocation())
-            .setThirdReimbursementInstitutionNameAndAddress(
-                domain.getThirdReimbursementInstitutionNameAndAddress())
-            .setSelectedIntermediaryInstitutionOption(
-                domain.getSelectedIntermediaryInstitutionOption())
-            .setIntermediaryInstitutionPartyIdentifier(
-                domain.getIntermediaryInstitutionPartyIdentifier())
-            .setIntermediaryInstitutionIdentifierCode(
-                domain.getIntermediaryInstitutionIdentifierCode())
-            .setIntermediaryInstitutionIdentifierNameAndAddress(
-                domain.getIntermediaryInstitutionIdentifierNameAndAddress())
-            .setSelectedAccountWithInstitutionOption(
-                domain.getSelectedAccountWithInstitutionOption())
-            .setAccountWithInstitutionPartyIdentifier(
-                domain.getAccountWithInstitutionPartyIdentifier())
-            .setAccountWithInstitutionIdentifierCode(
-                domain.getAccountWithInstitutionIdentifierCode())
-            .setAccountWithInstitutionPartyLocation(domain.getAccountWithInstitutionPartyLocation())
-            .setAccountWithInstitutionPartyNameAndAddress(
-                domain.getAccountWithInstitutionPartyNameAndAddress());
+            .setRegulatoryReportingCode(domain.getRegulatoryReportingCode())
+            .setRegulatoryReportingCountryCode(domain.getRegulatoryReportingCountryCode())
+            .setRegulatoryReportingCNarrative(domain.getRegulatoryReportingCNarrative())
+            .setEnvelopContents(domain.getEnvelopContents());
   }
 
-  public ResultMapper<RemittanceAdditionalInformationEntity, RemittanceAdditionalInformation>
-      entityToDomain() {
+  public ResultMapper<AdditionalInformationEntity, AdditionalInformation> entityToDomain() {
     return entity ->
-        new RemittanceAdditionalInformation()
+        new AdditionalInformation()
             .setId(entity.getId())
+            .setCode(entity.getCode())
+            .setTimeIndication(entity.getTimeIndication())
+            .setSign(entity.getSign())
+            .setOffset(entity.getOffset())
             .setInstructedCurrency(
                 entity.getInstructedCurrency() == null ? null : entity.getInstructedCurrency())
             .setInstructedAmount(
                 entity.getInstructedAmount() == null ? null : entity.getInstructedAmount())
-            .setTimeIndication(entity.getTimeIndication())
-            .setSign(entity.getSign())
-            .setOffset(entity.getOffset())
             .setExchangeRate(entity.getExchangeRate())
+            .setDetailsOfCharges(entity.getDetailsOfCharges())
             .setSendersChargeCurrency(entity.getSendersChargeCurrency())
             .setSendersChargeAmount(entity.getSendersChargeAmount())
             .setReceiversChargeCurrency(entity.getReceiversChargeCurrency())
             .setReceiversChargeAmount(entity.getSendersChargeAmount())
+            .setBankOperationCode(entity.getBankOperationCode())
             .setTransactionTypeCode(entity.getTransactionTypeCode())
             .setInstructionCode(entity.getInstructionCode())
             .setInstructionCodeAdditionalInformation(
                 entity.getInstructionCodeAdditionalInformation())
-            .setRegulatoryReportingCode(entity.getRegulatoryReportingCode())
-            .setRegulatoryReportingCountryCode(entity.getRegulatoryReportingCountryCode())
-            .setEnvelopContents(entity.getEnvelopContents())
-            .setRegulatoryReportingCNarrative(entity.getRegulatoryReportingCNarrative())
             .setRemittanceInformation(entity.getRemittanceInformation())
             .setSenderToReceiverInformation(entity.getSenderToReceiverInformation())
-            .setSendingInstitutePartyIdentifier(entity.getSendingInstitutePartyIdentifier())
-            .setSendingInstituteIdentifierCode(entity.getSendingInstituteIdentifierCode())
-            .setSelectedOrderingInstitutionOption(entity.getSelectedOrderingInstitutionOption())
-            .setOrderingInstitutionPartyIdentifier(entity.getOrderingInstitutionPartyIdentifier())
-            .setOrderingInstitutionIdentifierCode(entity.getOrderingInstitutionIdentifierCode())
-            .setOrderingInstitutionPartyNameAndAddress(
-                entity.getOrderingInstitutionPartyNameAndAddress())
-            .setSelectedSendersCorrespondentOption(entity.getSelectedSendersCorrespondentOption())
-            .setSendersCorrespondentPartyIdentifier(entity.getSendersCorrespondentPartyIdentifier())
-            .setSendersCorrespondentIdentifierCode(entity.getSendersCorrespondentIdentifierCode())
-            .setSendersCorrespondentLocation(entity.getSendersCorrespondentLocation())
-            .setSendersCorrespondentNameAndAddress(entity.getSendersCorrespondentNameAndAddress())
-            .setSelectedReceiversCorrespondentOption(
-                entity.getSelectedReceiversCorrespondentOption())
-            .setReceiversCorrespondentPartyIdentifier(
-                entity.getReceiversCorrespondentPartyIdentifier())
-            .setReceiversCorrespondentIdentifierCode(
-                entity.getReceiversCorrespondentIdentifierCode())
-            .setReceiversCorrespondentLocation(entity.getReceiversCorrespondentLocation())
-            .setReceiversCorrespondentNameAndAddress(
-                entity.getReceiversCorrespondentNameAndAddress())
-            .setSelectedThirdReimbursementInstitutionOption(
-                entity.getSelectedThirdReimbursementInstitutionOption())
-            .setThirdReimbursementInstitutionPartyIdentifier(
-                entity.getThirdReimbursementInstitutionPartyIdentifier())
-            .setThirdReimbursementInstitutionIdentifierCode(
-                entity.getThirdReimbursementInstitutionIdentifierCode())
-            .setThirdReimbursementInstitutionLocation(
-                entity.getThirdReimbursementInstitutionLocation())
-            .setThirdReimbursementInstitutionNameAndAddress(
-                entity.getThirdReimbursementInstitutionNameAndAddress())
-            .setSelectedIntermediaryInstitutionOption(
-                entity.getSelectedIntermediaryInstitutionOption())
-            .setIntermediaryInstitutionPartyIdentifier(
-                entity.getIntermediaryInstitutionPartyIdentifier())
-            .setIntermediaryInstitutionIdentifierCode(
-                entity.getIntermediaryInstitutionIdentifierCode())
-            .setIntermediaryInstitutionIdentifierNameAndAddress(
-                entity.getIntermediaryInstitutionIdentifierNameAndAddress())
-            .setSelectedAccountWithInstitutionOption(
-                entity.getSelectedAccountWithInstitutionOption())
-            .setAccountWithInstitutionPartyIdentifier(
-                entity.getAccountWithInstitutionPartyIdentifier())
-            .setAccountWithInstitutionIdentifierCode(
-                entity.getAccountWithInstitutionIdentifierCode())
-            .setAccountWithInstitutionPartyLocation(entity.getAccountWithInstitutionPartyLocation())
-            .setAccountWithInstitutionPartyNameAndAddress(
-                entity.getAccountWithInstitutionPartyNameAndAddress());
+            .setRegulatoryReportingCode(entity.getRegulatoryReportingCode())
+            .setRegulatoryReportingCountryCode(entity.getRegulatoryReportingCountryCode())
+            .setRegulatoryReportingCNarrative(entity.getRegulatoryReportingCNarrative())
+            .setEnvelopContents(entity.getEnvelopContents());
   }
 }

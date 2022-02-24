@@ -9,7 +9,9 @@ import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeEnt
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeSlabEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.RemittanceChargeMappingSpecification;
+import com.mislbd.ababil.transaction.service.TransactionDefinitionService;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
+import com.mislbd.transaction.api.transaction.model.Charge;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,44 +26,43 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
 
   public RemittanceChargeInformationServiceImpl(
       RemittanceChargeMappingRepository remittanceChargeMappingRepository,
-      RemittanceChargeRepository remittanceChargeRepository) {
+      RemittanceChargeRepository remittanceChargeRepository,
+      TransactionDefinitionService transactionDefinitionService) {
     this.remittanceChargeMappingRepository = remittanceChargeMappingRepository;
     this.remittanceChargeRepository = remittanceChargeRepository;
   }
 
-  public List<RemittanceChargeInformation> getChargeInfo(
-      RemittanceType remittanceType,
-      long transactionTypeId,
-      String accountNumber,
-      BigDecimal amount) {
+  public List<Charge> getChargeInfo(
+      RemittanceType remittanceType, long transactionTypeId, BigDecimal amount) {
 
     List<RemittanceChargeMappingEntity> chargeMappingList =
         remittanceChargeMappingRepository.findAll(
             RemittanceChargeMappingSpecification.findSpecificChargeMappings(
                 remittanceType, transactionTypeId, null, null, null));
-    List<RemittanceChargeEntity> chargeList = getChargeList(chargeMappingList, accountNumber);
-    List<RemittanceChargeInformation> remittanceChargeInformationList = new ArrayList<>();
-    if (chargeList.isEmpty()) return remittanceChargeInformationList;
-    remittanceChargeInformationList =
+    List<RemittanceChargeEntity> chargeList = getChargeList(chargeMappingList);
+    List<Charge> charges = new ArrayList<>();
+    if (chargeList.isEmpty()) return charges;
+    charges =
         chargeList
             .stream()
             .map(
                 remittanceCharge -> {
                   BigDecimal chargeAmount = chargeCalculation(remittanceCharge, amount);
                   BigDecimal vatAmount = vatCalculation(remittanceCharge, chargeAmount);
-                  RemittanceChargeInformation remittanceChargeInformation =
-                      entityToDomain()
-                          .map(remittanceCharge)
-                          .setCurrency(remittanceCharge.getCurrencyCode())
-                          .setChargeAmount(chargeAmount)
-                          .setChargeAmountAfterWaived(chargeAmount)
-                          .setCanModifyCharge(remittanceCharge.getCanModifyCharge())
-                          .setVatAmount(vatAmount)
-                          .setVatAmountAfterWaived(vatAmount);
-                  return remittanceChargeInformation;
+                  Charge charge =
+                      Charge.builder()
+                          .chargeCode("003")
+                          .chargeName(remittanceCharge.getChargeName())
+                          .chargeAccountCode(remittanceCharge.getChargeAccountCode())
+                          .currencyCode(remittanceCharge.getCurrencyCode())
+                          .chargeAmountRCY(chargeAmount)
+                          .vatAccountCode(remittanceCharge.getVatAccountCode())
+                          .vatAmountRCY(vatAmount)
+                          .build();
+                  return charge;
                 })
             .collect(Collectors.toList());
-    return remittanceChargeInformationList;
+    return charges;
   }
 
   private BigDecimal vatCalculation(
@@ -163,7 +164,7 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
   }
 
   private List<RemittanceChargeEntity> getChargeList(
-      List<RemittanceChargeMappingEntity> chargeMappingList, String accountNumber) {
+      List<RemittanceChargeMappingEntity> chargeMappingList) {
     List<RemittanceChargeEntity> remittanceChargeEntityList =
         chargeMappingList
             .stream()

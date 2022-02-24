@@ -43,11 +43,9 @@ public class RemittanceTransactionQueryHandlerAggregate {
       PagedResult<?> pagedResult =
           remittanceTransactionService.getTransactions(
               remittanceTransactionQuery.getPageable(),
-              remittanceTransactionQuery.getGlobalTransactionNo(),
+              remittanceTransactionQuery.getStatus(),
               remittanceTransactionQuery.getRemittanceType(),
               remittanceTransactionQuery.getTransactionReferenceNumber(),
-              remittanceTransactionQuery.getApplicantName(),
-              remittanceTransactionQuery.getBeneficiaryName(),
               remittanceTransactionQuery.getFromDate(),
               remittanceTransactionQuery.getToDate());
       return QueryResult.of(pagedResult);
@@ -55,11 +53,9 @@ public class RemittanceTransactionQueryHandlerAggregate {
 
       List<?> listResult =
           remittanceTransactionService.getTransactions(
-              remittanceTransactionQuery.getGlobalTransactionNo(),
+              remittanceTransactionQuery.getStatus(),
               remittanceTransactionQuery.getRemittanceType(),
               remittanceTransactionQuery.getTransactionReferenceNumber(),
-              remittanceTransactionQuery.getApplicantName(),
-              remittanceTransactionQuery.getBeneficiaryName(),
               remittanceTransactionQuery.getFromDate(),
               remittanceTransactionQuery.getToDate());
       return QueryResult.of(listResult);
