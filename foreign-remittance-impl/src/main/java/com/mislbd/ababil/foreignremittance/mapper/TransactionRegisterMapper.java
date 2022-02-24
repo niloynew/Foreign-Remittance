@@ -41,6 +41,7 @@ public class TransactionRegisterMapper {
   public ResultMapper<TransactionRegisterEntity, TransactionRegister> entityToDomain() {
     return entity ->
         new TransactionRegister()
+            .setId(entity.getId())
             .setSetNumber(entity.getSetNumber())
             .setTransactionTypeCode(entity.getTransactionTypeCode())
             .setTransactionEntryType(entity.getTransactionEntryType())
