@@ -1,229 +1,161 @@
 package com.mislbd.ababil.foreignremittance.command.handler;
 
+import com.google.common.base.Strings;
 import com.mislbd.ababil.asset.service.Auditor;
-import com.mislbd.ababil.foreignremittance.command.CreateInwardRemittanceTransactionCommand;
-import com.mislbd.ababil.foreignremittance.command.CreateOutwardRemittanceTransactionCommand;
+import com.mislbd.ababil.asset.service.ConfigurationService;
+import com.mislbd.ababil.foreignremittance.command.CreateRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.RemittanceTransactionCorrectionCommand;
 import com.mislbd.ababil.foreignremittance.domain.*;
-import com.mislbd.ababil.foreignremittance.mapper.BankInformationMapper;
-import com.mislbd.ababil.foreignremittance.mapper.RemittanceChargeInformationMapper;
+import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
+import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
+import com.mislbd.ababil.foreignremittance.external.domain.ApiTransactionRequest;
+import com.mislbd.ababil.foreignremittance.external.domain.CorrectionApiRequest;
+import com.mislbd.ababil.foreignremittance.external.mapper.ApiTransactionMapper;
+import com.mislbd.ababil.foreignremittance.external.repository.BatchApiClient;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
-import com.mislbd.ababil.foreignremittance.repository.jpa.BankInformationRepository;
-import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceChargeInformationRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
-import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeInformationEntity;
-import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionBankMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
-import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
-import com.mislbd.ababil.foreignremittance.service.salient.DisbursementService;
-import com.mislbd.ababil.transaction.service.TransactionService;
-import com.mislbd.asset.command.api.Command;
+import com.mislbd.ababil.foreignremittance.service.TransactionRegisterService;
+import com.mislbd.ababil.organization.service.BranchService;
 import com.mislbd.asset.command.api.CommandEvent;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
 import com.mislbd.asset.command.api.annotation.CommandHandler;
 import com.mislbd.asset.command.api.annotation.CommandListener;
-import com.mislbd.security.core.NgSession;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.LinkedHashMap;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Aggregate
 @Slf4j
 public class RemittanceTransactionCommandHandlerAggregate {
 
-  private static final Long ID_DISBURSEMENT_ACTIVITY_ID = 805L;
-  private static final Long ID_PAYMENT_ACTIVITY_ID = 806L;
-  private final RemittanceTransactionRepository transactionRepository;
-  private final RemittanceTransactionService remittanceTransactionService;
-  private final RemittanceTransactionMapper transactionMapper;
-  private final BankInformationRepository bankInformationRepository;
-  private final BankInformationMapper bankInformationMapper;
-  private final RemittanceChargeInformationRepository chargeInformationRepository;
-  private final RemittanceChargeInformationMapper chargeInformationMapper;
-  private final NgSession ngSession;
-  private final DisbursementService disbursementService;
-  private final TransactionService transactionService;
   private final Auditor auditor;
+  private final RemittanceTransactionMapper transactionMapper;
+  private final RemittanceTransactionRepository transactionRepository;
+  private final TransactionRegisterService transactionRegisterService;
+  private final BatchApiClient batchApiClient;
+  private final ApiTransactionMapper apiTransactionMapper;
+  private final ConfigurationService configurationService;
+  private final BranchService branchService;
 
   public RemittanceTransactionCommandHandlerAggregate(
-      RemittanceTransactionRepository transactionRepository,
-      RemittanceTransactionService remittanceTransactionService,
+      Auditor auditor,
       RemittanceTransactionMapper transactionMapper,
-      BankInformationRepository bankInformationRepository,
-      BankInformationMapper bankInformationMapper,
-      RemittanceChargeInformationRepository chargeInformationRepository,
-      RemittanceChargeInformationMapper chargeInformationMapper,
-      NgSession ngSession,
-      DisbursementService disbursementService,
-      TransactionService transactionService,
-      Auditor auditor) {
-
-    this.transactionRepository = transactionRepository;
-    this.remittanceTransactionService = remittanceTransactionService;
-    this.transactionMapper = transactionMapper;
-    this.bankInformationRepository = bankInformationRepository;
-    this.bankInformationMapper = bankInformationMapper;
-    this.chargeInformationRepository = chargeInformationRepository;
-    this.chargeInformationMapper = chargeInformationMapper;
-    this.ngSession = ngSession;
-    this.disbursementService = disbursementService;
-    this.transactionService = transactionService;
+      RemittanceTransactionRepository transactionRepository,
+      TransactionRegisterService transactionRegisterService,
+      BatchApiClient batchApiClient,
+      ApiTransactionMapper apiTransactionMapper,
+      ConfigurationService configurationService,
+      BranchService branchService) {
     this.auditor = auditor;
+    this.transactionMapper = transactionMapper;
+    this.transactionRepository = transactionRepository;
+    this.transactionRegisterService = transactionRegisterService;
+    this.batchApiClient = batchApiClient;
+    this.apiTransactionMapper = apiTransactionMapper;
+    this.configurationService = configurationService;
+    this.branchService = branchService;
   }
 
-  @CommandListener(
-      commandClasses = {
-        CreateInwardRemittanceTransactionCommand.class,
-        CreateOutwardRemittanceTransactionCommand.class
-      })
-  public void auditCreateInwardRemittanceTransaction(CommandEvent e) {
+  @CommandListener(commandClasses = {CreateRemittanceTransactionCommand.class})
+  public void auditRemittanceTransaction(CommandEvent e) {
     auditor.audit(e.getCommand().getPayload(), e.getCommand());
   }
 
   @Transactional
   @CommandHandler
-  public CommandResponse<Long> createInwardRemittanceTransaction(
-      CreateInwardRemittanceTransactionCommand command) {
+  public CommandResponse<Long> createRemittanceTransaction(
+      CreateRemittanceTransactionCommand command) {
     RemittanceTransaction transaction = command.getPayload();
-    /*
-     * Save entries in RemittanceTransaction table
-     * Save entries in BankInformation table
-     * Save charge information along with global transaction number
-     * transaction processing
-     * */
-
-    AuditInformation auditInformation = getAuditInformation(command, null, null);
-
     RemittanceTransactionEntity remittanceTransactionEntity =
-        saveTransactionEntity(transaction, ID_DISBURSEMENT_ACTIVITY_ID, auditInformation);
-    BigDecimal totalChargeAndVat =
-        transaction
-            .getTotalChargeAmountAfterWaived()
-            .add(transaction.getTotalVatAmountAfterWaived());
-
-    return CommandResponse.of(
-        disbursementService.doInwardTransaction(
-            remittanceTransactionEntity,
-            auditInformation,
-            transaction.getRemittanceChargeInformationList(),
-            totalChargeAndVat,
-            ID_DISBURSEMENT_ACTIVITY_ID));
-  }
-
-  @Transactional
-  @CommandHandler
-  public CommandResponse<Long> createOutwardRemittanceTransaction(
-      CreateOutwardRemittanceTransactionCommand command) {
-    RemittanceTransaction transaction = command.getPayload();
-
-    AuditInformation auditInformation = getAuditInformation(command, null, null);
-
-    RemittanceTransactionEntity remittanceTransactionEntity =
-        saveTransactionEntity(transaction, ID_PAYMENT_ACTIVITY_ID, auditInformation);
-
-    BigDecimal totalChargeAndVat =
-        transaction
-            .getTotalChargeAmountAfterWaived()
-            .add(transaction.getTotalVatAmountAfterWaived());
-    return CommandResponse.of(
-        disbursementService.doOutwardTransaction(
-            remittanceTransactionEntity,
-            auditInformation,
-            transaction.getRemittanceChargeInformationList(),
-            totalChargeAndVat,
-            ID_PAYMENT_ACTIVITY_ID));
-  }
-
-  @Transactional
-  @CommandHandler
-  public CommandResponse<Long> correctionRemittanceTransaction(
-      RemittanceTransactionCorrectionCommand command) {
-
-    AuditInformation auditInformation = getAuditInformation(null, command, command.getPayload());
-
-    remittanceTransactionService.correctTransaction(auditInformation);
-
-    return CommandResponse.of(command.getPayload());
-  }
-
-  private AuditInformation getAuditInformation(
-      Command<RemittanceTransaction> transactionCommand,
-      RemittanceTransactionCorrectionCommand correctionCommand,
-      Long globalTransactionNumber) {
-    AuditInformation auditInformation = new AuditInformation();
-    if (correctionCommand != null) {
-      auditInformation.setEntryUser(correctionCommand.getInitiator());
-      auditInformation.setProcessId(correctionCommand.getProcessId());
-      auditInformation.setGlobalTxnNumber(globalTransactionNumber);
-    } else {
-      auditInformation.setEntryUser(transactionCommand.getInitiator());
-      auditInformation.setProcessId(transactionCommand.getProcessId());
+        transactionMapper.domainToEntity().map(transaction);
+    if (transaction.getSenderBIC() == null) {
+      remittanceTransactionEntity.setSenderBIC(
+          branchService
+              .findBranch(command.getInitiatorBranch())
+              .orElseThrow(
+                  () ->
+                      new ForeignRemittanceBaseException(
+                          "Branch not found with id " + command.getInitiatorBranch()))
+              .getSwiftCode());
     }
-    auditInformation
-        .setVerifyUser(ngSession.getUsername())
-        .setVerifyTerminal(ngSession.getTerminal())
-        .setUserBranch(ngSession.getUserBranch().intValue())
-        .setEntryDate(LocalDate.now());
-    return auditInformation;
+    Long voucherNumber = null;
+    try {
+      ApiTransactionRequest request =
+          apiTransactionMapper.cbsTransactionToApiRequest().map(transaction.getCbsTransactions());
+      request.setRequestId(generateRequestId(transaction.getTransactionReferenceNumber()));
+      request.setRequestDateTime(LocalDateTime.now());
+      request.setValueDate(transaction.getValueDate());
+      request.setInitiatorBranchId(command.getInitiatorBranch());
+      request.setEntryUserTerminal(command.getInitiatorTerminal());
+      request.setInitiatorModule("ID");
+      request.setReferenceNumber(transaction.getTransactionReferenceNumber());
+      request.setTransactionDate(configurationService.getCurrentApplicationDate());
+      request.setVerifyUser(command.getVerifier());
+      request.setVerifyUserTerminal(command.getVerifierTerminal());
+      ResponseEntity<?> responseEntity = batchApiClient.doBatchApiTransaction(request);
+      LinkedHashMap<String, Long> response = (LinkedHashMap<String, Long>) responseEntity.getBody();
+      voucherNumber = response.get("content");
+      remittanceTransactionEntity.setTransactionStatus(RemittanceTransactionStatus.Succeed);
+      saveTransactionEntity(remittanceTransactionEntity);
+      transactionRegisterService.doRegister(
+          transaction.getCbsTransactions(), voucherNumber, remittanceTransactionEntity.getId());
+    } catch (Exception e) {
+      log.error("Error in Feign transaction", e.getCause());
+    }
+    if (voucherNumber != null) {
+      return CommandResponse.of(voucherNumber);
+    } else {
+      throw new ForeignRemittanceBaseException("Transaction Failed");
+    }
   }
 
-  private RemittanceTransactionEntity saveTransactionEntity(
-      RemittanceTransaction domain, Long activityId, AuditInformation auditInformation) {
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Void> correctionRemittanceTransaction(
+      RemittanceTransactionCorrectionCommand command) {
+    boolean succeed = false;
+    RemittanceTransactionCorrectionRequest correctionRequest = command.getPayload();
+    RemittanceTransactionEntity entity =
+        transactionRepository
+            .findById(correctionRequest.getRemittanceTransactionId())
+            .orElseThrow(RemittanceTransactionNotFoundException::new);
+    try {
+      CorrectionApiRequest request = new CorrectionApiRequest();
+      request.setRequestId(generateRequestId(entity.getTransactionReferenceNumber()));
+      request.setReferenceNumber(entity.getTransactionReferenceNumber());
+      request.setVoucherNumber(String.valueOf(correctionRequest.getGlobalTxnNumber()));
+      batchApiClient.doApiTxnCorrection(request);
+      transactionRegisterService.invalidRegister(correctionRequest.getGlobalTxnNumber());
+      entity.setTransactionStatus(RemittanceTransactionStatus.Reversed);
+      saveTransactionEntity(entity);
+      succeed = true;
+    } catch (Exception e) {
+      log.error("Error in Feign reverse transaction", e.getCause());
+    }
+    if (succeed) {
+      return CommandResponse.asVoid();
+    } else {
+      throw new ForeignRemittanceBaseException("Reverse Transaction Failed");
+    }
+  }
 
-    RemittanceTransactionEntity remittanceTransactionEntity =
-        transactionMapper.domainToEntity().map(domain);
+  private void saveTransactionEntity(RemittanceTransactionEntity entity) {
+    if (entity.getAdditionalInformationEntity() != null) {
+      entity.getAdditionalInformationEntity().setRemittanceTransactionEntity(entity);
+    }
+    transactionRepository.save(entity);
+  }
 
-    remittanceTransactionEntity
-        .setBatchNumber(
-            transactionService.getBatchNumber(
-                auditInformation.getEntryUser(),
-                activityId,
-                auditInformation.getUserBranch().longValue()))
-        .setGlobalTransactionNo(
-            remittanceTransactionEntity.getGlobalTransactionNo() == null
-                ? transactionService.getGlobalTransactionNumber(
-                    auditInformation.getEntryUser(), activityId)
-                : remittanceTransactionEntity.getGlobalTransactionNo());
-
-    RemittanceTransactionEntity entity = transactionRepository.save(remittanceTransactionEntity);
-
-    List<BankInformation> bankInformationList = domain.getBankInformation();
-    if (!bankInformationList.isEmpty())
-      bankInformationList.forEach(
-          bankInformation -> {
-            RemittanceTransactionBankMappingEntity remittanceTransactionBankMappingEntity =
-                bankInformationMapper.domainToEntity().map(bankInformation);
-            remittanceTransactionBankMappingEntity.setRemittanceTransaction(entity);
-            bankInformationRepository.save(remittanceTransactionBankMappingEntity);
-          });
-
-    List<RemittanceChargeInformation> chargeInformationList =
-        domain.getRemittanceChargeInformationList();
-    if (!chargeInformationList.isEmpty())
-      chargeInformationList.forEach(
-          chargeInformation -> {
-            RemittanceChargeInformationEntity chargeInformationEntity =
-                chargeInformationMapper.domainToEntity().map(chargeInformation);
-            chargeInformationEntity.setRemittanceTransaction(entity);
-            chargeInformationRepository.save(chargeInformationEntity);
-          });
-    return entity;
+  private String generateRequestId(String referenceNumber) {
+    String date = new SimpleDateFormat("ddMMyy").format(new Date());
+    return date.concat(referenceNumber)
+        .concat(
+            Strings.padStart(transactionRepository.generateRequestIdSequence().toString(), 3, '0'));
   }
 }
-
-// transactionRepository.delete(transaction);
-    /*transaction.setValid(false);
-    transactionRepository.save(transaction);
-    ShadowTransactionRecordEntity shadowTransactionRecordEntity =
-        shadowTransactionRecordRepository
-            .findByGlobalTxnNo(BigDecimal.valueOf(command.getPayload()))
-            .orElseThrow(RemittanceTransactionNotFoundException::new);
-    shadowTransactionRecordEntity.setValid(false);
-    shadowTransactionRecordRepository.save(shadowTransactionRecordEntity);
-    RemittanceTransactionEntity transaction =
-        transactionRepository
-            .findByGlobalTransactionNo(command.getPayload())
-            .orElseThrow(RemittanceTransactionNotFoundException::new);*/

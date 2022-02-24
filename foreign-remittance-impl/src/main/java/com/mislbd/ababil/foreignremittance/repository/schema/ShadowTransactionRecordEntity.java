@@ -79,5 +79,5 @@ public class ShadowTransactionRecordEntity extends BaseEntity {
   private BigDecimal postBalance;
 
   @Column(name = "RECONCILED_STATUS")
-  private OtherCbsSystemSettlementStatus reconcileStatus;
+  private OtherCbsSystemSettlementStatus reconcileStatus = OtherCbsSystemSettlementStatus.Pending;
 }

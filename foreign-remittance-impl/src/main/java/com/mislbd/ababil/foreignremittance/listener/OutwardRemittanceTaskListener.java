@@ -5,8 +5,6 @@ import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.mapper.TransactionToRequestMapper;
 import com.mislbd.security.core.NgSession;
-import com.mislbd.swift.broker.model.MessageResponse;
-import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.service.XmmIntegrationService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,22 +37,24 @@ public class OutwardRemittanceTaskListener {
   //  }
 
   private void publishMT103(RemittanceTransaction remittanceTransaction) {
-    MT103MessageRequest mt103MessageRequest =
-        transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
-    mt103MessageRequest.setEntryUser(ngSession.getUsername());
-    mt103MessageRequest.setEntryUserBranch(String.valueOf(ngSession.getUserBranch()).concat("00"));
-    mt103MessageRequest.setTransactionReferenceNumber(
-        remittanceTransaction.getTransactionReferenceNumber());
-    mt103MessageRequest.setApplicationDate(configurationService.getCurrentApplicationDate());
-    MessageResponse response = xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
-    if (!response.getStatus().equals("200")) {
-      log.error("## Message Publication Response ##");
-      log.error(
-          "Transaction Reference Number : "
-              + remittanceTransaction.getTransactionReferenceNumber());
-      log.error("Reason : " + response.getMessage());
-      log.error("## End ##");
-      remittanceTransaction.setDoPublishMT103(false);
-    }
+    //    MT103MessageRequest mt103MessageRequest =
+    //        transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
+    //    mt103MessageRequest.setEntryUser(ngSession.getUsername());
+    //
+    // mt103MessageRequest.setEntryUserBranch(String.valueOf(ngSession.getUserBranch()).concat("00"));
+    //    mt103MessageRequest.setTransactionReferenceNumber(
+    //        remittanceTransaction.getTransactionReferenceNumber());
+    //    mt103MessageRequest.setApplicationDate(configurationService.getCurrentApplicationDate());
+    //    MessageResponse response =
+    // xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
+    //    if (!response.getStatus().equals("200")) {
+    //      log.error("## Message Publication Response ##");
+    //      log.error(
+    //          "Transaction Reference Number : "
+    //              + remittanceTransaction.getTransactionReferenceNumber());
+    //      log.error("Reason : " + response.getMessage());
+    //      log.error("## End ##");
+    //      // remittanceTransaction.setDoPublishMT103(false);
+    //    }
   }
 }

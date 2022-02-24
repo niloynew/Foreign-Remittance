@@ -1,24 +1,18 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
 import com.mislbd.ababil.foreignremittance.domain.BankInformation;
-import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionBankMappingEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.BankMappingEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BankInformationMapper {
 
-  public ResultMapper<BankInformation, RemittanceTransactionBankMappingEntity> domainToEntity() {
-    return domain ->
-        new RemittanceTransactionBankMappingEntity()
-            .setSwiftCode(domain.getSwiftCode())
-            .setBankTypeId(domain.getBankTypeId());
+  public ResultMapper<BankInformation, BankMappingEntity> domainToEntity() {
+    return domain -> new BankMappingEntity();
   }
 
-  public ResultMapper<RemittanceTransactionBankMappingEntity, BankInformation> entityToDomain() {
-    return entity ->
-        new BankInformation()
-            .setSwiftCode(entity.getSwiftCode())
-            .setBankTypeId(entity.getBankTypeId());
+  public ResultMapper<BankMappingEntity, BankInformation> entityToDomain() {
+    return entity -> new BankInformation();
   }
 }
