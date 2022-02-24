@@ -136,7 +136,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
       saveTransactionEntity(entity);
       succeed = true;
     } catch (Exception e) {
-      log.error("Error in Feign reverse transaction", e.getMessage());
+      log.error("Error in Feign reverse transaction", e.getCause());
     }
     if (succeed) {
       return CommandResponse.asVoid();
