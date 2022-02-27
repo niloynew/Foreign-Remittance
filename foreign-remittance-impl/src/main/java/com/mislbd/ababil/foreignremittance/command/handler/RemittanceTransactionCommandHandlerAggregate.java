@@ -106,7 +106,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
       transactionRegisterService.doRegister(
           transaction.getCbsTransactions(), voucherNumber, remittanceTransactionEntity.getId());
     } catch (Exception e) {
-      log.error("Error in Feign transaction", e.getCause());
+      log.error("Error in Feign transaction");
     }
     if (voucherNumber != null) {
       return CommandResponse.of(voucherNumber);
