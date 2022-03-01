@@ -22,10 +22,7 @@ public class RemittanceTransaction {
   @NotNull(message = "Remittance type can't be empty")
   private RemittanceType remittanceType;
 
-  @NotNull(message = "Category type can't be empty")
   private Long categoryId;
-
-  @NotNull(message = "Transaction type can't be empty")
   private Long transactionTypeId;
 
   @NotNull(message = "Transaction reference number can't be empty")
@@ -45,8 +42,6 @@ public class RemittanceTransaction {
 
   private String beneficiaryAccountNumber;
   private String senderBIC;
-
-  @NotNull(message = "Receiver BIC can't be empty")
   private String receiverBIC;
 
   // Transactional Information
