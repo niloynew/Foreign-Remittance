@@ -48,6 +48,7 @@ public class AdditionalInformation {
   private String senderToReceiverInformation;
   private String remittanceInformation;
 
+  private boolean isOnlyNarrative;
   private String regulatoryReportingCode;
   private String regulatoryReportingCountryCode;
   private String regulatoryReportingCNarrative;
