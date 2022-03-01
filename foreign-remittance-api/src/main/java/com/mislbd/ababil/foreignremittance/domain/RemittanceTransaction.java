@@ -18,6 +18,7 @@ public class RemittanceTransaction {
 
   // General Information
   private long id;
+
   @NotNull(message = "Remittance type can't be empty")
   private RemittanceType remittanceType;
 

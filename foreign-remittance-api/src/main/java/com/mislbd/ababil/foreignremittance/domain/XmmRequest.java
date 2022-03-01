@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -15,8 +16,10 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class XmmRequest {
 
+  @NotNull(message = "Message type can't be empty")
   private XmmMessageType messageType;
 
+  @NotNull(message = "Reference number can't be empty")
   private String referenceNumber;
 
   private String domainGroup;
