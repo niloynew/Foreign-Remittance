@@ -1,8 +1,16 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
+import com.mislbd.ababil.contacts.service.CountryService;
 import com.mislbd.ababil.foreignremittance.domain.AdditionalInformation;
 import com.mislbd.ababil.foreignremittance.domain.BankInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
+import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
+import com.mislbd.ababil.foreignremittance.external.domain.Customer;
+import com.mislbd.ababil.foreignremittance.external.service.CustomerService;
+import com.mislbd.ababil.foreignremittance.repository.jpa.SenderOrReceiverCustomerRepository;
+import com.mislbd.ababil.foreignremittance.repository.schema.SenderOrReceiverCustomerEntity;
+import com.mislbd.ababil.organization.service.BranchService;
+import com.mislbd.security.core.NgSession;
 import com.mislbd.swift.broker.model.raw.SelectOptions;
 import com.mislbd.swift.broker.model.raw.mt1xx.MT103MessageRequest;
 import com.mislbd.swift.broker.model.raw.mt2xx.TimeIndication;
@@ -13,20 +21,31 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransactionToRequestMapper {
 
-  //  private final NgSession ngSession;
-  //  private final BranchService branchService;
-  //  private final BankTypeService bankTypeService;
-  //
-  //  public TransactionToRequestMapper(
-  //      NgSession ngSession, BranchService branchService, BankTypeService bankTypeService) {
-  //    this.ngSession = ngSession;
-  //    this.branchService = branchService;
-  //    this.bankTypeService = bankTypeService;
-  //  }
-  //
+  private final NgSession ngSession;
+  private final BranchService branchService;
+  private final SenderOrReceiverCustomerRepository senderOrReceiverCustomerRepository;
+  private final CustomerService customerService;
+  private final CountryService countryService;
+
+  public TransactionToRequestMapper(
+      NgSession ngSession,
+      BranchService branchService,
+      SenderOrReceiverCustomerRepository senderOrReceiverCustomerRepository,
+      CustomerService customerService,
+      CountryService countryService) {
+    this.ngSession = ngSession;
+    this.branchService = branchService;
+    this.senderOrReceiverCustomerRepository = senderOrReceiverCustomerRepository;
+    this.customerService = customerService;
+    this.countryService = countryService;
+  }
+
   public MT103MessageRequest mapTransactionToMessageRequest(RemittanceTransaction transaction) {
     MT103MessageRequest request = new MT103MessageRequest();
-    request.setSenderAddress(transaction.getSenderBIC());
+    request.setSenderAddress(
+        transaction.getSenderBIC() != null && !transaction.getSenderBIC().isEmpty()
+            ? transaction.getSenderBIC()
+            : branchService.findBranch(ngSession.getUserBranch()).get().getSwiftCode());
     request.setReceiverAddress(transaction.getReceiverBIC());
     List<BankInformation> bankInformationList = transaction.getBankInformations();
 
@@ -123,21 +142,48 @@ public class TransactionToRequestMapper {
       request.setInterbankSettlementCurrency(transaction.getShadowAccountCurrency());
     }
     request.setInterbankSettlementAmount(transaction.getAmountFcy());
-    //            request.setSelectedOrderingCustomerOption(SelectOptions.OptionK);
-    //    request.setOrderingCustomerAccount(remittanceTransaction.getOperatingAccountNumber());
-    //    request.setOrderingCustomerNameAndAddress(
-    //        remittanceTransaction
-    //            .getApplicant()
-    //            .concat(System.lineSeparator())
-    //            .concat(remittanceTransaction.getApplicantAddress()));
-    //    request.setSelectedBeneficiaryCustomerOption(SelectOptions.NoLetterOption);
-    //
-    // request.setBeneficiaryCustomerAccount(remittanceTransaction.getBeneficiaryAccountNumber());
-    //    request.setBeneficiaryCustomerNameAndAddress(
-    //        remittanceTransaction
-    //            .getBeneficiaryName()
-    //            .concat(System.lineSeparator())
-    //            .concat(remittanceTransaction.getBeneficiaryAddress()));
+
+    request.setSelectedOrderingCustomerOption(SelectOptions.OptionK);
+    request.setOrderingCustomerAccount(transaction.getOperatingAccountNumber());
+    StringBuilder orderingCustomerDetails = new StringBuilder();
+    Customer customer = customerService.findCustomerDetails(transaction.getApplicantId());
+    orderingCustomerDetails.append(customer.getName());
+    orderingCustomerDetails.append(System.lineSeparator());
+    orderingCustomerDetails.append(customer.getAddress().getAddressLine());
+    orderingCustomerDetails.append(System.lineSeparator());
+    orderingCustomerDetails.append(
+        customer.getAddress().getAddressLineTwo() != null
+            ? customer.getAddress().getAddressLineTwo()
+            : "");
+    request.setOrderingCustomerNameAndAddress(orderingCustomerDetails.toString());
+
+    request.setSelectedBeneficiaryCustomerOption(SelectOptions.NoLetterOption);
+    request.setBeneficiaryCustomerAccount(transaction.getBeneficiaryAccountNumber());
+    StringBuilder beneficiaryCustomerDetails = new StringBuilder();
+    SenderOrReceiverCustomerEntity senderOrReceiverCustomer =
+        senderOrReceiverCustomerRepository
+            .findById(transaction.getBeneficiaryId())
+            .orElseThrow(() -> new ForeignRemittanceBaseException("Beneficiary not found"));
+    beneficiaryCustomerDetails.append(senderOrReceiverCustomer.getName());
+    beneficiaryCustomerDetails.append(System.lineSeparator());
+    beneficiaryCustomerDetails.append(senderOrReceiverCustomer.getStreet());
+    beneficiaryCustomerDetails.append(System.lineSeparator());
+    beneficiaryCustomerDetails.append(
+        senderOrReceiverCustomer
+            .getCity()
+            .concat("-")
+            .concat(senderOrReceiverCustomer.getPostCode()));
+    beneficiaryCustomerDetails.append(System.lineSeparator());
+    beneficiaryCustomerDetails.append(
+        countryService
+            .getCountry(Long.valueOf(senderOrReceiverCustomer.getCountry()))
+            .orElseThrow(
+                () ->
+                    new ForeignRemittanceBaseException(
+                        "Country not found with id " + senderOrReceiverCustomer.getCountry()))
+            .getName());
+    request.setBeneficiaryCustomerNameAndAddress(beneficiaryCustomerDetails.toString());
+
     request.setRemittanceInformation(
         transaction.getAdditionalInformation().getRemittanceInformation());
     request.setSenderToReceiverInformation(
