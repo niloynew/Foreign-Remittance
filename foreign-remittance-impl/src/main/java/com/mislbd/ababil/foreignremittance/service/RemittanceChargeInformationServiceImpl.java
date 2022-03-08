@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.service;
 
+import com.mislbd.ababil.currency.ExchangeRateService;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceChargeInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceChargeAmountNotFoundException;
@@ -9,7 +10,6 @@ import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeEnt
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeMappingEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceChargeSlabEntity;
 import com.mislbd.ababil.foreignremittance.repository.specification.RemittanceChargeMappingSpecification;
-import com.mislbd.ababil.transaction.service.TransactionDefinitionService;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import com.mislbd.transaction.api.transaction.model.Charge;
 import java.math.BigDecimal;
@@ -23,17 +23,23 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
 
   private final RemittanceChargeMappingRepository remittanceChargeMappingRepository;
   private final RemittanceChargeRepository remittanceChargeRepository;
+  private final ExchangeRateService exchangeRateService;
 
   public RemittanceChargeInformationServiceImpl(
       RemittanceChargeMappingRepository remittanceChargeMappingRepository,
       RemittanceChargeRepository remittanceChargeRepository,
-      TransactionDefinitionService transactionDefinitionService) {
+      ExchangeRateService exchangeRateService) {
     this.remittanceChargeMappingRepository = remittanceChargeMappingRepository;
     this.remittanceChargeRepository = remittanceChargeRepository;
+    this.exchangeRateService = exchangeRateService;
   }
 
   public List<Charge> getChargeInfo(
-      RemittanceType remittanceType, long transactionTypeId, BigDecimal amount) {
+      RemittanceType remittanceType,
+      long transactionTypeId,
+      BigDecimal transactionAmount,
+      String transactionCurrency,
+      Long defaultRateType) {
 
     List<RemittanceChargeMappingEntity> chargeMappingList =
         remittanceChargeMappingRepository.findAll(
@@ -47,7 +53,19 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
             .stream()
             .map(
                 remittanceCharge -> {
-                  BigDecimal chargeAmount = chargeCalculation(remittanceCharge, amount);
+                  BigDecimal amountToBeCalculated = transactionAmount;
+                  if (!transactionCurrency.equals(remittanceCharge.getCurrencyCode())) {
+                    BigDecimal chargeRate =
+                        exchangeRateService
+                            .findExchangeRate(
+                                transactionCurrency,
+                                remittanceCharge.getCurrencyCode(),
+                                defaultRateType)
+                            .getExchangeRate();
+                    amountToBeCalculated = transactionAmount.multiply(chargeRate);
+                  }
+                  BigDecimal chargeAmount =
+                      chargeCalculation(remittanceCharge, amountToBeCalculated);
                   BigDecimal vatAmount = vatCalculation(remittanceCharge, chargeAmount);
                   Charge charge =
                       Charge.builder()

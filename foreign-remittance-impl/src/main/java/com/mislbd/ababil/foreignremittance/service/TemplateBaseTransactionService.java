@@ -64,11 +64,15 @@ public class TemplateBaseTransactionService {
             .getExchangeRate();
 
     // Charge transaction generation
-    BigDecimal amountLcy = transaction.getAmountFcy().multiply(chargeRate);
-    transaction.setAmountLcy(amountLcy);
+    //    BigDecimal amountLcy = transaction.getAmountFcy().multiply(chargeRate);
+    //    transaction.setAmountLcy(amountLcy);
     List<Charge> charges =
         chargeInformationService.getChargeInfo(
-            transaction.getRemittanceType(), transaction.getTransactionTypeId(), amountLcy);
+            transaction.getRemittanceType(),
+            transaction.getTransactionTypeId(),
+            transaction.getAmountFcy(),
+            transaction.getShadowAccountCurrency(),
+            rateType);
     ChargeInformation chargeInformation =
         ChargeInformation.builder()
             .charges(charges)
