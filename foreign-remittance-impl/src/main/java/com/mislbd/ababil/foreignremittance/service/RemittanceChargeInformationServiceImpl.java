@@ -70,11 +70,15 @@ public class RemittanceChargeInformationServiceImpl implements RemittanceChargeI
                   Charge charge =
                       Charge.builder()
                           .chargeCode("003")
+                          .currencyCode(remittanceCharge.getCurrencyCode())
                           .chargeName(remittanceCharge.getChargeName())
                           .chargeAccountCode(remittanceCharge.getChargeAccountCode())
-                          .currencyCode(remittanceCharge.getCurrencyCode())
+                          //
+                          // .chargeAccountCurrency(remittanceCharge.getChargeAccountCurrency())
                           .chargeAmountRCY(chargeAmount)
                           .vatAccountCode(remittanceCharge.getVatAccountCode())
+                          //
+                          // .vatAccountCurrency(remittanceCharge.getVatAccountCurrency())
                           .vatAmountRCY(vatAmount)
                           .build();
                   return charge;
