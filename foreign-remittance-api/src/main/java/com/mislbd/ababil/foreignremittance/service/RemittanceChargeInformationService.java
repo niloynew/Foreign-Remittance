@@ -8,5 +8,9 @@ import java.util.List;
 public interface RemittanceChargeInformationService {
 
   List<Charge> getChargeInfo(
-      RemittanceType remittanceType, long transactionTypeId, BigDecimal amount);
+      RemittanceType remittanceType,
+      long transactionTypeId,
+      BigDecimal amount,
+      String currency,
+      Long defaultRateType);
 }

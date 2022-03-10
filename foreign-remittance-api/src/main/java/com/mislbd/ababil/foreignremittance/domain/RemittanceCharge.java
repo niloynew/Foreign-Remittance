@@ -18,8 +18,10 @@ public class RemittanceCharge {
   private String currencyCode;
   private ChargeAccountType chargeAccountType;
   private String chargeAccountCode;
+  private String chargeAccountCurrency;
   private ChargeAccountType vatAccountType;
   private String vatAccountCode;
+  private String vatAccountCurrency;
   private boolean chargeModifiable;
   private boolean vatModifiable;
   private boolean slabBased;

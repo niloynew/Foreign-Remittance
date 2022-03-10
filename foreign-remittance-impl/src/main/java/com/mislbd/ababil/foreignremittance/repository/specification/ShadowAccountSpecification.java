@@ -65,6 +65,8 @@ public class ShadowAccountSpecification {
         predicate = cb.and(predicate, cb.equal(root.get("isActive"), true));
       }
 
+      predicate.in(query.orderBy(cb.desc(root.get("id"))));
+
       return predicate;
     };
   }

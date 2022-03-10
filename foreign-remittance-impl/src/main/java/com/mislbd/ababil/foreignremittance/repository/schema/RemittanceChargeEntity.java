@@ -36,12 +36,18 @@ public class RemittanceChargeEntity extends BaseEntity {
   @Column(name = "CHARGE_ACC_CODE", nullable = false, length = 13)
   private String chargeAccountCode;
 
+  @Column(name = "CHARGE_ACC_CURRENCY")
+  private String chargeAccountCurrency;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "VAT_ACC_TYPE")
   private ChargeAccountType vatAccountType;
 
   @Column(name = "VAT_ACC_CODE", length = 13)
   private String vatAccountCode;
+
+  @Column(name = "VAT_ACC_CURRENCY")
+  private String vatAccountCurrency;
 
   @Column(name = "IS_CHARGE_MODIFIABLE")
   private boolean chargeModifiable;

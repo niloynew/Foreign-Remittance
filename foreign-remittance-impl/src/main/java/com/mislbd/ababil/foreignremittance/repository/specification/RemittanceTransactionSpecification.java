@@ -45,6 +45,8 @@ public class RemittanceTransactionSpecification {
         predicate = cb.and(predicate, cb.lessThanOrEqualTo(root.get("valueDate"), toDate));
       }
 
+      predicate.in(query.orderBy(cb.desc(root.get("id"))));
+
       return predicate;
     };
   }
