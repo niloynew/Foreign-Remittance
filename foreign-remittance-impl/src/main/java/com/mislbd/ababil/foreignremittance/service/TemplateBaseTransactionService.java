@@ -61,6 +61,15 @@ public class TemplateBaseTransactionService {
     transaction.setOperatingRate(operatingRate);
     transaction.setAmountRcy(transaction.getAmountFcy().multiply(operatingRate));
 
+    // calculate Local amount
+    BigDecimal localCurrencyRate = BigDecimal.ONE;
+    String localCurrency = configurationService.getBaseCurrencyCode();
+    if(!transaction.getShadowAccountCurrency().equals(localCurrency)){
+      localCurrencyRate = exchangeRateService.findExchangeRate(transaction.getShadowAccountCurrency(), localCurrency, rateType)
+              .getExchangeRate();
+    }
+    transaction.setAmountLcy(transaction.getAmountFcy().multiply(localCurrencyRate));
+
     // Charge transaction generation
     List<Charge> charges =
         chargeInformationService.getChargeInfo(
