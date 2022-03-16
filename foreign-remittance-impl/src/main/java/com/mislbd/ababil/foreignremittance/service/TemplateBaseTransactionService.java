@@ -64,8 +64,10 @@ public class TemplateBaseTransactionService {
     // calculate Local amount
     BigDecimal localCurrencyRate = BigDecimal.ONE;
     String localCurrency = configurationService.getBaseCurrencyCode();
-    if(!transaction.getShadowAccountCurrency().equals(localCurrency)){
-      localCurrencyRate = exchangeRateService.findExchangeRate(transaction.getShadowAccountCurrency(), localCurrency, rateType)
+    if (!transaction.getShadowAccountCurrency().equals(localCurrency)) {
+      localCurrencyRate =
+          exchangeRateService
+              .findExchangeRate(transaction.getShadowAccountCurrency(), localCurrency, rateType)
               .getExchangeRate();
     }
     transaction.setAmountLcy(transaction.getAmountFcy().multiply(localCurrencyRate));
