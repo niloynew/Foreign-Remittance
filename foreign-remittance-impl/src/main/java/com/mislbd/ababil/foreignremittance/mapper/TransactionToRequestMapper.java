@@ -149,12 +149,13 @@ public class TransactionToRequestMapper {
     Customer customer = customerService.findCustomerDetails(transaction.getApplicantId());
     orderingCustomerDetails.append(customer.getName());
     orderingCustomerDetails.append(System.lineSeparator());
-    orderingCustomerDetails.append(customer.getAddress().getAddressLine());
-    orderingCustomerDetails.append(System.lineSeparator());
-    orderingCustomerDetails.append(
-        customer.getAddress().getAddressLineTwo() != null
-            ? customer.getAddress().getAddressLineTwo()
-            : "");
+    //    orderingCustomerDetails.append(customer.getAddress().getAddressLine());
+    //    orderingCustomerDetails.append(System.lineSeparator());
+    //    orderingCustomerDetails.append(
+    //        customer.getAddress().getAddressLineTwo() != null
+    //            ? customer.getAddress().getAddressLineTwo()
+    //            : "");
+    orderingCustomerDetails.append(transaction.getApplicantAddress());
     request.setOrderingCustomerNameAndAddress(orderingCustomerDetails.toString());
 
     request.setSelectedBeneficiaryCustomerOption(SelectOptions.NoLetterOption);
@@ -166,22 +167,23 @@ public class TransactionToRequestMapper {
             .orElseThrow(() -> new ForeignRemittanceBaseException("Beneficiary not found"));
     beneficiaryCustomerDetails.append(senderOrReceiverCustomer.getName());
     beneficiaryCustomerDetails.append(System.lineSeparator());
-    beneficiaryCustomerDetails.append(senderOrReceiverCustomer.getStreet());
-    beneficiaryCustomerDetails.append(System.lineSeparator());
-    beneficiaryCustomerDetails.append(
-        senderOrReceiverCustomer
-            .getCity()
-            .concat("-")
-            .concat(senderOrReceiverCustomer.getPostCode()));
-    beneficiaryCustomerDetails.append(System.lineSeparator());
-    beneficiaryCustomerDetails.append(
-        countryService
-            .getCountry(Long.valueOf(senderOrReceiverCustomer.getCountry()))
-            .orElseThrow(
-                () ->
-                    new ForeignRemittanceBaseException(
-                        "Country not found with id " + senderOrReceiverCustomer.getCountry()))
-            .getName());
+    //    beneficiaryCustomerDetails.append(senderOrReceiverCustomer.getStreet());
+    //    beneficiaryCustomerDetails.append(System.lineSeparator());
+    //    beneficiaryCustomerDetails.append(
+    //        senderOrReceiverCustomer
+    //            .getCity()
+    //            .concat("-")
+    //            .concat(senderOrReceiverCustomer.getPostCode()));
+    //    beneficiaryCustomerDetails.append(System.lineSeparator());
+    //    beneficiaryCustomerDetails.append(
+    //        countryService
+    //            .getCountry(Long.valueOf(senderOrReceiverCustomer.getCountry()))
+    //            .orElseThrow(
+    //                () ->
+    //                    new ForeignRemittanceBaseException(
+    //                        "Country not found with id " + senderOrReceiverCustomer.getCountry()))
+    //            .getName());
+    beneficiaryCustomerDetails.append(transaction.getBeneficiaryAddress());
     request.setBeneficiaryCustomerNameAndAddress(beneficiaryCustomerDetails.toString());
 
     request.setRemittanceInformation(

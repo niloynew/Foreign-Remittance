@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.domain;
 
+import com.mislbd.ababil.foreignremittance.annotation.SwiftAddress;
 import com.mislbd.transaction.api.transaction.model.AccountType;
 import com.mislbd.transaction.api.transaction.model.ChargeInformation;
 import java.math.BigDecimal;
@@ -35,10 +36,18 @@ public class RemittanceTransaction {
   @NotNull(message = "Applicant can't be empty")
   private Long applicantId;
 
+  @NotNull(message = "Applicant address can't be empty")
+  @SwiftAddress(message = "Applicant address has more length then expected, Exp: 3x33")
+  private String applicantAddress;
+
   private String applicantAccountNumber;
 
   @NotNull(message = "Beneficiary can't be empty")
   private Long beneficiaryId;
+
+  @NotNull(message = "Beneficiary address can't be empty")
+  @SwiftAddress(message = "Beneficiary address has more length then expected, Exp: 3x33")
+  private String beneficiaryAddress;
 
   private String beneficiaryAccountNumber;
   private String senderBIC;
