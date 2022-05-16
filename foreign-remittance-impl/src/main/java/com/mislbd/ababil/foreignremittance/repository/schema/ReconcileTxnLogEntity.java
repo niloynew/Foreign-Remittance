@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
+import com.mislbd.ababil.foreignremittance.domain.OtherCbsSystemSettlementStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,9 +27,6 @@ public class ReconcileTxnLogEntity {
   @Column(name = "ID")
   private long id;
 
-  @Column(name = "EXECUTED_BY")
-  private String executedBy;
-
   @Column(name = "INITIATING_TIME")
   private LocalDateTime initiatingTime;
 
@@ -49,4 +47,11 @@ public class ReconcileTxnLogEntity {
 
   @Column(name = "TXN_DATE")
   private LocalDate txnDate;
+
+  @Column(name = "CAUSE")
+  private String exceptionCause;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "STATUS")
+  private OtherCbsSystemSettlementStatus status;
 }

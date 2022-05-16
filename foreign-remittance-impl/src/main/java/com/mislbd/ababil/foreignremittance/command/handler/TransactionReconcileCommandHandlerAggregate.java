@@ -4,15 +4,14 @@ import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.foreignremittance.command.RejectShadowTransactionRecordCommand;
 import com.mislbd.ababil.foreignremittance.command.SettleShadowTransactionRecordCommand;
 import com.mislbd.ababil.foreignremittance.domain.OtherCbsSystemSettlementStatus;
-import com.mislbd.ababil.foreignremittance.domain.ReconcileTxnLog;
 import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecord;
 import com.mislbd.ababil.foreignremittance.exception.AccountNotFoundException;
 import com.mislbd.ababil.foreignremittance.exception.ExternalModuleSettlementAccountNotFoundException;
 import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
-import com.mislbd.ababil.foreignremittance.mapper.ReconcileTxnLogMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ReconcileTxnLogRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowTransactionRecordRepository;
+import com.mislbd.ababil.foreignremittance.repository.schema.ReconcileTxnLogEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowTransactionRecordEntity;
 import com.mislbd.ababil.transaction.repository.jpa.ExternalModuleSettlementAccountRepository;
@@ -25,6 +24,8 @@ import com.mislbd.asset.command.api.annotation.CommandListener;
 import com.mislbd.ext.cbs.api.ExternalCBSService;
 import com.mislbd.ext.cbs.api.TransactionRequest;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -43,7 +44,6 @@ public class TransactionReconcileCommandHandlerAggregate {
   private final ShadowAccountRepository shadowAccountRepository;
   private final ShadowTransactionRecordRepository shadowTransactionRecordRepository;
   private final ReconcileTxnLogRepository reconcileTxnLogRepository;
-  private final ReconcileTxnLogMapper reconcileTxnLogMapper;
 
   public TransactionReconcileCommandHandlerAggregate(
       Auditor auditor,
@@ -51,15 +51,13 @@ public class TransactionReconcileCommandHandlerAggregate {
       ExternalCBSService externalCBSService,
       ShadowAccountRepository shadowAccountRepository,
       ShadowTransactionRecordRepository shadowTransactionRecordRepository,
-      ReconcileTxnLogRepository reconcileTxnLogRepository,
-      ReconcileTxnLogMapper reconcileTxnLogMapper) {
+      ReconcileTxnLogRepository reconcileTxnLogRepository) {
     this.auditor = auditor;
     this.settlementAccountRepository = settlementAccountRepository;
     this.externalCBSService = externalCBSService;
     this.shadowAccountRepository = shadowAccountRepository;
     this.shadowTransactionRecordRepository = shadowTransactionRecordRepository;
     this.reconcileTxnLogRepository = reconcileTxnLogRepository;
-    this.reconcileTxnLogMapper = reconcileTxnLogMapper;
   }
 
   @CommandListener(
@@ -80,7 +78,6 @@ public class TransactionReconcileCommandHandlerAggregate {
     int success = 0;
     if (recordList != null && !recordList.isEmpty()) {
       for (ShadowTransactionRecord x : recordList) {
-        saveLog(command, x);
         if (x.getReconcileStatus() == OtherCbsSystemSettlementStatus.Settled
             || x.getReconcileStatus() == OtherCbsSystemSettlementStatus.Reject) continue;
         ShadowAccountEntity shadowAccount =
@@ -107,6 +104,15 @@ public class TransactionReconcileCommandHandlerAggregate {
           debitAccount = settlementAccount.getExternalAccount();
           creditAccount = shadowAccount.getNostroAccountNumber();
         }
+        ReconcileTxnLogEntity logEntity =
+            prepareReconcileTransactionLog(
+                command.getInitiator(),
+                command.getInitiatingTime(),
+                command.getInitiatorBranch(),
+                x.getAccountNumber(),
+                x.getGlobalTxnNo(),
+                x.getTxnDate(),
+                x.getTxnNarration());
         try {
           externalCBSService.doTransaction(
               TransactionRequest.requestBuilder()
@@ -124,7 +130,10 @@ public class TransactionReconcileCommandHandlerAggregate {
           shadowTransactionRecordRepository.save(
               transactionRecordEntity.setReconcileStatus(OtherCbsSystemSettlementStatus.Settled));
           success += 1;
+          logEntity.setStatus(OtherCbsSystemSettlementStatus.Settled);
         } catch (Exception e) {
+          logEntity.setStatus(OtherCbsSystemSettlementStatus.Error);
+          logEntity.setExceptionCause(e.getMessage());
           LOGGER.error(
               "Settlement failed for txnId: "
                   + x.getId()
@@ -135,28 +144,40 @@ public class TransactionReconcileCommandHandlerAggregate {
                   + ", error : "
                   + e.getMessage());
         }
+        saveLog(logEntity);
       }
     }
     return CommandResponse.of(success);
   }
 
-  public void saveLog(SettleShadowTransactionRecordCommand command, ShadowTransactionRecord x) {
-    ReconcileTxnLog reconcileTxnLog = new ReconcileTxnLog();
-    reconcileTxnLog.setExecutedBy(command.getExecutedBy());
-    reconcileTxnLog.setInitiator(command.getInitiator());
-    reconcileTxnLog.setInitiatingTime(command.getInitiatingTime());
-    reconcileTxnLog.setInitiatorBranch(command.getInitiatorBranch());
-    reconcileTxnLog.setGlobalTxnNo(x.getGlobalTxnNo());
-    reconcileTxnLog.setTxnNarration(x.getTxnNarration());
-    reconcileTxnLog.setTxnDate(x.getTxnDate());
-    reconcileTxnLog.setAccountNumber(x.getAccountNumber());
-    reconcileTxnLogRepository.save(reconcileTxnLogMapper.domainToEntity().map(reconcileTxnLog));
+  private ReconcileTxnLogEntity prepareReconcileTransactionLog(
+      String initiator,
+      LocalDateTime initiatingTime,
+      Long initiatorBranch,
+      String accountNumber,
+      BigDecimal globalTxnNumber,
+      LocalDate txnDate,
+      String casue) {
+    ReconcileTxnLogEntity entity = new ReconcileTxnLogEntity();
+    entity.setInitiator(initiator);
+    entity.setInitiatingTime(initiatingTime);
+    entity.setInitiatorBranch(initiatorBranch);
+    entity.setAccountNumber(accountNumber);
+    entity.setGlobalTxnNo(globalTxnNumber);
+    entity.setTxnDate(txnDate);
+    entity.setTxnNarration(casue);
+    return entity;
+  }
+
+  private void saveLog(ReconcileTxnLogEntity entity) {
+    reconcileTxnLogRepository.save(entity);
   }
 
   @Transactional
   @CommandHandler
   public CommandResponse<Void> rejectTransactionRecords(
       RejectShadowTransactionRecordCommand command) {
+    ShadowTransactionRecord record = command.getPayload();
     ShadowTransactionRecordEntity transactionRecordEntity =
         shadowTransactionRecordRepository
             .findById(command.getId())
@@ -169,6 +190,17 @@ public class TransactionReconcileCommandHandlerAggregate {
     }
     shadowTransactionRecordRepository.save(
         transactionRecordEntity.setReconcileStatus(OtherCbsSystemSettlementStatus.Reject));
+    ReconcileTxnLogEntity entity =
+        prepareReconcileTransactionLog(
+            command.getInitiator(),
+            command.getInitiatingTime(),
+            command.getInitiatorBranch(),
+            record.getAccountNumber(),
+            record.getGlobalTxnNo(),
+            record.getTxnDate(),
+            record.getTxnNarration());
+    entity.setStatus(OtherCbsSystemSettlementStatus.Reject);
+    reconcileTxnLogRepository.save(entity);
     return CommandResponse.asVoid();
   }
 }
