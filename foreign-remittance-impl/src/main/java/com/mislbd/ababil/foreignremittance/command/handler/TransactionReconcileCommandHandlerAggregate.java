@@ -4,10 +4,13 @@ import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.foreignremittance.command.RejectShadowTransactionRecordCommand;
 import com.mislbd.ababil.foreignremittance.command.SettleShadowTransactionRecordCommand;
 import com.mislbd.ababil.foreignremittance.domain.OtherCbsSystemSettlementStatus;
+import com.mislbd.ababil.foreignremittance.domain.ReconcileTxnLog;
 import com.mislbd.ababil.foreignremittance.domain.ShadowTransactionRecord;
 import com.mislbd.ababil.foreignremittance.exception.AccountNotFoundException;
 import com.mislbd.ababil.foreignremittance.exception.ExternalModuleSettlementAccountNotFoundException;
 import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
+import com.mislbd.ababil.foreignremittance.mapper.ReconcileTxnLogMapper;
+import com.mislbd.ababil.foreignremittance.repository.jpa.ReconcileTxnLogRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowAccountRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.ShadowTransactionRecordRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity;
@@ -39,18 +42,24 @@ public class TransactionReconcileCommandHandlerAggregate {
   private final ExternalCBSService externalCBSService;
   private final ShadowAccountRepository shadowAccountRepository;
   private final ShadowTransactionRecordRepository shadowTransactionRecordRepository;
+  private final ReconcileTxnLogRepository reconcileTxnLogRepository;
+  private final ReconcileTxnLogMapper reconcileTxnLogMapper;
 
   public TransactionReconcileCommandHandlerAggregate(
       Auditor auditor,
       ExternalModuleSettlementAccountRepository settlementAccountRepository,
       ExternalCBSService externalCBSService,
       ShadowAccountRepository shadowAccountRepository,
-      ShadowTransactionRecordRepository shadowTransactionRecordRepository) {
+      ShadowTransactionRecordRepository shadowTransactionRecordRepository,
+      ReconcileTxnLogRepository reconcileTxnLogRepository,
+      ReconcileTxnLogMapper reconcileTxnLogMapper) {
     this.auditor = auditor;
     this.settlementAccountRepository = settlementAccountRepository;
     this.externalCBSService = externalCBSService;
     this.shadowAccountRepository = shadowAccountRepository;
     this.shadowTransactionRecordRepository = shadowTransactionRecordRepository;
+    this.reconcileTxnLogRepository = reconcileTxnLogRepository;
+    this.reconcileTxnLogMapper = reconcileTxnLogMapper;
   }
 
   @CommandListener(
@@ -66,10 +75,12 @@ public class TransactionReconcileCommandHandlerAggregate {
   @CommandHandler
   public CommandResponse<Integer> reconcileTransactionRecords(
       SettleShadowTransactionRecordCommand command) {
+
     List<ShadowTransactionRecord> recordList = command.getPayload().getShadowTransactionRecords();
     int success = 0;
     if (recordList != null && !recordList.isEmpty()) {
       for (ShadowTransactionRecord x : recordList) {
+        saveLog(command, x);
         if (x.getReconcileStatus() == OtherCbsSystemSettlementStatus.Settled
             || x.getReconcileStatus() == OtherCbsSystemSettlementStatus.Reject) continue;
         ShadowAccountEntity shadowAccount =
@@ -127,6 +138,19 @@ public class TransactionReconcileCommandHandlerAggregate {
       }
     }
     return CommandResponse.of(success);
+  }
+
+  public void saveLog(SettleShadowTransactionRecordCommand command, ShadowTransactionRecord x) {
+    ReconcileTxnLog reconcileTxnLog = new ReconcileTxnLog();
+    reconcileTxnLog.setExecutedBy(command.getExecutedBy());
+    reconcileTxnLog.setInitiator(command.getInitiator());
+    reconcileTxnLog.setInitiatingTime(command.getInitiatingTime());
+    reconcileTxnLog.setInitiatorBranch(command.getInitiatorBranch());
+    reconcileTxnLog.setGlobalTxnNo(x.getGlobalTxnNo());
+    reconcileTxnLog.setTxnNarration(x.getTxnNarration());
+    reconcileTxnLog.setTxnDate(x.getTxnDate());
+    reconcileTxnLog.setAccountNumber(x.getAccountNumber());
+    reconcileTxnLogRepository.save(reconcileTxnLogMapper.domainToEntity().map(reconcileTxnLog));
   }
 
   @Transactional

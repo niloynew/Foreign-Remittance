@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Entity
 @Table(name = SchemaConstant.ID_RECONCILE_TXN_LOG_TABLE_NAME)
-public class ReconcileTxnLogEntity extends BaseEntity {
+public class ReconcileTxnLogEntity {
 
   @Id
   @GeneratedValue(
