@@ -36,6 +36,21 @@ public class ReconcileTxnLogEntity {
   @Column(name = "INITIATOR_BRANCH")
   private Long initiatorBranch;
 
+  @Column(name = "INITIATOR_TERMINAL")
+  private String initiatorTerminal;
+
+  @Column(name = "VERIFY_TIME")
+  private LocalDateTime verificationTime;
+
+  @Column(name = "VERIFIER")
+  private String verifier;
+
+  @Column(name = "VERIFIER_BRANCH")
+  private Long verifierBranch;
+
+  @Column(name = "VERIFIER_TERMINAL")
+  private String verifierTerminal;
+
   @Column(name = "ACCOUNT_NUMBER")
   private String accountNumber;
 

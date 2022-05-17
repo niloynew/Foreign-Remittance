@@ -16,6 +16,7 @@ import com.mislbd.ababil.foreignremittance.repository.schema.ShadowAccountEntity
 import com.mislbd.ababil.foreignremittance.repository.schema.ShadowTransactionRecordEntity;
 import com.mislbd.ababil.transaction.repository.jpa.ExternalModuleSettlementAccountRepository;
 import com.mislbd.ababil.transaction.repository.schema.ExternalModuleSettlementAccountEntity;
+import com.mislbd.asset.command.api.Command;
 import com.mislbd.asset.command.api.CommandEvent;
 import com.mislbd.asset.command.api.CommandResponse;
 import com.mislbd.asset.command.api.annotation.Aggregate;
@@ -105,10 +106,7 @@ public class TransactionReconcileCommandHandlerAggregate {
           creditAccount = shadowAccount.getNostroAccountNumber();
         }
         ReconcileTxnLogEntity logEntity =
-            prepareReconcileTransactionLog(
-                command.getInitiator(),
-                command.getInitiatingTime(),
-                command.getInitiatorBranch(),
+            prepareReconcileTransactionLog(command,
                 x.getAccountNumber(),
                 x.getGlobalTxnNo(),
                 x.getTxnDate(),
@@ -150,24 +148,26 @@ public class TransactionReconcileCommandHandlerAggregate {
     return CommandResponse.of(success);
   }
 
-  private ReconcileTxnLogEntity prepareReconcileTransactionLog(
-      String initiator,
-      LocalDateTime initiatingTime,
-      Long initiatorBranch,
-      String accountNumber,
-      BigDecimal globalTxnNumber,
-      LocalDate txnDate,
-      String casue) {
-    ReconcileTxnLogEntity entity = new ReconcileTxnLogEntity();
-    entity.setInitiator(initiator);
-    entity.setInitiatingTime(initiatingTime);
-    entity.setInitiatorBranch(initiatorBranch);
-    entity.setAccountNumber(accountNumber);
-    entity.setGlobalTxnNo(globalTxnNumber);
-    entity.setTxnDate(txnDate);
-    entity.setTxnNarration(casue);
-    return entity;
-  }
+    private ReconcileTxnLogEntity prepareReconcileTransactionLog(Command<?> command,
+            String accountNumber,
+            BigDecimal globalTxnNumber,
+            LocalDate txnDate,
+            String cause) {
+        ReconcileTxnLogEntity entity = new ReconcileTxnLogEntity();
+        entity.setInitiator(command.getInitiator());
+        entity.setInitiatingTime(command.getInitiatingTime());
+        entity.setInitiatorBranch(command.getInitiatorBranch());
+        entity.setInitiatorTerminal(command.getInitiatorTerminal());
+        entity.setVerifier(command.getVerifier());
+        entity.setVerificationTime(LocalDateTime.now());
+        entity.setVerifierTerminal(command.getVerifierTerminal());
+        entity.setVerifierBranch(command.getVerifierBranch());
+        entity.setAccountNumber(accountNumber);
+        entity.setGlobalTxnNo(globalTxnNumber);
+        entity.setTxnDate(txnDate);
+        entity.setTxnNarration(cause);
+        return entity;
+    }
 
   private void saveLog(ReconcileTxnLogEntity entity) {
     reconcileTxnLogRepository.save(entity);
@@ -191,10 +191,7 @@ public class TransactionReconcileCommandHandlerAggregate {
     shadowTransactionRecordRepository.save(
         transactionRecordEntity.setReconcileStatus(OtherCbsSystemSettlementStatus.Reject));
     ReconcileTxnLogEntity entity =
-        prepareReconcileTransactionLog(
-            command.getInitiator(),
-            command.getInitiatingTime(),
-            command.getInitiatorBranch(),
+        prepareReconcileTransactionLog(command,
             record.getAccountNumber(),
             record.getGlobalTxnNo(),
             record.getTxnDate(),
