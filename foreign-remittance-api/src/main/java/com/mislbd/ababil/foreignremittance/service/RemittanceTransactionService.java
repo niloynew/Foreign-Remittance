@@ -27,9 +27,13 @@ public interface RemittanceTransactionService {
 
   Optional<RemittanceTransaction> findTransaction(String referenceNumber);
 
+  Boolean isExistInwardRemittanceByReferenceNumber (String referenceNumber);
+
   void correctTransaction(AuditInformation auditInformation);
 
   String generateTransactionReferenceNumber(Long branch, Long categoryId);
+
+  String generateInwardTransactionReferenceNumber (Long branch, Long categoryId);
 
   List<RemittanceCategory> getRemittanceCategories();
 

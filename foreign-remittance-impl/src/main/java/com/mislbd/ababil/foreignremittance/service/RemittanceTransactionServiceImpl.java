@@ -89,6 +89,12 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   }
 
   @Override
+  public Boolean isExistInwardRemittanceByReferenceNumber (String referenceNumber){
+
+      return remittanceTransactionRepository.existsByTransactionReferenceNumber(referenceNumber);
+  }
+
+  @Override
   public Optional<RemittanceTransaction> findTransaction(String referenceNumber) {
     return remittanceTransactionRepository
         .findByTransactionReferenceNumber(referenceNumber)
@@ -117,6 +123,25 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
         + Strings.padStart(
             String.valueOf(
                 remittanceTransactionRepository.generateTransactionReferenceNumberSequence()),
+            5,
+            '0');
+  }
+
+  @Override
+  public String generateInwardTransactionReferenceNumber(Long branch, Long categoryId) {
+    RemittanceCategoryEntity category =
+            categoryRepository
+                    .findById(categoryId)
+                    .orElseThrow(
+                            () ->
+                                    new ForeignRemittanceBaseException(
+                                            "Remittance category not found with id- " + categoryId));
+    return Strings.padStart(String.valueOf(branch), 3, '0')
+            + category.getName()
+            + String.valueOf(configurationService.getCurrentApplicationDate().getYear()).substring(2)
+            + Strings.padStart(
+            String.valueOf(
+                    remittanceTransactionRepository.generateInwardTransactionReferenceNumberSequence()),
             5,
             '0');
   }
