@@ -89,9 +89,9 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   }
 
   @Override
-  public Boolean isExistInwardRemittanceByReferenceNumber (String referenceNumber){
+  public Boolean isExistInwardRemittanceByReferenceNumber(String referenceNumber) {
 
-      return remittanceTransactionRepository.existsByTransactionReferenceNumber(referenceNumber);
+    return remittanceTransactionRepository.existsByTransactionReferenceNumber(referenceNumber);
   }
 
   @Override
@@ -118,7 +118,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
                     new ForeignRemittanceBaseException(
                         "Remittance category not found with id- " + categoryId));
     return Strings.padStart(String.valueOf(branch), 3, '0')
-        + category.getName()
+        + category.getDescription()
         + String.valueOf(configurationService.getCurrentApplicationDate().getYear()).substring(2)
         + Strings.padStart(
             String.valueOf(
@@ -130,25 +130,27 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   @Override
   public String generateInwardTransactionReferenceNumber(Long branch, Long categoryId) {
     RemittanceCategoryEntity category =
-            categoryRepository
-                    .findById(categoryId)
-                    .orElseThrow(
-                            () ->
-                                    new ForeignRemittanceBaseException(
-                                            "Remittance category not found with id- " + categoryId));
+        categoryRepository
+            .findById(categoryId)
+            .orElseThrow(
+                () ->
+                    new ForeignRemittanceBaseException(
+                        "Remittance category not found with id- " + categoryId));
     return Strings.padStart(String.valueOf(branch), 3, '0')
-            + category.getName()
-            + String.valueOf(configurationService.getCurrentApplicationDate().getYear()).substring(2)
-            + Strings.padStart(
+        + category.getDescription()
+        + String.valueOf(configurationService.getCurrentApplicationDate().getYear()).substring(2)
+        + Strings.padStart(
             String.valueOf(
-                    remittanceTransactionRepository.generateInwardTransactionReferenceNumberSequence()),
+                remittanceTransactionRepository.generateInwardTransactionReferenceNumberSequence()),
             5,
             '0');
   }
 
   @Override
-  public List<RemittanceCategory> getRemittanceCategories() {
-    return ListResultBuilder.build(categoryRepository.findAll(), categoryMapper.entityToDomain());
+  public List<RemittanceCategory> getRemittanceCategories(RemittanceType remittanceType) {
+    return ListResultBuilder.build(
+        categoryRepository.findAllByRemittanceType(remittanceType),
+        categoryMapper.entityToDomain());
   }
 
   @Override

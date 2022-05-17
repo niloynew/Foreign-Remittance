@@ -19,6 +19,7 @@ public class TransactionTypeController {
   private final QueryManager queryManager;
 
   public TransactionTypeController(QueryManager queryManager) {
+
     this.queryManager = queryManager;
   }
 

@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InwardTxnsByReferenceNumberQuery extends QueryRequest {
-    private String referenceNumber;
+  private String referenceNumber;
 }
