@@ -100,8 +100,8 @@ public class RemittanceTransactionController {
                     new RemittanceTransactionCorrectionRequest(id, voucherNumber))));
   }
 
-  @GetMapping(path = "/remittance-categories/remittance-category/{remittanceType}")
-  public ResponseEntity<List<RemittanceCategory>> getRemittanceCategories(
+  @GetMapping(path = "/remittance-categories-list/{remittanceType}")
+  public ResponseEntity<List<RemittanceCategory>> getRemittanceCategoriesList(
       @PathVariable("remittanceType") RemittanceType remittanceType) {
     List<RemittanceCategory> categories =
         remittanceTransactionService.getRemittanceCategories(remittanceType);
