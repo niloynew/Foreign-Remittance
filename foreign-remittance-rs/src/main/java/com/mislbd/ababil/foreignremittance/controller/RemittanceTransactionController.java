@@ -122,12 +122,12 @@ public class RemittanceTransactionController {
         remittanceTransactionService.generateTransactionReferenceNumber(branch, categoryId));
   }
 
-  @GetMapping(path = "/inward-reference-numbers/{branch}/{categoryId}")
+  /*@GetMapping(path = "/inward-reference-numbers/{branch}/{categoryId}")
   public ResponseEntity<?> generateInwardTransactionReferenceNumber(
       @PathVariable("branch") Long branch, @PathVariable("categoryId") Long categoryId) {
     return ResponseEntity.ok(
         remittanceTransactionService.generateInwardTransactionReferenceNumber(branch, categoryId));
-  }
+  }*/
 
   @GetMapping(path = "remittance-transactions/registers/{transactionId}")
   public ResponseEntity<List<TransactionRegister>> getRegisterByRemittance(

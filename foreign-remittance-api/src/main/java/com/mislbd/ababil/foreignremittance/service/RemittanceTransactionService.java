@@ -33,7 +33,7 @@ public interface RemittanceTransactionService {
 
   String generateTransactionReferenceNumber(Long branch, Long categoryId);
 
-  String generateInwardTransactionReferenceNumber(Long branch, Long categoryId);
+  // String generateInwardTransactionReferenceNumber(Long branch, Long categoryId);
 
   List getRemittanceCategories(RemittanceType remittanceType);
 
