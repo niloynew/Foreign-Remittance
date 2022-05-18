@@ -5,6 +5,7 @@ import com.mislbd.ababil.foreignremittance.domain.AdditionalInformation;
 import com.mislbd.ababil.foreignremittance.domain.BankInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
+import com.mislbd.ababil.foreignremittance.external.domain.Address;
 import com.mislbd.ababil.foreignremittance.external.domain.Customer;
 import com.mislbd.ababil.foreignremittance.external.service.CustomerService;
 import com.mislbd.ababil.foreignremittance.repository.jpa.SenderOrReceiverCustomerRepository;
@@ -149,13 +150,16 @@ public class TransactionToRequestMapper {
     Customer customer = customerService.findCustomerDetails(transaction.getApplicantId());
     orderingCustomerDetails.append(customer.getName());
     orderingCustomerDetails.append(System.lineSeparator());
-    //    orderingCustomerDetails.append(customer.getAddress().getAddressLine());
-    //    orderingCustomerDetails.append(System.lineSeparator());
-    //    orderingCustomerDetails.append(
-    //        customer.getAddress().getAddressLineTwo() != null
-    //            ? customer.getAddress().getAddressLineTwo()
-    //            : "");
-    orderingCustomerDetails.append(transaction.getApplicantAddress());
+    if (transaction.getApplicantAddress() == null) {
+      Address customerAddress = customer.getAddress();
+      orderingCustomerDetails.append(customerAddress.getAddressLine());
+      if (customerAddress.getAddressLineTwo() != null) {
+        orderingCustomerDetails.append(System.lineSeparator());
+        orderingCustomerDetails.append(customerAddress.getAddressLineTwo());
+      }
+    } else {
+      orderingCustomerDetails.append(transaction.getApplicantAddress());
+    }
     request.setOrderingCustomerNameAndAddress(orderingCustomerDetails.toString());
 
     request.setSelectedBeneficiaryCustomerOption(SelectOptions.NoLetterOption);
@@ -167,23 +171,26 @@ public class TransactionToRequestMapper {
             .orElseThrow(() -> new ForeignRemittanceBaseException("Beneficiary not found"));
     beneficiaryCustomerDetails.append(senderOrReceiverCustomer.getName());
     beneficiaryCustomerDetails.append(System.lineSeparator());
-    //    beneficiaryCustomerDetails.append(senderOrReceiverCustomer.getStreet());
-    //    beneficiaryCustomerDetails.append(System.lineSeparator());
-    //    beneficiaryCustomerDetails.append(
-    //        senderOrReceiverCustomer
-    //            .getCity()
-    //            .concat("-")
-    //            .concat(senderOrReceiverCustomer.getPostCode()));
-    //    beneficiaryCustomerDetails.append(System.lineSeparator());
-    //    beneficiaryCustomerDetails.append(
-    //        countryService
-    //            .getCountry(Long.valueOf(senderOrReceiverCustomer.getCountry()))
-    //            .orElseThrow(
-    //                () ->
-    //                    new ForeignRemittanceBaseException(
-    //                        "Country not found with id " + senderOrReceiverCustomer.getCountry()))
-    //            .getName());
-    beneficiaryCustomerDetails.append(transaction.getBeneficiaryAddress());
+    if (transaction.getBeneficiaryAddress() == null) {
+      beneficiaryCustomerDetails.append(senderOrReceiverCustomer.getStreet());
+      beneficiaryCustomerDetails.append(System.lineSeparator());
+      beneficiaryCustomerDetails.append(
+          senderOrReceiverCustomer
+              .getCity()
+              .concat("-")
+              .concat(senderOrReceiverCustomer.getPostCode()));
+      beneficiaryCustomerDetails.append(System.lineSeparator());
+      beneficiaryCustomerDetails.append(
+          countryService
+              .getCountry(Long.valueOf(senderOrReceiverCustomer.getCountry()))
+              .orElseThrow(
+                  () ->
+                      new ForeignRemittanceBaseException(
+                          "Country not found with id " + senderOrReceiverCustomer.getCountry()))
+              .getName());
+    } else {
+      beneficiaryCustomerDetails.append(transaction.getBeneficiaryAddress());
+    }
     request.setBeneficiaryCustomerNameAndAddress(beneficiaryCustomerDetails.toString());
 
     request.setRemittanceInformation(
@@ -201,19 +208,24 @@ public class TransactionToRequestMapper {
 
   public MT103MessageRequest mapAdditionalInformation(
       MT103MessageRequest request, AdditionalInformation additionalInformation) {
-    TimeIndication timeIndication = new TimeIndication();
     List<TimeIndication> timeIndications = new ArrayList<>();
-    timeIndication
-        .setCode(additionalInformation.getCode())
-        .setOffset(additionalInformation.getOffset())
-        .setSign(additionalInformation.getSign())
-        .setTimeIndication(additionalInformation.getTimeIndication());
-    timeIndications.add(timeIndication);
+    if (additionalInformation.getCode() != null
+        && additionalInformation.getOffset() != null
+        && additionalInformation.getSign() != null
+        && additionalInformation.getTimeIndication() != null) {
+      TimeIndication timeIndication = new TimeIndication();
+      timeIndication
+          .setCode(additionalInformation.getCode())
+          .setOffset(additionalInformation.getOffset())
+          .setSign(additionalInformation.getSign())
+          .setTimeIndication(additionalInformation.getTimeIndication());
+      timeIndications.add(timeIndication);
+    }
     request
         .setBankOperationCode(additionalInformation.getBankOperationCode().name())
         .setInstructedAmount(additionalInformation.getInstructedAmount())
         .setInstructedCurrency(additionalInformation.getInstructedCurrency())
-        .setTimeIndications(timeIndications)
+        .setTimeIndications(!timeIndications.isEmpty() ? timeIndications : null)
         .setExchangeRate(additionalInformation.getExchangeRate())
         .setSendersChargeCurrency(additionalInformation.getSendersChargeCurrency())
         .setSendersChargeAmount(additionalInformation.getSendersChargeAmount())
