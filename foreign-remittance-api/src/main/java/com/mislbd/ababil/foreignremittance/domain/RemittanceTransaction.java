@@ -29,6 +29,8 @@ public class RemittanceTransaction {
   @NotNull(message = "Transaction reference number can't be empty")
   private String transactionReferenceNumber;
 
+  private String internalReferenceNumber;
+
   private String ppCode;
   private String instrumentNumber;
   private Long cbFundSourceId;

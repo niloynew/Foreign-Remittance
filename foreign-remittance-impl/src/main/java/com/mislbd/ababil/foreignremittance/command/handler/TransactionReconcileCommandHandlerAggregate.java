@@ -106,7 +106,8 @@ public class TransactionReconcileCommandHandlerAggregate {
           creditAccount = shadowAccount.getNostroAccountNumber();
         }
         ReconcileTxnLogEntity logEntity =
-            prepareReconcileTransactionLog(command,
+            prepareReconcileTransactionLog(
+                command,
                 x.getAccountNumber(),
                 x.getGlobalTxnNo(),
                 x.getTxnDate(),
@@ -148,26 +149,27 @@ public class TransactionReconcileCommandHandlerAggregate {
     return CommandResponse.of(success);
   }
 
-    private ReconcileTxnLogEntity prepareReconcileTransactionLog(Command<?> command,
-            String accountNumber,
-            BigDecimal globalTxnNumber,
-            LocalDate txnDate,
-            String cause) {
-        ReconcileTxnLogEntity entity = new ReconcileTxnLogEntity();
-        entity.setInitiator(command.getInitiator());
-        entity.setInitiatingTime(command.getInitiatingTime());
-        entity.setInitiatorBranch(command.getInitiatorBranch());
-        entity.setInitiatorTerminal(command.getInitiatorTerminal());
-        entity.setVerifier(command.getVerifier());
-        entity.setVerificationTime(LocalDateTime.now());
-        entity.setVerifierTerminal(command.getVerifierTerminal());
-        entity.setVerifierBranch(command.getVerifierBranch());
-        entity.setAccountNumber(accountNumber);
-        entity.setGlobalTxnNo(globalTxnNumber);
-        entity.setTxnDate(txnDate);
-        entity.setTxnNarration(cause);
-        return entity;
-    }
+  private ReconcileTxnLogEntity prepareReconcileTransactionLog(
+      Command<?> command,
+      String accountNumber,
+      BigDecimal globalTxnNumber,
+      LocalDate txnDate,
+      String cause) {
+    ReconcileTxnLogEntity entity = new ReconcileTxnLogEntity();
+    entity.setInitiator(command.getInitiator());
+    entity.setInitiatingTime(command.getInitiatingTime());
+    entity.setInitiatorBranch(command.getInitiatorBranch());
+    entity.setInitiatorTerminal(command.getInitiatorTerminal());
+    entity.setVerifier(command.getVerifier());
+    entity.setVerificationTime(LocalDateTime.now());
+    entity.setVerifierTerminal(command.getVerifierTerminal());
+    entity.setVerifierBranch(command.getVerifierBranch());
+    entity.setAccountNumber(accountNumber);
+    entity.setGlobalTxnNo(globalTxnNumber);
+    entity.setTxnDate(txnDate);
+    entity.setTxnNarration(cause);
+    return entity;
+  }
 
   private void saveLog(ReconcileTxnLogEntity entity) {
     reconcileTxnLogRepository.save(entity);
@@ -191,7 +193,8 @@ public class TransactionReconcileCommandHandlerAggregate {
     shadowTransactionRecordRepository.save(
         transactionRecordEntity.setReconcileStatus(OtherCbsSystemSettlementStatus.Reject));
     ReconcileTxnLogEntity entity =
-        prepareReconcileTransactionLog(command,
+        prepareReconcileTransactionLog(
+            command,
             record.getAccountNumber(),
             record.getGlobalTxnNo(),
             record.getTxnDate(),

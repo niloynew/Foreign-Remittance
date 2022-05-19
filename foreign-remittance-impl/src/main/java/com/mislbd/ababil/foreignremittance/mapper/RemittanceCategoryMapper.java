@@ -13,6 +13,7 @@ public class RemittanceCategoryMapper {
         new RemittanceCategory()
             .setId(entity.getId())
             .setName(entity.getName())
-            .setDescription(entity.getDescription());
+            .setDescription(entity.getDescription())
+            .setRemittanceType(entity.getRemittanceType());
   }
 }

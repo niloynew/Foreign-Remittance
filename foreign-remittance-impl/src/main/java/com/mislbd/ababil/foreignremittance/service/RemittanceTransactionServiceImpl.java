@@ -89,6 +89,12 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   }
 
   @Override
+  public Boolean isExistInwardRemittanceByReferenceNumber(String referenceNumber) {
+
+    return remittanceTransactionRepository.existsByTransactionReferenceNumber(referenceNumber);
+  }
+
+  @Override
   public Optional<RemittanceTransaction> findTransaction(String referenceNumber) {
     return remittanceTransactionRepository
         .findByTransactionReferenceNumber(referenceNumber)
@@ -111,19 +117,21 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
                 () ->
                     new ForeignRemittanceBaseException(
                         "Remittance category not found with id- " + categoryId));
+    Long transactionReferenceNumber =
+        category.getRemittanceType().equals(RemittanceType.OUTWARD_REMITTANCE)
+            ? remittanceTransactionRepository.generateTransactionReferenceNumberSequence()
+            : remittanceTransactionRepository.generateInwardTransactionReferenceNumberSequence();
     return Strings.padStart(String.valueOf(branch), 3, '0')
-        + category.getName()
+        + category.getDescription()
         + String.valueOf(configurationService.getCurrentApplicationDate().getYear()).substring(2)
-        + Strings.padStart(
-            String.valueOf(
-                remittanceTransactionRepository.generateTransactionReferenceNumberSequence()),
-            5,
-            '0');
+        + Strings.padStart(String.valueOf(transactionReferenceNumber), 5, '0');
   }
 
   @Override
-  public List<RemittanceCategory> getRemittanceCategories() {
-    return ListResultBuilder.build(categoryRepository.findAll(), categoryMapper.entityToDomain());
+  public List<RemittanceCategory> getRemittanceCategories(RemittanceType remittanceType) {
+    return ListResultBuilder.build(
+        categoryRepository.findAllByRemittanceType(remittanceType),
+        categoryMapper.entityToDomain());
   }
 
   @Override

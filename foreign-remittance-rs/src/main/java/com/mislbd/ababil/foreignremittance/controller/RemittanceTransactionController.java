@@ -7,6 +7,7 @@ import static org.springframework.http.ResponseEntity.status;
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.RemittanceTransactionCorrectionCommand;
 import com.mislbd.ababil.foreignremittance.domain.*;
+import com.mislbd.ababil.foreignremittance.query.InwardTxnsByReferenceNumberQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionQuery;
 import com.mislbd.ababil.foreignremittance.service.RemittanceTransactionService;
@@ -99,9 +100,11 @@ public class RemittanceTransactionController {
                     new RemittanceTransactionCorrectionRequest(id, voucherNumber))));
   }
 
-  @GetMapping(path = "/remittance-categories")
-  public ResponseEntity<List<RemittanceCategory>> getRemittanceCategories() {
-    List<RemittanceCategory> categories = remittanceTransactionService.getRemittanceCategories();
+  @GetMapping(path = "/remittance-categories-list/{remittanceType}")
+  public ResponseEntity<List<RemittanceCategory>> getRemittanceCategoriesList(
+      @PathVariable("remittanceType") RemittanceType remittanceType) {
+    List<RemittanceCategory> categories =
+        remittanceTransactionService.getRemittanceCategories(remittanceType);
     return categories.isEmpty()
         ? ResponseEntity.noContent().build()
         : ResponseEntity.ok(categories);
@@ -119,10 +122,25 @@ public class RemittanceTransactionController {
         remittanceTransactionService.generateTransactionReferenceNumber(branch, categoryId));
   }
 
+  /*@GetMapping(path = "/inward-reference-numbers/{branch}/{categoryId}")
+  public ResponseEntity<?> generateInwardTransactionReferenceNumber(
+      @PathVariable("branch") Long branch, @PathVariable("categoryId") Long categoryId) {
+    return ResponseEntity.ok(
+        remittanceTransactionService.generateInwardTransactionReferenceNumber(branch, categoryId));
+  }*/
+
   @GetMapping(path = "remittance-transactions/registers/{transactionId}")
   public ResponseEntity<List<TransactionRegister>> getRegisterByRemittance(
       @PathVariable("transactionId") Long transactionId) {
     return ResponseEntity.ok(
         transactionRegisterService.findTransactionRegisterByRemittanceTransaction(transactionId));
+  }
+
+  @GetMapping(path = "/inward-remittance-txns/{referenceNumber}")
+  public ResponseEntity<Boolean> isInwardTxnExistsWithReferenceNumber(
+      @PathVariable("referenceNumber") String referenceNumber) {
+    QueryResult<Boolean> queryResult =
+        queryManager.executeQuery(new InwardTxnsByReferenceNumberQuery(referenceNumber));
+    return ResponseEntity.ok(queryResult.getResult());
   }
 }

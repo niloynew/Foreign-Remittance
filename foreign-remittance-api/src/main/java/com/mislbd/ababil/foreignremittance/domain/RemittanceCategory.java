@@ -11,4 +11,5 @@ public class RemittanceCategory {
   private long id;
   private String name;
   private String description;
+  private RemittanceType remittanceType;
 }

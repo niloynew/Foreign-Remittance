@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,4 +21,8 @@ public class RemittanceCategoryEntity {
   private String name;
 
   private String description;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "REMITTANCE_TYPE")
+  private RemittanceType remittanceType;
 }
