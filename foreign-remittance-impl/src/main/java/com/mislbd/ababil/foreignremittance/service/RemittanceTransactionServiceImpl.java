@@ -117,17 +117,15 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
                 () ->
                     new ForeignRemittanceBaseException(
                         "Remittance category not found with id- " + categoryId));
-    Long transactionReferenceNumber = category.getRemittanceType().compareTo(RemittanceType.OUTWARD_REMITTANCE) == 0 ? remittanceTransactionRepository.generateTransactionReferenceNumberSequence() : remittanceTransactionRepository.generateInwardTransactionReferenceNumberSequence();
+    Long transactionReferenceNumber =
+        category.getRemittanceType().compareTo(RemittanceType.OUTWARD_REMITTANCE) == 0
+            ? remittanceTransactionRepository.generateTransactionReferenceNumberSequence()
+            : remittanceTransactionRepository.generateInwardTransactionReferenceNumberSequence();
     return Strings.padStart(String.valueOf(branch), 3, '0')
         + category.getDescription()
         + String.valueOf(configurationService.getCurrentApplicationDate().getYear()).substring(2)
-        + Strings.padStart(
-            String.valueOf(transactionReferenceNumber),
-            5,
-            '0');
+        + Strings.padStart(String.valueOf(transactionReferenceNumber), 5, '0');
   }
-
-
 
   @Override
   public List<RemittanceCategory> getRemittanceCategories(RemittanceType remittanceType) {

@@ -42,6 +42,9 @@ public class RemittanceTransactionEntity extends BaseEntity {
   @Column(name = "TRANSACTION_REFERENCE_NUMBER")
   private String transactionReferenceNumber;
 
+  @Column(name = "INTERNAL_REFERENCE_NUMBER")
+  private String inwardInternalReferenceNumber;
+
   @Column(name = "INSTRUMENT_NUMBER")
   private String instrumentNumber;
 

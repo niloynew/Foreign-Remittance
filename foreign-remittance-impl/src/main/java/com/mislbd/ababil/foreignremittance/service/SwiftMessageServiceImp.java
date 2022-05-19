@@ -35,14 +35,14 @@ public class SwiftMessageServiceImp implements SwiftMsgService {
   private final RemittanceTransactionService remittanceTransactionService;
 
   public SwiftMessageServiceImp(
-          ApprovalFlowTaskInstanceRepository approvalFlowTaskInstanceRepository,
-          ApprovalFlowTaskInstanceService approvalFlowTaskInstanceService,
-          ObjectMapper objectMapper,
-          TransactionToRequestMapper transactionToRequestMapper,
-          XmmIntegrationService xmmIntegrationService,
-          NgSession ngSession,
-          ConfigurationService configurationService,
-          RemittanceTransactionService remittanceTransactionService) {
+      ApprovalFlowTaskInstanceRepository approvalFlowTaskInstanceRepository,
+      ApprovalFlowTaskInstanceService approvalFlowTaskInstanceService,
+      ObjectMapper objectMapper,
+      TransactionToRequestMapper transactionToRequestMapper,
+      XmmIntegrationService xmmIntegrationService,
+      NgSession ngSession,
+      ConfigurationService configurationService,
+      RemittanceTransactionService remittanceTransactionService) {
     this.approvalFlowTaskInstanceRepository = approvalFlowTaskInstanceRepository;
     this.approvalFlowTaskInstanceService = approvalFlowTaskInstanceService;
     this.objectMapper = objectMapper;
@@ -55,7 +55,7 @@ public class SwiftMessageServiceImp implements SwiftMsgService {
 
   @Override
   public PagedResult<RemittanceMessageDto> findAll(
-          Pageable pageable, String msgType, String lcNo, BigDecimal amount, LocalDate valueDate) {
+      Pageable pageable, String msgType, String lcNo, BigDecimal amount, LocalDate valueDate) {
     return null;
   }
 
@@ -90,39 +90,39 @@ public class SwiftMessageServiceImp implements SwiftMsgService {
 
   private MessageResponse processMT103(XmmRequest xmmRequest) throws IOException {
     if (approvalFlowTaskInstanceRepository
-            .findFirstByDomainGroupAndDomainReference(
-                    xmmRequest.getDomainGroup(), xmmRequest.getReferenceNumber())
-            .isPresent()) {
+        .findFirstByDomainGroupAndDomainReference(
+            xmmRequest.getDomainGroup(), xmmRequest.getReferenceNumber())
+        .isPresent()) {
 
       long Id =
-              approvalFlowTaskInstanceRepository
-                      .findFirstByDomainGroupAndDomainReference(
-                              xmmRequest.getDomainGroup(), xmmRequest.getReferenceNumber())
-                      .get()
-                      .getId();
+          approvalFlowTaskInstanceRepository
+              .findFirstByDomainGroupAndDomainReference(
+                  xmmRequest.getDomainGroup(), xmmRequest.getReferenceNumber())
+              .get()
+              .getId();
 
       RemittanceTransaction remittanceTransaction =
-              objectMapper.readValue(
-                      approvalFlowTaskInstanceService.getApprovalFlowTaskInstancePayload(Id).get(),
-                      RemittanceTransaction.class);
+          objectMapper.readValue(
+              approvalFlowTaskInstanceService.getApprovalFlowTaskInstancePayload(Id).get(),
+              RemittanceTransaction.class);
 
       MT103MessageRequest mt103MessageRequest =
-              transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
+          transactionToRequestMapper.mapTransactionToMessageRequest(remittanceTransaction);
       mt103MessageRequest.setEntryUser(ngSession.getUsername());
       mt103MessageRequest.setEntryUserBranch(
-              String.valueOf(ngSession.getUserBranch()).concat("00"));
+          String.valueOf(ngSession.getUserBranch()).concat("00"));
       mt103MessageRequest.setTransactionReferenceNumber(
-              remittanceTransaction.getTransactionReferenceNumber());
+          remittanceTransaction.getTransactionReferenceNumber());
 
       mt103MessageRequest.setApplicationDate(configurationService.getCurrentApplicationDate());
       return xmmIntegrationService.publishCategoryNMessage(mt103MessageRequest);
     } else if (remittanceTransactionService
-            .findTransaction(xmmRequest.getReferenceNumber())
-            .isPresent()) {
+        .findTransaction(xmmRequest.getReferenceNumber())
+        .isPresent()) {
       return xmmIntegrationService.authorizeCategoryNMessage(xmmRequest.getReferenceNumber());
     } else {
       throw new ForeignRemittanceBaseException(
-              "Outward transaction not found with reference number " + xmmRequest.getReferenceNumber());
+          "Outward transaction not found with reference number " + xmmRequest.getReferenceNumber());
     }
   }
 }

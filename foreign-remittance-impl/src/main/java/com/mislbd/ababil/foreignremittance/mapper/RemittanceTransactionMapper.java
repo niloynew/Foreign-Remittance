@@ -40,6 +40,10 @@ public class RemittanceTransactionMapper {
             .setTransactionTypeId(entity.getTransactionType().getId())
             .setPpCode(entity.getPpCode())
             .setTransactionReferenceNumber(entity.getTransactionReferenceNumber())
+            .setInwardInternalReferenceNumber(
+                entity.getInwardInternalReferenceNumber() != null
+                    ? entity.getInwardInternalReferenceNumber()
+                    : null)
             .setInstrumentNumber(entity.getInstrumentNumber())
             .setCbFundSourceId(entity.getCbFundSourceId())
             .setBeneficiaryId(entity.getBeneficiaryId())
@@ -92,6 +96,10 @@ public class RemittanceTransactionMapper {
             .setPpCode(domain.getPpCode())
             .setBeneficiaryId(domain.getBeneficiaryId())
             .setTransactionReferenceNumber(domain.getTransactionReferenceNumber())
+            .setInwardInternalReferenceNumber(
+                domain.getInwardInternalReferenceNumber() != null
+                    ? domain.getInwardInternalReferenceNumber()
+                    : null)
             .setInstrumentNumber(domain.getInstrumentNumber())
             .setCbFundSourceId(domain.getCbFundSourceId())
             .setApplicantId(domain.getApplicantId())
