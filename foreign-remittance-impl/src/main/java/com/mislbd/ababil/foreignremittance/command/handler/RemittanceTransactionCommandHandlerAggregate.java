@@ -127,8 +127,9 @@ public class RemittanceTransactionCommandHandlerAggregate {
             .orElseThrow(RemittanceTransactionNotFoundException::new);
     try {
       CorrectionApiRequest request = new CorrectionApiRequest();
-      request.setRequestId(generateRequestId(entity.getTransactionReferenceNumber()));
-      request.setReferenceNumber(entity.getTransactionReferenceNumber());
+      String requestId = generateRequestId(entity.getTransactionReferenceNumber());
+      request.setRequestId(requestId);
+      request.setReferenceNumber("ID".concat(requestId));
       request.setVoucherNumber(String.valueOf(correctionRequest.getGlobalTxnNumber()));
       batchApiClient.doApiTxnCorrection(request);
       transactionRegisterService.invalidRegister(correctionRequest.getGlobalTxnNumber());
@@ -136,7 +137,7 @@ public class RemittanceTransactionCommandHandlerAggregate {
       saveTransactionEntity(entity);
       succeed = true;
     } catch (Exception e) {
-      log.error("Error in Feign reverse transaction", e.getCause());
+      log.error("Error in Feign reverse transaction");
     }
     if (succeed) {
       return CommandResponse.asVoid();
