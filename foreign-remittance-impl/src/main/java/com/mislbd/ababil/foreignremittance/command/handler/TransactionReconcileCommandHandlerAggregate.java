@@ -152,7 +152,7 @@ public class TransactionReconcileCommandHandlerAggregate {
   private ReconcileTxnLogEntity prepareReconcileTransactionLog(
       Command<?> command,
       String accountNumber,
-      BigDecimal globalTxnNumber,
+      Long globalTxnNumber,
       LocalDate txnDate,
       String cause) {
     ReconcileTxnLogEntity entity = new ReconcileTxnLogEntity();

@@ -58,7 +58,7 @@ public class ShadowTransactionRecordEntity extends BaseEntity {
   private Boolean valid;
 
   @Column(name = "GLOBALTXNNO")
-  private BigDecimal globalTxnNo;
+  private Long globalTxnNo;
 
   @Column(name = "OWNERBRANCHID")
   private BigDecimal ownerBranchId;
