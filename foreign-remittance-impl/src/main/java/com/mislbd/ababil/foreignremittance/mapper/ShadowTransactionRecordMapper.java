@@ -49,4 +49,8 @@ public class ShadowTransactionRecordMapper {
           .setReconcileStatus(entity.getReconcileStatus());
     };
   }
+
+  public ResultMapper<ShadowTransactionRecordEntity, String> entityToStringVoucher() {
+    return entity -> entity.getGlobalTxnNo().toString();
+  }
 }

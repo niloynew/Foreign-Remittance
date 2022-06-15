@@ -25,7 +25,7 @@ public class ShadowTransactionRecord {
   private LocalDate txnDate;
   private BigDecimal glDetailId;
   private Boolean valid;
-  private BigDecimal globalTxnNo;
+  private Long globalTxnNo;
   private BigDecimal ownerBranchId;
   private BigDecimal initiatorBranchId;
   private BigDecimal eventId;

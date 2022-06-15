@@ -1,7 +1,6 @@
 package com.mislbd.ababil.foreignremittance.repository.schema;
 
 import com.mislbd.ababil.foreignremittance.domain.OtherCbsSystemSettlementStatus;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.*;
@@ -58,7 +57,7 @@ public class ReconcileTxnLogEntity {
   private String txnNarration;
 
   @Column(name = "GLOBAL_TXN_NO")
-  private BigDecimal globalTxnNo;
+  private Long globalTxnNo;
 
   @Column(name = "TXN_DATE")
   private LocalDate txnDate;
