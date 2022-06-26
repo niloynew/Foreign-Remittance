@@ -80,7 +80,9 @@ public class RemittanceTransactionMapper {
                     ? registerRepository
                         .getDistinctFirstByRemittanceTransactionId(entity.getId())
                         .getVoucherNumber()
-                    : null);
+                    : null)
+            .setSalesContractNumber(entity.getSalesContractNumber())
+            .setArvNumber(entity.getArvNumber());
   }
 
   public ResultMapper<RemittanceTransaction, RemittanceTransactionEntity> domainToEntity() {
@@ -130,6 +132,8 @@ public class RemittanceTransactionMapper {
                         .getBankInformations()
                         .stream()
                         .map(x -> bankInformationMapper.domainToEntity().map(x))
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList()))
+            .setSalesContractNumber(domain.getSalesContractNumber())
+            .setArvNumber(domain.getArvNumber());
   }
 }

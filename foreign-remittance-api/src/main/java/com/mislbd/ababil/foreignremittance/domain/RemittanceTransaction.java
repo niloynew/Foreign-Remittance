@@ -100,4 +100,8 @@ public class RemittanceTransaction {
 
   private RemittanceTransactionStatus transactionStatus;
   private Long globalTransactionNo;
+
+  // import related free field
+  private String salesContractNumber;
+  private String arvNumber;
 }
