@@ -133,4 +133,11 @@ public class RemittanceTransactionEntity extends BaseEntity {
   private AdditionalInformationEntity additionalInformationEntity;
 
   private RemittanceTransactionStatus transactionStatus;
+
+  // import related free field
+  @Column(name = "SALES_CONTRACT")
+  private String salesContractNumber;
+
+  @Column(name = "ARV_NUMBER")
+  private String arvNumber;
 }
