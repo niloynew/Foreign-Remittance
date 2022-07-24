@@ -38,4 +38,7 @@ public interface RemittanceTransactionService {
   List getRemittanceCategories(RemittanceType remittanceType);
 
   RemittanceCategory getRemittanceCategoryById(Long id);
+
+  List<ExportRelatedRemittanceInformation> getRemittanceInformationForTf(
+      Long customerId, String currency);
 }

@@ -26,4 +26,8 @@ public interface RemittanceTransactionRepository
 
   @Query(value = "SELECT S_ID_REQUEST_REFERENCE_NUMBER.nextval FROM dual", nativeQuery = true)
   Long generateRequestIdSequence();
+
+  List<RemittanceTransactionEntity>
+      findAllByBeneficiaryIdAndShadowAccountCurrencyAndTransactionType_Id(
+          Long customerId, String currency, Long transactionTypeId);
 }

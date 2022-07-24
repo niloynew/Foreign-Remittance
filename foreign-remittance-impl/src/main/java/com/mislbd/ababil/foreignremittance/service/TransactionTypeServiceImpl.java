@@ -2,6 +2,7 @@ package com.mislbd.ababil.foreignremittance.service;
 
 import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.domain.TransactionType;
+import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
 import com.mislbd.ababil.foreignremittance.mapper.RemittanceTransactionMapper;
 import com.mislbd.ababil.foreignremittance.mapper.TransactionTypeMapper;
 import com.mislbd.ababil.foreignremittance.repository.jpa.NostroTransactionRepository;
@@ -54,6 +55,19 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
         transactionTypeRepository.findAll(
             TransactionTypeSpecification.findTransactionTypes(id, remittanceType)),
         transactionTypeMapper.entityToDomain());
+  }
+
+  @Override
+  public TransactionType typeForAdvanceRemittance() {
+    return transactionTypeMapper
+        .entityToDomain()
+        .map(
+            transactionTypeRepository
+                .findByNameIsLike("Advanced Receive Agt. Export")
+                .orElseThrow(
+                    () ->
+                        new ForeignRemittanceBaseException(
+                            "Transaction type not found for Advanced Receive Agt. Export")));
   }
 }
 //  @Override
