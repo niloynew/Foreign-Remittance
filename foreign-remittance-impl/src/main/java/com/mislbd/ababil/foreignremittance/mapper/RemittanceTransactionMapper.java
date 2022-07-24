@@ -1,5 +1,6 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
+import com.mislbd.ababil.foreignremittance.domain.ExportRelatedRemittanceInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionRegisterRepository;
@@ -135,5 +136,18 @@ public class RemittanceTransactionMapper {
                         .collect(Collectors.toList()))
             .setSalesContractNumber(domain.getSalesContractNumber())
             .setArvNumber(domain.getArvNumber());
+  }
+
+  public ResultMapper<RemittanceTransactionEntity, ExportRelatedRemittanceInformation>
+      entityToExportInformation() {
+    return entity ->
+        new ExportRelatedRemittanceInformation()
+            .setTransactionReferenceNumber(entity.getTransactionReferenceNumber())
+            .setInternalReferenceNumber(entity.getInternalReferenceNumber())
+            .setSalesContractNumber(entity.getSalesContractNumber())
+            .setArvNumber(entity.getArvNumber())
+            .setAmount(entity.getAmountFcy())
+            .setCustomerId(entity.getBeneficiaryId())
+            .setCurrency(entity.getOperatingAccountCurrency());
   }
 }

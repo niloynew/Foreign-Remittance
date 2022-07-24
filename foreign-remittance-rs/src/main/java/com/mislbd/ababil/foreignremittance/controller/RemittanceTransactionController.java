@@ -143,4 +143,13 @@ public class RemittanceTransactionController {
         queryManager.executeQuery(new InwardTxnsByReferenceNumberQuery(referenceNumber));
     return ResponseEntity.ok(queryResult.getResult());
   }
+
+  @GetMapping(path = "/remittance-transactions/tf")
+  public ResponseEntity<?> getRemittanceListForTf(
+      @RequestParam(value = "customerId") Long customerId,
+      @RequestParam(value = "currency") String currency) {
+    List<ExportRelatedRemittanceInformation> informationList =
+        remittanceTransactionService.getRemittanceInformationForTf(customerId, currency);
+    return ResponseEntity.ok(informationList);
+  }
 }

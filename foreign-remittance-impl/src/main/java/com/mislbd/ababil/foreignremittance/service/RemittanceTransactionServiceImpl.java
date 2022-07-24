@@ -29,6 +29,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   private final RemittanceTransactionRepository remittanceTransactionRepository;
   private final RemittanceTransactionMapper remittanceTransactionMapper;
   private final TransactionService transactionService;
+  private final TransactionTypeService transactionTypeService;
   private final RemittanceCategoryMapper categoryMapper;
   private final ConfigurationService configurationService;
   private final RemittanceCategoryRepository categoryRepository;
@@ -37,12 +38,14 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
       RemittanceTransactionRepository remittanceTransactionRepository,
       RemittanceTransactionMapper remittanceTransactionMapper,
       TransactionService transactionService,
+      TransactionTypeService transactionTypeService,
       RemittanceCategoryMapper categoryMapper,
       ConfigurationService configurationService,
       RemittanceCategoryRepository categoryRepository) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.remittanceTransactionMapper = remittanceTransactionMapper;
     this.transactionService = transactionService;
+    this.transactionTypeService = transactionTypeService;
     this.categoryMapper = categoryMapper;
     this.configurationService = configurationService;
     this.categoryRepository = categoryRepository;
@@ -145,6 +148,17 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
                     () ->
                         new ForeignRemittanceBaseException(
                             "Remittance category not found with id - " + id)));
+  }
+
+  @Override
+  public List<ExportRelatedRemittanceInformation> getRemittanceInformationForTf(
+      Long customerId, String currency) {
+    TransactionType transactionType = transactionTypeService.typeForAdvanceRemittance();
+    return ListResultBuilder.build(
+        remittanceTransactionRepository
+            .findAllByBeneficiaryIdAndShadowAccountCurrencyAndTransactionType_Id(
+                customerId, currency, transactionType.getId()),
+        remittanceTransactionMapper.entityToExportInformation());
   }
 
   private TransactionCorrectionRequest prepareTransactionCorrectionRequest(

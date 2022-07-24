@@ -13,4 +13,5 @@ public interface TransactionTypeService {
   List<TransactionType> getTypes(Long id, RemittanceType remittanceType);
   // List<SwiftBankConfiguration> getConfigurations (Long id);
 
+  TransactionType typeForAdvanceRemittance();
 }
