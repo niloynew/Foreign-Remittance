@@ -16,4 +16,6 @@ public class ExportRelatedRemittanceInformation {
   private BigDecimal amount;
   private String currency;
   private Long customerId;
+  private String applicantName;
+  private String applicantCountry;
 }

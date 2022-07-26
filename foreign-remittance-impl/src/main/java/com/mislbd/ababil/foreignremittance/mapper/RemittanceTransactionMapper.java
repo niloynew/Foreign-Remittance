@@ -1,11 +1,16 @@
 package com.mislbd.ababil.foreignremittance.mapper;
 
+import com.mislbd.ababil.contacts.domain.Country;
+import com.mislbd.ababil.contacts.service.CountryService;
 import com.mislbd.ababil.foreignremittance.domain.ExportRelatedRemittanceInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
+import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
+import com.mislbd.ababil.foreignremittance.repository.jpa.SenderOrReceiverCustomerRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionRegisterRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.TransactionTypeRepository;
 import com.mislbd.ababil.foreignremittance.repository.schema.RemittanceTransactionEntity;
+import com.mislbd.ababil.foreignremittance.repository.schema.SenderOrReceiverCustomerEntity;
 import com.mislbd.asset.commons.data.domain.ResultMapper;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
@@ -18,18 +23,24 @@ public class RemittanceTransactionMapper {
   private final BankInformationMapper bankInformationMapper;
   private final AdditionInformationMapper additionInformationMapper;
   private final TransactionRegisterRepository registerRepository;
+  private final SenderOrReceiverCustomerRepository senderOrReceiverCustomerRepository;
+  private final CountryService countryService;
 
   public RemittanceTransactionMapper(
       RemittanceTransactionRepository remittanceTransactionRepository,
       TransactionTypeRepository transactionTypeRepository,
       BankInformationMapper bankInformationMapper,
       AdditionInformationMapper additionInformationMapper,
-      TransactionRegisterRepository registerRepository) {
+      TransactionRegisterRepository registerRepository,
+      SenderOrReceiverCustomerRepository senderOrReceiverCustomerRepository,
+      CountryService countryService) {
     this.remittanceTransactionRepository = remittanceTransactionRepository;
     this.transactionTypeRepository = transactionTypeRepository;
     this.bankInformationMapper = bankInformationMapper;
     this.additionInformationMapper = additionInformationMapper;
     this.registerRepository = registerRepository;
+    this.senderOrReceiverCustomerRepository = senderOrReceiverCustomerRepository;
+    this.countryService = countryService;
   }
 
   public ResultMapper<RemittanceTransactionEntity, RemittanceTransaction> entityToDomain(
@@ -140,14 +151,31 @@ public class RemittanceTransactionMapper {
 
   public ResultMapper<RemittanceTransactionEntity, ExportRelatedRemittanceInformation>
       entityToExportInformation() {
-    return entity ->
-        new ExportRelatedRemittanceInformation()
-            .setTransactionReferenceNumber(entity.getTransactionReferenceNumber())
-            .setInternalReferenceNumber(entity.getInternalReferenceNumber())
-            .setSalesContractNumber(entity.getSalesContractNumber())
-            .setArvNumber(entity.getArvNumber())
-            .setAmount(entity.getAmountFcy())
-            .setCustomerId(entity.getBeneficiaryId())
-            .setCurrency(entity.getOperatingAccountCurrency());
+    return entity -> {
+      SenderOrReceiverCustomerEntity applicant =
+          senderOrReceiverCustomerRepository
+              .findById(entity.getApplicantId())
+              .orElseThrow(
+                  () ->
+                      new ForeignRemittanceBaseException(
+                          "Applicant not found with id: " + entity.getApplicantId()));
+      Country country =
+          countryService
+              .getCountry(Long.valueOf(applicant.getCountry()))
+              .orElseThrow(
+                  () ->
+                      new ForeignRemittanceBaseException(
+                          "Country not found with id: " + applicant.getCountry()));
+      return new ExportRelatedRemittanceInformation()
+          .setTransactionReferenceNumber(entity.getTransactionReferenceNumber())
+          .setInternalReferenceNumber(entity.getInternalReferenceNumber())
+          .setSalesContractNumber(entity.getSalesContractNumber())
+          .setArvNumber(entity.getArvNumber())
+          .setAmount(entity.getAmountFcy())
+          .setCustomerId(entity.getBeneficiaryId())
+          .setCurrency(entity.getOperatingAccountCurrency())
+          .setApplicantName(applicant.getName())
+          .setApplicantCountry(country.getName());
+    };
   }
 }
