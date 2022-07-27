@@ -175,7 +175,10 @@ public class RemittanceTransactionMapper {
           .setCustomerId(entity.getBeneficiaryId())
           .setCurrency(entity.getOperatingAccountCurrency())
           .setApplicantName(applicant.getName())
-          .setApplicantCountry(country.getName());
+          .setApplicantCountry(country.getName())
+          .setValueDate(entity.getValueDate())
+          .setInitiator(entity.getCreatedBy())
+          .setVerifier(entity.getVerifyBy());
     };
   }
 }
