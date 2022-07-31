@@ -173,7 +173,7 @@ public class RemittanceTransactionMapper {
           .setArvNumber(entity.getArvNumber())
           .setAmount(entity.getAmountFcy())
           .setCustomerId(entity.getBeneficiaryId())
-          .setCurrency(entity.getOperatingAccountCurrency())
+          .setCurrency(entity.getShadowAccountCurrency())
           .setApplicantName(applicant.getName())
           .setApplicantCountry(country.getName())
           .setValueDate(entity.getValueDate())
