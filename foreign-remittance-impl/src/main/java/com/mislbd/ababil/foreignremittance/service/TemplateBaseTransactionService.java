@@ -41,8 +41,8 @@ public class TemplateBaseTransactionService {
 
   public List<CbsTemplateTransaction> buildTransaction(RemittanceTransaction transaction) {
     // Basic transaction generation
-    Long rateType =
-        Long.valueOf(
+    String rateType =
+        String.valueOf(
             configurationService
                 .getConfiguration("ID_RATE_TYPE")
                 .orElseThrow(() -> new ForeignRemittanceBaseException("Rate Type not found"))
@@ -54,7 +54,7 @@ public class TemplateBaseTransactionService {
               .findExchangeRate(
                   transaction.getShadowAccountCurrency(),
                   transaction.getOperatingAccountCurrency(),
-                  rateType)
+                  Long.valueOf(rateType))
               .getExchangeRate();
     }
     transaction.setOperatingRateTypeId(rateType);
@@ -67,7 +67,8 @@ public class TemplateBaseTransactionService {
     if (!transaction.getShadowAccountCurrency().equals(localCurrency)) {
       localCurrencyRate =
           exchangeRateService
-              .findExchangeRate(transaction.getShadowAccountCurrency(), localCurrency, rateType)
+              .findExchangeRate(
+                  transaction.getShadowAccountCurrency(), localCurrency, Long.valueOf(rateType))
               .getExchangeRate();
     }
     transaction.setAmountLcy(transaction.getAmountFcy().multiply(localCurrencyRate));
@@ -79,7 +80,7 @@ public class TemplateBaseTransactionService {
             transaction.getTransactionTypeId(),
             transaction.getAmountFcy(),
             transaction.getShadowAccountCurrency(),
-            rateType);
+            Long.valueOf(rateType));
     ChargeInformation chargeInformation =
         ChargeInformation.builder()
             .charges(charges)

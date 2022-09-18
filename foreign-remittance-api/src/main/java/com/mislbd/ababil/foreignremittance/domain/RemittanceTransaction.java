@@ -74,7 +74,7 @@ public class RemittanceTransaction {
   @NotNull(message = "Operating account currency can't be empty")
   private String operatingAccountCurrency;
 
-  private Long operatingRateTypeId;
+  private String operatingRateTypeId;
   private BigDecimal operatingRate;
 
   @NotNull(message = "Transaction amount can't be empty")
