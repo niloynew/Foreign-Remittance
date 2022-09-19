@@ -41,12 +41,22 @@ public class TemplateBaseTransactionService {
 
   public List<CbsTemplateTransaction> buildTransaction(RemittanceTransaction transaction) {
     // Basic transaction generation
-    String rateType =
-        String.valueOf(
-            configurationService
-                .getConfiguration("ID_RATE_TYPE")
-                .orElseThrow(() -> new ForeignRemittanceBaseException("Rate Type not found"))
-                .getValue());
+    String rateType = null;
+    if (transaction.getRemittanceType().equals(RemittanceType.INWARD_REMITTANCE)) {
+      rateType =
+          String.valueOf(
+              configurationService
+                  .getConfiguration("ID_INWARD_RATE_TYPE")
+                  .orElseThrow(() -> new ForeignRemittanceBaseException("Rate Type not found"))
+                  .getValue());
+    } else {
+      rateType =
+          String.valueOf(
+              configurationService
+                  .getConfiguration("ID_OUTWARD_RATE_TYPE")
+                  .orElseThrow(() -> new ForeignRemittanceBaseException("Rate Type not found"))
+                  .getValue());
+    }
     BigDecimal operatingRate = BigDecimal.ONE;
     if (!transaction.getShadowAccountCurrency().equals(transaction.getOperatingAccountCurrency())) {
       operatingRate =
@@ -57,7 +67,7 @@ public class TemplateBaseTransactionService {
                   Long.valueOf(rateType))
               .getExchangeRate();
     }
-    transaction.setOperatingRateTypeId(rateType);
+    transaction.setOperatingRateTypeId(Integer.valueOf(rateType));
     transaction.setOperatingRate(operatingRate);
     transaction.setAmountRcy(transaction.getAmountFcy().multiply(operatingRate));
 
