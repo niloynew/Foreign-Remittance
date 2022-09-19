@@ -97,7 +97,7 @@ public class RemittanceTransactionEntity extends BaseEntity {
 
   @Deprecated
   @Column(name = "OPERATING_RATE_TYPE")
-  private Long operatingRateTypeId;
+  private Integer operatingRateTypeId;
 
   @Deprecated
   @Column(name = "OPERATING_RATE")
