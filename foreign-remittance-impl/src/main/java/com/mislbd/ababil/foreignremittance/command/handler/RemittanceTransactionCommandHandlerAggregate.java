@@ -101,13 +101,13 @@ public class RemittanceTransactionCommandHandlerAggregate {
       ResponseEntity<?> responseEntity = batchApiClient.doBatchApiTransaction(request);
       LinkedHashMap<String, Long> response = (LinkedHashMap<String, Long>) responseEntity.getBody();
       voucherNumber = response.get("content");
-      remittanceTransactionEntity.setTransactionStatus(RemittanceTransactionStatus.Succeed);
-      saveTransactionEntity(remittanceTransactionEntity);
-      transactionRegisterService.doRegister(
-          transaction.getCbsTransactions(), voucherNumber, remittanceTransactionEntity.getId());
     } catch (Exception e) {
       log.error("Error in Feign transaction");
     }
+    remittanceTransactionEntity.setTransactionStatus(RemittanceTransactionStatus.Succeed);
+    saveTransactionEntity(remittanceTransactionEntity);
+    transactionRegisterService.doRegister(
+        transaction.getCbsTransactions(), voucherNumber, remittanceTransactionEntity.getId());
     if (voucherNumber != null) {
       return CommandResponse.of(voucherNumber);
     } else {

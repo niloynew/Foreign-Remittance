@@ -114,7 +114,7 @@ public class ShadowTransactionRecordServiceImpl implements ShadowTransactionReco
                 (accountEntity != null ? accountEntity.getId() : null),
                 fromDate,
                 toDate,
-                reconcileStatus));
+                    OtherCbsSystemSettlementStatus.Pending));
 
     if (!shadowTransactionRecordEntities.isEmpty()) {
       // Mapping to List<String> from the transactions
