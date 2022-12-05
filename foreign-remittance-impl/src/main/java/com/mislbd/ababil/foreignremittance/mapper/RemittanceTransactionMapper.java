@@ -4,6 +4,7 @@ import com.mislbd.ababil.contacts.domain.Country;
 import com.mislbd.ababil.contacts.service.CountryService;
 import com.mislbd.ababil.foreignremittance.domain.ExportRelatedRemittanceInformation;
 import com.mislbd.ababil.foreignremittance.domain.RemittanceTransaction;
+import com.mislbd.ababil.foreignremittance.domain.RemittanceType;
 import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
 import com.mislbd.ababil.foreignremittance.repository.jpa.RemittanceTransactionRepository;
 import com.mislbd.ababil.foreignremittance.repository.jpa.SenderOrReceiverCustomerRepository;
@@ -150,15 +151,22 @@ public class RemittanceTransactionMapper {
   }
 
   public ResultMapper<RemittanceTransactionEntity, ExportRelatedRemittanceInformation>
-      entityToExportInformation() {
+      entityToExportInformation(RemittanceType remittanceType) {
     return entity -> {
       SenderOrReceiverCustomerEntity applicant =
           senderOrReceiverCustomerRepository
-              .findById(entity.getApplicantId())
+              .findById(
+                  remittanceType == RemittanceType.INWARD_REMITTANCE
+                      ? entity.getApplicantId()
+                      : entity.getBeneficiaryId())
               .orElseThrow(
-                  () ->
-                      new ForeignRemittanceBaseException(
-                          "Applicant not found with id: " + entity.getApplicantId()));
+                  () -> {
+                    String error =
+                        remittanceType == RemittanceType.INWARD_REMITTANCE
+                            ? "Applicant not found with id: " + entity.getApplicantId()
+                            : "Beneficiary not found with id: " + entity.getBeneficiaryId();
+                    return new ForeignRemittanceBaseException(error);
+                  });
       Country country =
           countryService
               .getCountry(Long.valueOf(applicant.getCountry()))

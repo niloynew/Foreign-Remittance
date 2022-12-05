@@ -59,7 +59,9 @@ public class RemittanceTransactionController {
       @RequestParam(value = "toDate", required = false)
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           final LocalDate toDate,
-      @RequestParam(value = "status", required = false) final RemittanceTransactionStatus status) {
+      @RequestParam(value = "status", required = false) final RemittanceTransactionStatus status,
+      @RequestParam(value = "salesContractNumber", required = false)
+          final String salesContractNumber) {
 
     QueryResult<?> queryResult =
         queryManager.executeQuery(
@@ -70,7 +72,8 @@ public class RemittanceTransactionController {
                 transactionReferenceNumber,
                 fromDate,
                 toDate,
-                status));
+                status,
+                salesContractNumber));
     return ResponseEntity.ok(queryResult.getResult());
   }
 
@@ -144,12 +147,25 @@ public class RemittanceTransactionController {
     return ResponseEntity.ok(queryResult.getResult());
   }
 
-  @GetMapping(path = "/remittance-transactions/tf")
-  public ResponseEntity<?> getRemittanceListForTf(
+  @GetMapping(path = "/remittance-transactions/tf/outward")
+  public ResponseEntity<?> getRemittanceListForTfOutward(
       @RequestParam(value = "customerId") Long customerId,
-      @RequestParam(value = "currency") String currency) {
+      @RequestParam(value = "currency") String currency,
+      @RequestParam(value = "adviceNumber", required = false) String adviceNumber) {
     List<ExportRelatedRemittanceInformation> informationList =
-        remittanceTransactionService.getRemittanceInformationForTf(customerId, currency);
+        remittanceTransactionService.getRemittanceInformationForTf(
+            customerId, currency, adviceNumber, RemittanceType.OUTWARD_REMITTANCE);
+    return ResponseEntity.ok(informationList);
+  }
+
+  @GetMapping(path = "/remittance-transactions/tf/inward")
+  public ResponseEntity<?> getRemittanceListForTfInward(
+      @RequestParam(value = "customerId") Long customerId,
+      @RequestParam(value = "currency") String currency,
+      @RequestParam(value = "lcNumber", required = false) String lcNumber) {
+    List<ExportRelatedRemittanceInformation> informationList =
+        remittanceTransactionService.getRemittanceInformationForTf(
+            customerId, currency, lcNumber, RemittanceType.INWARD_REMITTANCE);
     return ResponseEntity.ok(informationList);
   }
 }

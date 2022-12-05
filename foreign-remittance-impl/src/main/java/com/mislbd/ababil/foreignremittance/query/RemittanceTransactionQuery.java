@@ -22,4 +22,5 @@ public class RemittanceTransactionQuery extends QueryRequest {
   private LocalDate fromDate;
   private LocalDate toDate;
   private RemittanceTransactionStatus status;
+  private String salesContractNumber;
 }

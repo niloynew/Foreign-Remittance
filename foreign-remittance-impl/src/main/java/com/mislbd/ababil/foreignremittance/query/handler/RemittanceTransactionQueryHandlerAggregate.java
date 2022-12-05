@@ -45,9 +45,11 @@ public class RemittanceTransactionQueryHandlerAggregate {
               remittanceTransactionQuery.getPageable(),
               remittanceTransactionQuery.getStatus(),
               remittanceTransactionQuery.getRemittanceType(),
+              null,
               remittanceTransactionQuery.getTransactionReferenceNumber(),
               remittanceTransactionQuery.getFromDate(),
-              remittanceTransactionQuery.getToDate());
+              remittanceTransactionQuery.getToDate(),
+              remittanceTransactionQuery.getSalesContractNumber());
       return QueryResult.of(pagedResult);
     } else {
 
@@ -55,9 +57,11 @@ public class RemittanceTransactionQueryHandlerAggregate {
           remittanceTransactionService.getTransactions(
               remittanceTransactionQuery.getStatus(),
               remittanceTransactionQuery.getRemittanceType(),
+              null,
               remittanceTransactionQuery.getTransactionReferenceNumber(),
               remittanceTransactionQuery.getFromDate(),
-              remittanceTransactionQuery.getToDate());
+              remittanceTransactionQuery.getToDate(),
+              remittanceTransactionQuery.getSalesContractNumber());
       return QueryResult.of(listResult);
     }
   }
