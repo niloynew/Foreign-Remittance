@@ -30,4 +30,8 @@ public interface RemittanceTransactionRepository
   List<RemittanceTransactionEntity>
       findAllByBeneficiaryIdAndShadowAccountCurrencyAndTransactionType_Id(
           Long customerId, String currency, Long transactionTypeId);
+
+  List<RemittanceTransactionEntity>
+      findAllByBeneficiaryIdAndShadowAccountCurrencyAndTransactionType_IdAndSalesContractNumber(
+          Long customerId, String currency, Long transactionTypeId, String salesContractNumber);
 }

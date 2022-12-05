@@ -12,16 +12,20 @@ public interface RemittanceTransactionService {
       Pageable pageable,
       RemittanceTransactionStatus status,
       RemittanceType remittanceType,
+      String remittanceTypeName,
       String transactionReferenceNumber,
       LocalDate fromDate,
-      LocalDate toDate);
+      LocalDate toDate,
+      String salesContractNumber);
 
   List<RemittanceTransaction> getTransactions(
       RemittanceTransactionStatus status,
       RemittanceType remittanceType,
+      String remittanceTypeName,
       String transactionReferenceNumber,
       LocalDate fromDate,
-      LocalDate toDate);
+      LocalDate toDate,
+      String salesContractNumber);
 
   Optional<RemittanceTransaction> findTransaction(Long id);
 
@@ -40,5 +44,5 @@ public interface RemittanceTransactionService {
   RemittanceCategory getRemittanceCategoryById(Long id);
 
   List<ExportRelatedRemittanceInformation> getRemittanceInformationForTf(
-      Long customerId, String currency);
+      Long customerId, String currency, String salesContractNUmber, RemittanceType remittanceType);
 }

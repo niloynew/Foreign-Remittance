@@ -58,22 +58,15 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
   }
 
   @Override
-  public TransactionType typeForAdvanceRemittance() {
+  public TransactionType typeForAdvanceRemittance(RemittanceType remittanceType, String name) {
     return transactionTypeMapper
         .entityToDomain()
         .map(
             transactionTypeRepository
-                .findByNameIsLike("Advanced Receive Agt. Export")
+                .findByRemittanceTypeAndNameIsLike(remittanceType, name)
                 .orElseThrow(
                     () ->
                         new ForeignRemittanceBaseException(
                             "Transaction type not found for Advanced Receive Agt. Export")));
   }
 }
-//  @Override
-//  public List<SwiftBankConfiguration> getConfigurations (Long id){
-//    //NostroTransaction nostroTransaction =
-// nostroTransactionRepository.findById(id).orElseThrow(RemittanceTransactionNotFoundException::new);
-//    //transactionBanksRepository.findByNostroTransaction(remittanceTransaction)
-//  //}
-// }

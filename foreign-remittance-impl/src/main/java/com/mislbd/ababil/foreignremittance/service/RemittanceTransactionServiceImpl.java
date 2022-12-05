@@ -56,13 +56,23 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
       Pageable pageable,
       RemittanceTransactionStatus status,
       RemittanceType remittanceType,
+      String remittanceTypeName,
       String transactionReferenceNumber,
       LocalDate fromDate,
-      LocalDate toDate) {
+      LocalDate toDate,
+      String salesContractNumber) {
     Page<RemittanceTransactionEntity> remittanceTransactions =
         remittanceTransactionRepository.findAll(
             RemittanceTransactionSpecification.searchSpecification(
-                status, remittanceType, transactionReferenceNumber, fromDate, toDate),
+                status,
+                remittanceType,
+                remittanceTypeName,
+                transactionReferenceNumber,
+                fromDate,
+                toDate,
+                salesContractNumber,
+                null,
+                null),
             pageable);
 
     return PagedResultBuilder.build(
@@ -73,13 +83,23 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
   public List<RemittanceTransaction> getTransactions(
       RemittanceTransactionStatus status,
       RemittanceType remittanceType,
+      String remittanceTypeName,
       String transactionReferenceNumber,
       LocalDate fromDate,
-      LocalDate toDate) {
+      LocalDate toDate,
+      String salesContractNumber) {
     List<RemittanceTransactionEntity> remittanceTransactions =
         remittanceTransactionRepository.findAll(
             RemittanceTransactionSpecification.searchSpecification(
-                status, remittanceType, transactionReferenceNumber, fromDate, toDate));
+                status,
+                remittanceType,
+                remittanceTypeName,
+                transactionReferenceNumber,
+                fromDate,
+                toDate,
+                salesContractNumber,
+                null,
+                null));
     return ListResultBuilder.build(
         remittanceTransactions, remittanceTransactionMapper.entityToDomain(false));
   }
@@ -152,13 +172,32 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
 
   @Override
   public List<ExportRelatedRemittanceInformation> getRemittanceInformationForTf(
-      Long customerId, String currency) {
-    TransactionType transactionType = transactionTypeService.typeForAdvanceRemittance();
+      Long customerId, String currency, String salesContractNUmber, RemittanceType remittanceType) {
+    String transactionTypeName;
+    Long applicantId, beneficiaryId;
+    if (remittanceType == RemittanceType.INWARD_REMITTANCE) {
+      applicantId = null;
+      beneficiaryId = customerId;
+      transactionTypeName = "Advanced Receive Agt. Export";
+    } else {
+      beneficiaryId = null;
+      applicantId = customerId;
+      transactionTypeName = "Advanced Payment Agt. Import";
+    }
+
     return ListResultBuilder.build(
-        remittanceTransactionRepository
-            .findAllByBeneficiaryIdAndShadowAccountCurrencyAndTransactionType_Id(
-                customerId, currency, transactionType.getId()),
-        remittanceTransactionMapper.entityToExportInformation());
+        remittanceTransactionRepository.findAll(
+            RemittanceTransactionSpecification.searchSpecification(
+                null,
+                remittanceType,
+                transactionTypeName,
+                null,
+                null,
+                null,
+                salesContractNUmber,
+                applicantId,
+                beneficiaryId)),
+        remittanceTransactionMapper.entityToExportInformation(remittanceType));
   }
 
   private TransactionCorrectionRequest prepareTransactionCorrectionRequest(
