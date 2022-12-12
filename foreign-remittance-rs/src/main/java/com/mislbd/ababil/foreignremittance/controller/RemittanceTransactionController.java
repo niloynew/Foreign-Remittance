@@ -6,6 +6,7 @@ import static org.springframework.http.ResponseEntity.status;
 
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.RemittanceTransactionCorrectionCommand;
+import com.mislbd.ababil.foreignremittance.command.RemittanceTransactionUpdateCommand;
 import com.mislbd.ababil.foreignremittance.domain.*;
 import com.mislbd.ababil.foreignremittance.query.InwardTxnsByReferenceNumberQuery;
 import com.mislbd.ababil.foreignremittance.query.RemittanceTransactionIdQuery;
@@ -101,6 +102,13 @@ public class RemittanceTransactionController {
             commandProcessor.executeResult(
                 new RemittanceTransactionCorrectionCommand(
                     new RemittanceTransactionCorrectionRequest(id, voucherNumber))));
+  }
+
+  @PutMapping(path = "/remittance-transactions")
+  public ResponseEntity<Void> updateRemittanceInformation(
+      @RequestBody RemittanceTransactionUpdateDto dto) {
+    commandProcessor.executeUpdate(new RemittanceTransactionUpdateCommand(dto));
+    return ResponseEntity.accepted().build();
   }
 
   @GetMapping(path = "/remittance-categories-list/{remittanceType}")
