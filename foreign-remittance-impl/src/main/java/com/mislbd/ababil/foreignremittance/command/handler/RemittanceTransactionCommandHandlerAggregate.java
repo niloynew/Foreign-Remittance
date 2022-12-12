@@ -5,6 +5,7 @@ import com.mislbd.ababil.asset.service.Auditor;
 import com.mislbd.ababil.asset.service.ConfigurationService;
 import com.mislbd.ababil.foreignremittance.command.CreateRemittanceTransactionCommand;
 import com.mislbd.ababil.foreignremittance.command.RemittanceTransactionCorrectionCommand;
+import com.mislbd.ababil.foreignremittance.command.RemittanceTransactionUpdateCommand;
 import com.mislbd.ababil.foreignremittance.domain.*;
 import com.mislbd.ababil.foreignremittance.exception.ForeignRemittanceBaseException;
 import com.mislbd.ababil.foreignremittance.exception.RemittanceTransactionNotFoundException;
@@ -158,5 +159,24 @@ public class RemittanceTransactionCommandHandlerAggregate {
     return date.concat(referenceNumber)
         .concat(
             Strings.padStart(transactionRepository.generateRequestIdSequence().toString(), 3, '0'));
+  }
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<Void> updateRemittanceTransaction(
+      RemittanceTransactionUpdateCommand command) {
+    RemittanceTransactionUpdateDto payload = command.getPayload();
+    RemittanceTransactionEntity entity =
+        transactionRepository
+            .findById(payload.getRemittanceId())
+            .orElseThrow(RemittanceTransactionNotFoundException::new);
+    if (payload.getSalesContractNumber() != null) {
+      entity.setSalesContractNumber(payload.getSalesContractNumber());
+    }
+    if (payload.getArvNumber() != null) {
+      entity.setArvNumber(payload.getArvNumber());
+    }
+    transactionRepository.save(entity);
+    return CommandResponse.asVoid();
   }
 }
