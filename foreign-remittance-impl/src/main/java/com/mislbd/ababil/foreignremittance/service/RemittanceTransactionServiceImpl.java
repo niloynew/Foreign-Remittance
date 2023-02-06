@@ -72,6 +72,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
                 toDate,
                 salesContractNumber,
                 null,
+                null,
                 null),
             pageable);
 
@@ -98,6 +99,7 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
                 fromDate,
                 toDate,
                 salesContractNumber,
+                null,
                 null,
                 null));
     return ListResultBuilder.build(
@@ -196,7 +198,8 @@ public class RemittanceTransactionServiceImpl implements RemittanceTransactionSe
                 null,
                 salesContractNUmber,
                 applicantId,
-                beneficiaryId)),
+                beneficiaryId,
+                currency)),
         remittanceTransactionMapper.entityToExportInformation(remittanceType));
   }
 

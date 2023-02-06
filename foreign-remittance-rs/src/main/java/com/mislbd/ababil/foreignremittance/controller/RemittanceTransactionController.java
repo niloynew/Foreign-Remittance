@@ -159,10 +159,10 @@ public class RemittanceTransactionController {
   public ResponseEntity<?> getRemittanceListForTfOutward(
       @RequestParam(value = "customerId") Long customerId,
       @RequestParam(value = "currency") String currency,
-      @RequestParam(value = "adviceNumber", required = false) String adviceNumber) {
+      @RequestParam(value = "lcNumber", required = false) String lcNumber) {
     List<ExportRelatedRemittanceInformation> informationList =
         remittanceTransactionService.getRemittanceInformationForTf(
-            customerId, currency, adviceNumber, RemittanceType.OUTWARD_REMITTANCE);
+            customerId, currency, lcNumber, RemittanceType.OUTWARD_REMITTANCE);
     return ResponseEntity.ok(informationList);
   }
 
@@ -170,10 +170,10 @@ public class RemittanceTransactionController {
   public ResponseEntity<?> getRemittanceListForTfInward(
       @RequestParam(value = "customerId") Long customerId,
       @RequestParam(value = "currency") String currency,
-      @RequestParam(value = "lcNumber", required = false) String lcNumber) {
+      @RequestParam(value = "adviceNumber", required = false) String adviceNumber) {
     List<ExportRelatedRemittanceInformation> informationList =
         remittanceTransactionService.getRemittanceInformationForTf(
-            customerId, currency, lcNumber, RemittanceType.INWARD_REMITTANCE);
+            customerId, currency, adviceNumber, RemittanceType.INWARD_REMITTANCE);
     return ResponseEntity.ok(informationList);
   }
 }

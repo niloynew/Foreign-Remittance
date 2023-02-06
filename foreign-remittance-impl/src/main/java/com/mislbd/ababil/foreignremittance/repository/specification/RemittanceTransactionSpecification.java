@@ -17,7 +17,8 @@ public class RemittanceTransactionSpecification {
       LocalDate toDate,
       String salesContractNumber,
       Long applicantId,
-      Long beneficiaryId) {
+      Long beneficiaryId,
+      String currency) {
     return (root, query, cb) -> {
       Predicate predicate = cb.conjunction();
 
@@ -68,6 +69,10 @@ public class RemittanceTransactionSpecification {
 
       if (beneficiaryId != null) {
         predicate = cb.and(predicate, cb.equal(root.get("beneficiaryId"), beneficiaryId));
+      }
+
+      if (currency != null) {
+        predicate = cb.and(predicate, cb.equal(root.get("shadowAccountCurrency"), currency));
       }
 
       predicate.in(query.orderBy(cb.desc(root.get("id"))));
