@@ -199,7 +199,7 @@ public class SwiftMessageCommandHandlerAggregate {
     return CommandResponse.of(processResult);
   }
 
-  @Transactional
+  /*@Transactional
   @CommandHandler
   public CommandResponse<MessageResponse> generate103Message(
       GenerateSingleCustomerCreditTransferMessageCommand command) {
@@ -209,6 +209,19 @@ public class SwiftMessageCommandHandlerAggregate {
     request.setTransactionReferenceNumber(request.getSendersReference());
     request.setApplicationDate(configurationService.getCurrentApplicationDate());
     MessageResponse messageResponse = xmmIntegrationService.publishCategoryNMessage(request);
+    return CommandResponse.of(messageResponse);
+  }*/
+
+  @Transactional
+  @CommandHandler
+  public CommandResponse<MessageResponse> generate103Message(
+          GenerateSingleCustomerCreditTransferMessageCommand command) {
+    MT103MessageRequest request = command.getPayload();
+    request.setEntryUser(ngSession.getUsername());
+    request.setEntryUserBranch(String.valueOf(ngSession.getUserBranch()).concat("00"));
+    request.setTransactionReferenceNumber(request.getSendersReference());
+    request.setApplicationDate(configurationService.getCurrentApplicationDate());
+    MessageResponse messageResponse = swiftMTMessageService.generate103message(serviceURL,request);
     return CommandResponse.of(messageResponse);
   }
 
